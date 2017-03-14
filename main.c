@@ -118,30 +118,6 @@ int main(void)
     taskParams.arg0 = 1000; // Concert cycles to milliseconds, and halve.
     taskParams.stackSize = TASKSTACKSIZE;
 
-
-    Mailbox_Params mboxParams;
-    Mailbox_Params_init(&mboxParams);
-
-    mbx0 = Mailbox_create(sizeof(MsgObj), 50, &mboxParams, NULL);
-
-    if(mbx0 == NULL){
-        System_printf("mb went bad\n");
-    }
-
-
-    taskParams.instance->name = "writer";
-    taskParams.stack = &mbx1TaskStack;
-    reader1Handle = Task_construct(&mbx1TaskStruct, (Task_FuncPtr) reader, &taskParams, NULL);
-
-    taskParams.instance->name = "reader";
-    taskParams.stack = &mbx2TaskStack;
-    reader2Handle = Task_construct(&mbx2TaskStruct, (Task_FuncPtr) reader, &taskParams, NULL);
-
-    taskParams.instance->name = "reader2";
-    taskParams.stack = &mbx0TaskStack;
-    Task_construct(&mbx0TaskStruct, (Task_FuncPtr) writer, &taskParams, NULL);
-
-
     /* Turn on user LED */
     GPIO_write(Board_LED0, Board_LED_ON);
     GPIO_write(Board_LED1, Board_LED_ON);
