@@ -12,4 +12,5 @@
 	<createSlaveProjects value=""/>
 	<templateProperties value="id=com.ti.rtsc.TIRTOSmsp430.example_9,type=rtsc,products=com.ti.rtsc.TIRTOSmsp430,xdcToolsVersion=3_32_00_06_core,target=ti.targets.arm.elf.M4F,platform=ti.platforms.msp432:MSP432P401R,buildProfile=release,isHybrid=true,configuroOptions=--compileOptions &quot;${COMPILER_FLAGS} &quot;,"/>
 	<filesToOpen value=""/>
+	<isTargetManual value="false"/>
 </projectOptions>

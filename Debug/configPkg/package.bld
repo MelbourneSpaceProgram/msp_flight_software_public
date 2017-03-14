@@ -11,7 +11,7 @@ var makeAssembly = false;
 var Executable = xdc.module('xdc.bld.Executable');
 
 var exeOpts = new Executable.Attrs({
-        cfgScript: 'C:/Users/Anthony/OwnCloud/UMSP/SVN/operating-systems/software/MSP/empty.cfg',
+        cfgScript: 'C:/Users/Anthony/OwnCloud/UMSP/SVN/CDH_software/empty.cfg',
         profile: 'release',
         cfgHome: 'configPkg',
 });
@@ -41,7 +41,7 @@ else {
 
 var thisObj = {
     cfg:        '../empty.cfg',
-    outputPath: 'C:/Users/Anthony/OwnCloud/UMSP/SVN/operating-systems/software/MSP/Debug/configPkg',
+    outputPath: 'C:/Users/Anthony/OwnCloud/UMSP/SVN/CDH_software/Debug/configPkg',
     exeName:    'empty' + suffix,
     exeIntName: 'empty' + suffix.replace('.', '_'),
     targ:       targ,

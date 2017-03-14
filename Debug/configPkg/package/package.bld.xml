@@ -7,7 +7,7 @@
         <srcFile name="package/cfg/empty_pem4f.c"/>
     </sources>
     <configscripts>
-        <srcFile name="C:/Users/Anthony/OwnCloud/UMSP/SVN/operating-systems/software/MSP/empty.cfg"/>
+        <srcFile name="C:/Users/Anthony/OwnCloud/UMSP/SVN/CDH_software/empty.cfg"/>
     </configscripts>
     <makefiles>
         <srcFile name="package.mak" src="package.bld"/>
@@ -44,7 +44,7 @@
         isPartial="false"
         xCfgScript="package/cfg/empty_pem4f.cfg"
         xCfgPrefix="package/cfg/empty_pem4f"
-        cfgScript="C:/Users/Anthony/OwnCloud/UMSP/SVN/operating-systems/software/MSP/empty.cfg"
+        cfgScript="C:/Users/Anthony/OwnCloud/UMSP/SVN/CDH_software/empty.cfg"
         cfgArgs="null"
         />
     </configurations>
@@ -56,7 +56,7 @@
         profile="release"
         xCfgScript="package/cfg/empty_pem4f.cfg"
         xCfgPrefix="package/cfg/empty_pem4f"
-        cfgScript="C:/Users/Anthony/OwnCloud/UMSP/SVN/operating-systems/software/MSP/empty.cfg"
+        cfgScript="C:/Users/Anthony/OwnCloud/UMSP/SVN/CDH_software/empty.cfg"
         cfgArgs="null"
         />
     </executables>
