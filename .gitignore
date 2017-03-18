@@ -1,0 +1,16 @@
+# Ignore Eclipse project files
+.cproject
+
+# As well as CLion IDE files
+.idea/
+
+# Makefiles
+CMakeLists.txt
+
+# Any builds
+cmake-build-debug/
+Debug/
+
+# Vim temp files
+*.swp
+*~
