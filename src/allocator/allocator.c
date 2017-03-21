@@ -9,6 +9,7 @@
 #include <math.h>
 #include <time.h>
 
+
 typedef struct event {
     int start_time; // Some system definition of time. Might be number of microseconds since something?
     int end_time;
@@ -327,7 +328,8 @@ void print_power_allocation() {
     printf("\n");
     printf("\n");
 }
-int main() {
+
+int run_allocator(){
 
     srand ( time(NULL) );
 
