@@ -42,8 +42,7 @@
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
-#include <ti/sysbios/knl/Queue.h>
-#include <ti/sysbios/knl/Mailbox.h>
+
 
 /* TI-RTOS Header files */
 #include <ti/drivers/GPIO.h>
@@ -56,39 +55,15 @@
 /* Board Header file */
 #include "Board.h"
 
+#include "src/allocator/allocator.h"
 #include "src/diagnostics/diagnostics.h"
 #include "src/hal/hal.h"
 
 
-#define TASKSTACKSIZE   512
+#define TASKSTACKSIZE   4096
 
-Task_Struct mbx0TaskStruct;
-Char mbx0TaskStack[TASKSTACKSIZE];
-
-Task_Struct mbx1TaskStruct;
-Char mbx1TaskStack[TASKSTACKSIZE];
-
-Task_Struct mbx2TaskStruct;
-Char mbx2TaskStack[TASKSTACKSIZE];
-
-// The mailbox
-Mailbox_Handle mbx0;
-
-Task_Handle reader1Handle, reader2Handle;
-
-Void writer(UArg arg1, UArg arg2);
-Void reader(UArg arg1, UArg arg2);
-
-
-// Just MailBox things
-
-#define NUMMSGS     8   /* number of messages */
-#define TIMEOUT     10  /* timeout, in system ticks */
-
-typedef struct MsgObj {
-    Int id;             /* writer task id */
-    Int val;            /* message value */
-} MsgObj, *Msg;
+Task_Struct allocatorTaskStruct;
+Char allocatorTaskStack[TASKSTACKSIZE];
 
 
 /*
@@ -107,16 +82,22 @@ int main(void)
 
     initHeartbeat();
 
-
-
-
-    // Mailbox tests
     /* Construct heartBeat Task  thread */
     Task_Params taskParams;
     Task_Params_init(&taskParams);
     taskParams.instance->name = "heartbeat"; // This doesn't appear to do what I expected
     taskParams.arg0 = 1000; // Concert cycles to milliseconds, and halve.
     taskParams.stackSize = TASKSTACKSIZE;
+
+    Task_Params_init(&taskParams);
+    taskParams.stackSize = TASKSTACKSIZE;
+    taskParams.instance->name = "allocator_request";
+    taskParams.stack = &allocatorTaskStack;
+    taskParams.arg0 = 1000;
+    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) handle_new_request, &taskParams, NULL);
+
+    /* Obtain instance handle */
+    Task_Handle task = Task_handle(&allocatorTaskStruct);
 
     /* Turn on user LED */
     GPIO_write(Board_LED0, Board_LED_ON);
@@ -134,44 +115,3 @@ int main(void)
 }
 
 
-// IPC tests
-
-Void writer(UArg id, UArg arg2)
-{
-    MsgObj msg;
-    Int i;
-
-    for(i = 0; i < 10; i++){
-        msg.id = id;
-        msg.val = i;
-
-        System_printf("Attempting to send message %d\n", msg.val);
-
-        System_flush();
-        Mailbox_post(mbx0, &msg, TIMEOUT);
-
-        if(i == 5){
-            Task_setPri(reader1Handle, -1);
-            Task_setPri(reader2Handle, -1);
-        }
-    }
-}
-
-Void reader(UArg arg1, UArg arg2)
-{
-    MsgObj msg;
-    Int i;
-
-    System_printf("called reader\n");
-
-    while(1){
-        if (Mailbox_pend(mbx0, &msg, TIMEOUT) == 0){
-            System_printf("Reader: Mailbox pending timeout\n");
-            System_flush();
-            break;
-        }
-
-        System_printf("Read from the mailbox %d \n", msg.val);
-        System_flush();
-    }
-}
