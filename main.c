@@ -83,16 +83,19 @@ int main(void)
     initHeartbeat();
 
     /* Construct heartBeat Task  thread */
-    Task_Params taskParams;
+    /*Task_Params taskParams;
     Task_Params_init(&taskParams);
     taskParams.instance->name = "heartbeat"; // This doesn't appear to do what I expected
     taskParams.arg0 = 1000; // Concert cycles to milliseconds, and halve.
     taskParams.stackSize = TASKSTACKSIZE;
+    */
 
+    Task_Params taskParams;
     Task_Params_init(&taskParams);
     taskParams.stackSize = TASKSTACKSIZE;
     taskParams.instance->name = "allocator_request";
     taskParams.stack = &allocatorTaskStack;
+    taskParams.priority = 2;
     taskParams.arg0 = 1000;
     Task_construct(&allocatorTaskStruct, (Task_FuncPtr) handle_new_request, &taskParams, NULL);
 
