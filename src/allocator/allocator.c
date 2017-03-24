@@ -54,8 +54,11 @@ request_type telecomms_requests()
 {
 
     request_type request;
+    request.system_id = TELECOM;
+    request.subsystem_id = 3;
+    request.request_id = 22;
     request.duration = rand() % 120000;
-    request.start_time = rand() % 599999; // 10 seconds from now. Should we use relative or absolute times?
+    request.start_time = rand() * 10 % 599999; // 10 seconds from now. Should we use relative or absolute times?
     request.end_time = request.start_time + request.duration;
     request.priority = rand() % 16; // On a 1-16 scale, we are about an 8
     request.dependencies[0] = 1;
@@ -77,7 +80,7 @@ float request_power_available()
 
     float maximum_power_available = 5;
     float power = ((float)rand()/(float)(RAND_MAX)) * maximum_power_available;
-    float rounded_down_power = floorf(power * 10) / 10;
+    float rounded_down_power = floorf(power * 10) / 10 + 2.5;
     return rounded_down_power;
 }
 
@@ -183,6 +186,7 @@ int find_lowest_priority_event_index_in_duration(request_type request)
         {
             power_allocation_element_type power_allocation_element = allocated_power[i];
 
+            // TODO Move one of these checks into the outer loop
             // TODO These ternary's are hard to read
             // First check whether there is any overlap between the allocation we are examining
             if ((request.start_time > power_allocation_element.start_time ? request.start_time : power_allocation_element.start_time) <=
@@ -369,10 +373,12 @@ void print_power_allocation()
     }
 
     printf("\n");
-
+    printf("Index   |   Start   |   End     |  Duration | Used Pwr  |  Max Pwr  |  Requests  |\n");
     for (int i = 0; i < ALLOCATOR_SIZE; i++)
     {
-        printf("allocated_power[%3d] = {%10d, %10d, %10f, %10f}\n", i, allocated_power[i].start_time, allocated_power[i].end_time, allocated_power[i].power_allocated, allocated_power[i].power_available);
+        power_allocation_element_type a = allocated_power[i];
+        printf("%8d|%11d|%11d|%11d|%11f|%11f|\n", i, a.start_time, a.end_time, a.end_time - a.start_time, a.power_allocated, a.power_available);
+        //printf("allocated_power[%3d] = {%10d, %10d, %10f, %10f}\n", i, allocated_power[i].start_time, allocated_power[i].end_time, allocated_power[i].power_allocated, allocated_power[i].power_available);
     }
 
     for(int i = 0; i < 80; i++)
