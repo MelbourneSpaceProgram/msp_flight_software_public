@@ -58,7 +58,7 @@ request_type telecomms_requests()
     request.subsystem_id = 3;
     request.request_id = 22;
     request.duration = rand() % 120000;
-    request.start_time = rand() * 10 % 599999; // 10 seconds from now. Should we use relative or absolute times?
+    request.start_time = rand() % 599999; // 10 seconds from now. Should we use relative or absolute times?
     request.end_time = request.start_time + request.duration;
     request.priority = rand() % 16; // On a 1-16 scale, we are about an 8
     request.dependencies[0] = 1;
