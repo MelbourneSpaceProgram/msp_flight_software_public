@@ -1,2 +1,4 @@
-
-typedef enum {SUCCESS, FAILURE} status_type;
+typedef enum
+{
+	SUCCESS, FAILURE
+} status_type;
