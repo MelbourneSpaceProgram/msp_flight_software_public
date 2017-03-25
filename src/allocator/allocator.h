@@ -5,6 +5,8 @@
 #ifndef CDH_SOFTWARE_ALLOCATOR_H
 #define CDH_SOFTWARE_ALLOCATOR_H
 
+#include "src/system.h"
+
 #include <xdc/std.h>
 #include <xdc/runtime/System.h>
 #include <xdc/runtime/Memory.h>
@@ -14,23 +16,54 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
-#define MAX_EVENTS_REQUESTED 10
-#define MAX_EVENTS_ALLOCATED 100
-#define MAX_DEPENDENCIES 100
-#define ALLOCATOR_TIMESTEP 60000 // 1 minute time step
-#define ALLOCATOR_SIZE 10 // 90 minutes worth of power allocation
+#define MAX_DEPENDENCIES 5
 #define MAX_ALLOCATION_ATTEMPTS 10
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
+
+#include "../util/status.h"
+#define MAX_SCHEDULE_SIZE 20
+
 typedef enum {REQUEST_ACCEPTED, REQUEST_DENIED} allocator_status_type;
 
-typedef enum {SUCCESS, FAILURE} status_type;
+
+typedef struct request
+{
+    system_type system_id;
+    int subsystem_id; // The subsystem that is requesting this event
+    int request_id; // A unique identifier. This is only unique in the context of a subsystem, so subsystem_id and request_id is required to globally identify.
+    int start_time; // Some system definition of time. Might be number of microseconds since something?
+    int end_time;
+    int priority; // The priority of this task, from a range 0 - X.
+    int dependencies[MAX_DEPENDENCIES]; // All the sub tasks that need to be created for this task. Need to work out the maximum size.
+    void( * cancel_callback)(); // Function to call if this event is cancelled. Should we also call it if the event is not accepted?
+    void( * success_callback)(); // Function to call if this event succeeds.
+    void( * failure_callback)(); // Function to call if this event fails.
+    int duration; // Duration of this event in milliseconds?
+    int type; // The type of event. Maybe this shouldn't be type SUBSYSTEM?
+    float power_peak; // Peak power draw expected.
+    float power_average; // Average power draw expected.
+}
+request_type;
+
+typedef struct schedule
+{
+    request_type requests[MAX_SCHEDULE_SIZE];
+    int size;
+} schedule_type;
+
 
 void handle_new_request(UArg arg0, UArg arg1);
 
+
+status_type schedule_clear();
+schedule_type schedule_get();
+status_type schedule_add(request_type);
+status_type schedule_delete(request_type);
+int schedule_size();
+
+
 #endif //CDH_SOFTWARE_ALLOCATOR_H
-
-

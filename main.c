@@ -50,7 +50,7 @@
 #include <ti/drivers/SDSPI.h>
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/UART.h>
-//#include <ti/drivers/Watchdog.h>
+#include <ti/drivers/Watchdog.h>
 
 /* Board Header file */
 #include "Board.h"
@@ -71,6 +71,9 @@ Char allocatorTaskStack[TASKSTACKSIZE];
  */
 int main(void)
 {
+    //WDTCTL = WDTPW + WDTHOLD;
+     //WDTCTL = WDTPW | WDTHOLD;
+
 
     /* Call board init functions */
     Board_initGeneral();
@@ -110,6 +113,8 @@ int main(void)
                   "Halt the target to view any SysMin contents in ROV.\n");
     /* SysMin will only print to the console when you call flush or exit */
     System_flush();
+
+
 
     /* Start BIOS */
     BIOS_start();

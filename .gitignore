@@ -12,6 +12,8 @@ Debug/
 *.swp
 *~
 
+# Formatter files
+*.orig
 # C ignore files
 
 # Prerequisites
