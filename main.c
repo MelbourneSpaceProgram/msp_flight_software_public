@@ -60,7 +60,7 @@
 #include "src/hal/hal.h"
 
 
-#define TASKSTACKSIZE   4096
+#define TASKSTACKSIZE   8096
 
 Task_Struct allocatorTaskStruct;
 Char allocatorTaskStack[TASKSTACKSIZE];

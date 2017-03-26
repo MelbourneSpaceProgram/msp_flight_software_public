@@ -34,7 +34,7 @@ status_type schedule_delete(request_type request)
     // Iterate through to find the struct with the same id
     for(int i = 0; i < schedule.size; i++)
     {
-        if (request_equals(schedule.requests[i], request))
+        if (requests_equal(schedule.requests[i], request))
         {
             // We have found the request
             schedule.requests[i] = schedule.requests[schedule.size - 1];

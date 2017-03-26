@@ -57,6 +57,20 @@ typedef struct schedule
 
 void handle_new_request(UArg arg0, UArg arg1);
 
+allocator_status_type allocator(request_type request);
+request_type find_lowest_priority_overlap(request_type request, schedule_type schedule);
+void handle_new_request(UArg arg0, UArg arg1);
+void init_allocator();
+void print_request(request_type request);
+void print_schedule();
+int requests_equal(request_type a, request_type b);
+int requests_overlap(request_type a, request_type b);
+status_type run_allocator();
+void telecomms_cancel_callback();
+void telecomms_failure_callback();
+request_type telecomms_requests();
+void telecomms_success_callback();
+
 status_type schedule_clear();
 schedule_type schedule_get();
 status_type schedule_add(request_type);
