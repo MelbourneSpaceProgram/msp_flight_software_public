@@ -1,1 +1,0 @@
-main.obj: ../main.c
