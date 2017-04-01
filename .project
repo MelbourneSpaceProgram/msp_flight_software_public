@@ -25,4 +25,11 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Board.html</name>
+			<type>1</type>
+			<locationURI>COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR/source/ti/boards/MSP_EXP432P401R/Board.html</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
