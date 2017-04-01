@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016, Texas Instruments Incorporated
+ * Copyright (c) 2015-2017, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,8 +50,8 @@ extern "C" {
 #endif
 
 /* LEDs on MSP_EXP432P401R are active high. */
-#define MSP_EXP432P401R_LED_OFF (0)
-#define MSP_EXP432P401R_LED_ON  (1)
+#define MSP_EXP432P401R_GPIO_LED_OFF (0)
+#define MSP_EXP432P401R_GPIO_LED_ON  (1)
 
 /*!
  *  @def    MSP_EXP432P401R_ADCName
@@ -60,26 +60,59 @@ extern "C" {
 typedef enum MSP_EXP432P401R_ADCName {
     MSP_EXP432P401R_ADC0 = 0,
     MSP_EXP432P401R_ADC1,
+
     MSP_EXP432P401R_ADCCOUNT
-}MSP_EXP432P401R_ADCName;
+} MSP_EXP432P401R_ADCName;
+
+/*!
+ *  @def    MSP_EXP432P401R_ADCBufName
+ *  @brief  Enum of ADC hardware peripherals on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_ADCBufName {
+    MSP_EXP432P401R_ADCBUF0 = 0,
+
+    MSP_EXP432P401R_ADCBUFCOUNT
+} MSP_EXP432P401R_ADCBufName;
+
+/*!
+ *  @def    MSP_EXP432P401R_ADCBuf0ChannelName
+ *  @brief  Enum of ADCBuf channels on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_ADCBuf0ChannelName {
+    MSP_EXP432P401R_ADCBUF0CHANNEL0 = 0,
+    MSP_EXP432P401R_ADCBUF0CHANNEL1,
+
+    MSP_EXP432P401R_ADCBUF0CHANNELCOUNT
+} MSP_EXP432P401R_ADCBuf0ChannelName;
+
+/*!
+ *  @def    MSP_EXP432P401R_CaptureName
+ *  @brief  Enum of Capture timer names on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_CaptureName {
+    MSP_EXP432P401R_CAPTURE_TA1 = 0,
+    MSP_EXP432P401R_CAPTURE_TA2,
+    MSP_EXP432P401R_CAPTURE_TA3,
+
+    MSP_EXP432P401R_CAPTURECOUNT
+} MSP_EXP432P401R_CaptureName;
 
 /*!
  *  @def    MSP_EXP432P401R_GPIOName
  *  @brief  Enum of GPIO names on the MSP_EXP432P401R dev board
  */
 typedef enum MSP_EXP432P401R_GPIOName {
-    MSP_EXP432P401R_S1 = 0,
-    MSP_EXP432P401R_S2,
-    MSP_EXP432P401R_LED1,
-    MSP_EXP432P401R_LED_RED,
-
+    MSP_EXP432P401R_GPIO_S1 = 0,
+    MSP_EXP432P401R_GPIO_S2,
+    MSP_EXP432P401R_GPIO_LED1,
+    MSP_EXP432P401R_GPIO_LED_RED,
     /*
-     * MSP_EXP432P401R_LED_GREEN & MSP_EXP432P401R_LED_BLUE are used for
+     * MSP_EXP432P401R_GPIO_LED_GREEN & MSP_EXP432P401R_GPIO_LED_BLUE are used for
      * PWM examples.  Uncomment the following lines if you would like to control
      * the LEDs with the GPIO driver.
      */
-    //MSP_EXP432P401R_LED_GREEN,
-    //MSP_EXP432P401R_LED_BLUE,
+    //MSP_EXP432P401R_GPIO_LED_GREEN,
+    //MSP_EXP432P401R_GPIO_LED_BLUE,
 
     MSP_EXP432P401R_GPIOCOUNT
 } MSP_EXP432P401R_GPIOName;
@@ -90,9 +123,20 @@ typedef enum MSP_EXP432P401R_GPIOName {
  */
 typedef enum MSP_EXP432P401R_I2CName {
     MSP_EXP432P401R_I2CB0 = 0,
+    MSP_EXP432P401R_I2CB1,
 
     MSP_EXP432P401R_I2CCOUNT
 } MSP_EXP432P401R_I2CName;
+
+/*!
+ *  @def    MSP_EXP432P401R_I2CSlaveName
+ *  @brief  Enum of I2CSlave names on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_I2CSlaveName {
+    MSP_EXP432P401R_I2CSLAVEB0 = 0,
+
+    MSP_EXP432P401R_I2CSLAVECOUNT
+} MSP_EXP432P401R_I2CSlaveName;
 
 /*!
  *  @def    MSP_EXP432P401R_PWMName
@@ -122,9 +166,25 @@ typedef enum MSP_EXP432P401R_SDSPIName {
 typedef enum MSP_EXP432P401R_SPIName {
     MSP_EXP432P401R_SPIB0 = 0,
     MSP_EXP432P401R_SPIB2,
+    MSP_EXP432P401R_SPIB3,
+    MSP_EXP432P401R_SPIB4,
 
     MSP_EXP432P401R_SPICOUNT
 } MSP_EXP432P401R_SPIName;
+
+/*!
+ *  @def    MSP_EXP432P401R_TimerName
+ *  @brief  Enum of Timer names on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_TimerName {
+    MSP_EXP432P401R_TIMER_T32_0 = 0,
+    MSP_EXP432P401R_TIMER_T32_1,
+    MSP_EXP432P401R_TIMER_TA_1,
+    MSP_EXP432P401R_TIMER_TA_2,
+    MSP_EXP432P401R_TIMER_TA_3,
+
+    MSP_EXP432P401R_TIMERCOUNT
+} MSP_EXP432P401R_TimerName;
 
 /*!
  *  @def    MSP_EXP432P401R_UARTName
@@ -148,123 +208,11 @@ typedef enum MSP_EXP432P401R_WatchdogName {
 } MSP_EXP432P401R_WatchdogName;
 
 /*!
- *  @def    MSP_EXP432P401R_WiFiName
- *  @brief  Enum of WiFi names on the MSP_EXP432P401R dev board
- */
-typedef enum MSP_EXP432P401R_WiFiName {
-    MSP_EXP432P401R_WIFI = 0,
-
-    MSP_EXP432P401R_WIFICOUNT
-} MSP_EXP432P401R_WiFiName;
-
-/*!
- *  @brief  Initialize board specific ADC settings
- *
- *  This function initializes the board specific ADC settings and then calls
- *  the ADC_init API to initialize the ADC module.
- *
- *  The ADC peripherals controlled by the ADC module are determined by the
- *  ADC_config variable.
- */
-extern void MSP_EXP432P401R_initADC(void);
-
-/*!
  *  @brief  Initialize the general board specific settings
  *
  *  This function initializes the general board specific settings.
  */
 extern void MSP_EXP432P401R_initGeneral(void);
-
-/*!
- *  @brief  Initialize board specific GPIO settings
- *
- *  This function initializes the board specific GPIO settings and
- *  then calls the GPIO_init API to initialize the GPIO module.
- *
- *  The GPIOs controlled by the GPIO module are determined by the GPIO_PinConfig
- *  variable.
- */
-extern void MSP_EXP432P401R_initGPIO(void);
-
-/*!
- *  @brief  Initialize board specific I2C settings
- *
- *  This function initializes the board specific I2C settings and then calls
- *  the I2C_init API to initialize the I2C module.
- *
- *  The I2C peripherals controlled by the I2C module are determined by the
- *  I2C_config variable.
- */
-extern void MSP_EXP432P401R_initI2C(void);
-
-/*!
- *  @brief  Initialize board specific PWM settings
- *
- *  This function initializes the board specific PWM settings and then calls
- *  the PWM_init API to initialize the PWM module.
- *
- *  The PWM peripherals controlled by the PWM module are determined by the
- *  PWM_config variable.
- */
-extern void MSP_EXP432P401R_initPWM(void);
-
-/*!
- *  @brief  Initialize board specific SDSPI settings
- *
- *  This function initializes the board specific SDSPI settings and then calls
- *  the SDSPI_init API to initialize the SDSPI module.
- *
- *  The SDSPI peripherals controlled by the SDSPI module are determined by the
- *  SDSPI_config variable.
- */
-extern void MSP_EXP432P401R_initSDSPI(void);
-
-/*!
- *  @brief  Initialize board specific SPI settings
- *
- *  This function initializes the board specific SPI settings and then calls
- *  the SPI_init API to initialize the SPI module.
- *
- *  The SPI peripherals controlled by the SPI module are determined by the
- *  SPI_config variable.
- */
-extern void MSP_EXP432P401R_initSPI(void);
-
-/*!
- *  @brief  Initialize board specific UART settings
- *
- *  This function initializes the board specific UART settings and then calls
- *  the UART_init API to initialize the UART module.
- *
- *  The UART peripherals controlled by the UART module are determined by the
- *  UART_config variable.
- */
-extern void MSP_EXP432P401R_initUART(void);
-
-/*!
- *  @brief  Initialize board specific Watchdog settings
- *
- *  This function initializes the board specific Watchdog settings and then
- *  calls the Watchdog_init API to initialize the Watchdog module.
- *
- *  The Watchdog peripherals controlled by the Watchdog module are determined
- *  by the Watchdog_config variable.
- */
-extern void MSP_EXP432P401R_initWatchdog(void);
-
-/*!
- *  @brief  Initialize board specific WiFi settings
- *
- *  This function initializes the board specific WiFi settings and then calls
- *  the WiFi_init API to initialize the WiFi module.
- *
- *  The hardware resources controlled by the WiFi module are determined by the
- *  WiFi_config variable.
- *
- *  A SimpleLink CC3100 device or module is required and must be connected to
- *  use the WiFi driver.
- */
-extern void MSP_EXP432P401R_initWiFi(void);
 
 #ifdef __cplusplus
 }
