@@ -1,4 +1,5 @@
-#include "allocator.h"
+#include <src/allocator/allocator.hpp>
+#include "power_allocator.h"
 
 int requests_equal(request_type a, request_type b)
 {
@@ -56,52 +57,22 @@ request_type telecomms_requests()
 	return request;
 }
 
-void print_schedule()
-{
-	for (int i = 0; i < 80; i++)
-	{
-		System_printf("=");
-	}
 
-	System_printf("\n");
-	System_flush();
-
-	schedule_type schedule = schedule_get();
-	for (int i = 0; i < schedule_size(); i++)
-	{
-		printf("schedule[%3d] = {%2d, %10d, %10d, %10f}\n", i,
-				schedule.requests[i].priority, schedule.requests[i].start_time,
-				schedule.requests[i].end_time,
-				schedule.requests[i].power_average);
-		System_flush();
-	}
-
-	for (int i = 0; i < 80; i++)
-	{
-		System_printf("=");
-	}
-
-	System_printf("\n");
-	System_printf("\n");
-	System_flush();
-
-	return;
-}
 
 request_type find_lowest_priority_overlap(request_type request,
-		schedule_type schedule)
+		Schedule schedule)
 {
 
 	request_type lowest_request;
 	int lowest_priority = 100000; // TODO The maximum priority
-	for (int i = 0; i < schedule.size; i++)
+	for (int i = 0; i < schedule.get_size(); i++)
 	{
-		if (requests_overlap(request, schedule.requests[i]))
+		if (requests_overlap(request, schedule.get_request(i)))
 		{
-			if (schedule.requests[i].priority < lowest_priority)
+			if (schedule.get_request(i).priority < lowest_priority)
 			{
-				lowest_request = schedule.requests[i];
-				lowest_priority = schedule.requests[i].priority;
+				lowest_request = schedule.get_request(i);
+				lowest_priority = schedule.get_request(i).priority;
 			}
 		}
 	}
