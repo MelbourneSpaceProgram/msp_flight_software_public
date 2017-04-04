@@ -5,6 +5,8 @@
 #ifndef CDH_SOFTWARE_ALLOCATOR_H
 #define CDH_SOFTWARE_ALLOCATOR_H
 
+#ifdef __cplusplus
+
 #include "src/system.h"
 
 #include <xdc/std.h>
@@ -23,7 +25,6 @@
 #include <math.h>
 #include <time.h>
 
-#include "schedule.hpp"
 //#include "power_allocator.c"
 #include "../util/status.h"
 
@@ -31,6 +32,7 @@ typedef enum
 {
 	REQUEST_ACCEPTED, REQUEST_DENIED
 } allocator_status_type;
+
 
 typedef struct request
 {
@@ -51,10 +53,28 @@ typedef struct request
 } request_type;
 
 
+class Schedule
+{
+    const int MAX_SCHEDULE_SIZE = 100;
+    request_type requests[MAX_SCHEDULE_SIZE];
+    int size;
+public:
+    Schedule(void);
+    int get_size(void);
+    request_type get_request(int);
+    request_type get_requests(void);
+    status_type add(request_type);
+    status_type remove(request_type);
+    status_type clear(void);
+    void print(void);
+};
+
+
+
 void handle_new_request(UArg arg0, UArg arg1);
 
 allocator_status_type allocator(request_type request);
-request_type find_lowest_priority_overlap(request_type request, schedule_type schedule);
+request_type find_lowest_priority_overlap(request_type request, Schedule schedule);
 void handle_new_request(UArg arg0, UArg arg1);
 void init_allocator();
 void print_request(request_type request);
@@ -67,10 +87,5 @@ void telecomms_failure_callback();
 request_type telecomms_requests();
 void telecomms_success_callback();
 
-status_type schedule_clear();
-schedule_type schedule_get();
-status_type schedule_add(request_type);
-status_type schedule_delete(request_type);
-int schedule_size();
-
+#endif
 #endif //CDH_SOFTWARE_ALLOCATOR_H
