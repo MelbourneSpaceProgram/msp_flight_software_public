@@ -23,8 +23,9 @@
 #include <math.h>
 #include <time.h>
 
+#include "schedule.hpp"
+//#include "power_allocator.c"
 #include "../util/status.h"
-#define MAX_SCHEDULE_SIZE 20
 
 typedef enum
 {
@@ -49,11 +50,6 @@ typedef struct request
 	float power_average; // Average power draw expected.
 } request_type;
 
-typedef struct schedule
-{
-	request_type requests[MAX_SCHEDULE_SIZE];
-	int size;
-} schedule_type;
 
 void handle_new_request(UArg arg0, UArg arg1);
 

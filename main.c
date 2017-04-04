@@ -34,6 +34,7 @@
  *  ======== empty.c ========
  */
 /* XDCtools Header files */
+#include <src/allocator/allocator.hpp>
 #include <xdc/std.h>
 #include <xdc/runtime/System.h>
 #include <xdc/runtime/Memory.h>
@@ -55,7 +56,6 @@
 /* Board Header file */
 #include "Board.h"
 
-#include "src/allocator/allocator.h"
 #include "src/diagnostics/diagnostics.h"
 #include "src/hal/hal.h"
 
