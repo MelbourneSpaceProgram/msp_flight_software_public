@@ -5,7 +5,7 @@
  *      Author: Anthony
  */
 
-#include "schedule.hpp"
+#include <src/allocator/allocator.h>
 
 Schedule::Schedule(void)
 {
