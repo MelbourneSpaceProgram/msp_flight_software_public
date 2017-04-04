@@ -103,12 +103,21 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1989700480" name="power_allocator.c" rcbsApplicability="disable" resourcePath="src/allocator/power_allocator.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1207912853.929123482">
+						<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1207912853.929123482" name="MSP432 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1207912853">
+							<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.C_DIALECT.186389569" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.C_DIALECT" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.C_DIALECT.C99" valueType="enumerated"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.745933467" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.670342970" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1867077175" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.718697487" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
 						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/allocator"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/hal"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/diagnostics"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/allocator"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
