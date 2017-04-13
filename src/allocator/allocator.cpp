@@ -1,5 +1,5 @@
 #include <src/allocator/allocator.h>
-#include "power_allocator.h"
+//#include "power_allocator.h"
 
 int requests_equal(request_type a, request_type b)
 {
@@ -64,7 +64,7 @@ request_type find_lowest_priority_overlap(request_type request,
 {
 
 	request_type lowest_request;
-	int lowest_priority = 100000; // TODO The maximum priority
+	int lowest_priority = 1000; // TODO The maximum priority
 	for (int i = 0; i < schedule.get_size(); i++)
 	{
 		if (requests_overlap(request, schedule.get_request(i)))
@@ -113,7 +113,9 @@ allocator_status_type allocator(request_type request)
 	// ALEX module will go here, doesn't need to be called function allocator
 	System_printf("\n power allocator being called: can_be_allocated = %d\n", can_be_allocated);
 	System_flush();
-	if(power_allocator(request, schedule) == REQUEST_ACCEPTED){
+
+	if(1){
+	//if(power_allocator(request, schedule) == REQUEST_ACCEPTED){
 		can_be_allocated = 1;
 	}
 	else{
@@ -126,7 +128,6 @@ allocator_status_type allocator(request_type request)
 	if (!can_be_allocated)
 	{
 		System_printf("Attempting to optimise the event allocation\n\n\n");
-
 
 
 		request_type removed_events[10];
@@ -194,7 +195,7 @@ status_type run_allocator()
 
 	System_printf("Printing allocated requests\n");
 	System_flush();
-	print_schedule();
+	//print_schedule();
 
 	return SUCCESS;
 }

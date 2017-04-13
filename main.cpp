@@ -70,7 +70,7 @@ Char allocatorTaskStack[TASKSTACKSIZE];
  *  ======== main ========
  */
 int main(void)
-{
+    {
     //WDTCTL = WDTPW + WDTHOLD;
      //WDTCTL = WDTPW | WDTHOLD;
 
