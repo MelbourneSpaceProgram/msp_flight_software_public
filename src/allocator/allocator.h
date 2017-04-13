@@ -55,7 +55,7 @@ typedef struct request
 
 class Schedule
 {
-    const int MAX_SCHEDULE_SIZE = 100;
+    static const int MAX_SCHEDULE_SIZE = 10;
     request_type requests[MAX_SCHEDULE_SIZE];
     int size;
 public:
