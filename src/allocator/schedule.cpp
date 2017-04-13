@@ -17,6 +17,7 @@ int Schedule::get_size()
 }
 
 request_type Schedule::get_request(int i){
+
     return requests[i];
 }
 
