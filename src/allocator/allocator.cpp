@@ -1,4 +1,5 @@
-#include "allocator.h"
+#include <src/allocator/allocator.h>
+//#include "power_allocator.h"
 
 int requests_equal(request_type a, request_type b)
 {
@@ -56,52 +57,22 @@ request_type telecomms_requests()
 	return request;
 }
 
-void print_schedule()
-{
-	for (int i = 0; i < 80; i++)
-	{
-		System_printf("=");
-	}
 
-	System_printf("\n");
-	System_flush();
-
-	schedule_type schedule = schedule_get();
-	for (int i = 0; i < schedule_size(); i++)
-	{
-		printf("schedule[%3d] = {%2d, %10d, %10d, %10f}\n", i,
-				schedule.requests[i].priority, schedule.requests[i].start_time,
-				schedule.requests[i].end_time,
-				schedule.requests[i].power_average);
-		System_flush();
-	}
-
-	for (int i = 0; i < 80; i++)
-	{
-		System_printf("=");
-	}
-
-	System_printf("\n");
-	System_printf("\n");
-	System_flush();
-
-	return;
-}
 
 request_type find_lowest_priority_overlap(request_type request,
-		schedule_type schedule)
+		Schedule schedule)
 {
 
 	request_type lowest_request;
-	int lowest_priority = 100000; // TODO The maximum priority
-	for (int i = 0; i < schedule.size; i++)
+	int lowest_priority = 1000; // TODO The maximum priority
+	for (int i = 0; i < schedule.get_size(); i++)
 	{
-		if (requests_overlap(request, schedule.requests[i]))
+		if (requests_overlap(request, schedule.get_request(i)))
 		{
-			if (schedule.requests[i].priority < lowest_priority)
+			if (schedule.get_request(i).priority < lowest_priority)
 			{
-				lowest_request = schedule.requests[i];
-				lowest_priority = schedule.requests[i].priority;
+				lowest_request = schedule.get_request(i);
+				lowest_priority = schedule.get_request(i).priority;
 			}
 		}
 	}
@@ -125,6 +96,10 @@ void print_request(request_type request)
 allocator_status_type allocator(request_type request)
 {
 
+    static Schedule schedule; // Init schedule TODO This works?
+
+    schedule.print(); // TODO Check this isn't empty
+
 	allocator_status_type request_acceptance_status = REQUEST_DENIED; // Assume the implicit state is deny.
 
 	// To determine if we can allocate an event or not, we need to check for resource availability.
@@ -136,14 +111,24 @@ allocator_status_type allocator(request_type request)
 	int can_be_allocated = 1; // We assume the event be allocated, unless we find out otherwise
 
 	// ALEX module will go here, doesn't need to be called function allocator
-	//can_be_allocated &= power_allocator(request, schedule_get());
+	System_printf("\n power allocator being called: can_be_allocated = %d\n", can_be_allocated);
+	System_flush();
+
+	if(1){
+	//if(power_allocator(request, schedule) == REQUEST_ACCEPTED){
+		can_be_allocated = 1;
+	}
+	else{
+		can_be_allocated = 0;
+	}
+	System_printf("\n power allocator called: can_be_allocated = %d \n", can_be_allocated);
+	System_flush();
 	can_be_allocated &= rand() % 2; // TODO This could be where the pointing resource allocator provides its output
 
 	if (!can_be_allocated)
 	{
 		System_printf("Attempting to optimise the event allocation\n\n\n");
 
-		schedule_type schedule = schedule_get();
 
 		request_type removed_events[10];
 		int n_removed_events = 0;
@@ -169,7 +154,7 @@ allocator_status_type allocator(request_type request)
 			n_removed_events++;
 
 			// Remove from the allocation
-			schedule_delete(lowest_request);
+			schedule.remove(lowest_request);
 
 			// Attempt to schedule the requested event again, now that we have removed the least important event
 			can_be_allocated &= 1;
@@ -178,7 +163,9 @@ allocator_status_type allocator(request_type request)
 
 	if (can_be_allocated)
 	{
-		if (schedule_add(request))
+
+
+		if (schedule.add(request))
 		{
 			request_acceptance_status = REQUEST_ACCEPTED;
 		}
@@ -208,7 +195,7 @@ status_type run_allocator()
 
 	System_printf("Printing allocated requests\n");
 	System_flush();
-	print_schedule();
+	//print_schedule();
 
 	return SUCCESS;
 }
