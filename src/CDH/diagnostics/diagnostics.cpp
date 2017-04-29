@@ -5,8 +5,14 @@
  *      Author: Anthony
  */
 
-#include "src/hal/hal.h"
-#include "diagnostics.h"
+#include <ti/sysbios/knl/Task.h>
+#include "Board.h"
+#include <ti/drivers/GPIO.h>
+
+#include <src/CDH/diagnostics/diagnostics_p.hpp>
+#include <src/public_headers/diagnostics.hpp>
+
+#include <src/public_headers/hal.hpp>
 
 Task_Struct heartbeatTaskStruct;
 Char heartbeatTaskStack[TASKSTACKSIZE];

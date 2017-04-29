@@ -30,11 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- *  ======== empty.c ========
- */
 /* XDCtools Header files */
-#include <src/allocator/allocator.h>
 #include <xdc/std.h>
 #include <xdc/runtime/System.h>
 #include <xdc/runtime/Memory.h>
@@ -52,14 +48,18 @@
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
+#include <ti/display/Display.h>
 
 /* Board Header file */
 #include "Board.h"
 
-#include "src/diagnostics/diagnostics.h"
-#include "src/hal/hal.h"
+#include <src/public_headers/diagnostics.hpp>
+#include <src/public_headers/hal.hpp>
+#include <src/public_headers/systems.hpp>
+#include <src/public_headers/allocator.hpp>
 
-
+#include <xdc/runtime/Log.h>   // For Log_warning1("Warning number #%d", 4); things
+#include <xdc/runtime/Diags.h> // For Log_print0(Diags_USER1, "hello"); things.
 #define TASKSTACKSIZE   8096
 
 Task_Struct allocatorTaskStruct;
@@ -69,29 +69,21 @@ Char allocatorTaskStack[TASKSTACKSIZE];
 /*
  *  ======== main ========
  */
+
+
 int main(void)
     {
-    //WDTCTL = WDTPW + WDTHOLD;
-     //WDTCTL = WDTPW | WDTHOLD;
 
-
-    /* Call board init functions */
+    // Call board init functions
     Board_initGeneral();
     Board_initGPIO();
     Board_initI2C();
     Board_initSDSPI();
     Board_initSPI();
     Board_initUART();
+    Display_init();
 
     initHeartbeat();
-
-    /* Construct heartBeat Task  thread */
-    /*Task_Params taskParams;
-    Task_Params_init(&taskParams);
-    taskParams.instance->name = "heartbeat"; // This doesn't appear to do what I expected
-    taskParams.arg0 = 1000; // Concert cycles to milliseconds, and halve.
-    taskParams.stackSize = TASKSTACKSIZE;
-    */
 
     Task_Params taskParams;
     Task_Params_init(&taskParams);
@@ -102,24 +94,14 @@ int main(void)
     taskParams.arg0 = 1000;
     Task_construct(&allocatorTaskStruct, (Task_FuncPtr) handle_new_request, &taskParams, NULL);
 
-    /* Obtain instance handle */
+    // Obtain instance handle
     Task_Handle task = Task_handle(&allocatorTaskStruct);
 
-    /* Turn on user LED */
-    GPIO_write(Board_LED0, Board_LED_ON);
-    GPIO_write(Board_LED1, Board_LED_ON);
+    // Run the init's
 
-    System_printf("Starting the example\nSystem provider is set to SysMin. "
-                  "Halt the target to view any SysMin contents in ROV.\n");
-    /* SysMin will only print to the console when you call flush or exit */
-    System_flush();
-
-
-
-    /* Start BIOS */
+    Log_info0("Log in main");
+    // Start BIOS
     BIOS_start();
 
     return (0);
 }
-
-
