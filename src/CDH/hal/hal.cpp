@@ -5,7 +5,11 @@
  *      Author: Anthony
  */
 
-#include "hal.h"
+#include <xdc/runtime/System.h>
+#include <ti/drivers/GPIO.h>
+
+#include <src/CDH/hal/hal_p.hpp>
+#include <src/public_headers/hal.hpp>
 
 // Wrap the GPIOToggle function
 void msp_GPIO_toggle(unsigned int index){

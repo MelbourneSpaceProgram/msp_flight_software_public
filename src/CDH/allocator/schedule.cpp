@@ -5,7 +5,15 @@
  *      Author: Anthony
  */
 
-#include <src/allocator/allocator.h>
+
+#include <xdc/runtime/System.h>
+#include <src/public_headers/systems.hpp>
+#include <src/public_headers/allocator.hpp>
+#include <src/public_headers/schedule.hpp>
+#include <src/CDH/allocator/schedule_p.hpp>
+
+#include <stdio.h>
+
 
 Schedule::Schedule(void)
 {
@@ -16,21 +24,21 @@ int Schedule::get_size()
     return size;
 }
 
-request_type Schedule::get_request(int i){
+request_long_type Schedule::get_request(int i){
 
     return requests[i];
 }
 
-status_type Schedule::clear()
+schedule_status_type Schedule::clear()
 {
     size = 0;
-    return SUCCESS;
+    return SCHEDULE_SUCCESS;
 }
 
-status_type Schedule::remove(request_type request)
+schedule_status_type Schedule::remove(request_long_type request)
 {
 
-    status_type status = FAILURE;
+    schedule_status_type status = SCHEDULE_FAILURE;
 
     // Iterate through to find the struct with the same id
     for (int i = 0; i < size; i++)
@@ -40,7 +48,7 @@ status_type Schedule::remove(request_type request)
             // We have found the request
             requests[i] = requests[size - 1];
             size--;
-            status = SUCCESS;
+            status = SCHEDULE_SUCCESS;
             break;
         }
     }
@@ -48,17 +56,17 @@ status_type Schedule::remove(request_type request)
     return status;
 }
 
-status_type Schedule::add(request_type request)
+schedule_status_type Schedule::add(request_long_type request)
 {
 
-    status_type status = FAILURE;
+    schedule_status_type status = SCHEDULE_FAILURE;
 
     // Check the size of the schedule
     if (size < MAX_SCHEDULE_SIZE)
     {
         requests[size] = request;
         size++;
-        status = SUCCESS;
+        status = SCHEDULE_SUCCESS;
     }
 
     return status;

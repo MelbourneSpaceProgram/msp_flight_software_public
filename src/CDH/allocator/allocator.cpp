@@ -1,7 +1,56 @@
-#include <src/allocator/allocator.h>
-//#include "power_allocator.h"
+#include <xdc/std.h>
+#include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/System.h>
+#include <xdc/runtime/Memory.h>
 
-int requests_equal(request_type a, request_type b)
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+
+#include <src/public_headers/systems.hpp>
+
+#include <src/public_headers/allocator.hpp>
+#include <src/CDH/allocator/allocator_p.hpp>
+#include <src/public_headers/schedule.hpp>
+
+#include <src/public_headers/housekeeping.hpp>
+#include <src/public_headers/logger.h>
+//#include <src/CDH/allocator/schedule_p.hpp>
+
+#define TASKSTACKSIZE 2048
+Task_Struct taskStructs[5];
+Char taskStacks[5][TASKSTACKSIZE];
+int taskCounter = 0;
+
+
+
+
+// Depending on how we can stretch function pointers, this might be all we need to implement the allocator.
+// Seeing as typical pointers are okay, I think we could experiment with passing in a function pointer, and then a pointer to a struct that contains all of the data necessary to run?
+void create_task(){
+
+    // Request tasks from each subsystem.
+    request_short request = CDH_requests();
+
+    Task_Handle handle;
+    // TODO magic number
+    if (taskCounter < 5){
+        Task_Params taskParams;
+        Task_Params_init(&taskParams);
+        taskParams.stackSize = TASKSTACKSIZE;
+        taskParams.instance->name = "dynamic_task";
+        taskParams.stack = &taskStacks[taskCounter];
+        taskParams.priority = 4;
+        taskParams.arg0 = request.period;
+        taskParams.arg1 = request.args;
+        handle = Task_create((Task_FuncPtr) request.func, &taskParams, NULL);
+        CDH_task_callback(handle);
+        taskCounter++;
+    }
+}
+
+int requests_equal(request_long_type a, request_long_type b)
 {
 	int is_equal = 0;
 	if (a.request_id == b.request_id)
@@ -12,30 +61,15 @@ int requests_equal(request_type a, request_type b)
 	return is_equal;
 }
 
-int requests_overlap(request_type a, request_type b)
+int requests_overlap(request_long_type a, request_long_type b)
 {
 	return (a.start_time > b.start_time ? a.start_time : b.start_time)
 			<= (a.end_time < b.end_time ? a.end_time : b.end_time);
 }
 
-void telecomms_cancel_callback()
+request_long_type telecomms_requests()
 {
-	printf("Received a cancellation notice\n");
-}
-
-void telecomms_success_callback()
-{
-	printf("Received a success notice\n");
-}
-
-void telecomms_failure_callback()
-{
-	printf("Received a failure notice\n");
-}
-
-request_type telecomms_requests()
-{
-	request_type request;
+	request_long_type request;
 	request.system_id = TELECOM;
 	request.subsystem_id = 3;
 	request.request_id = rand() % 1000;
@@ -47,9 +81,6 @@ request_type telecomms_requests()
 	request.dependencies[1] = 22;
 	request.dependencies[2] = 44;
 	// = {1, 2, 3}; // These refer to other subsystems
-	request.cancel_callback = telecomms_cancel_callback;
-	request.success_callback = telecomms_success_callback;
-	request.failure_callback = telecomms_failure_callback;
 	request.type = 10;
 	request.power_peak = 3;
 	request.power_average = 1.2;
@@ -59,11 +90,10 @@ request_type telecomms_requests()
 
 
 
-request_type find_lowest_priority_overlap(request_type request,
-		Schedule schedule)
+request_long_type find_lowest_priority_overlap(request_long_type request, Schedule schedule)
 {
 
-	request_type lowest_request;
+	request_long_type lowest_request;
 	int lowest_priority = 1000; // TODO The maximum priority
 	for (int i = 0; i < schedule.get_size(); i++)
 	{
@@ -80,27 +110,24 @@ request_type find_lowest_priority_overlap(request_type request,
 	return lowest_request;
 }
 
-void print_request(request_type request)
+void print_request(request_long_type request)
 {
-	// TODO This should really return a string, that we can log, or print
-	System_printf("Request from system: %d, subsystem: %d, request id: %d\n",
-			request.system_id, request.subsystem_id, request.request_id);
-	System_printf("    Start: %d, end: %d, duration: %d\n", request.start_time,
-			request.end_time, request.end_time - request.start_time);
-	System_printf("    Priority: %d\n", request.priority);
-	System_flush();
-	return;
+
+     char   uartLog_outBuf[300 + 4];
+    System_snprintf(uartLog_outBuf, 290, "Request %d from system %d-%d, start %d end %d priority %d\n",request.request_id, request.system_id, request.subsystem_id, request.start_time, request.end_time, request.priority);
+	//log_info(uartLog_outBuf);
+    return;
 }
 
 // Main allocator task
-allocator_status_type allocator(request_type request)
+allocator_status_type allocator(request_long_type request)
 {
 
     static Schedule schedule; // Init schedule TODO This works?
 
     schedule.print(); // TODO Check this isn't empty
 
-	allocator_status_type request_acceptance_status = REQUEST_DENIED; // Assume the implicit state is deny.
+	allocator_status_type request_acceptance_status = ALLOCATOR_REQUEST_DENIED; // Assume the implicit state is deny.
 
 	// To determine if we can allocate an event or not, we need to check for resource availability.
 	// We need to iterate through every already scheduled event occurring in this duration, and calculate the average power consumption per time-step.
@@ -130,7 +157,7 @@ allocator_status_type allocator(request_type request)
 		System_printf("Attempting to optimise the event allocation\n\n\n");
 
 
-		request_type removed_events[10];
+		request_long_type removed_events[10];
 		int n_removed_events = 0;
 
 		// We bound the number of allocation attempts we can make
@@ -140,7 +167,7 @@ allocator_status_type allocator(request_type request)
 		{
 
 			// Find the index of the event with the lowest priority, that overlaps with the event we need to schedule
-			request_type lowest_request = find_lowest_priority_overlap(request, schedule);
+			request_long_type lowest_request = find_lowest_priority_overlap(request, schedule);
 
 			if (lowest_request.system_id == EMPTY)
 			{
@@ -167,11 +194,11 @@ allocator_status_type allocator(request_type request)
 
 		if (schedule.add(request))
 		{
-			request_acceptance_status = REQUEST_ACCEPTED;
+			request_acceptance_status = ALLOCATOR_REQUEST_ACCEPTED;
 		}
 		else
 		{
-			request_acceptance_status = REQUEST_DENIED;
+			request_acceptance_status = ALLOCATOR_REQUEST_DENIED;
 		}
 	}
 
@@ -185,19 +212,19 @@ void init_allocator()
 	System_flush();
 }
 
-status_type run_allocator()
+allocator_status_type run_allocator()
 {
 
 	srand(time(NULL));
 
-	request_type request = telecomms_requests();
+	request_long_type request = telecomms_requests();
 	allocator(request);
 
 	System_printf("Printing allocated requests\n");
 	System_flush();
 	//print_schedule();
 
-	return SUCCESS;
+	return ALLOCATOR_REQUEST_ACCEPTED;
 }
 
 void handle_new_request(UArg arg0, UArg arg1)
@@ -207,6 +234,8 @@ void handle_new_request(UArg arg0, UArg arg1)
 
 	while (1)
 	{
+	    create_task();
+	    //create_event((Task_FuncPtr) output);
 		run_allocator();
 		Task_sleep((UInt) arg0);
 	}
