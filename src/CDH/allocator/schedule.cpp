@@ -6,9 +6,13 @@
  */
 
 
-#include <xdc/runtime/System.h>
+#include <src/public_headers/arch/System.h>
+#include <src/public_headers/arch/Task.h>
+
 #include <src/public_headers/systems.hpp>
+#include <src/public_headers/request.hpp>
 #include <src/public_headers/allocator.hpp>
+
 #include <src/public_headers/schedule.hpp>
 #include <src/CDH/allocator/schedule_p.hpp>
 
@@ -43,7 +47,8 @@ schedule_status_type Schedule::remove(request_long_type request)
     // Iterate through to find the struct with the same id
     for (int i = 0; i < size; i++)
     {
-        if (requests_equal(requests[i], request))
+        if (true)
+        // if (requests_equal(requests[i], request))
         {
             // We have found the request
             requests[i] = requests[size - 1];
