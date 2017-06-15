@@ -1,21 +1,22 @@
-#include <xdc/std.h>
-#include <ti/sysbios/knl/Task.h>
-#include <xdc/runtime/System.h>
-#include <xdc/runtime/Memory.h>
+//#include <xdc/std.h>
+
+#include <src/public_headers/arch/System.h>
+#include <src/public_headers/arch/Task.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
 
 #include <src/public_headers/systems.hpp>
 
+#include <src/public_headers/request.hpp>
 #include <src/public_headers/allocator.hpp>
-#include <src/CDH/allocator/allocator_p.hpp>
 #include <src/public_headers/schedule.hpp>
+#include <src/CDH/allocator/allocator_p.hpp>
 
 #include <src/public_headers/housekeeping.hpp>
-#include <src/public_headers/logger.h>
+
+// TODO Reenable #include <src/public_headers/logger.h>
 //#include <src/CDH/allocator/schedule_p.hpp>
 
 #define TASKSTACKSIZE 2048
@@ -25,13 +26,18 @@ int taskCounter = 0;
 
 
 
-
 // Depending on how we can stretch function pointers, this might be all we need to implement the allocator.
 // Seeing as typical pointers are okay, I think we could experiment with passing in a function pointer, and then a pointer to a struct that contains all of the data necessary to run?
 void create_task(){
 
     // Request tasks from each subsystem.
-    request_short request = CDH_requests();
+    // TODO Disable and make static for now
+    // request_short request = CDH_requests();
+
+    request_short request;
+    request.n_executions = 10;
+    request.period = 3000;
+    //request.func = (Task_FuncPtr) boring_action;
 
     Task_Handle handle;
     // TODO magic number
@@ -39,54 +45,18 @@ void create_task(){
         Task_Params taskParams;
         Task_Params_init(&taskParams);
         taskParams.stackSize = TASKSTACKSIZE;
-        taskParams.instance->name = "dynamic_task";
+        // TODO Disable for now
+        // taskParams.instance->name = "dynamic_task";
         taskParams.stack = &taskStacks[taskCounter];
         taskParams.priority = 4;
         taskParams.arg0 = request.period;
         taskParams.arg1 = request.args;
-        handle = Task_create((Task_FuncPtr) request.func, &taskParams, NULL);
-        CDH_task_callback(handle);
+        //handle = Task_create((Task_FuncPtr) request.func, &taskParams, NULL);
+        // TODO Disable for now CDH_task_callback(handle);
         taskCounter++;
     }
 }
 
-int requests_equal(request_long_type a, request_long_type b)
-{
-	int is_equal = 0;
-	if (a.request_id == b.request_id)
-	{
-		is_equal = 1;
-	}
-
-	return is_equal;
-}
-
-int requests_overlap(request_long_type a, request_long_type b)
-{
-	return (a.start_time > b.start_time ? a.start_time : b.start_time)
-			<= (a.end_time < b.end_time ? a.end_time : b.end_time);
-}
-
-request_long_type telecomms_requests()
-{
-	request_long_type request;
-	request.system_id = TELECOM;
-	request.subsystem_id = 3;
-	request.request_id = rand() % 1000;
-	request.duration = rand() % 120000;
-	request.start_time = rand() % 599999; // 10 seconds from now. Should we use relative or absolute times?
-	request.end_time = request.start_time + request.duration;
-	request.priority = rand() % 16; // On a 1-16 scale, we are about an 8
-	request.dependencies[0] = 1;
-	request.dependencies[1] = 22;
-	request.dependencies[2] = 44;
-	// = {1, 2, 3}; // These refer to other subsystems
-	request.type = 10;
-	request.power_peak = 3;
-	request.power_average = 1.2;
-
-	return request;
-}
 
 
 
@@ -137,10 +107,6 @@ allocator_status_type allocator(request_long_type request)
 	// For the given event, we need to ensure it can satisfy all system resource requirements
 	int can_be_allocated = 1; // We assume the event be allocated, unless we find out otherwise
 
-	// ALEX module will go here, doesn't need to be called function allocator
-	System_printf("\n power allocator being called: can_be_allocated = %d\n", can_be_allocated);
-	System_flush();
-
 	if(1){
 	//if(power_allocator(request, schedule) == REQUEST_ACCEPTED){
 		can_be_allocated = 1;
@@ -148,14 +114,10 @@ allocator_status_type allocator(request_long_type request)
 	else{
 		can_be_allocated = 0;
 	}
-	System_printf("\n power allocator called: can_be_allocated = %d \n", can_be_allocated);
-	System_flush();
 	can_be_allocated &= rand() % 2; // TODO This could be where the pointing resource allocator provides its output
 
 	if (!can_be_allocated)
 	{
-		System_printf("Attempting to optimise the event allocation\n\n\n");
-
 
 		request_long_type removed_events[10];
 		int n_removed_events = 0;
@@ -171,7 +133,6 @@ allocator_status_type allocator(request_long_type request)
 
 			if (lowest_request.system_id == EMPTY)
 			{
-				System_printf("Improving situation is impossible\n");
 				break;
 			}
 
@@ -202,31 +163,24 @@ allocator_status_type allocator(request_long_type request)
 		}
 	}
 
-	System_flush();
 	return request_acceptance_status;
 }
 
 void init_allocator()
 {
-	System_printf("Allocator init complete\n");
-	System_flush();
 }
 
+/* TODO Replace with interface
 allocator_status_type run_allocator()
 {
-
-	srand(time(NULL));
-
 	request_long_type request = telecomms_requests();
 	allocator(request);
 
-	System_printf("Printing allocated requests\n");
-	System_flush();
-	//print_schedule();
-
 	return ALLOCATOR_REQUEST_ACCEPTED;
 }
+*/
 
+/* TODO Move this out as well
 void handle_new_request(UArg arg0, UArg arg1)
 {
 
@@ -241,3 +195,4 @@ void handle_new_request(UArg arg0, UArg arg1)
 	}
 
 }
+*/
