@@ -35,6 +35,9 @@
 #include <xdc/runtime/System.h>
 #include <xdc/runtime/Memory.h>
 
+#include <xdc/runtime/Types.h>
+
+
 /* BIOS Header files */
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
@@ -50,6 +53,9 @@
 #include <ti/drivers/Watchdog.h>
 #include <ti/display/Display.h>
 
+#include <ti/sysbios/knl/Clock.h>
+#include <time.h>
+
 /* Board Header file */
 #include "Board.h"
 
@@ -62,17 +68,20 @@
 #include <xdc/runtime/Diags.h> // For Log_print0(Diags_USER1, "hello"); things.
 #define TASKSTACKSIZE   8096
 
+
+#define SECONDS1900 2208988800
+#define sampletime (UInt32)1412800000  //represented by seconds,/* Wed, 08 Oct 2014 20:26:40 GMT */ just example...:), like we get RTC time reference externally
+
+
 Task_Struct allocatorTaskStruct;
 Char allocatorTaskStack[TASKSTACKSIZE];
 
 
-/*
- *  ======== main ========
- */
-
-
 int main(void)
     {
+
+
+
 
     // Call board init functions
     Board_initGeneral();
@@ -83,6 +92,7 @@ int main(void)
     Board_initUART();
     Display_init();
 
+
     initHeartbeat();
 
     Task_Params taskParams;
@@ -92,16 +102,24 @@ int main(void)
     taskParams.stack = &allocatorTaskStack;
     taskParams.priority = 2;
     taskParams.arg0 = 1000;
-    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) handle_new_request, &taskParams, NULL);
+    //Task_construct(&allocatorTaskStruct, (Task_FuncPtr) handle_new_request, &taskParams, NULL);
 
     // Obtain instance handle
-    Task_Handle task = Task_handle(&allocatorTaskStruct);
+    //Task_Handle task = Task_handle(&allocatorTaskStruct);
 
     // Run the init's
 
     Log_info0("Log in main");
+    //    /* Turn on user LED */
+        GPIO_write(Board_LED0, Board_LED_ON);
+
+        System_flush();
+
+
     // Start BIOS
     BIOS_start();
 
     return (0);
 }
+
+

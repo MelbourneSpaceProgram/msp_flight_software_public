@@ -2,6 +2,7 @@
 
 #include <ti/sysbios/knl/Task.h>
 #include <src/public_headers/systems.hpp>
+#include <src/public_headers/request.hpp>
 #include <src/public_headers/allocator.hpp>
 
 #include <src/public_headers/housekeeping.hpp>
