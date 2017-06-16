@@ -53,8 +53,7 @@
 #include <ti/drivers/Watchdog.h>
 #include <ti/display/Display.h>
 
-#include <ti/sysbios/knl/Clock.h>
-#include <time.h>
+
 
 /* Board Header file */
 #include "Board.h"
@@ -68,6 +67,7 @@
 #include <xdc/runtime/Diags.h> // For Log_print0(Diags_USER1, "hello"); things.
 #define TASKSTACKSIZE   8096
 
+#include <src/public_headers/time.hpp>
 
 #define SECONDS1900 2208988800
 #define sampletime (UInt32)1412800000  //represented by seconds,/* Wed, 08 Oct 2014 20:26:40 GMT */ just example...:), like we get RTC time reference externally
@@ -76,6 +76,34 @@
 Task_Struct allocatorTaskStruct;
 Char allocatorTaskStack[TASKSTACKSIZE];
 
+
+Void time_test(UArg uarg0, UArg uarg1){
+
+    // Use the time since boot a few times
+    while(1){
+    // Init the clock
+    for (int i = 0; i < 3; i ++){
+        // Get current time
+        uint64_t current_time = Time::get_utc_time();
+        uint64_t boot_time = Time::get_boot_time();
+        uint64_t time_since_boot = Time::get_time_since_boot();
+    }
+
+
+    for (int i = 0; i < 3; i ++){
+            // Get current time
+            uint64_t current_time = Time::get_utc_time();
+            uint64_t boot_time = Time::get_boot_time();
+            uint64_t time_since_boot = Time::get_time_since_boot();
+        }
+
+        // Do some other stuff
+        uint64_t current_time = Time::get_utc_time();
+        uint64_t boot_time = Time::get_boot_time();
+
+        Task_sleep(uarg0);
+    }
+}
 
 int main(void)
     {
@@ -92,6 +120,8 @@ int main(void)
     Board_initUART();
     Display_init();
 
+    // Now set the reference time
+       Time::set_reference_time(((uint64_t) 1497540882) * 1000);
 
     initHeartbeat();
 
@@ -101,8 +131,8 @@ int main(void)
     taskParams.instance->name = "allocator_request";
     taskParams.stack = &allocatorTaskStack;
     taskParams.priority = 2;
-    taskParams.arg0 = 1000;
-    //Task_construct(&allocatorTaskStruct, (Task_FuncPtr) handle_new_request, &taskParams, NULL);
+    taskParams.arg0 = 1;
+    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) time_test, &taskParams, NULL);
 
     // Obtain instance handle
     //Task_Handle task = Task_handle(&allocatorTaskStruct);
