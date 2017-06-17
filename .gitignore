@@ -46,3 +46,6 @@ Release/
 # Build files
 WinBuild/
 TIRTOS Build/
+
+# Documentation should be auto-generated?
+doc/
