@@ -31,16 +31,17 @@ int initHeartbeat()
     taskParams.stack = &heartbeatTaskStack;
 
     // Start the task
-    Task_construct(&heartbeatTaskStruct, (Task_FuncPtr) heartbeatFxn, &taskParams, NULL);
+    Task_construct(&heartbeatTaskStruct, (Task_FuncPtr) heartbeatFxn,
+                   &taskParams, NULL);
 
     return 0;
 }
 
-
 Void heartbeatFxn(UArg arg0, UArg arg1)
 {
-    while (1) {
+    while (1)
+    {
         msp_GPIO_toggle(HEARTBEATPIN);
-        Task_sleep((UInt)arg0);
+        Task_sleep((UInt) arg0);
     }
 }

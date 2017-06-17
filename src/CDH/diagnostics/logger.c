@@ -79,38 +79,36 @@
 #  define UARTLOG_OUTBUF_LEN     300  /* Size of buffer used for log printout */
 #endif
 
-
 /*********************************************************************
  * TYPEDEFS
  */
 /* Local reduced copy of Log_EventRec */
 typedef struct
 {
-  //xdc_runtime_Types_Timestamp64 tstamp; /* Provided by some Logger modules */
-  uint32_t tstamp_cust;                   /* 16.16 fractional from RTC       */
-  //xdc_Bits32 serial;                    /* Provided by some Logger modules */
-  //xdc_runtime_Types_Event evt;          /* EventID and ModuleID            */
-  uint16_t serial_cust;                   /* Only 16-bit serial in this impl.*/
-  uint16_t evt_cust;                      /* Only event, no module ID.       */
-  __TA_xdc_runtime_Log_EventRec__arg arg; /* Arguments given to log_xx(...); */
+    //xdc_runtime_Types_Timestamp64 tstamp; /* Provided by some Logger modules */
+    uint32_t tstamp_cust; /* 16.16 fractional from RTC       */
+    //xdc_Bits32 serial;                    /* Provided by some Logger modules */
+    //xdc_runtime_Types_Event evt;          /* EventID and ModuleID            */
+    uint16_t serial_cust; /* Only 16-bit serial in this impl.*/
+    uint16_t evt_cust; /* Only event, no module ID.       */
+    __TA_xdc_runtime_Log_EventRec__arg arg; /* Arguments given to log_xx(...); */
 } uartLog_EventRec;
 
 /*********************************************************************
-* LOCAL VARIABLES
-*/
+ * LOCAL VARIABLES
+ */
 static Display_Handle display;
-static char              uartLog_outBuf[UARTLOG_OUTBUF_LEN + 4];
-static uartLog_EventRec  uartLog_evBuf[UARTLOG_NUM_EVT_BUF];
-static uint8_t           uartLog_tail = 0;
-static uint8_t           uartLog_head = 0;
-static uint8_t           uartLog_evBufIsEmpty = true;
-static uint16_t          uartLog_evtNum = 1;
+static char uartLog_outBuf[UARTLOG_OUTBUF_LEN + 4];
+static uartLog_EventRec uartLog_evBuf[UARTLOG_NUM_EVT_BUF];
+static uint8_t uartLog_tail = 0;
+static uint8_t uartLog_head = 0;
+static uint8_t uartLog_evBufIsEmpty = true;
+static uint16_t uartLog_evtNum = 1;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
  */
 static void uartLog_doPrint(uartLog_EventRec *er);
-
 
 /*********************************************************************
  * PUBLIC FUNCTIONS
@@ -128,7 +126,7 @@ static void uartLog_doPrint(uartLog_EventRec *er);
 void UartLog_init()
 {
     display = Display_open(Display_Type_UART, NULL);
-  //hUart = handle;
+    //hUart = handle;
 }
 
 /*********************************************************************
@@ -176,41 +174,41 @@ void UartLog_init()
 void uartLog_outputFxn(UArg a0, Log_EventRec *pRec, int32_t numArgs)
 {
 
-    if (NULL == display){
+    if (NULL == display)
+    {
         UartLog_init();
     }
-  unsigned int key;
-  
-  /* Disable interrupts while adding record */
-  key = Hwi_disable();
-  
-  /* Copy into current head */
-  //uartLog_evBuf[uartLog_head].tstamp = pRec->tstamp; /* If real Log_EvtRec */
-  uartLog_evBuf[uartLog_head].tstamp_cust = 1000;
-  uartLog_evBuf[uartLog_head].serial_cust = uartLog_evtNum;
-  uartLog_evtNum++;
-  //uartLog_evBuf[uartLog_head].serial = pRec->serial;  /* If LogEvtRec */
-  uartLog_evBuf[uartLog_head].evt_cust = pRec->evt >> 16; /* Ignore ModuleID */
-  memcpy(uartLog_evBuf[uartLog_head].arg,
-         pRec->arg,
-         sizeof(__TA_xdc_runtime_Log_EventRec__arg)); /* Copy log arguments */
-  
-  /* Increment head with wrap */
-  uartLog_head += 1;
-  if (uartLog_head == UARTLOG_NUM_EVT_BUF)
-    uartLog_head = 0;
-  
-  /* Discard oldest if buffer is full */
-  if ( !uartLog_evBufIsEmpty && (uartLog_head == uartLog_tail) )
-    uartLog_tail = uartLog_head;
-  
-  /* This is used to discern whether head==tail means empty or full*/
-  uartLog_evBufIsEmpty = false;
-  
-  /* Let mayhem commence */
-  Hwi_restore(key);
-};
+    unsigned int key;
 
+    /* Disable interrupts while adding record */
+    key = Hwi_disable();
+
+    /* Copy into current head */
+    //uartLog_evBuf[uartLog_head].tstamp = pRec->tstamp; /* If real Log_EvtRec */
+    uartLog_evBuf[uartLog_head].tstamp_cust = 1000;
+    uartLog_evBuf[uartLog_head].serial_cust = uartLog_evtNum;
+    uartLog_evtNum++;
+    //uartLog_evBuf[uartLog_head].serial = pRec->serial;  /* If LogEvtRec */
+    uartLog_evBuf[uartLog_head].evt_cust = pRec->evt >> 16; /* Ignore ModuleID */
+    memcpy(uartLog_evBuf[uartLog_head].arg, pRec->arg,
+           sizeof(__TA_xdc_runtime_Log_EventRec__arg )); /* Copy log arguments */
+
+    /* Increment head with wrap */
+    uartLog_head += 1;
+    if (uartLog_head == UARTLOG_NUM_EVT_BUF)
+        uartLog_head = 0;
+
+    /* Discard oldest if buffer is full */
+    if (!uartLog_evBufIsEmpty && (uartLog_head == uartLog_tail))
+        uartLog_tail = uartLog_head;
+
+    /* This is used to discern whether head==tail means empty or full*/
+    uartLog_evBufIsEmpty = false;
+
+    /* Let mayhem commence */
+    Hwi_restore(key);
+}
+;
 
 /*********************************************************************
  * @fn      uartLog_flush
@@ -240,36 +238,34 @@ void uartLog_outputFxn(UArg a0, Log_EventRec *pRec, int32_t numArgs)
  */
 void uartLog_flush()
 {
-  unsigned int key;
+    unsigned int key;
 
-  /* Local copy of current event record. To keep atomic section short. */
-  uartLog_EventRec curRec;
-  
-  /* If we don't have UART, don't bother. */
+    /* Local copy of current event record. To keep atomic section short. */
+    uartLog_EventRec curRec;
+
+    /* If we don't have UART, don't bother. */
 //  if (NULL == hUart)
 //    return;
-  
 
-  /* In the Idle function (this) send all messages. Will be preempted. */
-  while(!uartLog_evBufIsEmpty)
-  {
-    /* Atomic section while manipulating the buffer. */
-    key = Hwi_disable();
-    
-    /* Extract oldest and move tail */
-    curRec = uartLog_evBuf[uartLog_tail];
-    uartLog_tail = (uartLog_tail + 1) % UARTLOG_NUM_EVT_BUF;
-    if (uartLog_tail == uartLog_head)
-      uartLog_evBufIsEmpty = true;
-    
-    /* Let the others play. */
-    Hwi_restore(key);
-    
-    /* Prepare log string from record, and print to UART. */
-    uartLog_doPrint(&curRec);
-  }
+    /* In the Idle function (this) send all messages. Will be preempted. */
+    while (!uartLog_evBufIsEmpty)
+    {
+        /* Atomic section while manipulating the buffer. */
+        key = Hwi_disable();
+
+        /* Extract oldest and move tail */
+        curRec = uartLog_evBuf[uartLog_tail];
+        uartLog_tail = (uartLog_tail + 1) % UARTLOG_NUM_EVT_BUF;
+        if (uartLog_tail == uartLog_head)
+            uartLog_evBufIsEmpty = true;
+
+        /* Let the others play. */
+        Hwi_restore(key);
+
+        /* Prepare log string from record, and print to UART. */
+        uartLog_doPrint(&curRec);
+    }
 }
-
 
 /*********************************************************************
  * INTERNAL FUNCTIONS
@@ -289,85 +285,90 @@ void uartLog_flush()
  */
 static void uartLog_doPrint(uartLog_EventRec *er)
 {
-  Text_RopeId rope;
-  char       *fmt;
-  //uint32_t    hi, lo;
-  char       *bufPtr = uartLog_outBuf;
-  char       *bufEndPtr = uartLog_outBuf + UARTLOG_OUTBUF_LEN - 2; // Less 2 for \r\n
-  
-  /* print serial number if there is one; 0 isn't a valid serial number */
-  if (er->serial_cust) {
-    System_snprintf(bufPtr, (bufEndPtr - bufPtr), "#%06u ", er->serial_cust);
-    bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
-  }
+    Text_RopeId rope;
+    char *fmt;
+    //uint32_t    hi, lo;
+    char *bufPtr = uartLog_outBuf;
+    char *bufEndPtr = uartLog_outBuf + UARTLOG_OUTBUF_LEN - 2; // Less 2 for \r\n
 
-  /* print timestamp if there is one; ~0 isn't a valid timestamp value */
-  /* Formatting of Log_EvtRec timestamps. But LoggerCallback doesn't provide.
-  hi = er->tstamp.hi;
-  lo = er->tstamp.lo;
-  if (lo != ~0 && hi != ~0) {
-    System_snprintf(bufPtr, (bufEndPtr - bufPtr), "[t=0x");
-    bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
-    if (hi) {
-      System_snprintf(bufPtr, (bufEndPtr - bufPtr), HI, hi);
-      bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+    /* print serial number if there is one; 0 isn't a valid serial number */
+    if (er->serial_cust)
+    {
+        System_snprintf(bufPtr, (bufEndPtr - bufPtr), "#%06u ",
+                        er->serial_cust);
+        bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
     }
-    System_snprintf(bufPtr, (bufEndPtr - bufPtr), LO, lo);
+
+    /* print timestamp if there is one; ~0 isn't a valid timestamp value */
+    /* Formatting of Log_EvtRec timestamps. But LoggerCallback doesn't provide.
+     hi = er->tstamp.hi;
+     lo = er->tstamp.lo;
+     if (lo != ~0 && hi != ~0) {
+     System_snprintf(bufPtr, (bufEndPtr - bufPtr), "[t=0x");
+     bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+     if (hi) {
+     System_snprintf(bufPtr, (bufEndPtr - bufPtr), HI, hi);
+     bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+     }
+     System_snprintf(bufPtr, (bufEndPtr - bufPtr), LO, lo);
+     bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+     }
+     */
+
+    uint16_t seconds = er->tstamp_cust >> 16;
+    uint16_t ifraction = er->tstamp_cust & 0xFFFF;
+    int fraction = (int) ((double) ifraction / 65536 * 1000);  // Get 3 decimals
+
+    System_snprintf(bufPtr, (bufEndPtr - bufPtr), "[ %d.%03u ] ", seconds,
+                    fraction);
     bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
-  }
-  */
 
-  uint16_t seconds = er->tstamp_cust>>16;
-  uint16_t ifraction = er->tstamp_cust & 0xFFFF;
-  int fraction = (int)((double)ifraction/65536 * 1000);  // Get 3 decimals
-  
-  System_snprintf(bufPtr, (bufEndPtr - bufPtr), "[ %d.%03u ] ", seconds, fraction);
-  bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+    /* print module name. This is ignored in this implementation.
+     Text_putMod((Text_RopeId)Types_getModuleId(er->evt), &bufPtr, -1);
+     System_snprintf(bufPtr, (bufEndPtr - bufPtr), ": ");
+     bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+     */
 
-  /* print module name. This is ignored in this implementation.
-  Text_putMod((Text_RopeId)Types_getModuleId(er->evt), &bufPtr, -1);
-  System_snprintf(bufPtr, (bufEndPtr - bufPtr), ": ");
-  bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
-  */
+    /* Ouput everything till now and start over in the buffer. */
 
-  /* Ouput everything till now and start over in the buffer. */
-
-  //Display_printf(display, 0, 0, "%s", uartLog_outBuf);
-  //UART_write(hUart, uartLog_outBuf, (bufPtr - uartLog_outBuf));
-  //bufPtr = uartLog_outBuf;
-    
-  /* print event */
-  /* rope = Types_getEventId(er->evt); */  /* the event id is the message rope */
-  rope = er->evt_cust; /* Don't need getEventId as we already have it */
-  if (rope == 0) {
-    /* Log_print() event */
-    System_snprintf(bufPtr, (bufEndPtr - bufPtr), (String)iargToPtr(er->arg[0]),
-                    er->arg[1], er->arg[2], er->arg[3], er->arg[4], 
-                    er->arg[5], er->arg[6], 0, 0);
-    bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
-  }
-  else {
-    /* Log_write() event */
-    fmt = Text_ropeText(rope);
-    
-    if (Text_isLoaded) {
-      System_snprintf(bufPtr, (bufEndPtr - bufPtr), fmt, er->arg[0], er->arg[1],
-                      er->arg[2], er->arg[3], er->arg[4], er->arg[5],
-                      er->arg[6], er->arg[7]);
-      bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+    //Display_printf(display, 0, 0, "%s", uartLog_outBuf);
+    //UART_write(hUart, uartLog_outBuf, (bufPtr - uartLog_outBuf));
+    //bufPtr = uartLog_outBuf;
+    /* print event */
+    /* rope = Types_getEventId(er->evt); *//* the event id is the message rope */
+    rope = er->evt_cust; /* Don't need getEventId as we already have it */
+    if (rope == 0)
+    {
+        /* Log_print() event */
+        System_snprintf(bufPtr, (bufEndPtr - bufPtr),
+                        (String) iargToPtr(er->arg[0]), er->arg[1], er->arg[2],
+                        er->arg[3], er->arg[4], er->arg[5], er->arg[6], 0, 0);
+        bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
     }
-    else {
-      System_snprintf(bufPtr, (bufEndPtr - bufPtr),
-                      "{evt: fmt=%p, args=[0x%x, 0x%x ...]}",
-                      fmt, er->arg[0], er->arg[1]);
-      bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
-    }
-  }
-  
-  *bufPtr++ = '\r';
-  *bufPtr++ = '\n';
+    else
+    {
+        /* Log_write() event */
+        fmt = Text_ropeText(rope);
 
-  
-  //UART_write(hUart, uartLog_outBuf, (bufPtr - uartLog_outBuf));
-  Display_printf(display, 0, 0, "%s", uartLog_outBuf);
+        if (Text_isLoaded)
+        {
+            System_snprintf(bufPtr, (bufEndPtr - bufPtr), fmt, er->arg[0],
+                            er->arg[1], er->arg[2], er->arg[3], er->arg[4],
+                            er->arg[5], er->arg[6], er->arg[7]);
+            bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+        }
+        else
+        {
+            System_snprintf(bufPtr, (bufEndPtr - bufPtr),
+                            "{evt: fmt=%p, args=[0x%x, 0x%x ...]}", fmt,
+                            er->arg[0], er->arg[1]);
+            bufPtr = uartLog_outBuf + strlen(uartLog_outBuf);
+        }
+    }
+
+    *bufPtr++ = '\r';
+    *bufPtr++ = '\n';
+
+    //UART_write(hUart, uartLog_outBuf, (bufPtr - uartLog_outBuf));
+    Display_printf(display, 0, 0, "%s", uartLog_outBuf);
 }

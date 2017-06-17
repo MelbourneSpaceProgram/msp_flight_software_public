@@ -5,7 +5,6 @@
  *      Author: Anthony
  */
 
-
 #include <src/public_headers/arch/System.h>
 #include <src/public_headers/arch/Task.h>
 
@@ -18,7 +17,6 @@
 
 #include <stdio.h>
 
-
 Schedule::Schedule(void)
 {
     size = 0;
@@ -28,7 +26,8 @@ int Schedule::get_size()
     return size;
 }
 
-request_long_type Schedule::get_request(int i){
+request_long_type Schedule::get_request(int i)
+{
 
     return requests[i];
 }

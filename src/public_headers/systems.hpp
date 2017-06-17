@@ -7,7 +7,7 @@
 
 typedef enum
 {
-	EMPTY, CDH, TELECOM, POWER, FS, MOPS, FV
+    EMPTY, CDH, TELECOM, POWER, FS, MOPS, FV
 } system_type;
 
 #endif //MSP_SYSTEMS_HPP
