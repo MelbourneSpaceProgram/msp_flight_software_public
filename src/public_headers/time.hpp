@@ -6,7 +6,6 @@
 #include <src/public_headers/arch/Clock.h>
 #include <stdint.h>
 
-
 class Time
 {
 public:

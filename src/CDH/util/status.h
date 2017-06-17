@@ -1,4 +1,4 @@
 typedef enum
 {
-	SUCCESS, FAILURE
+    SUCCESS, FAILURE
 } status_type;
