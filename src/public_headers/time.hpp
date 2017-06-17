@@ -1,12 +1,11 @@
-// Public allocator interface
-
+// Public time interface
 
 #ifndef MSP_TIME_HPP
 #define MSP_TIME_HPP
 
-#include <ti/sysbios/knl/Clock.h>
-#include <time.h>
+#include <src/public_headers/arch/Clock.h>
 #include <stdint.h>
+
 
 class Time
 {
