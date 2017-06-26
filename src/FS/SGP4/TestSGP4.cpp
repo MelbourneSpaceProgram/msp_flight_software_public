@@ -50,7 +50,6 @@
 #include <math.h>
 #include "SGP4.h"
 
-int _tmain();
 //using namespace System;
 //using namespace SGP4Funcs;
 
@@ -60,9 +59,6 @@ char typerun, typeinput, opsmode;
 gravconsttype  whichconst;
 
 
-int main(){
-    _tmain();
-}
 
 int _tmain()
 {
@@ -129,7 +125,7 @@ int _tmain()
 	stopmfe = 2880.0;
 	deltamin = 1.0;
 
-	sgp4init(whichconst, opsmode, satrec.satnum, satrec.jdsatepoch + satrec.jdsatepochF - 2433281.5, satrec.bstar,
+	SGP4Funcs::sgp4init(whichconst, opsmode, satrec.satnum, satrec.jdsatepoch + satrec.jdsatepochF - 2433281.5, satrec.bstar,
 		satrec.ndot, satrec.nddot, satrec.ecco, satrec.argpo, satrec.inclo, satrec.mo, satrec.no_kozai,
 		satrec.nodeo, satrec);
 
@@ -141,7 +137,7 @@ int _tmain()
 		if (tsince > stopmfe)
 			tsince = stopmfe;
 
-		sgp4(satrec, tsince, ro, vo);
+		SGP4Funcs::sgp4(satrec, tsince, ro, vo);
 		jd = satrec.jdsatepoch;
 		jdFrac = satrec.jdsatepochF + tsince / 1440.0;
 		if (jdFrac < 0.0)
@@ -149,7 +145,7 @@ int _tmain()
 			jd = jd - 1.0;
 			jdFrac = jdFrac - 1.0;
 		}
-		invjday(jd, jdFrac, year, mon, day, hr, min, sec);
+		SGP4Funcs::invjday(jd, jdFrac, year, mon, day, hr, min, sec);
 
 //		fprintf(outfile, " %16.8f %16.8f %16.8f %16.8f %12.9f %12.9f %12.9f",
 //			tsince, ro[0], ro[1], ro[2], vo[0], vo[1], vo[2]);
