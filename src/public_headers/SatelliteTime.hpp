@@ -6,7 +6,7 @@
 #include <src/public_headers/arch/Clock.h>
 #include <stdint.h>
 
-class Time
+class SatelliteTime
 {
 public:
     static uint64_t get_utc_time();
