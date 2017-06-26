@@ -193,6 +193,7 @@ void handle_new_request(UArg arg0, UArg arg1)
 
     while (1)
     {
+        printf("Do it for the memes\n");
         create_task();
         //create_event((Task_FuncPtr) output);
         run_allocator();
