@@ -153,6 +153,7 @@ double& cosio2, double& eccsq, double& omeosq, double& posq,
 double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 );
 
+namespace SGP4Funcs{
 
 	/* -----------------------------------------------------------------------------
 	*
@@ -1398,6 +1399,26 @@ double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 		satrec.x7thm1 = 0.0; satrec.mdot = 0.0; satrec.nodedot = 0.0;
 		satrec.xlcof = 0.0; satrec.xmcof = 0.0; satrec.nodecf = 0.0;
 
+		/* ----------- set all deep space variables to zero ------------ */
+		satrec.irez = 0;   satrec.d2201 = 0.0; satrec.d2211 = 0.0;
+		satrec.d3210 = 0.0; satrec.d3222 = 0.0; satrec.d4410 = 0.0;
+		satrec.d4422 = 0.0; satrec.d5220 = 0.0; satrec.d5232 = 0.0;
+		satrec.d5421 = 0.0; satrec.d5433 = 0.0; satrec.dedt = 0.0;
+		satrec.del1 = 0.0; satrec.del2 = 0.0; satrec.del3 = 0.0;
+		satrec.didt = 0.0; satrec.dmdt = 0.0; satrec.dnodt = 0.0;
+		satrec.domdt = 0.0; satrec.e3 = 0.0; satrec.ee2 = 0.0;
+		satrec.peo = 0.0; satrec.pgho = 0.0; satrec.pho = 0.0;
+		satrec.pinco = 0.0; satrec.plo = 0.0; satrec.se2 = 0.0;
+		satrec.se3 = 0.0; satrec.sgh2 = 0.0; satrec.sgh3 = 0.0;
+		satrec.sgh4 = 0.0; satrec.sh2 = 0.0; satrec.sh3 = 0.0;
+		satrec.si2 = 0.0; satrec.si3 = 0.0; satrec.sl2 = 0.0;
+		satrec.sl3 = 0.0; satrec.sl4 = 0.0; satrec.gsto = 0.0;
+		satrec.xfact = 0.0; satrec.xgh2 = 0.0; satrec.xgh3 = 0.0;
+		satrec.xgh4 = 0.0; satrec.xh2 = 0.0; satrec.xh3 = 0.0;
+		satrec.xi2 = 0.0; satrec.xi3 = 0.0; satrec.xl2 = 0.0;
+		satrec.xl3 = 0.0; satrec.xl4 = 0.0; satrec.xlamo = 0.0;
+		satrec.zmol = 0.0; satrec.zmos = 0.0; satrec.atime = 0.0;
+		satrec.xli = 0.0; satrec.xni = 0.0;
 
 		/* ------------------------ earth constants ----------------------- */
 		// sgp4fix identify constants and allow alternate values
@@ -1537,6 +1558,67 @@ double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 			satrec.sinmao = sin(satrec.mo);
 			satrec.x7thm1 = 7.0 * cosio2 - 1.0;
 
+			/* --------------- deep space initialization ------------- */
+			if ((2 * pi / satrec.no_unkozai) >= 225.0)
+			{
+				satrec.method = 'd';
+				satrec.isimp = 1;
+				tc = 0.0;
+				inclm = satrec.inclo;
+
+				dscom
+					(
+					epoch, satrec.ecco, satrec.argpo, tc, satrec.inclo, satrec.nodeo,
+					satrec.no_unkozai, snodm, cnodm, sinim, cosim, sinomm, cosomm,
+					day, satrec.e3, satrec.ee2, em, emsq, gam,
+					satrec.peo, satrec.pgho, satrec.pho, satrec.pinco,
+					satrec.plo, rtemsq, satrec.se2, satrec.se3,
+					satrec.sgh2, satrec.sgh3, satrec.sgh4,
+					satrec.sh2, satrec.sh3, satrec.si2, satrec.si3,
+					satrec.sl2, satrec.sl3, satrec.sl4, s1, s2, s3, s4, s5,
+					s6, s7, ss1, ss2, ss3, ss4, ss5, ss6, ss7, sz1, sz2, sz3,
+					sz11, sz12, sz13, sz21, sz22, sz23, sz31, sz32, sz33,
+					satrec.xgh2, satrec.xgh3, satrec.xgh4, satrec.xh2,
+					satrec.xh3, satrec.xi2, satrec.xi3, satrec.xl2,
+					satrec.xl3, satrec.xl4, nm, z1, z2, z3, z11,
+					z12, z13, z21, z22, z23, z31, z32, z33,
+					satrec.zmol, satrec.zmos
+					);
+				dpper
+					(
+					satrec.e3, satrec.ee2, satrec.peo, satrec.pgho,
+					satrec.pho, satrec.pinco, satrec.plo, satrec.se2,
+					satrec.se3, satrec.sgh2, satrec.sgh3, satrec.sgh4,
+					satrec.sh2, satrec.sh3, satrec.si2, satrec.si3,
+					satrec.sl2, satrec.sl3, satrec.sl4, satrec.t,
+					satrec.xgh2, satrec.xgh3, satrec.xgh4, satrec.xh2,
+					satrec.xh3, satrec.xi2, satrec.xi3, satrec.xl2,
+					satrec.xl3, satrec.xl4, satrec.zmol, satrec.zmos, inclm, satrec.init,
+					satrec.ecco, satrec.inclo, satrec.nodeo, satrec.argpo, satrec.mo,
+					satrec.operationmode
+					);
+
+				argpm = 0.0;
+				nodem = 0.0;
+				mm = 0.0;
+
+				dsinit
+					(
+					satrec.xke,
+					cosim, emsq, satrec.argpo, s1, s2, s3, s4, s5, sinim, ss1, ss2, ss3, ss4,
+					ss5, sz1, sz3, sz11, sz13, sz21, sz23, sz31, sz33, satrec.t, tc,
+					satrec.gsto, satrec.mo, satrec.mdot, satrec.no_unkozai, satrec.nodeo,
+					satrec.nodedot, xpidot, z1, z3, z11, z13, z21, z23, z31, z33,
+					satrec.ecco, eccsq, em, argpm, inclm, mm, nm, nodem,
+					satrec.irez, satrec.atime,
+					satrec.d2201, satrec.d2211, satrec.d3210, satrec.d3222,
+					satrec.d4410, satrec.d4422, satrec.d5220, satrec.d5232,
+					satrec.d5421, satrec.d5433, satrec.dedt, satrec.didt,
+					satrec.dmdt, dndt, satrec.dnodt, satrec.domdt,
+					satrec.del1, satrec.del2, satrec.del3, satrec.xfact,
+					satrec.xlamo, satrec.xli, satrec.xni
+					);
+			}
 
 			/* ----------- set variables if not deep space ----------- */
 			if (satrec.isimp != 1)
@@ -1727,12 +1809,31 @@ double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 		nm = satrec.no_unkozai;
 		em = satrec.ecco;
 		inclm = satrec.inclo;
+		if (satrec.method == 'd')
+		{
+			tc = satrec.t;
+			dspace
+				(
+				satrec.irez,
+				satrec.d2201, satrec.d2211, satrec.d3210,
+				satrec.d3222, satrec.d4410, satrec.d4422,
+				satrec.d5220, satrec.d5232, satrec.d5421,
+				satrec.d5433, satrec.dedt, satrec.del1,
+				satrec.del2, satrec.del3, satrec.didt,
+				satrec.dmdt, satrec.dnodt, satrec.domdt,
+				satrec.argpo, satrec.argpdot, satrec.t, tc,
+				satrec.gsto, satrec.xfact, satrec.xlamo,
+				satrec.no_unkozai, satrec.atime,
+				em, argpm, inclm, satrec.xli, mm, satrec.xni,
+				nodem, dndt, nm
+				);
+		} // if method = d
 
 		if (nm <= 0.0)
 		{
 			//         printf("# error nm %f\n", nm);
 			satrec.error = 2;
-			// sgp4fix add returnsat
+			// sgp4fix add return
 			return false;
 		}
 		am = pow((satrec.xke / nm), x2o3) * tempa * tempa;
@@ -1741,7 +1842,7 @@ double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 
 		// fix tolerance for error recognition
 		// sgp4fix am is fixed from the previous nm check
-		if ((em >= 1.0) || (em < -0.01)/* || (am < 0.95)*/)
+		if ((em >= 1.0) || (em < -0.001)/* || (am < 0.95)*/)
 		{
 			//         printf("# error em %f\n", em);
 			satrec.error = 1;
@@ -1782,6 +1883,37 @@ double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 		mp = mm;
 		sinip = sinim;
 		cosip = cosim;
+		if (satrec.method == 'd')
+		{
+			dpper
+				(
+				satrec.e3, satrec.ee2, satrec.peo,
+				satrec.pgho, satrec.pho, satrec.pinco,
+				satrec.plo, satrec.se2, satrec.se3,
+				satrec.sgh2, satrec.sgh3, satrec.sgh4,
+				satrec.sh2, satrec.sh3, satrec.si2,
+				satrec.si3, satrec.sl2, satrec.sl3,
+				satrec.sl4, satrec.t, satrec.xgh2,
+				satrec.xgh3, satrec.xgh4, satrec.xh2,
+				satrec.xh3, satrec.xi2, satrec.xi3,
+				satrec.xl2, satrec.xl3, satrec.xl4,
+				satrec.zmol, satrec.zmos, satrec.inclo,
+				'n', ep, xincp, nodep, argpp, mp, satrec.operationmode
+				);
+			if (xincp < 0.0)
+			{
+				xincp = -xincp;
+				nodep = nodep + pi;
+				argpp = argpp - pi;
+			}
+			if ((ep < 0.0) || (ep > 1.0))
+			{
+				//            printf("# error ep %f\n", ep);
+				satrec.error = 3;
+				// sgp4fix add return
+				return false;
+			}
+		} // if method = d
 
 		/* -------------------- long period periodics ------------------ */
 		if (satrec.method == 'd')
@@ -3206,4 +3338,8 @@ double& rp, double& rteosq, double& sinio, double& gsto, char opsmode
 		/* ----------------- find remaining data  ------------------------- */
 		days2mdhms(year, days + jdFrac, mon, day, hr, minute, sec);
 	}  // invjday
+
+
+} // namespace SGP4Funcs
+
 
