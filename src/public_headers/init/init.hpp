@@ -6,17 +6,15 @@
 /* TI-RTOS Header files */
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
-#include <ti/drivers/SDSPI.h>
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
-#include <ti/display/Display.h>
 
 #include "Board.h"
 
-#include <src/public_headers/time.hpp>
 #include <src/public_headers/diagnostics.hpp>
 #include <src/public_headers/allocator.hpp>
+#include "../SatelliteTime.hpp"
 
 #define TASKSTACKSIZE   8096
 Task_Struct allocatorTaskStruct;
