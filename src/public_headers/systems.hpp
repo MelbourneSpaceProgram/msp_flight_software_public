@@ -1,7 +1,3 @@
-//
-// Created by Anthony on 23/03/2017.
-//
-
 #ifndef MSP_SYSTEMS_HPP
 #define MSP_SYSTEMS_HPP
 

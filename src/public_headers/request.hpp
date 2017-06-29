@@ -39,4 +39,4 @@ int requests_equal(request_long_type a, request_long_type b);
 
 int requests_overlap(request_long_type a, request_long_type b);
 
-#endif
+#endif // MSP_REQUEST_HPP

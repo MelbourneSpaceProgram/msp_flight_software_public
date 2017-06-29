@@ -4,4 +4,4 @@
 request_short CDH_requests();
 void CDH_task_callback(Task_Handle);
 
-#endif
+#endif // MSP_HOUSEKEEPING_HPP
