@@ -10,7 +10,6 @@
 #ifndef MSP_ALLOCATOR_HPP
 #define MSP_ALLOCATOR_HPP
 
-
 #define MAX_ALLOCATION_ATTEMPTS 10
 
 typedef enum
@@ -18,9 +17,6 @@ typedef enum
     ALLOCATOR_REQUEST_ACCEPTED, ALLOCATOR_REQUEST_DENIED
 } allocator_status_type;
 
-
-
 void handle_new_request(UArg arg0, UArg arg1);
-
 
 #endif //MSP_ALLOCATOR_HPP

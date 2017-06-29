@@ -4,7 +4,8 @@
 void handle_new_request(UArg arg0, UArg arg1);
 
 allocator_status_type allocator(request_long_type request);
-request_long_type find_lowest_priority_overlap(request_long_type request, Schedule schedule);
+request_long_type find_lowest_priority_overlap(request_long_type request,
+                                               Schedule schedule);
 
 void init_allocator();
 void print_request(request_long_type request);
