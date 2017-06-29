@@ -74,7 +74,6 @@ extern "C"
  */
 void UartLog_init(UART_Handle handle);
 
-
 #ifdef __cplusplus
 }
 #endif

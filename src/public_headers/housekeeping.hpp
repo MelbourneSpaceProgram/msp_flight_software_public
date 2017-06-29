@@ -1,4 +1,3 @@
-
 #ifndef MSP_HOUSEKEEPING_HPP
 #define MSP_HOUSEKEEPING_HPP
 
