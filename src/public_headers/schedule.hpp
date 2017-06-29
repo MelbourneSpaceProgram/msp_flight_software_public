@@ -1,5 +1,3 @@
-// Public schedule interface
-
 #ifndef MSP_SCHEDULE_HPP
 #define MSP_SCHEDULE_HPP
 

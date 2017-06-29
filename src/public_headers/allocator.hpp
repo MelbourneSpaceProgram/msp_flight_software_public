@@ -1,14 +1,8 @@
-// Public allocator interface
-
-//#include <xdc/std.h>
-//#include <ti/sysbios/knl/Task.h>
-//#include <xdc/runtime/System.h>
-#include <src/public_headers/arch/System.h>
-#include <src/public_headers/arch/Task.h>
-//#include <xdc/runtime/Memory.h>
-
 #ifndef MSP_ALLOCATOR_HPP
 #define MSP_ALLOCATOR_HPP
+
+#include <src/public_headers/arch/System.h>
+#include <src/public_headers/arch/Task.h>
 
 #define MAX_ALLOCATION_ATTEMPTS 10
 
