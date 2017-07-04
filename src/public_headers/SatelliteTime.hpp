@@ -1,5 +1,3 @@
-// Public time interface
-
 #ifndef MSP_TIME_HPP
 #define MSP_TIME_HPP
 
@@ -11,7 +9,7 @@ class SatelliteTime
 public:
     static uint64_t get_utc_time();
     static uint64_t get_boot_time();
-    static void set_reference_time(uint64_t);
+    static void set_utc_time(uint64_t);
     static uint64_t get_time_since_boot();
 private:
     static uint64_t reference_time; // In milliseconds

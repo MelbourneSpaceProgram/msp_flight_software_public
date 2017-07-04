@@ -1,9 +1,4 @@
-/*
- * new_schedule.cpp
- *
- *  Created on: 2Apr.,2017
- *      Author: Anthony
- */
+
 
 #include <src/public_headers/arch/System.h>
 #include <src/public_headers/arch/Task.h>
@@ -13,9 +8,7 @@
 #include <src/public_headers/allocator.hpp>
 
 #include <src/public_headers/schedule.hpp>
-#include <src/CDH/allocator/schedule_p.hpp>
 
-#include <stdio.h>
 
 Schedule::Schedule(void)
 {
@@ -88,7 +81,7 @@ void Schedule::print()
 
     for (int i = 0; i < get_size(); i++)
     {
-        printf("schedule[%3d] = {%2d, %10d, %10d, %10f}\n", i,
+        System_printf("schedule[%3d] = {%2d, %10d, %10d, %10f}\n", i,
                requests[i].priority, requests[i].start_time,
                requests[i].end_time, requests[i].power_average);
         System_flush();
