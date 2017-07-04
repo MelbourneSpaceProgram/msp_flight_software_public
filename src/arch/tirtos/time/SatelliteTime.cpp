@@ -8,6 +8,7 @@ bool SatelliteTime::reference_time_valid = false;
 
 /**
  * Calculates the current UTC time of the satellite based on the reference time initially set.
+ * The Unix epoch is used, measured in milliseconds. Ensure that this function is checked for a 0 return value.
  *
  * @return milliseconds since epoch, or 0 if the reference time is undefined
  */
@@ -72,12 +73,12 @@ uint64_t SatelliteTime::get_time_since_boot()
 }
 
 /**
- * Sets the reference time and tick count of the satellite.
- * Must be called before using any of the other absolute timing functions.
- *
- * @param ref_time to use as the local epoch, in milliseconds.
+ * Sets the current UTC time of the satellite.
+ * Must be called before using any of the other absolute timing functions. By default the satellite assumes it is 00:00 1/1/2017 until it is told otherwise.
+ * 
+ * @param utc_time in milliseconds measured from the Unix epoch. The current time can be found at <a href="https://currentmillis.com">this website</a>. Make sure to cast to uint64_t when calling this function. 
  */
-void SatelliteTime::set_reference_time(uint64_t ref_time)
+void SatelliteTime::set_utc_time(uint64_t utc_time)
 {
     // The passed in value needs to be correct as it is passed in.
     // We can't hold it for a few minutes and then decide to set the reference time.
@@ -85,7 +86,7 @@ void SatelliteTime::set_reference_time(uint64_t ref_time)
     // TODO Do we need to do any time smearing here?
     // What if we have time issues? Does everyone expect monotonically increasing time?
 
-    reference_time = ref_time;
+    reference_time = utc_time;
     reference_tick_count = Clock_getTicks();
     reference_time_valid = true;
 }

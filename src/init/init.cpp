@@ -1,5 +1,12 @@
+/**
+ * @file
+ */
+
 #include <src/public_headers/init/init.hpp>
 
+/**
+ * Initialises the core MSP432 drivers provided by TI. Should be called once at system startup, and prior to the BIOS starting.
+ */
 void init_core()
 {
     Board_initGeneral();
@@ -9,24 +16,36 @@ void init_core()
     Board_initUART();
 }
 
+/**
+ * Initialises the system time. The default epoch is 2017/01/01 00:00 UTC. The actual system time can be set via the SatelliteTiming module.
+ */
 void init_time()
 {
-    // Set the reference time to 2017/01/01 00:00 UTC
-    SatelliteTime::set_reference_time(((uint64_t) 1483228800000));
+    // Set the current time to 2017/01/01 00:00 UTC
+    SatelliteTime::set_utc_time(((uint64_t) 1483228800000));
 }
 
+/**
+ * Initialises the logging output of the satellite. Not yet written.
+ */
 void init_logger()
 {
 
 }
 
-int _tmain();
+//int _tmain();
 
+/**
+ * Initialises the diagnostic output of the satellite. Currently this is just the heartbeat LED, although it may be expanded to include self-tests.
+ */
 void init_diagnostics()
 {
     initHeartbeat();
 }
 
+/**
+ * Starts the main process running on the satellite, the task scheduler loop. Should only be called once all other initialisation tasks have completed successfully.
+ */
 void init_satellite()
 {
     Task_Params taskParams;
@@ -36,7 +55,9 @@ void init_satellite()
     taskParams.stack = &allocatorTaskStack;
     taskParams.priority = 2;
     taskParams.arg0 = 1;
-    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) _tmain,
-                   &taskParams, NULL);
-    Task_Handle task = Task_handle(&allocatorTaskStruct);
+
+
+    //Task_construct(&allocatorTaskStruct, (Task_FuncPtr) _tmain,
+    //               &taskParams, NULL);
+    //Task_Handle task = Task_handle(&allocatorTaskStruct);
 }
