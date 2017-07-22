@@ -1,3 +1,3 @@
 // Interface for Task.h
 
-#include <src/generated/arch/Task.h>
+#include <src/arch/tirtos/Task.h>
