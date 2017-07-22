@@ -33,6 +33,14 @@ void init_logger()
 
 }
 
+void test_time(){
+    while(1){
+        uint64_t curr = SatelliteTime::get_utc_time();
+        //System_printf("%hu\n", curr);
+        //System_flush();
+        //Task_sleep(1);
+    }
+}
 //int _tmain();
 
 /**
@@ -57,7 +65,7 @@ void init_satellite()
     taskParams.arg0 = 1;
 
 
-    //Task_construct(&allocatorTaskStruct, (Task_FuncPtr) _tmain,
-    //               &taskParams, NULL);
-    //Task_Handle task = Task_handle(&allocatorTaskStruct);
+    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) test_time,
+                   &taskParams, NULL);
+    Task_Handle task = Task_handle(&allocatorTaskStruct);
 }
