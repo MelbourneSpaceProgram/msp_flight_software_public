@@ -1,4 +1,4 @@
-#include "i2c_multiplexer.h"
+#include <src/i2c/multiplexers/i2c_multiplexer.hpp>
 
 I2CMultiplexer::I2CMultiplexer(I2CBus* bus, int address) : bus(bus), address(address) {}
 

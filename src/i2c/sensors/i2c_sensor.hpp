@@ -10,7 +10,7 @@
 #ifndef _I2CSensor_H_
 #define _I2CSensor_H_
 
-#include "i2c_bus.h"
+#include <src/i2c/i2c_bus.hpp>
 
 /**
   I2CSensor class.

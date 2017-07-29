@@ -17,10 +17,10 @@
 */
 class I2CConfiguration {
 
-/**
-  Public members of the I2CConfiguration class.
-*/
-public:
+  /**
+    Public members of the I2CConfiguration class.
+  */
+ public:
 
   /**
      Public constants of the I2CConfiguration class.
@@ -58,23 +58,23 @@ public:
   */
   int get_bit_rate(void);
 
-/**
-  Private members of the I2CConfiguration class.
-*/
-private:
-  
+  /**
+    Private members of the I2CConfiguration class.
+  */
+ private:
+
   /**
     Member variables of the I2CConfiguration class.
   */
 
   /**
-    The transfer mode used in the I2C. 
+    The transfer mode used in the I2C.
     Option are listed in transfer_modes enum.
   */
   int transfer_mode;
 
   /**
-    The bit rate used in the I2C. 
+    The bit rate used in the I2C.
     Option are listed in bit_rates enum.
   */
   int bit_rate;
