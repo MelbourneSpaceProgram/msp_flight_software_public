@@ -3,6 +3,7 @@
  */
 
 #include <src/public_headers/init/init.hpp>
+#include <src/init/tasks.hpp>
 
 /**
  * Initialises the core MSP432 drivers provided by TI. Should be called once at system startup, and prior to the BIOS starting.
@@ -68,4 +69,6 @@ void init_satellite()
     Task_construct(&allocatorTaskStruct, (Task_FuncPtr) test_time,
                    &taskParams, NULL);
     Task_Handle task = Task_handle(&allocatorTaskStruct);
+
+    InitTasks();
 }
