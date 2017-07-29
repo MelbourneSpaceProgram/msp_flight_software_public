@@ -1,4 +1,4 @@
-#include "tmp006.h"
+#include <src/i2c/sensors/tmp006.hpp>
 #include "cmath"
 #include "iostream"
 

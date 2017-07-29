@@ -10,7 +10,7 @@
 #ifndef _I2C_BUS_H_
 #define _I2C_BUS_H_
 
-#include "i2c_configuration.h"
+#include <src/i2c/i2c_configuration.hpp>
 #include "ti/drivers/I2C.h"
 
 /**
@@ -60,9 +60,9 @@ public:
      @param write_buffer The buffer which will be used to perform the initial write to the I2C device.
      @param write_buffer_length The length of the write buffer.
    */
-  void perform_transaction(int address, uint8_t* read_buffer, int read_buffer_length, uint8_t* write_buffer, int write_buffer_length);
-  void perform_write_transaction(int address, uint8_t* write_buffer, int write_buffer_length);
-  void perform_read_transaction(int address, uint8_t* read_buffer, int read_buffer_length);
+  bool perform_transaction(int address, uint8_t* read_buffer, int read_buffer_length, uint8_t* write_buffer, int write_buffer_length);
+  bool perform_write_transaction(int address, uint8_t* write_buffer, int write_buffer_length);
+  bool perform_read_transaction(int address, uint8_t* read_buffer, int read_buffer_length);
   /**
   Private members of the I2CBus class.
 */

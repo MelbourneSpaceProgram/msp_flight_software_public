@@ -1,4 +1,4 @@
-#include "tca9548a.h"
+#include <src/i2c/multiplexers/tca9548a.hpp>
 
 TCA9548A::TCA9548A(I2CBus* bus, int address) : I2CMultiplexer(bus, address) {}
 

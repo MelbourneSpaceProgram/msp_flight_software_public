@@ -10,8 +10,8 @@
 #ifndef _TCA9548A_H_
 #define _TCA9548A_H_
 
-#include "i2c_multiplexer.h"
-#include "i2c_sensor.h"
+#include <src/i2c/multiplexers/i2c_multiplexer.hpp>
+#include <src/i2c/sensors/i2c_sensor.hpp>
 #include "string"
 #include "iostream"
 

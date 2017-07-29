@@ -10,7 +10,7 @@
 #ifndef _TMP006_H_
 #define _TMP006_H_
 
-#include "i2c_sensor.h"
+#include <src/i2c/sensors/i2c_sensor.hpp>
 #include "string"
 #include "iostream"
 

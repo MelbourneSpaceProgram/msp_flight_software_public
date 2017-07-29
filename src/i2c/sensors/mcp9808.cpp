@@ -1,4 +1,4 @@
-#include "mcp9808.h"
+#include <src/i2c/sensors/mcp9808.hpp>
 
 const int MCP9808::TEMP_REGISTER = 0x05;
 
