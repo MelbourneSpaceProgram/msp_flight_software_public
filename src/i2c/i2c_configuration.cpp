@@ -1,4 +1,4 @@
-#include "i2c_configuration.h"
+#include <src/i2c/i2c_configuration.hpp>
 #include "iostream"
 
 using namespace std;
