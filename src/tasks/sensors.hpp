@@ -5,6 +5,6 @@
 #include <src/i2c/i2c_bus.hpp>
 #include <src/i2c/sensors/mcp9808.hpp>
 
-void InitSensorsTask(void);
+void InitMCP9808ReadTask(void);
 
 #endif // _SENSORS_H_

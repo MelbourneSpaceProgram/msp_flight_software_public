@@ -3,7 +3,7 @@
  */
 
 #include <src/public_headers/init/init.hpp>
-#include <src/init/tasks.hpp>
+#include <src/tasks/tasks.hpp>
 
 /**
  * Initialises the core MSP432 drivers provided by TI. Should be called once at system startup, and prior to the BIOS starting.
@@ -23,7 +23,7 @@ void init_core()
 void init_time()
 {
     // Set the current time to 2017/01/01 00:00 UTC
-    SatelliteTime::set_utc_time(((uint64_t) 1483228800000));
+    //msSatelliteTime::set_utc_time(((uint64_t) 1483228800000));
 }
 
 /**
@@ -35,12 +35,12 @@ void init_logger()
 }
 
 void test_time(){
-    while(1){
-        uint64_t curr = SatelliteTime::get_utc_time();
-        //System_printf("%hu\n", curr);
-        //System_flush();
-        //Task_sleep(1);
-    }
+//    while(1){
+//        uint64_t curr = SatelliteTime::get_utc_time();
+//        //System_printf("%hu\n", curr);
+//        //System_flush();
+//        //Task_sleep(1);
+//    }
 }
 //int _tmain();
 
