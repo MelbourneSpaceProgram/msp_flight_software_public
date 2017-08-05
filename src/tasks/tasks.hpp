@@ -1,7 +1,7 @@
 #ifndef _TASKS_H_
 #define _TASKS_H_
 
-#include <src/init/tasks/sensors.hpp>
+#include <src/tasks/sensors.hpp>
 
 void InitTasks(void);
 
