@@ -1,5 +1,4 @@
 #include <src/i2c/sensors/i2c_sensor.hpp>
-#include "iostream"
 
 using namespace std;
 

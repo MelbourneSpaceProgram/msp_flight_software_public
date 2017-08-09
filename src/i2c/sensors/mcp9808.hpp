@@ -11,8 +11,6 @@
 #define _MCP9808_H_
 
 #include <src/i2c/sensors/i2c_sensor.hpp>
-#include "string"
-#include "iostream"
 
 using namespace std;
 
