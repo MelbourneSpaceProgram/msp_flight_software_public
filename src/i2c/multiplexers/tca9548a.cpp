@@ -30,9 +30,8 @@ void TCA9548A::close_all_channels() {
       this->get_bus()->perform_write_transaction(this->get_address(), write_buffer, 1);
 }
 
-uint8_t* TCA9548A::get_channel_states() {
-    uint8_t read_buffer[1];
-
+uint8_t* TCA9548A::get_channel_states(uint8_t* read_buffer) {
+  
     this->get_bus()->perform_read_transaction(this->get_address(), read_buffer, 1);
 
     return read_buffer;

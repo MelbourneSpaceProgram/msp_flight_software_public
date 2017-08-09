@@ -47,7 +47,7 @@ public:
   */
   void open_channel(int channel);
   void close_all_channels();
-  uint8_t* get_channel_states();
+  uint8_t* get_channel_states(uint8_t* channel_states);
 
   /**
     Public constants of the TCA9548A class.
