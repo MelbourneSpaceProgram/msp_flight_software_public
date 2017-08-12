@@ -4,9 +4,10 @@
 #include <src/i2c/i2c_bus.hpp>
 #include <src/i2c/i2c_configuration.hpp>
 #include <src/i2c/sensors/mcp9808.hpp>
+#include <src/observers/low_temp_observer.hpp>
+#include <src/observers/high_temp_observer.hpp>
 #include <xdc/std.h>
 #include <xdc/runtime/Log.h>
-#include <src/observers/basic_fault_observer.hpp>
 
 Task_Struct mcp9808_read_task_struct;
 Char mcp9808_stack[TASKSTACKSIZE];
@@ -21,9 +22,11 @@ void MCP9808ReadTask() {
 
     MCP9808 mcp9808(&i2c_bus, 0x18);
 
-    BasicFaultObserver observer;
+    LowTempObserver lto;
+    HighTempObserver hto;
 
-    mcp9808.add_observer(&observer);
+    mcp9808.add_observer(&lto);
+    mcp9808.add_observer(&hto);
 
     mcp9808.take_reading();
 
