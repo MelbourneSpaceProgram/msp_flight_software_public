@@ -220,6 +220,8 @@ void uartLog_outputFxn(UArg a0, Log_EventRec *pRec, int32_t numArgs)
  *
  * @post    ::uartLog_tail is incremented to where uartLog_head is, then returns
  */
+// This function is called by the TI-RTOS for logging purposes.
+// cppcheck-suppress unusedFunction
 void uartLog_flush()
 {
 
@@ -269,6 +271,8 @@ void uartLog_flush()
  *
  * @return  None.
  */
+// This function is called by the TI-RTOS for logging purposes.
+// cppcheck-suppress unusedFunction
 static void uartLog_doPrint(uartLog_EventRec *er)
 {
   Text_RopeId rope;
