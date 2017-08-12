@@ -1,5 +1,5 @@
 /**
-  i2c_bus.h
+  i2c_bus.hpp
   Purpose: Represents an I2C bus.
 
   @author Brett Clark
@@ -7,11 +7,11 @@
   @date 3/5/2017
 */
 
-#ifndef _I2C_BUS_H_
-#define _I2C_BUS_H_
+#ifndef _I2C_BUS_HPP_
+#define _I2C_BUS_HPP_
 
+#include <ti/drivers/I2C.h>
 #include <src/i2c/i2c_configuration.hpp>
-#include "ti/drivers/I2C.h"
 
 /**
   I2CBus class.
@@ -20,9 +20,6 @@
 */
 class I2CBus {
 
-/**
-  Public members of the I2CBus class.
-*/
 public:
 
   /**
@@ -52,25 +49,35 @@ public:
   I2C_Handle get_handle(void);
 
   /**
-     Function that performs an I2C Transaction and writes any response data to the read buffer.
+    Function that performs a composite I2C read/write transaction and writes any response data to the read buffer.
 
-     @param address The address of the I2C device on the bus.
-     @param read_buffer The buffer to which the I2C device will write.
-     @param read_buffer_length The length of the read buffer.
-     @param write_buffer The buffer which will be used to perform the initial write to the I2C device.
-     @param write_buffer_length The length of the write buffer.
-   */
-  bool perform_transaction(int address, uint8_t* read_buffer, int read_buffer_length, uint8_t* write_buffer, int write_buffer_length);
-  bool perform_write_transaction(int address, uint8_t* write_buffer, int write_buffer_length);
-  bool perform_read_transaction(int address, uint8_t* read_buffer, int read_buffer_length);
-  /**
-  Private members of the I2CBus class.
-*/
-private:
-
-  /**
-    Member variables of the I2CBus class.
+    @param address The address of the I2C device on the bus.
+    @param read_buffer The buffer to which the I2C device will write.
+    @param read_buffer_length The length of the read buffer.
+    @param write_buffer The buffer which will be used to perform the initial write to the I2C device.
+    @param write_buffer_length The length of the write buffer.
   */
+  bool perform_transaction(int address, uint8_t* read_buffer, int read_buffer_length, uint8_t* write_buffer, int write_buffer_length);
+
+  /**
+    Function that performs an I2C write operation.
+
+    @param address The address of the I2C device on the bus.
+    @param write_buffer The buffer which will be used to perform the initial write to the I2C device.
+    @param write_buffer_length The length of the write buffer.
+  */
+  bool perform_write_transaction(int address, uint8_t* write_buffer, int write_buffer_length);
+
+  /**
+    Function that performs an I2C write operation.
+
+    @param address The address of the I2C device on the bus.
+    @param read_buffer The buffer to which the I2C device will write.
+    @param read_buffer_length The length of the read buffer.
+  */
+  bool perform_read_transaction(int address, uint8_t* read_buffer, int read_buffer_length);
+
+private:
 
   /**
     The I2C configuration for the bus.
@@ -78,7 +85,7 @@ private:
   I2CConfiguration *config;
 
   /**
-    The index of the IC bus on the board.
+    The index of the I2C bus on the board.
   */
   int index;
 
@@ -88,4 +95,4 @@ private:
   I2C_Handle handle;
 };
 
-#endif // _I2C_BUS_H_
+#endif // _I2C_BUS_HPP_

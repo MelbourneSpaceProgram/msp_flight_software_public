@@ -1,5 +1,5 @@
 /**
-  i2c_configuration.h
+  i2c_configuration.hpp
   Purpose: The I2C configuration that is used on the board.
 
   @author Brett Clark
@@ -7,8 +7,8 @@
   @date 3/5/2017
 */
 
-#ifndef _I2C_CONFIGURATION_H_
-#define _I2C_CONFIGURATION_H_
+#ifndef _I2C_CONFIGURATION_HPP_
+#define _I2C_CONFIGURATION_HPP_
 
 /**
   I2CConfiguration class.
@@ -17,14 +17,7 @@
 */
 class I2CConfiguration {
 
-  /**
-    Public members of the I2CConfiguration class.
-  */
- public:
-
-  /**
-     Public constants of the I2CConfiguration class.
-  */
+public:
 
   /**
     This defines the possible transfer modes for the I2C.
@@ -50,22 +43,19 @@ class I2CConfiguration {
 
   /**
     Function that returns the transfer mode.
+
+    @return The I2C transfer mode.
   */
   int get_transfer_mode(void);
 
   /**
     Function that returns the bit rate.
+
+    @return The I2C bit rate.
   */
   int get_bit_rate(void);
 
-  /**
-    Private members of the I2CConfiguration class.
-  */
- private:
-
-  /**
-    Member variables of the I2CConfiguration class.
-  */
+private:
 
   /**
     The transfer mode used in the I2C.
@@ -79,7 +69,6 @@ class I2CConfiguration {
   */
   int bit_rate;
 
-
 };
 
-#endif // _I2C_CONFIGURATION_H_
+#endif // _I2C_CONFIGURATION_HPP_

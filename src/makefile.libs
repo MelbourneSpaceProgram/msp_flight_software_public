@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     C:\Users\Anthony\OwnCloud\UMSP\SVN\CDH_software\hello.cfg
+#     /home/brett/code/CDH_software/hello.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    C:\Users\Anthony\OwnCloud\UMSP\SVN\CDH_software\src
+#    /home/brett/code/CDH_software/src
 #
 GEN_SRC_DIR ?= ../src
 

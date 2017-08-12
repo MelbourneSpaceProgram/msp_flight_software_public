@@ -1,8 +1,12 @@
 #include <src/tasks/sensors.hpp>
 #include <src/public_headers/init/init.hpp>
 #include <Board.h>
+#include <src/i2c/i2c_bus.hpp>
+#include <src/i2c/i2c_configuration.hpp>
+#include <src/i2c/sensors/mcp9808.hpp>
 #include <xdc/std.h>
 #include <xdc/runtime/Log.h>
+#include <src/observers/basic_fault_observer.hpp>
 
 Task_Struct mcp9808_read_task_struct;
 Char mcp9808_stack[TASKSTACKSIZE];
@@ -16,6 +20,12 @@ void MCP9808ReadTask() {
     i2c_bus.open();
 
     MCP9808 mcp9808(&i2c_bus, 0x18);
+
+    BasicFaultObserver observer;
+
+    mcp9808.add_observer(&observer);
+
+    mcp9808.take_reading();
 
     double reading = mcp9808.get_reading();
 

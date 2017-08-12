@@ -1,11 +1,6 @@
 #include <src/i2c/i2c_bus.hpp>
-//#include "ti/drivers/I2C.h"
 
 using namespace std;
-
-/**
-  Public methods of the I2CBus class.
-*/
 
 I2CBus::I2CBus(I2CConfiguration* config, int index) : config(config), index(index) {}
 
@@ -58,13 +53,9 @@ bool I2CBus::perform_transaction(int address, uint8_t* read_buffer, int read_buf
 }
 
 bool I2CBus::perform_write_transaction(int address, uint8_t* write_buffer, int write_buffer_length) {
-
-  // Perform the transaction.
-  return this->perform_transaction(address, NULL, 0, write_buffer, write_buffer_length);
+  return perform_transaction(address, NULL, 0, write_buffer, write_buffer_length);
 }
 
 bool I2CBus::perform_read_transaction(int address, uint8_t* read_buffer, int read_buffer_length) {
-
-  // Perform the transaction.
-  return this->perform_transaction(address, read_buffer, read_buffer_length, NULL, 0);
+  return perform_transaction(address, read_buffer, read_buffer_length, NULL, 0);
 }

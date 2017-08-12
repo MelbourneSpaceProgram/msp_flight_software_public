@@ -1,5 +1,5 @@
 /**
-  i2c_sensor.h
+  i2c_sensor.hpp
   Purpose: Abstract class containing shared functionality of all I2C sensors.
 
   @author Brett Clark
@@ -7,21 +7,25 @@
   @date 3/5/2017
 */
 
-#ifndef _I2CSensor_H_
-#define _I2CSensor_H_
+#ifndef _I2CSensor_HPP_
+#define _I2CSensor_HPP_
 
 #include <src/i2c/i2c_bus.hpp>
+#include <src/observers/observer.hpp>
+#include <vector>
+
+using namespace std;
+
+// Forward declarations.
+class Observer;
 
 /**
   I2CSensor class.
 
-  This base class describes a I2CSensor.
+  This base class describes an I2CSensor.
 */
 class I2CSensor {
 
-/**
-  Public members of the I2CSensor class.
-*/
 public:
 
   /**
@@ -48,24 +52,27 @@ public:
   int get_address(void);
 
   /**
-    Virtual public members of the I2CSensor class.
-  */
-
-  /**
     Method that returns the sensor reading.
 
-    @return The sensor reading. 
-  */
-  virtual double get_reading(void) = 0;
-
-/**
-  Private members of the I2CSensor class.
-*/
-private:
+    @return The sensor reading.
+   */
+  double get_reading(void);
 
   /**
-    Member variables of the I2CSensor class.
+    Method that adds an observer to the list.
+
+    @param observer A class that is interested in the sensor reading.
+   */
+  void add_observer(Observer* observer);
+
+  /**
+    Virtual method that should be overwritten by any derived classes.
+    This method should take a sensor reading and call the notify_observers
+    method to notify all observers in the list.
   */
+  virtual void take_reading(void) = 0;
+
+protected:
 
   /**
     A reference to the bus that the sensor is connected to.
@@ -76,6 +83,22 @@ private:
     The address of the sensor.
   */
   int address;
+
+  /**
+    The sensor reading.
+  */
+  double reading;
+
+  /**
+    The list of observers.
+  */
+  vector<Observer*> observers;
+
+  /**
+    Method that notifies all attached observers that the sensor
+    reading has been taken.s
+   */
+  void notify_observers(void);
 };
 
-#endif // _I2CSensor_H_
+#endif // _I2CSensor_HPP_
