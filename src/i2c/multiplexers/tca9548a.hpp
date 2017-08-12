@@ -1,5 +1,5 @@
 /**
-  tca9548a.h
+  tca9548a.hpp
   Purpose: Controls a TCA9548A multiplexer.
 
   @author Brett Clark
@@ -7,14 +7,11 @@
   @date 3/6/2017
 */
 
-#ifndef _TCA9548A_H_
-#define _TCA9548A_H_
+#ifndef _TCA9548A_HPP_
+#define _TCA9548A_HP_
 
 #include <src/i2c/multiplexers/i2c_multiplexer.hpp>
-#include <src/i2c/sensors/i2c_sensor.hpp>
-#include "string"
-#include "iostream"
-
+#include <src/i2c/i2c_bus.hpp>
 
 using namespace std;
 
@@ -25,9 +22,6 @@ using namespace std;
 */
 class TCA9548A : public I2CMultiplexer {
 
-/**
-  Public members of the TCA9548A class.
-*/
 public:
 
   /**
@@ -41,17 +35,20 @@ public:
 
   /**
     Method that opens a channel of the multiplexer.
-    This is an implementation of the virtual function in I2CMultiplexer.
 
     @param channel The channel to open.
   */
   void open_channel(int channel);
-  void close_all_channels();
-  uint8_t* get_channel_states(uint8_t* channel_states);
 
   /**
-    Public constants of the TCA9548A class.
+    Function that closes all channels of the multiplexer.
   */
+  void close_all_channels(void);
+
+  /**
+   Function that returns the states of the channels on the multiplexer.
+  */
+  uint8_t* get_channel_states(uint8_t* read_buffer);
 
   /**
     The channels of the TCA9548A multiplexer.
@@ -65,19 +62,7 @@ public:
   static const int CHANNEL_6;
   static const int CHANNEL_7;
 
-/**
-  Private members of the TCA9548A class.
-*/
 private:
-
-  /**
-    The register in which the TMP006 die temperature is stored.
-  */
-  static const int DIE_TEMP_REGISTER;
-
-  /**
-    Member variables of the TCA9548A class.
-  */
 
   /**
     A reference to the bus that the multiplexer is connected to.
@@ -90,4 +75,4 @@ private:
   int address;
 };
 
-#endif // _TCA9548A_H_
+#endif // _TCA9548A_HPP_

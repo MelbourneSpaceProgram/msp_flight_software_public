@@ -1,5 +1,5 @@
 /**
-  i2c_multiplexer.h
+  i2c_multiplexer.hpp
   Purpose: Abstract class containing shared functionality of all I2C multiplexers.
 
   @author Brett Clark
@@ -7,8 +7,8 @@
   @date 3/6/2017
 */
 
-#ifndef _I2CMultiplexer_H_
-#define _I2CMultiplexer_H_
+#ifndef _I2CMultiplexer_HPP_
+#define _I2CMultiplexer_HPP_
 
 #include <src/i2c/i2c_bus.hpp>
 
@@ -19,9 +19,6 @@
 */
 class I2CMultiplexer {
 
-/**
-  Public members of the I2CMultiplexer class.
-*/
 public:
 
   /**
@@ -48,25 +45,18 @@ public:
   int get_address(void);
 
   /**
-    Virtual public members of the I2CMultiplexer class.
-  */
-
-  /**
-    Method that opens a channel of the multiplexer.
+    Virtual method for opening a channel of the multiplexer.
 
     @param channel The channel to open.
   */
   virtual void open_channel(int channel) = 0;
-  virtual void close_all_channels() = 0;
-
-/**
-  Private members of the I2CMultiplexer class.
-*/
-private:
 
   /**
-    Member variables of the I2CMultiplexer class.
+   Virtual method for closing all the channels of the multiplexer.
   */
+  virtual void close_all_channels() = 0;
+
+private:
 
   /**
     The bus that the multiplexer is connected to.
@@ -79,4 +69,4 @@ private:
   int address;
 };
 
-#endif // _I2CMultiplexer_H_
+#endif // _I2CMultiplexer_HPP_

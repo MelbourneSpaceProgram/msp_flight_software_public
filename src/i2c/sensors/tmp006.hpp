@@ -1,5 +1,5 @@
 /**
-  tmp006.h
+  tmp006.hpp
   Purpose: Reads values from a TMP006 sensor.
 
   @author Brett Clark
@@ -7,13 +7,10 @@
   @date 3/5/2017
 */
 
-#ifndef _TMP006_H_
-#define _TMP006_H_
+#ifndef _TMP006_HPP_
+#define _TMP006_HPP_
 
 #include <src/i2c/sensors/i2c_sensor.hpp>
-#include "string"
-#include "iostream"
-
 
 using namespace std;
 
@@ -24,9 +21,6 @@ using namespace std;
 */
 class TMP006 : public I2CSensor {
 
-/**
-  Public members of the TMP006 class.
-*/
 public:
 
   /**
@@ -40,21 +34,15 @@ public:
   TMP006(I2CBus* bus, int address, double constant);
 
   /**
-    Method that returns the TMP006 reading. 
+    Method that causes the TMP006 to take a reading. It stores the
+    reading and then notifies observers.
     This is an implementation of the virtual function in I2CSensor.
 
     @return The sensor reading.
   */
-  double get_reading(void);
+  void take_reading(void);
 
-/**
-  Private members of the TMP006 class.
-*/
 private:
-
-  /**
-    Constants of the TMP006 class.
-  */
 
   /**
     The register in which the TMP006 sensor voltage is stored.
@@ -67,17 +55,9 @@ private:
   static const int DIE_TEMP_REGISTER;
 
   /**
-    Member variables of the TMP006 class.
-  */
-
-  /**
     The calibration constant of the I2CSensor.
   */
   double constant;
-
-  /**
-    Member functions of the TMP006 class.
-  */
 
   /**
     Method that returns the sensor voltage.
@@ -103,4 +83,4 @@ private:
   double get_object_temperature(double sensor_voltage, double die_temperature);
 };
 
-#endif // _TMP006_H_
+#endif // _TMP006_HPP_
