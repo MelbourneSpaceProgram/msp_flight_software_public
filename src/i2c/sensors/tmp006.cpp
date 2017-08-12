@@ -17,14 +17,14 @@ const int TMP006::DIE_TEMP_REGISTER = 0x01;
 
 TMP006::TMP006(I2CBus* bus, int address, double constant) : I2CSensor(bus, address), constant(constant) {}
 
-double TMP006::get_reading(void) {
+void TMP006::take_reading(void) {
   //double sensor_voltage = get_sensor_voltage();
   double die_temperature = get_die_temperature();
 
   //double object_temp = get_object_temperature(sensor_voltage, die_temperature);
 
   //return object_temp;
-  return die_temperature;
+  reading = die_temperature;
 }
 
 /**
@@ -43,7 +43,7 @@ double TMP006::get_die_temperature(void) {
   write_buffer[0] = TMP006::DIE_TEMP_REGISTER;
 
   // Perform I2C transaction.
-  this->get_bus()->perform_transaction(this->get_address(), read_buffer, 2, write_buffer, 1);
+  bus->perform_transaction(this->get_address(), read_buffer, 2, write_buffer, 1);
 
   // Perform necessary bitshifting on read buffer.
   double temperature = (read_buffer[0] << 6) | (read_buffer[1] >> 2);
