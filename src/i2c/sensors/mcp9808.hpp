@@ -28,9 +28,10 @@ public:
 
     @param bus The bus that the sensor is connected to.
     @param address The address of the sensor.
+    @param id The unique ID by which the sensor is identified.
     @return The MCP9808 object.
   */
-  MCP9808(I2CBus* bus, int address);
+  MCP9808(I2CBus* bus, int address, string id);
 
   /**
     Method that causes the MCP9808 to take a reading. The value is then

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-I2CSensor::I2CSensor(I2CBus* bus, int address) : bus(bus), address(address) {}
+I2CSensor::I2CSensor(I2CBus* bus, int address, string id) : bus(bus), address(address), id(id) {}
 
 I2CBus* I2CSensor::get_bus(void) {
   return bus;
@@ -10,6 +10,10 @@ I2CBus* I2CSensor::get_bus(void) {
 
 int I2CSensor::get_address(void) {
   return address;
+}
+
+string I2CSensor::get_id(void) {
+  return id;
 }
 
 double I2CSensor::get_reading(void) {
@@ -22,6 +26,6 @@ void I2CSensor::add_observer(Observer* observer) {
 
 void I2CSensor::notify_observers(void) {
   for (int i = 0; i < observers.size(); i++) {
-      observers.at(i)->update(this);
+    observers.at(i)->update(this);
   }
 }

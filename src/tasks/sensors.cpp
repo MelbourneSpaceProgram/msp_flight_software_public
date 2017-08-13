@@ -20,7 +20,7 @@ void MCP9808ReadTask() {
 
     i2c_bus.open();
 
-    MCP9808 mcp9808(&i2c_bus, 0x18);
+    MCP9808 mcp9808(&i2c_bus, 0x18, "SENSOR123");
 
     LowTempObserver lto;
     HighTempObserver hto;
@@ -31,6 +31,8 @@ void MCP9808ReadTask() {
     mcp9808.take_reading();
 
     double reading = mcp9808.get_reading();
+
+    string id = mcp9808.get_id();
 
     Log_info0("Hello world");
 
