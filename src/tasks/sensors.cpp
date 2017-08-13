@@ -4,8 +4,7 @@
 #include <src/i2c/i2c_bus.hpp>
 #include <src/i2c/i2c_configuration.hpp>
 #include <src/i2c/sensors/mcp9808.hpp>
-#include <src/observers/low_temp_observer.hpp>
-#include <src/observers/high_temp_observer.hpp>
+#include <src/observers/sample_temp_observer.hpp>
 #include <xdc/std.h>
 #include <xdc/runtime/Log.h>
 
@@ -22,11 +21,9 @@ void MCP9808ReadTask() {
 
     MCP9808 mcp9808(&i2c_bus, 0x18, "SENSOR123");
 
-    LowTempObserver lto;
-    HighTempObserver hto;
+    SampleTempObserver sto;
 
-    mcp9808.add_observer(&lto);
-    mcp9808.add_observer(&hto);
+    mcp9808.add_observer(&sto);
 
     mcp9808.take_reading();
 
