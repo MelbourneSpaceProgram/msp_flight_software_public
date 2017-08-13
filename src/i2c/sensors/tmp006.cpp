@@ -15,7 +15,7 @@ const int TMP006::DIE_TEMP_REGISTER = 0x01;
   Public methods of the TMP006 class.
 */
 
-TMP006::TMP006(I2CBus* bus, int address, double constant) : I2CSensor(bus, address), constant(constant) {}
+TMP006::TMP006(I2CBus* bus, int address, string id, double constant) : I2CSensor(bus, address, id), constant(constant) {}
 
 void TMP006::take_reading(void) {
   //double sensor_voltage = get_sensor_voltage();
