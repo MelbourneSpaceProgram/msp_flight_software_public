@@ -2,7 +2,7 @@
 
 const int MCP9808::TEMP_REGISTER = 0x05;
 
-MCP9808::MCP9808(I2CBus* bus, int address) : I2CSensor(bus, address) {}
+MCP9808::MCP9808(I2CBus* bus, int address, string id) : I2CSensor(bus, address, id) {}
 
 void MCP9808::take_reading() {
   uint8_t  read_buffer[2];

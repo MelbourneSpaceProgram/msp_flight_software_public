@@ -12,6 +12,7 @@
 
 #include <src/i2c/i2c_bus.hpp>
 #include <src/observers/observer.hpp>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -33,9 +34,10 @@ public:
 
     @param bus The bus that the sensor is attached to.
     @param address The address of the sensor.
+    @param id The unique ID for identifying the sensor.
     @return The I2CSensor object.
   */
-  I2CSensor(I2CBus* bus, int address);
+  I2CSensor(I2CBus* bus, int address, string id);
 
   /**
     Method that returns a reference to the sensor bus.
@@ -50,6 +52,13 @@ public:
     @return The sensor address.
   */
   int get_address(void);
+
+  /**
+    Method that returns the sensor ID.
+
+    @return The unique ID by which the sensor is identified.
+  */
+  string get_id(void);
 
   /**
     Method that returns the sensor reading.
@@ -83,6 +92,11 @@ protected:
     The address of the sensor.
   */
   int address;
+
+  /**
+    The unique ID used to identify the sensor.
+  */
+  string id;
 
   /**
     The sensor reading.
