@@ -1,5 +1,5 @@
 /**
-  low_temp_observer.hpp
+  sample_temp_observer.hpp
   Purpose: This is a template for writing an observer.
 
   @author Brett Clark
@@ -7,18 +7,18 @@
   @date 12/8/2017
 */
 
-#ifndef _LOW_TEMP_OBSERVER_HPP_
-#define _LOW_TEMP_OBSERVER_HPP_
+#ifndef _SAMPLE_TEMP_OBSERVER_HPP_
+#define _SAMPLE_TEMP_OBSERVER_HPP_
 
 #include <src/observers/observer.hpp>
 
 /**
-  LowTempObserver class.
+  SampleTempObserver class.
 
-  This describes a simple observer that turns on an LED when
-  the temperature becomes too low.
+  This describes a simple observer that changes the colour of an LED 
+  depending upon the temperature reading.
 */
-class LowTempObserver : public Observer {
+class SampleTempObserver : public Observer {
 
 public:
   /**
@@ -30,4 +30,4 @@ public:
   void update(I2CSensor* sensor);
 };
 
-#endif // _LOW_TEMP_OBSERVER_HPP_
+#endif // _SAMPLE_TEMP_OBSERVER_HPP_
