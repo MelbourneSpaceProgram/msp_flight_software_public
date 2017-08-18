@@ -27,6 +27,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <src/pwm/pwm.hpp>
+
 UART_Handle uart = NULL;
 
 /**
@@ -39,6 +41,7 @@ void init_core()
     Board_initI2C();
     Board_initSPI();
     Board_initUART();
+    Board_initPWM();
 }
 
 /**
@@ -47,7 +50,7 @@ void init_core()
 void init_time()
 {
     // Set the current time to 2017/01/01 00:00 UTC
-    SatelliteTime::set_utc_time(((uint64_t) 1483228800000));
+    //SatelliteTime::set_utc_time(((uint64_t) 1483228800000));
 }
 
 /**
@@ -112,7 +115,7 @@ void init_satellite()
     taskParams.priority = 2;
     taskParams.arg0 = 1;
 
-    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) test_time,
+    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) pwm_execute, // originally had "test_time"
                    &taskParams, NULL);
     Task_Handle task = Task_handle(&allocatorTaskStruct);
 }
