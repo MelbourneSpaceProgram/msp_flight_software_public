@@ -440,11 +440,15 @@ PWMTimerMSP432_Object pwmTimerMSP432Objects[MSP_EXP432P401R_PWMCOUNT];
 const PWMTimerMSP432_HWAttrsV2 pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWMCOUNT] = {
     {
         .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
-        .pwmPin = PWMTimerMSP432_P2_1_TA1CCR1A
+        .pwmPin = PWMTimerMSP432_P2_4_TA1CCR1A // use PWMTimerMSP432_P5_6_TA2CCR1A for pin 5.6 ta2.1
     },
     {
         .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
-        .pwmPin = PWMTimerMSP432_P2_2_TA1CCR2A
+        .pwmPin = PWMTimerMSP432_P2_5_TA1CCR2A
+    },
+    {
+        .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
+        .pwmPin = PWMTimerMSP432_P2_6_TA1CCR3A
     }
 };
 
@@ -458,6 +462,11 @@ const PWM_Config PWM_config[MSP_EXP432P401R_PWMCOUNT] = {
         .fxnTablePtr = &PWMTimerMSP432_fxnTable,
         .object = &pwmTimerMSP432Objects[MSP_EXP432P401R_PWM_TA1_2],
         .hwAttrs = &pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWM_TA1_2]
+    },
+    {
+        .fxnTablePtr = &PWMTimerMSP432_fxnTable,
+        .object = &pwmTimerMSP432Objects[MSP_EXP432P401R_PWM_TA1_3],
+        .hwAttrs = &pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWM_TA1_3]
     }
 };
 
