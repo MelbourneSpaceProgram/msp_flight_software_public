@@ -440,7 +440,7 @@ PWMTimerMSP432_Object pwmTimerMSP432Objects[MSP_EXP432P401R_PWMCOUNT];
 const PWMTimerMSP432_HWAttrsV2 pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWMCOUNT] = {
     {
         .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
-        .pwmPin = PWMTimerMSP432_P2_4_TA1CCR1A // use PWMTimerMSP432_P5_6_TA2CCR1A for pin 5.6 ta2.1
+        .pwmPin = PWMTimerMSP432_P2_1_TA1CCR1A // use PWMTimerMSP432_P5_6_TA2CCR1A for pin 5.6 ta2.1
     },
     {
         .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,

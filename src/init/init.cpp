@@ -6,21 +6,14 @@
 #include <xdc/runtime/Log.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <ti/sysbios/posix/pthread.h>
 #include <stddef.h>
 #include <src/CDH/diagnostics/logger_p.h>
 #include <xdc/runtime/System.h>
 
-
 #include <ti/drivers/UART.h>
 
 #include <ti/sysbios/hal/Hwi.h>
-
-#include <xdc/runtime/Log.h>
-#include <xdc/runtime/Text.h>
-#include <xdc/runtime/Types.h>
-#include <xdc/runtime/System.h>
-#include <xdc/runtime/Timestamp.h>
-#include <ti/display/Display.h>
 
 #include "Board.h"
 #include <string.h>
@@ -28,6 +21,8 @@
 #include <stdbool.h>
 
 #include <src/pwm/pwm.hpp>
+
+#define THREADSTACKSIZE    1024
 
 UART_Handle uart = NULL;
 
@@ -42,6 +37,7 @@ void init_core()
     Board_initSPI();
     Board_initUART();
     Board_initPWM();
+    MSP_pwm_init();
 }
 
 /**
@@ -78,21 +74,17 @@ void init_logger()
     UartLog_init(uart);
 }
 
-void test_time(){
+void * test_task(void *){
+    double duty_cycle = 0;
     while(1){
-        Log_info0("I am a log");
+        MSP_PWM_set_duty(0, duty_cycle);
+        duty_cycle += 0.000001;
 
-
-        Task_sleep(1000);
-        Log_error0("I am an error");
-        Log_error1("I am an error with a parameter: %d", 123);
-        uint64_t curr = SatelliteTime::get_utc_time();
-        //System_printf("%hu\n", curr);
-        //System_flush();
-        //Task_sleep(1);
+        if (duty_cycle > 0.2){
+            duty_cycle = 0;
+        }
     }
 }
-//int _tmain();
 
 /**
  * Initialises the diagnostic output of the satellite. Currently this is just the heartbeat LED, although it may be expanded to include self-tests.
@@ -107,15 +99,34 @@ void init_diagnostics()
  */
 void init_satellite()
 {
-    Task_Params taskParams;
-    Task_Params_init(&taskParams);
-    taskParams.stackSize = TASKSTACKSIZE;
-    taskParams.instance->name = "allocator_request";
-    taskParams.stack = &allocatorTaskStack;
-    taskParams.priority = 2;
-    taskParams.arg0 = 1;
 
-    Task_construct(&allocatorTaskStruct, (Task_FuncPtr) pwm_execute, // originally had "test_time"
-                   &taskParams, NULL);
-    Task_Handle task = Task_handle(&allocatorTaskStruct);
+    pthread_t           thread;
+    pthread_attr_t      attrs;
+    struct sched_param  priParam;
+    int                 retc;
+    int                 detachState;
+
+    pthread_attr_init(&attrs);
+    priParam.sched_priority = 8;
+
+    detachState = PTHREAD_CREATE_DETACHED;
+    retc = pthread_attr_setdetachstate(&attrs, detachState);
+    if (retc != 0) {
+        /* pthread_attr_setdetachstate() failed */
+        while (1);
+    }
+
+    pthread_attr_setschedparam(&attrs, &priParam);
+
+    retc |= pthread_attr_setstacksize(&attrs, THREADSTACKSIZE);
+    if (retc != 0) {
+        /* pthread_attr_setstacksize() failed */
+        while (1);
+    }
+
+    retc = pthread_create(&thread, &attrs, test_task, NULL);
+    if (retc != 0) {
+        /* pthread_create() failed */
+        while (1);
+    }
 }

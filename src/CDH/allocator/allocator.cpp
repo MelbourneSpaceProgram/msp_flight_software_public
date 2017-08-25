@@ -38,7 +38,6 @@ void create_task()
     request.period = 3000;
     //request.func = (Task_FuncPtr) boring_action;
 
-    Task_Handle handle;
     // TODO magic number
     if (taskCounter < 5)
     {
