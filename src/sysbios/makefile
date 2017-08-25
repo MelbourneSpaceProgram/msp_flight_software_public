@@ -4,7 +4,7 @@ XOPTS = -I"C:/ti/xdctools_3_50_01_12_core/packages/" -Dxdc_target_types__=C:/ti/
 vpath % C:/ti/simplelink_msp432_sdk_1_30_00_40/kernel/tirtos/packages/ti/sysbios/
 vpath %.c C:/ti/xdctools_3_50_01_12_core/packages/
 
-CCOPTS    = --endian=little -mv7M4 --abi=eabi --float_support=fpv4spd16 -q -ms --opt_for_speed=2  --program_level_compile -o3 -g --optimize_with_debug  -Dti_sysbios_knl_Task_minimizeLatency__D=FALSE -Dti_sysbios_knl_Clock_stopCheckNext__D=FALSE -Dti_sysbios_family_arm_m3_Hwi_enableException__D=TRUE -Dti_sysbios_family_arm_m3_Hwi_disablePriority__D=32U -Dti_sysbios_family_arm_m3_Hwi_numSparseInterrupts__D=0U
+CCOPTS    = --endian=little -mv7M4 --abi=eabi --float_support=fpv4spd16 -q -ms --opt_for_speed=2  --program_level_compile -o3 -g --optimize_with_debug  -Dti_sysbios_knl_Task_minimizeLatency__D=FALSE  -Dti_sysbios_posix_Settings_debug__D=FALSE -Dti_sysbios_posix_Settings_supportsMutexPriority__D=FALSE -Dti_sysbios_knl_Clock_stopCheckNext__D=FALSE -Dti_sysbios_family_arm_m3_Hwi_enableException__D=TRUE -Dti_sysbios_family_arm_m3_Hwi_disablePriority__D=32U -Dti_sysbios_family_arm_m3_Hwi_numSparseInterrupts__D=0U
 
 XDC_ROOT  = C:/ti/xdctools_3_50_01_12_core/packages/
 
@@ -51,7 +51,7 @@ m3_TaskSupport_asm.obj: family/arm/m3/TaskSupport_asm.sv7M makefile
 	$(ASSEMBLE) --output_file=m3_TaskSupport_asm.obj
 
 
-BIOS.obj: BIOS.c knl/Clock.c knl/Idle.c knl/Intrinsics.c knl/Queue.c knl/Semaphore.c knl/Swi.c knl/Swi_andn.c knl/Task.c hal/Hwi.c hal/Hwi_stack.c hal/Hwi_startup.c family/arm/msp432/init/Boot.c family/arm/m3/Hwi.c family/arm/m3/TaskSupport.c heaps/HeapMem.c gates/GateHwi.c gates/GateMutex.c family/arm/msp432/Timer.c family/arm/msp432/ClockFreqs.c makefile
+BIOS.obj: BIOS.c knl/Clock.c knl/Idle.c knl/Intrinsics.c knl/Event.c knl/Mailbox.c knl/Queue.c knl/Semaphore.c knl/Swi.c knl/Swi_andn.c knl/Task.c hal/Hwi.c hal/Hwi_stack.c hal/Hwi_startup.c hal/Seconds.c family/arm/msp432/init/Boot.c family/arm/m3/Hwi.c family/arm/m3/TaskSupport.c heaps/HeapMem.c posix/pthread.c posix/pthread_barrier.c posix/pthread_cond.c posix/pthread_key.c posix/pthread_mutex.c posix/pthread_rwlock.c posix/clock.c posix/mqueue.c posix/sched.c posix/semaphore.c posix/sleep.c posix/timer.c gates/GateHwi.c gates/GateMutex.c family/arm/msp432/Timer.c family/arm/msp432/ClockFreqs.c family/arm/msp432/Seconds.c makefile
 	@-$(call RM, $@)
 	@echo clem4f $< ...
 	@$(CC) $(BIOS_DEFS) $(XOPTS) $(INCS) \
@@ -59,6 +59,8 @@ BIOS.obj: BIOS.c knl/Clock.c knl/Idle.c knl/Intrinsics.c knl/Queue.c knl/Semapho
 	$(BIOS_ROOT)knl/Clock.c \
 	$(BIOS_ROOT)knl/Idle.c \
 	$(BIOS_ROOT)knl/Intrinsics.c \
+	$(BIOS_ROOT)knl/Event.c \
+	$(BIOS_ROOT)knl/Mailbox.c \
 	$(BIOS_ROOT)knl/Queue.c \
 	$(BIOS_ROOT)knl/Semaphore.c \
 	$(BIOS_ROOT)knl/Swi.c \
@@ -67,14 +69,28 @@ BIOS.obj: BIOS.c knl/Clock.c knl/Idle.c knl/Intrinsics.c knl/Queue.c knl/Semapho
 	$(BIOS_ROOT)hal/Hwi.c \
 	$(BIOS_ROOT)hal/Hwi_stack.c \
 	$(BIOS_ROOT)hal/Hwi_startup.c \
+	$(BIOS_ROOT)hal/Seconds.c \
 	$(BIOS_ROOT)family/arm/msp432/init/Boot.c \
 	$(BIOS_ROOT)family/arm/m3/Hwi.c \
 	$(BIOS_ROOT)family/arm/m3/TaskSupport.c \
 	$(BIOS_ROOT)heaps/HeapMem.c \
+	$(BIOS_ROOT)posix/pthread.c \
+	$(BIOS_ROOT)posix/pthread_barrier.c \
+	$(BIOS_ROOT)posix/pthread_cond.c \
+	$(BIOS_ROOT)posix/pthread_key.c \
+	$(BIOS_ROOT)posix/pthread_mutex.c \
+	$(BIOS_ROOT)posix/pthread_rwlock.c \
+	$(BIOS_ROOT)posix/clock.c \
+	$(BIOS_ROOT)posix/mqueue.c \
+	$(BIOS_ROOT)posix/sched.c \
+	$(BIOS_ROOT)posix/semaphore.c \
+	$(BIOS_ROOT)posix/sleep.c \
+	$(BIOS_ROOT)posix/timer.c \
 	$(BIOS_ROOT)gates/GateHwi.c \
 	$(BIOS_ROOT)gates/GateMutex.c \
 	$(BIOS_ROOT)family/arm/msp432/Timer.c \
 	$(BIOS_ROOT)family/arm/msp432/ClockFreqs.c \
+	$(BIOS_ROOT)family/arm/msp432/Seconds.c \
 
 sysbios.aem4f: BIOS.obj m3_Hwi_asm.obj m3_Hwi_asm_switch.obj m3_IntrinsicsSupport_asm.obj m3_TaskSupport_asm.obj
 	@-$(call RM, $@)
