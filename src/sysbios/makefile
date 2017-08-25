@@ -16,9 +16,9 @@ BIOS_INC  = -I"C:/ti/simplelink_msp432_sdk_1_30_00_40/kernel/tirtos/packages/"
 
 INCS =  $(BIOS_INC) -I"C:/ti/simplelink_msp432_sdk_1_30_00_40/source/" -I"C:/ti/simplelink_msp432_sdk_1_30_00_40/kernel/tirtos/packages/" -I"C:/ti/ccsv7/ccs_base/" -I"C:/ti/xdctools_3_50_01_12_core/packages/" -I"../" -I"/packages//" 
 
-CC = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include
-ASM = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include
-AR = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armar rq
+CC = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.2.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.2.LTS/include
+ASM = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.2.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.2.LTS/include
+AR = C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.2.LTS/bin/armar rq
 
 DEL = C:/ti/xdctools_3_50_01_12_core/packages/../bin/rm -f
 CP = C:/ti/xdctools_3_50_01_12_core/packages/../bin/cp -f
