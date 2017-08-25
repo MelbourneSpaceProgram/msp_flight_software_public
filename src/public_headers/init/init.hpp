@@ -16,6 +16,8 @@
 #include <src/public_headers/allocator.hpp>
 #include "../SatelliteTime.hpp"
 
+#include <src/pwm/pwm.hpp>
+
 #define TASKSTACKSIZE   8096
 Task_Struct allocatorTaskStruct;
 Char allocatorTaskStack[TASKSTACKSIZE];
