@@ -48,12 +48,11 @@ uint64_t SatelliteTime::get_boot_time()
     uint64_t boot_time = 0;
     uint64_t utc_time = get_utc_time();
 
-    if (utc_time == 0)
+    if (utc_time != 0)
     {
         // Calculate the time of boot
         uint32_t ticks_since_boot = Clock_getTicks();
-        uint64_t boot_time = utc_time
-                - (ticks_since_boot / ticks_per_millisecond);
+        boot_time = utc_time - (ticks_since_boot / ticks_per_millisecond);
     }
 
     return boot_time;
