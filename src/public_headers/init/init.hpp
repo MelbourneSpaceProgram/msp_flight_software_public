@@ -27,5 +27,6 @@ void init_time();
 void init_logger();
 void init_diagnostics();
 void init_satellite();
+void init_satellite1();
 
 #endif
