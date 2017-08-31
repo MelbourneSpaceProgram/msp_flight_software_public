@@ -11,6 +11,7 @@ int main(void)
 
     // All basic systems should now be operational. Start the main loop of the satellite.
     init_satellite();
+    init_satellite1();
 
     // Start BIOS
     BIOS_start();
