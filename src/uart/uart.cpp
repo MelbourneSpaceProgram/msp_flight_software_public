@@ -4,16 +4,10 @@
 
 UART::UART(UARTConfiguration* config, int index) : config(config), index(index) {};
 
-void uartReceive(UART_Handle handle, void *uart_rxBuffer, size_t count)
-{
-    if (1==1){
-        int i =1;
-    }
-}
-
 void UART::open() {
   int transfer_mode = this->config->get_transfer_mode();
   int bit_rate = this->config->get_bit_rate();
+  UART_Callback uart_callback = this->config->get_reader_callback();
 
 
   UART_Params uart_params = {
@@ -22,8 +16,9 @@ void UART::open() {
       readReturnMode: UART_RETURN_FULL,
       readEcho: UART_ECHO_OFF,
       baudRate: bit_rate,
-      readMode: UART_MODE_CALLBACK,
-      readCallback: uartReceive
+      readMode: UART_MODE_BLOCKING
+      //readMode: UART_MODE_CALLBACK,
+      //readCallback: uartReceiveFinished1
   };
 
   // Set I2C_Params defaults.

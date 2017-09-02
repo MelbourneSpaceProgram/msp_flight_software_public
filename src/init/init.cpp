@@ -57,8 +57,7 @@ void init_time()
  */
 void init_logger()
 {
-    // TODO Reenable AK
-    /*UART_Params uartParams;
+    UART_Params uartParams;
 
     UART_Params_init(&uartParams);
     uartParams.writeDataMode = UART_DATA_BINARY;
@@ -74,57 +73,22 @@ void init_logger()
     }
 
     UartLog_init(uart);
-    */
 }
 
 
-void uartReceiveFinished(UART_Handle handle, void *uart_rxBuffer, size_t count)
-{
-    GPIO_toggle(Board_GPIO_LED1);
-}
-
-int keep_writing = 1;
-// Open the UART stream
-    UARTConfiguration uart_config(UARTConfiguration::BLOCKING_MODE, UARTConfiguration::HIGH, &uartReceiveFinished);
-    UART uart_bus(&uart_config, Board_UART0);
 void * test_task(void *){
-
-    /*double duty_cycle = 0;
-    while(1){
-        MSP_PWM_set_duty(0, duty_cycle);
-        duty_cycle += 0.000001;
-
-        if (duty_cycle > 0.2){
-            duty_cycle = 0;
-        }
-    }*/
-
     // Test task for reading back to UART
-
-
     uart_bus.open();
+
 
     int i = 0;
     while(1){
-        if (keep_writing){
-            char input = 97 + (i % 26);
-            int write_buffer_length = 1;
-            uart_bus.perform_write_transaction(&input, write_buffer_length);
-            i++;
-        }
-    }
-}
+        char input = 97 + (i % 26);
+        int write_buffer_length = 1;
+        uart_bus.perform_write_transaction(&input, write_buffer_length);
+        i++;
 
-void * test_reader(void *){
-    char input;
-    while(1){
-    // This is a non blocking read
-        UART_read(uart_bus.get_handle(), &input, 1);
-        if (keep_writing){
-            keep_writing = 0;
-        } else {
-            keep_writing = 1;
-        }
+        Task_sleep(500);
     }
 }
 
