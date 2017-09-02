@@ -77,17 +77,7 @@ void init_logger()
 
 
 void * test_task(void *){
-    // Test task for reading back to UART
-    uart_bus.open();
-
-
-    int i = 0;
     while(1){
-        char input = 97 + (i % 26);
-        int write_buffer_length = 1;
-        uart_bus.perform_write_transaction(&input, write_buffer_length);
-        i++;
-
         Task_sleep(500);
     }
 }
@@ -138,36 +128,3 @@ void init_satellite()
 
 }
 
-void init_satellite1()
-{
-
-    pthread_t           thread;
-    pthread_attr_t      attrs;
-    struct sched_param  priParam;
-    int                 retc;
-    int                 detachState;
-
-    pthread_attr_init(&attrs);
-    priParam.sched_priority = 8;
-
-    detachState = PTHREAD_CREATE_DETACHED;
-    retc = pthread_attr_setdetachstate(&attrs, detachState);
-    if (retc != 0) {
-        /* pthread_attr_setdetachstate() failed */
-        while (1);
-    }
-
-    pthread_attr_setschedparam(&attrs, &priParam);
-
-    retc |= pthread_attr_setstacksize(&attrs, THREADSTACKSIZE);
-    if (retc != 0) {
-        /* pthread_attr_setstacksize() failed */
-        while (1);
-    }
-
-    retc = pthread_create(&thread, &attrs, test_reader, NULL);
-        if (retc != 0) {
-            /* pthread_create() failed */
-            while (1);
-        }
-}
