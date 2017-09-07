@@ -16,6 +16,8 @@
 #include <src/public_headers/allocator.hpp>
 #include "../SatelliteTime.hpp"
 
+#include <src/pwm/pwm.hpp>
+
 #define TASKSTACKSIZE   8096
 Task_Struct allocatorTaskStruct;
 Char allocatorTaskStack[TASKSTACKSIZE];
@@ -25,5 +27,6 @@ void init_time();
 void init_logger();
 void init_diagnostics();
 void init_satellite();
+void init_satellite1();
 
 #endif
