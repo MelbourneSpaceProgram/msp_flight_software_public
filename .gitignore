@@ -49,3 +49,6 @@ TIRTOS Build/
 
 # Documentation should be auto-generated?
 doc/
+
+# Sysbios folder
+src/sysbios/
