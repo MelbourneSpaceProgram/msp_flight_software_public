@@ -2,32 +2,23 @@
  * @file
  */
 
+#include "Board.h"
 #include <src/public_headers/init/init.hpp>
 #include <src/tasks/tasks.hpp>
 #include <src/isr/isr.hpp>
-#include <xdc/runtime/Log.h>
-#include <unistd.h>
-#include <stdint.h>
 #include <ti/sysbios/posix/pthread.h>
-#include <stddef.h>
-#include <src/CDH/diagnostics/logger_p.h>
-#include <xdc/runtime/System.h>
 
+// Logging related
+#include <xdc/runtime/Log.h>
 #include <ti/drivers/UART.h>
-
-#include <ti/sysbios/hal/Hwi.h>
-
-#include "Board.h"
-#include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
-
-#include <src/pwm/pwm.hpp>
 #include <src/uart/uart_configuration.hpp>
 #include <src/uart/uart.hpp>
+#include <src/CDH/diagnostics/logger_p.h>
+
 
 #define THREADSTACKSIZE    1024
 
+// TODO Move this UART handle into the global state object
 UART_Handle uart = NULL;
 
 /**
