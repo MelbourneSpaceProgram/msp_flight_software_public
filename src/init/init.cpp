@@ -3,6 +3,7 @@
  */
 
 #include <src/public_headers/init/init.hpp>
+#include <src/tasks/tasks.hpp>
 #include <xdc/runtime/Log.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -95,7 +96,6 @@ void init_diagnostics()
  */
 void init_satellite()
 {
-
     pthread_t           thread;
     pthread_attr_t      attrs;
     struct sched_param  priParam;
@@ -125,6 +125,7 @@ void init_satellite()
         /* pthread_create() failed */
         while (1);
     }
-
+    
+    InitTasks();
 }
 
