@@ -4,6 +4,7 @@
 
 #include <src/public_headers/init/init.hpp>
 #include <src/tasks/tasks.hpp>
+#include <src/isr/isr.hpp>
 #include <xdc/runtime/Log.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -127,5 +128,6 @@ void init_satellite()
     }
     
     InitTasks();
+    InitInterrupts();
 }
 
