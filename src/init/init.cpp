@@ -2,12 +2,14 @@
  * @file
  */
 
+//#include <src/config/board_definitions.h>
 #include "Board.h"
+#define UARTA0 MSP_EXP432P401R_UARTA0
+#define UARTA2 MSP_EXP432P401R_UARTA2
 #include <src/public_headers/init/init.hpp>
 #include <src/tasks/tasks.hpp>
 #include <src/isr/isr.hpp>
 #include <ti/sysbios/posix/pthread.h>
-
 // Logging related
 #include <xdc/runtime/Log.h>
 #include <ti/drivers/UART.h>
@@ -26,14 +28,20 @@ UART_Handle uart = NULL;
  */
 void init_core()
 {
+    // TODO Refactor this to use style below
     Board_initGeneral();
-    Board_initGPIO();
-    Board_initI2C();
-    Board_initSPI();
-    Board_initUART();
-    Board_initPWM();
+    GPIO_init();
+    UART_init();
+    I2C_init();
+    SPI_init();
+
+    UART_init();
+    PWM_init();
+
     MSP_pwm_init();
 }
+
+
 
 /**
  * Initialises the system time. The default epoch is 2017/01/01 00:00 UTC. The actual system time can be set via the SatelliteTiming module.
@@ -50,6 +58,7 @@ void init_time()
  */
 void init_logger()
 {
+
     UART_Params uartParams;
 
     UART_Params_init(&uartParams);
@@ -59,7 +68,7 @@ void init_logger()
     uartParams.readEcho = UART_ECHO_OFF;
     uartParams.baudRate = 115200;
 
-    uart = UART_open(Board_UART0, &uartParams);
+    uart = UART_open(UARTA2, &uartParams);
 
     if (uart == NULL) {
         while (1);
@@ -67,6 +76,7 @@ void init_logger()
 
     UartLog_init(uart);
 }
+
 
 
 void * test_task(void *){
