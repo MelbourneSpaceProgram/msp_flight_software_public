@@ -1,5 +1,11 @@
 #include <ti/sysbios/BIOS.h>
 #include <src/public_headers/init/init.hpp>
+#include <pthread.h>
+
+
+/* Example/Board Header files */
+#include "Board.h"
+
 
 int main(void)
     {

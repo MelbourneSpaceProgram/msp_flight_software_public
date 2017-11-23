@@ -10,8 +10,6 @@
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
 
-#include "Board.h"
-
 #include <src/public_headers/diagnostics.hpp>
 #include <src/public_headers/allocator.hpp>
 #include "../SatelliteTime.hpp"
