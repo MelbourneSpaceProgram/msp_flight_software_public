@@ -6,6 +6,7 @@
  */
 
 #include <src/messages/TemperatureMessage.h>
+#include <src/CDH/util/PackWriter.h>
 
 TemperatureMessage::TemperatureMessage()
 {
@@ -19,4 +20,26 @@ TemperatureMessage::TemperatureMessage(float temperature, int timestamp, int sen
     this->timestamp = timestamp;
     this->sensorId = sensorId;
 
+}
+
+SerialisedMessage TemperatureMessage::serialise(){
+    // Create the new object
+
+    int packed_data_length;
+
+    PackWriter writer(PackWriter::TEMPERATURE_SENSOR, PackWriter::V1);
+    writer.addInt(sensorId);
+    writer.addInt(timestamp);
+    writer.addFloat(temperature);
+
+    packed_data_length = writer.packed_length;
+
+    // Now that we know how big our packing is, encapsulate it
+    SerialisedMessage serialMsg(packed_data_length);
+
+    for(int i = 0; i < packed_data_length; i++){
+        serialMsg.buffer[i] = writer.packed_message_buffer[i];
+    }
+
+    return serialMsg;
 }
