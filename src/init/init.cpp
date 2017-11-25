@@ -8,7 +8,6 @@
 #define UARTA2 MSP_EXP432P401R_UARTA2
 #include <src/public_headers/init/init.hpp>
 #include <src/tasks/tasks.hpp>
-#include <src/isr/isr.hpp>
 #include <ti/sysbios/posix/pthread.h>
 // Logging related
 #include <xdc/runtime/Log.h>
@@ -85,13 +84,6 @@ void * test_task(void *){
     }
 }
 
-/**
- * Initialises the diagnostic output of the satellite. Currently this is just the heartbeat LED, although it may be expanded to include self-tests.
- */
-void init_diagnostics()
-{
-    initHeartbeat();
-}
 
 /**
  * Starts the main process running on the satellite, the task scheduler loop. Should only be called once all other initialisation tasks have completed successfully.
@@ -129,6 +121,5 @@ void init_satellite()
     }
     
     InitTasks();
-    InitInterrupts();
 }
 

@@ -13,7 +13,6 @@ int main(void)
     init_core();
     init_time();
     init_logger();
-    init_diagnostics();
 
     // All basic systems should now be operational. Start the main loop of the satellite.
     init_satellite();

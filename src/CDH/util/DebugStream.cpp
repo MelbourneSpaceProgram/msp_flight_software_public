@@ -29,19 +29,16 @@ DebugStream::DebugStream()
     debug.perform_write_transaction(echoPrompt, sizeof(echoPrompt));
 }
 
-void DebugStream::handleMessage( TemperatureMessage *message )
-  {
-    char        input[] = "Received debug message.\r\n";
-    char msg = (char) message->timestamp;
-    debug.perform_write_transaction(input, sizeof(input));
-
-    debug.perform_write_transaction(&msg, 1);
-    int noop = 123;
-  }
-
 DebugStream::~DebugStream()
 {
 
     // TODO Auto-generated destructor stub
+}
+
+void DebugStream::sendMessage(SerialisedMessage serialMsg){
+    char input = 0x0A;
+    //debug.perform_write_transaction(& (char) (serialMsg.size), 1); // TODO Check that the size is always one byte
+    debug.perform_write_transaction(serialMsg.buffer, serialMsg.size);
+    //debug.perform_write_transaction(&input, 1);
 }
 

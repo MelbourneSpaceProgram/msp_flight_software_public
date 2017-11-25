@@ -8,7 +8,7 @@
 #ifndef TEMPERATUREMESSAGE_H_
 #define TEMPERATUREMESSAGE_H_
 
-#include <src/CDH/util/MessageQueue.h>
+#include <src/messages/Message.h>
 
 class TemperatureMessage: public Message
 {
@@ -18,6 +18,7 @@ public:
     float temperature;
     int sensorId;
     int timestamp;
+    SerialisedMessage serialise();
 };
 
 #endif /* TEMPERATUREMESSAGE_H_ */

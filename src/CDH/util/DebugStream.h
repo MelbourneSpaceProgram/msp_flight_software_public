@@ -8,10 +8,9 @@
 #ifndef DEBUGSTREAM_H_
 #define DEBUGSTREAM_H_
 
-#include <src/CDH/util/MessageQueue.h>
 #include <src/messages/TemperatureMessage.h>
 
-class DebugStream : public MessageHandler<TemperatureMessage>
+class DebugStream
 {
 private:
     UARTConfiguration debugConfig;
@@ -19,7 +18,7 @@ private:
 public:
     DebugStream();
     virtual ~DebugStream();
-    void handleMessage( TemperatureMessage *message );
+    void sendMessage(SerialisedMessage);
 };
 
 #endif /* DEBUGSTREAM_H_ */
