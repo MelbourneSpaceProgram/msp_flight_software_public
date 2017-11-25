@@ -1,7 +1,7 @@
 #ifndef MSP_TIME_HPP
 #define MSP_TIME_HPP
 
-#include <src/public_headers/arch/Clock.h>
+#include <ti/sysbios/knl/Clock.h>
 #include <stdint.h>
 
 class SatelliteTime
