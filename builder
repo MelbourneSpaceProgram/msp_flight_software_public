@@ -1,1 +1,0 @@
- gcc -o sample.exe ./src/CDH/allocator/request.cpp ./src/CDH/allocator/schedule.cpp ./src/tests/CDHTtests.cpp ./src/unity/unity.c -I./src/public_headers -I. -I./src/unity
