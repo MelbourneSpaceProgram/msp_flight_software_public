@@ -30,7 +30,7 @@ public:
     This defines the possible bit rates for the UART.
   */
   enum bit_rates {
-    HIGH = 115200
+    BAUD_115200 = 115200
   };
 
   /**
@@ -38,7 +38,11 @@ public:
 
     @return The UARTConfiguration object.
   */
-  UARTConfiguration(int transfer_mode, int bit_rate, UART_Callback reader_callback);
+  // TODO Can we change the signature of transfer_mode to be an enum?
+  // Same with bit_rate
+  UARTConfiguration(enum transfer_modes transfer_mode, enum bit_rates bit_rate);
+
+  UARTConfiguration();
 
   /**
     Function that returns the transfer mode.
@@ -54,7 +58,6 @@ public:
   */
   int get_bit_rate(void);
 
-  UART_Callback get_reader_callback(void);
 
 private:
 
@@ -69,8 +72,6 @@ private:
     Option are listed in bit_rates enum.
   */
   int bit_rate;
-
-  UART_Callback reader_callback;
 
 };
 

@@ -1,5 +1,11 @@
 #include <ti/sysbios/BIOS.h>
 #include <src/public_headers/init/init.hpp>
+#include <pthread.h>
+
+
+/* Example/Board Header files */
+#include "Board.h"
+
 
 int main(void)
     {
@@ -7,7 +13,6 @@ int main(void)
     init_core();
     init_time();
     init_logger();
-    init_diagnostics();
 
     // All basic systems should now be operational. Start the main loop of the satellite.
     init_satellite();
