@@ -31,6 +31,8 @@ public:
   */
   UART(UARTConfiguration* config, int index);
 
+  UART();
+
   /**
     Function that opens the UART bus.
   */
@@ -61,11 +63,10 @@ public:
   /**
     Function that performs an UART write operation.
 
-    @param address The address of the UART device on the bus.
     @param read_buffer The buffer to which the UART device will write.
     @param read_buffer_length The length of the read buffer.
   */
-  bool perform_read_transaction(int address, uint8_t* read_buffer, int read_buffer_length);
+  bool perform_read_transaction(char* read_buffer, int read_buffer_length);
 
 private:
 
