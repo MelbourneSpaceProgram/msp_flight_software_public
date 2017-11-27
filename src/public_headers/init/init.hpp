@@ -10,10 +10,6 @@
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
 
-#include "Board.h"
-
-#include <src/public_headers/diagnostics.hpp>
-#include <src/public_headers/allocator.hpp>
 #include "../SatelliteTime.hpp"
 
 #include <src/pwm/pwm.hpp>
@@ -25,7 +21,6 @@ Char allocatorTaskStack[TASKSTACKSIZE];
 void init_core();
 void init_time();
 void init_logger();
-void init_diagnostics();
 void init_satellite();
 void init_satellite1();
 
