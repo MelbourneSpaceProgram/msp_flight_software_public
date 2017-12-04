@@ -5,8 +5,8 @@
  *      Author: Anthony
  */
 
+#include <src/CDH/util/SerialisedMessageBuilder.h>
 #include <src/messages/TemperatureMessage.h>
-#include <src/CDH/util/PackWriter.h>
 
 TemperatureMessage::TemperatureMessage() {
     // TODO Auto-generated constructor stub
@@ -20,7 +20,7 @@ TemperatureMessage::TemperatureMessage(float temperature, int timestamp, int sen
 }
 
 SerialisedMessage TemperatureMessage::serialise() {
-    PackWriter writer(PackWriter::TEMPERATURE_SENSOR, PackWriter::V1);
-    writer.addData<int>(sensorId).addData<int>(timestamp).addData<float>(temperature);
-    return SerialisedMessage(writer.getPackedLength(), writer.getPackedMessageBuffer());
+    SerialisedMessageBuilder builder(SerialisedMessageBuilder::TEMPERATURE_SENSOR, SerialisedMessageBuilder::V1);
+    builder.addData<int>(sensorId).addData<int>(timestamp).addData<float>(temperature);
+    return builder.build();
 }
