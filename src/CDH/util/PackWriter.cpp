@@ -20,3 +20,12 @@ PackWriter::~PackWriter()
 {
     // TODO Auto-generated destructor stub
 }
+
+int PackWriter::getPackedLength() {
+    return packed_length;
+}
+
+char* PackWriter::getPackedMessageBuffer() {
+    return packed_message_buffer;
+}
+

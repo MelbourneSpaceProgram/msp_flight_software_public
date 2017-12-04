@@ -24,5 +24,5 @@ TemperatureMessage::TemperatureMessage(float temperature, int timestamp, int sen
 SerialisedMessage TemperatureMessage::serialise(){
     PackWriter writer(PackWriter::TEMPERATURE_SENSOR, PackWriter::V1);
     writer.addData<int>(sensorId).addData<int>(timestamp).addData<float>(temperature);
-    return SerialisedMessage(writer.packed_length, writer.packed_message_buffer);
+    return SerialisedMessage(writer.getPackedLength(), writer.getPackedMessageBuffer());
 }
