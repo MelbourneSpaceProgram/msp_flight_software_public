@@ -24,4 +24,3 @@ SerialisedMessage::~SerialisedMessage()
 {
     // TODO Auto-generated destructor stub
 }
-
