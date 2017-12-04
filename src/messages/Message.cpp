@@ -7,14 +7,12 @@
 
 #include <src/messages/Message.h>
 
-Message::Message()
-{
+Message::Message() {
     // TODO Auto-generated constructor stub
 
 }
 
-Message::~Message()
-{
+Message::~Message() {
     // TODO Auto-generated destructor stub
 }
 

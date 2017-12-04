@@ -10,8 +10,7 @@
 
 #include <src/messages/Message.h>
 
-class TemperatureMessage: public Message
-{
+class TemperatureMessage: public Message {
 public:
     TemperatureMessage();
     TemperatureMessage(float, int, int);

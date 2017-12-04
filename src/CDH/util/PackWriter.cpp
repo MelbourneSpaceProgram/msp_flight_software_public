@@ -8,24 +8,22 @@
 #include <src/CDH/util/PackWriter.h>
 #include <stdint.h>
 
-PackWriter::PackWriter(PackMessageType type, PackMessageVersion version)
-{
-    packed_length = 0;
-    packed_message_buffer[0] = type;
-    packed_message_buffer[1] = version;
-    packed_length = 2;
+PackWriter::PackWriter(PackMessageType type, PackMessageVersion version) {
+    packedLength = 0;
+    packedMessageBuffer[0] = type;
+    packedMessageBuffer[1] = version;
+    packedLength = 2;
 }
 
-PackWriter::~PackWriter()
-{
+PackWriter::~PackWriter() {
     // TODO Auto-generated destructor stub
 }
 
 int PackWriter::getPackedLength() {
-    return packed_length;
+    return packedLength;
 }
 
 char* PackWriter::getPackedMessageBuffer() {
-    return packed_message_buffer;
+    return packedMessageBuffer;
 }
 
