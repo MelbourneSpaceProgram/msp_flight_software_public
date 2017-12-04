@@ -7,20 +7,17 @@
 
 #include <src/messages/SerialisedMessage.h>
 
-SerialisedMessage::SerialisedMessage(int messageSize)
-{
+SerialisedMessage::SerialisedMessage(int messageSize) {
     buffer = new char[messageSize];
     size = messageSize;
 }
 
-SerialisedMessage::SerialisedMessage(int messageSize, char* message)
-{
+SerialisedMessage::SerialisedMessage(int messageSize, char* message) {
     buffer = new char[messageSize];
     size = messageSize;
     std::memcpy(&buffer, &message, size);
 }
 
-SerialisedMessage::~SerialisedMessage()
-{
+SerialisedMessage::~SerialisedMessage() {
     // TODO Auto-generated destructor stub
 }
