@@ -10,8 +10,7 @@
 
 #include <src/messages/SerialisedMessage.h>
 
-class Message
-{
+class Message {
 public:
     Message();
     virtual ~Message();

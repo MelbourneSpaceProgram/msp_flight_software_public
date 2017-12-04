@@ -14,8 +14,7 @@
 
 #include <src/CDH/util/DebugStream.h>
 
-DebugStream::DebugStream()
-{
+DebugStream::DebugStream() {
     char        input;
     char  echoPrompt[] = "Debug stream started.\r\n";
 
@@ -29,13 +28,12 @@ DebugStream::DebugStream()
     debug.perform_write_transaction(echoPrompt, sizeof(echoPrompt));
 }
 
-DebugStream::~DebugStream()
-{
+DebugStream::~DebugStream() {
 
     // TODO Auto-generated destructor stub
 }
 
-void DebugStream::sendMessage(SerialisedMessage serialMsg){
+void DebugStream::sendMessage(SerialisedMessage serialMsg) {
     char input = 0x0A;
     //debug.perform_write_transaction(& (char) (serialMsg.size), 1); // TODO Check that the size is always one byte
     debug.perform_write_transaction(serialMsg.buffer, serialMsg.size);

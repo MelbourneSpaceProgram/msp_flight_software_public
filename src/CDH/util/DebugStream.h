@@ -10,8 +10,7 @@
 
 #include <src/messages/TemperatureMessage.h>
 
-class DebugStream
-{
+class DebugStream {
 private:
     UARTConfiguration debugConfig;
     UART debug;

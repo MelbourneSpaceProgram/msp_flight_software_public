@@ -10,8 +10,7 @@
 
 #define BUFFER_SIZE 256
 
-class PackWriter
-{
+class PackWriter {
 public:
     enum PackMessageType {TEMPERATURE_SENSOR = 0,
                                    RADIATION_SENSOR = 1};
@@ -22,17 +21,17 @@ public:
     char *getPackedMessageBuffer();
     template <class T>
     PackWriter& addData(T data) {
-        if(sizeof(T) > BUFFER_SIZE - packed_length) {
+        if(sizeof(T) > BUFFER_SIZE - packedLength) {
             // TODO: Throw and handle exception
         } else {
-            packed_length += sizeof(T);
-            std::memcpy(&packed_message_buffer + packed_length, &data, sizeof(T));
+            packedLength += sizeof(T);
+            std::memcpy(&packedMessageBuffer + packedLength, &data, sizeof(T));
             return *this;
         }
     }
 private:
-    int packed_length;
-    char packed_message_buffer[BUFFER_SIZE];
+    int packedLength;
+    char packedMessageBuffer[BUFFER_SIZE];
 };
 
 #endif /* PACKWRITER_H_ */
