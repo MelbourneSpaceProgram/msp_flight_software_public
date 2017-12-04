@@ -13,6 +13,13 @@ SerialisedMessage::SerialisedMessage(int messageSize)
     size = messageSize;
 }
 
+SerialisedMessage::SerialisedMessage(int messageSize, char* message)
+{
+    buffer = new char[messageSize];
+    size = messageSize;
+    std::memcpy(&buffer, &message, size);
+}
+
 SerialisedMessage::~SerialisedMessage()
 {
     // TODO Auto-generated destructor stub
