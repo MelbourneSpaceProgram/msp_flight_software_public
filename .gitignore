@@ -35,6 +35,9 @@ Release/
 .xdchelp
 .config/
 .launches/
+src/makefile.libs
+src/sysbios/makefile
+src/sysbios/sysbios.aem4f
 
 
 # Vim temporary files
