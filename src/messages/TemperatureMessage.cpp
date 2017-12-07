@@ -21,6 +21,8 @@ TemperatureMessage::TemperatureMessage(float temperature, int timestamp, int sen
 
 SerialisedMessage TemperatureMessage::serialise() {
     SerialisedMessageBuilder builder(SerialisedMessageBuilder::TEMPERATURE_SENSOR, SerialisedMessageBuilder::V1);
-    builder.addData<int>(sensorId).addData<int>(timestamp).addData<float>(temperature);
+    builder.addData<int>(sensorId);
+    builder.addData<int>(timestamp);
+    builder.addData<float>(temperature);
     return builder.build();
 }
