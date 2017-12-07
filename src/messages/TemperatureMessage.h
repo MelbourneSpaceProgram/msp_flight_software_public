@@ -9,14 +9,15 @@
 #define TEMPERATUREMESSAGE_H_
 
 #include <src/messages/Message.h>
+#include <stdint.h>
 
 class TemperatureMessage: public Message {
 public:
     TemperatureMessage();
     TemperatureMessage(float, int, int);
     float temperature;
-    int sensorId;
-    int timestamp;
+    uint8_t sensorId;
+    uint8_t timestamp;
     SerialisedMessage serialise();
 };
 

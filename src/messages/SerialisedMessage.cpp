@@ -6,6 +6,8 @@
  */
 
 #include <src/messages/SerialisedMessage.h>
+#include <stdint.h>
+#include <stddef.h>
 
 SerialisedMessage::SerialisedMessage(int messageSize) {
     buffer = new char[messageSize];
@@ -15,7 +17,7 @@ SerialisedMessage::SerialisedMessage(int messageSize) {
 SerialisedMessage::SerialisedMessage(int messageSize, char* message) {
     buffer = new char[messageSize];
     size = messageSize;
-    std::memcpy(&buffer, &message, size);
+    std::memcpy(buffer, message, (size_t) size);
 }
 
 SerialisedMessage::~SerialisedMessage() {
