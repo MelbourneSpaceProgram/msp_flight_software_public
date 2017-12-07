@@ -1,10 +1,18 @@
-import time, serial, io
+import time, serial, sys, binascii
 
 class Sensor:
     Temperature, Radiation = range(2)
 
 userPort = input("Enter port (COM1):") or "COM1"
 userBaud = input("Enter baud rate (115200):") or 115200
+userByteOrder = input("Set Endianness - [b]ig/[l]ittle/(s)ystem")
+
+if userByteOrder.lower() == "b":
+    userByteOrder = 'big'
+elif userByteOrder.lower() == 'l':
+    userByteOrder = 'little'
+else:
+    userByteOrder = sys.byteorder
 
 ser = serial.Serial()
 ser.port = userPort
@@ -35,12 +43,14 @@ while ser.isOpen():
         time.sleep(0.5)
 
         bytesToRead = ser.inWaiting()
-        buf = ser.readline()
-        print(buf)
-        f.write(buf)
+        buf = ser.read()
+        if buf != None:
+            print(binascii.hexlify(buf))
+            f.write(binascii.hexlify(buf))
     except Exception as e:
-        print("Error opening serial port:" + str(e))
+        print("Error:" + str(e))
         f.close()
+        exit()
 
 print("Stop DebugClient")
 f.close()
