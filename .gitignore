@@ -55,3 +55,6 @@ doc/
 
 # Sysbios folder
 src/sysbios/
+DebugClient/msplog\.txt
+
+\.settings/org\.eclipse\.core\.resources\.prefs
