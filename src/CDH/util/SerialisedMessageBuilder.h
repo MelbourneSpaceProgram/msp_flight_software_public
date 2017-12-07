@@ -28,7 +28,7 @@ public:
             // TODO: Throw and handle exception
         } else {
             serialisedLength += sizeof(T);
-            std::memcpy(&serialisedMessageBuffer + serialisedLength, &data, sizeof(T));
+            std::memcpy(serialisedMessageBuffer + serialisedLength, &data, sizeof(T));
         }
         return *this;
     }
