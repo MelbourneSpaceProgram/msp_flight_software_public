@@ -2,7 +2,7 @@
  * SerialisedMessageBuilder.h
  *
  *  Created on: 24Nov.,2017
- *      Author: Anthony
+ *      Author: Anthony, Ben
  */
 
 #ifndef SERIALISEDMESSAGEBUILDER_H_
@@ -10,31 +10,31 @@
 
 #include <src/messages/SerialisedMessage.h>
 
-#define BUFFER_SIZE 256
+const uint16_t kBufferSize = 256;
 
 class SerialisedMessageBuilder {
 public:
-    enum SerialisedMessageType {TEMPERATURE_SENSOR = 0,
-                                   RADIATION_SENSOR = 1};
-    enum SerialisedMessageVersion {V1 = 0};
+    enum SerialisedMessageType {kTemperatureSensor = 0,
+                                   kRadiationSensor = 1};
+    enum SerialisedMessageVersion {kV1 = 0};
     SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version);
     virtual ~SerialisedMessageBuilder();
-    int getSerialisedLength();
-    char *getSerialisedMessageBuffer();
-    SerialisedMessage build();
+    int GetSerialisedLength();
+    char *GetSerialisedMessageBuffer();
+    SerialisedMessage Build();
     template <class T>
-    SerialisedMessageBuilder& addData(T data) {
-        if(sizeof(T) > BUFFER_SIZE - serialisedLength) {
+    SerialisedMessageBuilder& AddData(T data) {
+        if(sizeof(T) > kBufferSize - serialised_length) {
             // TODO: Throw and handle exception
         } else {
-            serialisedLength += sizeof(T);
-            std::memcpy(serialisedMessageBuffer + serialisedLength, &data, sizeof(T));
+            serialised_length += sizeof(T);
+            std::memcpy(serialised_message_buffer + serialised_length, &data, sizeof(T));
         }
         return *this;
     }
 private:
-    int serialisedLength;
-    char serialisedMessageBuffer[BUFFER_SIZE];
+    int serialised_length;
+    char serialised_message_buffer[kBufferSize];
 };
 
 #endif /* SERIALISEDMESSAGEBUILDER_H_ */

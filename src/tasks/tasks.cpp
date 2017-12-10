@@ -22,8 +22,8 @@ void *debugStream(){
     while(1){
         // Generate some various messages
         TemperatureMessage msg(229, 33, 44);
-        SerialisedMessage serialMsg = msg.serialise();
-        debugStream.sendMessage(serialMsg);
+        SerialisedMessage serial_msg = msg.Serialise();
+        debugStream.SendMessage(serial_msg);
         Task_sleep(50);
     }
 }
