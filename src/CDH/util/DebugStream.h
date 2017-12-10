@@ -9,6 +9,7 @@
 #define DEBUGSTREAM_H_
 
 #include <src/messages/TemperatureMessage.h>
+#include <stdint.h>
 
 class DebugStream {
 private:
@@ -18,6 +19,7 @@ public:
     DebugStream();
     virtual ~DebugStream();
     void SendMessage(SerialisedMessage);
+    uint8_t ReceiveCode();
 };
 
 #endif /* DEBUGSTREAM_H_ */

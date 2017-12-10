@@ -6,6 +6,7 @@
 #include <src/CDH/util/DebugStream.h>
 #include <src/messages/SerialisedMessage.h>
 #include <src/messages/TestMessage.h>
+#include <src/CDH/util/SerialisedMessageBuilder.h>
 #include "Board.h"
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
@@ -17,15 +18,23 @@ void *debugStream(){
     DebugStream debug_stream;
 
     while(1){
-        char test_msg_content[4] = {0x00, 0xFF, 0x01, 0xF0};
-        TestMessage msg(test_msg_content, (uint8_t) 4);
-        SerialisedMessage serial_msg = msg.Serialise();
-        debug_stream.SendMessage(serial_msg);
-        Task_sleep(500);
-
-        TemperatureMessage temp_msg(220.0, 44, 50);
-        serial_msg = temp_msg.Serialise();
-        debug_stream.SendMessage(serial_msg);
+        uint8_t code = debug_stream.ReceiveCode();
+        switch(code) {
+            case SerialisedMessageBuilder::kTemperatureSensor: {
+                TemperatureMessage temp_msg(220.0, 44, 50);
+                SerialisedMessage serial_msg = temp_msg.Serialise();
+                debug_stream.SendMessage(serial_msg);
+            }
+            case SerialisedMessageBuilder::kRadiationSensor: {
+                // TODO
+            }
+            case SerialisedMessageBuilder::kTestSensor: {
+                char test_msg_content[4] = {0x00, 0xFF, 0x01, 0xF0};
+                TestMessage msg(test_msg_content);
+                SerialisedMessage serial_msg = msg.Serialise();
+                debug_stream.SendMessage(serial_msg);
+            }
+        }
         Task_sleep(500);
     }
 }
