@@ -21,11 +21,12 @@ void *debugStream(){
         TestMessage msg(test_msg_content, (uint8_t) 4);
         SerialisedMessage serial_msg = msg.Serialise();
         debug_stream.SendMessage(serial_msg);
-        Task_sleep(50);
-//        TemperatureMessage temp_msg(220.0, 44, 44);
-//        SerialisedMessage serial_msg = temp_msg.Serialise();
-//        debug_stream.SendMessage(serial_msg);
-//        Task_sleep(50);
+        Task_sleep(500);
+
+        TemperatureMessage temp_msg(220.0, 44, 50);
+        serial_msg = temp_msg.Serialise();
+        debug_stream.SendMessage(serial_msg);
+        Task_sleep(500);
     }
 }
 void InitTasks() {

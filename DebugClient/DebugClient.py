@@ -1,7 +1,44 @@
 import time, serial, sys, binascii
 
-class Sensor:
-    Temperature, Radiation = range(2)
+def getType(version, type):
+    if version == 0:
+        if type == 0:
+            return "Temperature Sensor"
+        elif type == 1:
+            return "Radiation Sensor"
+        elif type == 3:
+            return "Test Sensor"
+    return "Undefined Type"
+
+def parseTemperature(rawData):
+    rawTemperature = rawData[0:4] #TODO: Convert to 32 bit float
+    rawSensorId = rawData[4]
+    rawTimeStamp = rawData[5]
+    return "( Temp: {}, ID: {}, Time: {} )".format(rawTemperature, rawSensorId, rawTimeStamp)
+
+def parseRadiation(rawData):
+    #TODO: Implement
+    return "This function is yet to be implemented"
+
+def parseTest(rawData):
+    resultString = "( "
+    for testNumber in rawData:
+        resultString = resultString + str(testNumber) + ","
+    return resultString + " )"
+
+def processReceived(buf):
+    version = buf[1]
+    type = getType(version, buf[0])
+    rawData = buf[2:]
+    if type == "Temperature Sensor":
+        data = parseTemperature(rawData)
+    elif type == "Radiation Sensor":
+        data = parseRadiation(rawData)
+    elif type == "Test Sensor":
+        data = parseTest(rawData)
+    else :
+        data = None
+    return "V{} {}: {}".format(version, type, data)
 
 userPort = input("Enter port (COM1):") or "COM1"
 userBaud = input("Enter baud rate (115200):") or 115200
@@ -43,10 +80,12 @@ while ser.isOpen():
         time.sleep(0.5)
 
         bytesToRead = ser.inWaiting()
-        buf = ser.read(bytesToRead)
-        if buf != None:
-            print(binascii.hexlify(buf))
-            #f.write(binascii.hexlify(buf))
+
+        if bytesToRead > 0:
+            buf = ser.read(bytesToRead)
+            if buf != None:
+                print(processReceived(buf))
+                # f.write(binascii.hexlify(buf))
     except Exception as e:
         print("Error:" + str(e))
         f.close()
