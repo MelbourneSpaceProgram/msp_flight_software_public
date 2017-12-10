@@ -58,3 +58,5 @@ src/sysbios/
 DebugClient/msplog\.txt
 
 \.settings/org\.eclipse\.core\.resources\.prefs
+
+DebugClient/__pycache__/requestcodes\.cpython-36\.pyc
