@@ -28,8 +28,8 @@ public:
         if(sizeof(T) > kBufferSize - serialised_length) {
             // TODO: Throw and handle exception
         } else {
-            serialised_length += sizeof(T);
             std::memcpy(serialised_message_buffer + serialised_length, &data, sizeof(T));
+            serialised_length += sizeof(T);
         }
         return *this;
     }

@@ -17,15 +17,15 @@ void *debugStream(){
     DebugStream debug_stream;
 
     while(1){
-//        char test_msg_content[4] = {0x00, 0xFF, 0x01, 0xF0};
-//        TestMessage msg(test_msg_content, (uint8_t) 4);
-//        SerialisedMessage serial_msg = msg.Serialise();
-//        debug_stream.SendMessage(serial_msg);
-//        Task_sleep(50);
-        TemperatureMessage temp_msg(220.0, 44, 44);
-        SerialisedMessage serial_msg = temp_msg.Serialise();
+        char test_msg_content[4] = {0x00, 0xFF, 0x01, 0xF0};
+        TestMessage msg(test_msg_content, (uint8_t) 4);
+        SerialisedMessage serial_msg = msg.Serialise();
         debug_stream.SendMessage(serial_msg);
         Task_sleep(50);
+//        TemperatureMessage temp_msg(220.0, 44, 44);
+//        SerialisedMessage serial_msg = temp_msg.Serialise();
+//        debug_stream.SendMessage(serial_msg);
+//        Task_sleep(50);
     }
 }
 void InitTasks() {
@@ -40,5 +40,5 @@ void InitTasks() {
     Task_construct(&debugStream_task_struct, (Task_FuncPtr) debugStream, &taskParams, NULL);
     Task_Handle task = Task_handle(&debugStream_task_struct);
 
-    InitMCP9808ReadTask();
+    //InitMCP9808ReadTask();
 }
