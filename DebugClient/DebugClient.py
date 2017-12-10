@@ -14,23 +14,21 @@ def parseRadiation(rawData):
     return "This function is yet to be implemented"
 
 def parseTest(rawData):
-    resultString = "( "
-    for testNumber in rawData:
-        resultString = resultString + str(testNumber) + ","
-    return resultString + " )"
+    return "({})".format(str(rawData))
 
 def processReceived(buf):
     version = buf[1]
-    type = getType(version, buf[0])
-
     if version == requestcodes.VERSION:
         rawData = buf[2:]
         if buf[0] == requestcodes.TEMPERATURE:
             data = parseTemperature(rawData)
+            type = "Temperature"
         elif buf[0] == requestcodes.RADIATION:
             data = parseRadiation(rawData)
+            type = "Radiation"
         elif buf[0] == requestcodes.TEST:
             data = parseTest(rawData)
+            type = "Test"
         else:
             return "Invalid Type Received"
     else:
@@ -40,7 +38,7 @@ def processReceived(buf):
 
 ### Main Program ###
 
-userPort = input("Enter port (COM1):") or "COM1"
+userPort = input("Enter port (COM4):") or "COM4"
 userBaud = input("Enter baud rate (115200):") or 115200
 userByteOrder = input("Set Endianness - [b]ig/[l]ittle/(s)ystem")
 
@@ -57,7 +55,7 @@ ser.baudrate = userBaud
 ser.bytesize = serial.EIGHTBITS
 ser.parity = serial.PARITY_NONE
 ser.stopbits = serial.STOPBITS_ONE
-ser.timeout = None      #TODO: Check if should have a timeout
+ser.timeout = 5      #TODO: Check if should have a timeout
 ser.xonxoff = False     #disable software flow control
 ser.rtscts = False     #disable hardware (RTS/CTS) flow control
 ser.dsrdtr = False       #disable hardware (DSR/DTR) flow control
@@ -75,20 +73,27 @@ f = open("msplog.txt", "a+")
 
 while ser.isOpen():
     try:
-        # Write
+        ser.flushInput()  # flush input buffer, discarding all its contents
         ser.flushOutput()  # flush output buffer, aborting current output and discard all that is in buffer
-        ser.write(requestcodes.TEST)
+
+        # Write
+        ser.write(bytes([requestcodes.TEST]))
+        print("Sent TEST request")
 
         # Read
-        ser.flushInput() #flush input buffer, discarding all its contents
         bytesToRead = ser.inWaiting()
+        receivedResponse = False;
+        while receivedResponse == False:
+            if bytesToRead > 0:
+                buf = ser.readline(bytesToRead)
+                if buf != b'':
+                    print(buf)
+                    print(processReceived(buf))
+                    receivedResponse = True
+                    # f.write(binascii.hexlify(buf))
+            bytesToRead = ser.inWaiting()
 
-        if bytesToRead > 0:
-            buf = ser.readline()
-            if buf != None:
-                print(processReceived(buf))
-                # f.write(binascii.hexlify(buf))
-        time.sleep(0.5)
+        time.sleep(1)
 
     except Exception as e:
         print("Error:" + str(e))

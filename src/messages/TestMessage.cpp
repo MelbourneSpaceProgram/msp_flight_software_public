@@ -8,10 +8,8 @@
 #include <src/CDH/util/SerialisedMessageBuilder.h>
 #include <src/messages/TestMessage.h>
 
-
-
-TestMessage::TestMessage(char bytes[kTestMessageLength]) {
-    message_content = bytes;
+TestMessage::TestMessage(char data) {
+    message_content = data;
 }
 
 TestMessage::~TestMessage() {
@@ -20,8 +18,6 @@ TestMessage::~TestMessage() {
 
 SerialisedMessage TestMessage::Serialise() {
     SerialisedMessageBuilder builder(SerialisedMessageBuilder::kTestSensor, SerialisedMessageBuilder::kV1);
-    for(uint8_t i = 0; i < kTestMessageLength; i++) {
-        builder.AddData<char>(message_content[i]);
-    }
+    builder.AddData<char>(message_content);
     return builder.Build();
 }

@@ -2,7 +2,7 @@
  * DebugStream.cpp
  *
  *  Created on: 19Nov.,2017
- *      Author: Anthony
+ *      Author: Anthony, Ben
  */
 
 #include <src/uart/uart_configuration.hpp>
@@ -39,6 +39,6 @@ uint8_t DebugStream::ReceiveCode() {
     char read_code[1];
     uint8_t read_code_length = 1;
     debug.perform_read_transaction(read_code, read_code_length);
-    return (uint8_t)read_code;
+    return (uint8_t)read_code[0];
 }
 

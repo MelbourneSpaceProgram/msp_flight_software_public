@@ -15,8 +15,8 @@ SerialisedMessage::SerialisedMessage(uint16_t size) {
 }
 
 SerialisedMessage::SerialisedMessage(uint16_t size, char* message) {
-    buffer = new char[size];
     this->size = size;
+    buffer = new char[size];
     std::memcpy(buffer, message, (size_t) size);
 }
 

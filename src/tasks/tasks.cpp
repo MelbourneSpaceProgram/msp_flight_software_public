@@ -14,6 +14,12 @@
 Task_Struct debugStream_task_struct;
 Char debugStream_stack[2048];
 
+void sendTestMessage(DebugStream debug_stream, char data) {
+    TestMessage msg(data);
+    SerialisedMessage serial_msg = msg.Serialise();
+    debug_stream.SendMessage(serial_msg);
+}
+
 void *debugStream(){
     DebugStream debug_stream;
 
@@ -29,15 +35,13 @@ void *debugStream(){
                 // TODO
             }
             case SerialisedMessageBuilder::kTestSensor: {
-                char test_msg_content[4] = {0x00, 0xFF, 0x01, 0xF0};
-                TestMessage msg(test_msg_content);
-                SerialisedMessage serial_msg = msg.Serialise();
-                debug_stream.SendMessage(serial_msg);
+                sendTestMessage(debug_stream, 0xF0);
             }
         }
         Task_sleep(500);
     }
 }
+
 void InitTasks() {
 
     Task_Params taskParams;
