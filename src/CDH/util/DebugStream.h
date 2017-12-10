@@ -12,12 +12,12 @@
 
 class DebugStream {
 private:
-    UARTConfiguration debugConfig;
+    UARTConfiguration debug_config;
     UART debug;
 public:
     DebugStream();
     virtual ~DebugStream();
-    void sendMessage(SerialisedMessage);
+    void SendMessage(SerialisedMessage);
 };
 
 #endif /* DEBUGSTREAM_H_ */

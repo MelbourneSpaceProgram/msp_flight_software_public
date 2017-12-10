@@ -2,7 +2,7 @@
  * TemperatureMessage.cpp
  *
  *  Created on: 19Nov.,2017
- *      Author: Anthony
+ *      Author: Anthony, Ben
  */
 
 #include <src/CDH/util/SerialisedMessageBuilder.h>
@@ -13,16 +13,16 @@ TemperatureMessage::TemperatureMessage() {
 
 }
 
-TemperatureMessage::TemperatureMessage(float temperature, int timestamp, int sensorId) {
+TemperatureMessage::TemperatureMessage(float temperature, uint8_t timestamp, uint8_t sensor_id) {
     this->temperature = temperature;
     this->timestamp = timestamp;
-    this->sensorId = sensorId;
+    this->sensor_id = sensor_id;
 }
 
-SerialisedMessage TemperatureMessage::serialise() {
-    SerialisedMessageBuilder builder(SerialisedMessageBuilder::TEMPERATURE_SENSOR, SerialisedMessageBuilder::V1);
-    builder.addData<int>(sensorId);
-    builder.addData<int>(timestamp);
-    builder.addData<float>(temperature);
-    return builder.build();
+SerialisedMessage TemperatureMessage::Serialise() {
+    SerialisedMessageBuilder builder(SerialisedMessageBuilder::kTemperatureSensor, SerialisedMessageBuilder::kV1);
+    builder.AddData<int>(sensor_id);
+    builder.AddData<int>(timestamp);
+    builder.AddData<float>(temperature);
+    return builder.Build();
 }

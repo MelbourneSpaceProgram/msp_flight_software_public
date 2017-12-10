@@ -2,21 +2,21 @@
  * SerialisedMessage.cpp
  *
  *  Created on: 24Nov.,2017
- *      Author: Anthony
+ *      Author: Anthony, Ben
  */
 
 #include <src/messages/SerialisedMessage.h>
 #include <stdint.h>
 #include <stddef.h>
 
-SerialisedMessage::SerialisedMessage(int messageSize) {
-    buffer = new char[messageSize];
-    size = messageSize;
+SerialisedMessage::SerialisedMessage(uint16_t size) {
+    buffer = new char[size];
+    this->size = size;
 }
 
-SerialisedMessage::SerialisedMessage(int messageSize, char* message) {
-    buffer = new char[messageSize];
-    size = messageSize;
+SerialisedMessage::SerialisedMessage(uint16_t size, char* message) {
+    buffer = new char[size];
+    this->size = size;
     std::memcpy(buffer, message, (size_t) size);
 }
 
