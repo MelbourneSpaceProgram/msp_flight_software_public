@@ -9,6 +9,7 @@
 #define SERIALISEDMESSAGEBUILDER_H_
 
 #include <src/messages/SerialisedMessage.h>
+#include <cstdio>
 
 const uint16_t kBufferSize = 256;
 
@@ -16,7 +17,7 @@ class SerialisedMessageBuilder {
 public:
     enum SerialisedMessageType {kTemperatureSensor = 0,
                                    kRadiationSensor = 1,
-                                   kTestSensor = 3};
+                                   kTestSensor = 3};    //TODO: Should this enum necessarily be in this file?
     enum SerialisedMessageVersion {kV1 = 0};
     SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version);
     virtual ~SerialisedMessageBuilder();

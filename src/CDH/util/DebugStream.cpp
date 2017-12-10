@@ -28,14 +28,17 @@ DebugStream::DebugStream() {
 }
 
 DebugStream::~DebugStream() {
-
     // TODO Auto-generated destructor stub
 }
 
 void DebugStream::SendMessage(SerialisedMessage serial_msg) {
-    char input = 0x0A;
-    //debug.perform_write_transaction(& (char) (serial_msg.size), 1); // TODO Check that the size is always one byte
     debug.perform_write_transaction(serial_msg.buffer, serial_msg.size);
-    //debug.perform_write_transaction(&input, 1);
+}
+
+uint8_t DebugStream::ReceiveCode() {
+    char read_code[1];
+    uint8_t read_code_length = 1;
+    debug.perform_read_transaction(read_code, read_code_length);
+    return (uint8_t)read_code;
 }
 

@@ -1,14 +1,7 @@
 import time, serial, sys, binascii
+import requestcodes
 
-def getType(version, type):
-    if version == 0:
-        if type == 0:
-            return "Temperature Sensor"
-        elif type == 1:
-            return "Radiation Sensor"
-        elif type == 3:
-            return "Test Sensor"
-    return "Undefined Type"
+### Functions ###
 
 def parseTemperature(rawData):
     rawTemperature = rawData[0:4] #TODO: Convert to 32 bit float
@@ -29,16 +22,23 @@ def parseTest(rawData):
 def processReceived(buf):
     version = buf[1]
     type = getType(version, buf[0])
-    rawData = buf[2:]
-    if type == "Temperature Sensor":
-        data = parseTemperature(rawData)
-    elif type == "Radiation Sensor":
-        data = parseRadiation(rawData)
-    elif type == "Test Sensor":
-        data = parseTest(rawData)
-    else :
-        data = None
+
+    if version == requestcodes.VERSION:
+        rawData = buf[2:]
+        if buf[0] == requestcodes.TEMPERATURE:
+            data = parseTemperature(rawData)
+        elif buf[0] == requestcodes.RADIATION:
+            data = parseRadiation(rawData)
+        elif buf[0] == requestcodes.TEST:
+            data = parseTest(rawData)
+        else:
+            return "Invalid Type Received"
+    else:
+        return "Invalid Version Received"
+
     return "V{} {}: {}".format(version, type, data)
+
+### Main Program ###
 
 userPort = input("Enter port (COM1):") or "COM1"
 userBaud = input("Enter baud rate (115200):") or 115200
@@ -75,17 +75,21 @@ f = open("msplog.txt", "a+")
 
 while ser.isOpen():
     try:
-        ser.flushInput() #flush input buffer, discarding all its contents
-        ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
-        time.sleep(0.5)
+        # Write
+        ser.flushOutput()  # flush output buffer, aborting current output and discard all that is in buffer
+        ser.write(requestcodes.TEST)
 
+        # Read
+        ser.flushInput() #flush input buffer, discarding all its contents
         bytesToRead = ser.inWaiting()
 
         if bytesToRead > 0:
-            buf = ser.read(bytesToRead)
+            buf = ser.readline()
             if buf != None:
                 print(processReceived(buf))
                 # f.write(binascii.hexlify(buf))
+        time.sleep(0.5)
+
     except Exception as e:
         print("Error:" + str(e))
         f.close()
