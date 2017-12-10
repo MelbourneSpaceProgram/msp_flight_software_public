@@ -15,17 +15,17 @@
 #include <src/CDH/util/DebugStream.h>
 
 DebugStream::DebugStream() {
-    char        input;
-    char  echoPrompt[] = "Debug stream started.\r\n";
+    char input;
+    char echo_prompt[] = "Debug stream started.\r\n";
 
     /* Call driver init functions */
     GPIO_init();
     UART_init();
 
-    debugConfig = UARTConfiguration(UARTConfiguration::BLOCKING_MODE, UARTConfiguration::BAUD_115200);
-    debug = UART(&debugConfig, UARTA0);
+    debug_config = UARTConfiguration(UARTConfiguration::BLOCKING_MODE, UARTConfiguration::BAUD_115200);
+    debug = UART(&debug_config, UARTA0);
 
-    debug.perform_write_transaction(echoPrompt, sizeof(echoPrompt));
+    debug.perform_write_transaction(echo_prompt, sizeof(echo_prompt));
 }
 
 DebugStream::~DebugStream() {
@@ -33,10 +33,10 @@ DebugStream::~DebugStream() {
     // TODO Auto-generated destructor stub
 }
 
-void DebugStream::sendMessage(SerialisedMessage serialMsg) {
+void DebugStream::SendMessage(SerialisedMessage serial_msg) {
     char input = 0x0A;
-    //debug.perform_write_transaction(& (char) (serialMsg.size), 1); // TODO Check that the size is always one byte
-    debug.perform_write_transaction(serialMsg.buffer, serialMsg.size);
+    //debug.perform_write_transaction(& (char) (serial_msg.size), 1); // TODO Check that the size is always one byte
+    debug.perform_write_transaction(serial_msg.buffer, serial_msg.size);
     //debug.perform_write_transaction(&input, 1);
 }
 

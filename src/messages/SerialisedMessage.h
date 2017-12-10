@@ -2,18 +2,20 @@
  * SerialisedMessage.h
  *
  *  Created on: 24Nov.,2017
- *      Author: Anthony
+ *      Author: Anthony, Ben
  */
 
 #ifndef SERIALISEDMESSAGE_H_
 #define SERIALISEDMESSAGE_H_
 
+#include <stdint.h>
+
 class SerialisedMessage {
 public:
     char * buffer;
-    int size;
-    SerialisedMessage(int size);
-    SerialisedMessage(int size, char* message);
+    uint16_t size;
+    SerialisedMessage(uint16_t size);
+    SerialisedMessage(uint16_t size, char* message);
     virtual ~SerialisedMessage();
 };
 

@@ -2,7 +2,7 @@
  * TemperatureMessage.h
  *
  *  Created on: 19Nov.,2017
- *      Author: Anthony
+ *      Author: Anthony, Ben
  */
 
 #ifndef TEMPERATUREMESSAGE_H_
@@ -14,11 +14,11 @@
 class TemperatureMessage: public Message {
 public:
     TemperatureMessage();
-    TemperatureMessage(float, int, int);
+    TemperatureMessage(float, uint8_t, uint8_t);
     float temperature;
-    uint8_t sensorId;
+    uint8_t sensor_id;
     uint8_t timestamp;
-    SerialisedMessage serialise();
+    SerialisedMessage Serialise();
 };
 
 #endif /* TEMPERATUREMESSAGE_H_ */

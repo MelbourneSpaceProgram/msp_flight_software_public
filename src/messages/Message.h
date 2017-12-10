@@ -14,7 +14,7 @@ class Message {
 public:
     Message();
     virtual ~Message();
-    virtual SerialisedMessage serialise() = 0;
+    virtual SerialisedMessage Serialise() = 0;
 };
 
 #endif /* MESSAGE_H_ */
