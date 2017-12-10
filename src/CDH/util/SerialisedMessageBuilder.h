@@ -15,7 +15,8 @@ const uint16_t kBufferSize = 256;
 class SerialisedMessageBuilder {
 public:
     enum SerialisedMessageType {kTemperatureSensor = 0,
-                                   kRadiationSensor = 1};
+                                   kRadiationSensor = 1,
+                                   kTestSensor = 3};
     enum SerialisedMessageVersion {kV1 = 0};
     SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version);
     virtual ~SerialisedMessageBuilder();

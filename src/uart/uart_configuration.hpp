@@ -30,7 +30,8 @@ public:
     This defines the possible bit rates for the UART.
   */
   enum bit_rates {
-    BAUD_115200 = 115200
+    BAUD_115200 = 115200,
+    BAUD_9600 = 9600
   };
 
   /**
