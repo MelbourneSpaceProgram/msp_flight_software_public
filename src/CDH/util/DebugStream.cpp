@@ -15,7 +15,6 @@
 #include <src/CDH/util/DebugStream.h>
 
 DebugStream::DebugStream() {
-    char input;
     char echo_prompt[] = "Debug stream started.\r\n";
 
     /* Call driver init functions */
