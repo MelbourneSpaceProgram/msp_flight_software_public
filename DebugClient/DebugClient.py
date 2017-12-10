@@ -43,10 +43,10 @@ while ser.isOpen():
         time.sleep(0.5)
 
         bytesToRead = ser.inWaiting()
-        buf = ser.read()
+        buf = ser.read(bytesToRead)
         if buf != None:
             print(binascii.hexlify(buf))
-            f.write(binascii.hexlify(buf))
+            #f.write(binascii.hexlify(buf))
     except Exception as e:
         print("Error:" + str(e))
         f.close()
