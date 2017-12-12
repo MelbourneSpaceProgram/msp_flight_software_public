@@ -5,30 +5,27 @@
  *      Author: Anthony, Ben
  */
 
-#include <src/uart/uart_configuration.hpp>
-#include <src/uart/uart.hpp>
-
+#include <xdc/std.h>
+#include <src/CDH/util/DebugStream.h>
+#include <ti/sysbios/knl/Task.h>
+#include <src/messages/TestMessage.h>
+#include <src/CDH/util/SerialisedMessageBuilder.h>
 #include "Board.h"
+
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
 
-#include <src/CDH/util/DebugStream.h>
-
 DebugStream::DebugStream() {
     char echo_prompt[] = "Debug stream started.\r\n";
-
-    /* Call driver init functions */
     GPIO_init();
     UART_init();
-
     debug_config = UARTConfiguration(UARTConfiguration::BLOCKING_MODE, UARTConfiguration::BAUD_115200);
     debug = UART(&debug_config, UARTA0);
-
     debug.perform_write_transaction(echo_prompt, sizeof(echo_prompt));
 }
 
 DebugStream::~DebugStream() {
-    // TODO Auto-generated destructor stub
+    // Auto-generated destructor stub
 }
 
 void DebugStream::SendMessage(SerialisedMessage serial_msg) {
@@ -42,3 +39,39 @@ uint8_t DebugStream::ReceiveCode() {
     return (uint8_t)read_code[0];
 }
 
+void *DebugStream::InitDebugStream() { // TODO: Determine proper scoping of this function, should it be static?
+    DebugStream debug_stream;
+    while(1){
+        uint8_t code = debug_stream.ReceiveCode();
+        switch(code) {
+            case SerialisedMessageBuilder::kTemperatureSensor: {
+                TemperatureMessage temp_msg(220.0, 44, 50);
+                SerialisedMessage serial_msg = temp_msg.Serialise();
+                debug_stream.SendMessage(serial_msg);
+                break;
+            }
+
+            case SerialisedMessageBuilder::kRadiationSensor: {
+                // TODO Implement after RadiationSensor data is confirmed
+                break;
+            }
+
+            case SerialisedMessageBuilder::kTestSensor: {
+                SendTestMessage(debug_stream, 0xF0);
+                break;
+            }
+
+            default: {
+                SendTestMessage(debug_stream, 0xFF); // TODO: Replace with invalid request message
+                break;
+            }
+        }
+        Task_sleep(500);
+    }
+}
+
+void DebugStream::SendTestMessage(DebugStream debug_stream, char data) {
+    TestMessage msg(data);
+    SerialisedMessage serial_msg = msg.Serialise();
+    debug_stream.SendMessage(serial_msg);
+}
