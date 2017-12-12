@@ -1,10 +1,3 @@
-/*
- * DebugStream.cpp
- *
- *  Created on: 19Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #include <xdc/std.h>
 #include <src/CDH/util/DebugStream.h>
 #include <ti/sysbios/knl/Task.h>

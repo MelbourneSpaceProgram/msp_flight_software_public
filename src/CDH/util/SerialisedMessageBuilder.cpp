@@ -1,10 +1,3 @@
-/*
- * SerialisedMessageBuilder.cpp
- *
- *  Created on: 24Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #include <src/CDH/util/SerialisedMessageBuilder.h>
 #include <stdint.h>
 

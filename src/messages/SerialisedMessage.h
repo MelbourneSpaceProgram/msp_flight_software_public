@@ -1,10 +1,3 @@
-/*
- * SerialisedMessage.h
- *
- *  Created on: 24Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #ifndef SERIALISEDMESSAGE_H_
 #define SERIALISEDMESSAGE_H_
 

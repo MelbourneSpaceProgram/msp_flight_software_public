@@ -1,10 +1,3 @@
-/*
- * DebugStream.h
- *
- *  Created on: 19Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #ifndef DEBUGSTREAM_H_
 #define DEBUGSTREAM_H_
 

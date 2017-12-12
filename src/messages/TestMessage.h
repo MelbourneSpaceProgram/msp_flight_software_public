@@ -1,10 +1,3 @@
-/*
- * TestMessage.h
- *
- *  Created on: 10Dec.,2017
- *      Author: Ben
- */
-
 #ifndef TESTMESSAGE_H_
 #define TESTMESSAGE_H_
 

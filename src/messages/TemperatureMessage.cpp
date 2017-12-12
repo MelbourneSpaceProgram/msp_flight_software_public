@@ -1,10 +1,3 @@
-/*
- * TemperatureMessage.cpp
- *
- *  Created on: 19Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #include <src/CDH/util/SerialisedMessageBuilder.h>
 #include <src/messages/TemperatureMessage.h>
 

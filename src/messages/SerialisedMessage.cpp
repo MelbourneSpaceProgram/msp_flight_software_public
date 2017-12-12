@@ -1,10 +1,3 @@
-/*
- * SerialisedMessage.cpp
- *
- *  Created on: 24Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #include <src/messages/SerialisedMessage.h>
 #include <stdint.h>
 #include <stddef.h>
