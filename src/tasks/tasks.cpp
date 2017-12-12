@@ -30,13 +30,19 @@ void *debugStream(){
                 TemperatureMessage temp_msg(220.0, 44, 50);
                 SerialisedMessage serial_msg = temp_msg.Serialise();
                 debug_stream.SendMessage(serial_msg);
-            }
+            } break;
+
             case SerialisedMessageBuilder::kRadiationSensor: {
                 // TODO
-            }
+            } break;
+
             case SerialisedMessageBuilder::kTestSensor: {
                 sendTestMessage(debug_stream, 0xF0);
-            }
+            } break;
+
+            default: {
+                sendTestMessage(debug_stream, 0xFF); // TODO: Replace with invalid request message
+            } break;
         }
         Task_sleep(500);
     }
