@@ -13,7 +13,7 @@ TestMessage::TestMessage(char data) {
 }
 
 TestMessage::~TestMessage() {
-    // TODO Auto-generated destructor stub
+    // Auto-generated destructor stub
 }
 
 SerialisedMessage TestMessage::Serialise() {

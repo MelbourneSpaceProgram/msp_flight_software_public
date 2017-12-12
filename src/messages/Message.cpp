@@ -8,11 +8,11 @@
 #include <src/messages/Message.h>
 
 Message::Message() {
-    // TODO Auto-generated constructor stub
+    // Auto-generated constructor stub
 
 }
 
 Message::~Message() {
-    // TODO Auto-generated destructor stub
+    // Auto-generated destructor stub
 }
 
