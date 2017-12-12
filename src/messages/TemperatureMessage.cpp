@@ -9,7 +9,7 @@
 #include <src/messages/TemperatureMessage.h>
 
 TemperatureMessage::TemperatureMessage() {
-    // TODO Auto-generated constructor stub
+    // Auto-generated constructor stub
 
 }
 
