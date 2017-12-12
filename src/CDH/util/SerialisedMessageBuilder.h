@@ -27,7 +27,7 @@ public:
     template <class T>
     SerialisedMessageBuilder& AddData(T data) {
         if(sizeof(T) > kBufferSize - serialised_length) {
-            // TODO: Throw and handle exception
+            // TODO: Throw and handle exception after exception system is determined
         } else {
             std::memcpy(serialised_message_buffer + serialised_length, &data, sizeof(T));
             serialised_length += sizeof(T);

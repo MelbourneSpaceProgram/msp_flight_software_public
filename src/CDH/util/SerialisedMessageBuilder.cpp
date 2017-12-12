@@ -16,7 +16,7 @@ SerialisedMessageBuilder::SerialisedMessageBuilder(SerialisedMessageType type, S
 }
 
 SerialisedMessageBuilder::~SerialisedMessageBuilder() {
-    // TODO Auto-generated destructor stub
+    // Auto-generated destructor stub
 }
 
 int SerialisedMessageBuilder::GetSerialisedLength() {
