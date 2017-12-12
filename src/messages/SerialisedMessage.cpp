@@ -21,5 +21,5 @@ SerialisedMessage::SerialisedMessage(uint16_t size, char* message) {
 }
 
 SerialisedMessage::~SerialisedMessage() {
-    // TODO Auto-generated destructor stub
+    // Auto-generated destructor stub
 }
