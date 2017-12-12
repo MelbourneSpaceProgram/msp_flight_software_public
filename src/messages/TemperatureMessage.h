@@ -1,10 +1,3 @@
-/*
- * TemperatureMessage.h
- *
- *  Created on: 19Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #ifndef TEMPERATUREMESSAGE_H_
 #define TEMPERATUREMESSAGE_H_
 

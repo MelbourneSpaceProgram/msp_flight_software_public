@@ -1,10 +1,3 @@
-/*
- * Message.h
- *
- *  Created on: 24Nov.,2017
- *      Author: Anthony
- */
-
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 

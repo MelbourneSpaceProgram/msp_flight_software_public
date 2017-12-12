@@ -1,10 +1,3 @@
-/*
- * TestMessage.cpp
- *
- *  Created on: 10Dec.,2017
- *      Author: Ben
- */
-
 #include <src/CDH/util/SerialisedMessageBuilder.h>
 #include <src/messages/TestMessage.h>
 

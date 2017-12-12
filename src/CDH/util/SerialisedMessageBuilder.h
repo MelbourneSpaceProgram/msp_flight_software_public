@@ -1,10 +1,3 @@
-/*
- * SerialisedMessageBuilder.h
- *
- *  Created on: 24Nov.,2017
- *      Author: Anthony, Ben
- */
-
 #ifndef SERIALISEDMESSAGEBUILDER_H_
 #define SERIALISEDMESSAGEBUILDER_H_
 
