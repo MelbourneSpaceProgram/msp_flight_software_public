@@ -1,43 +1,35 @@
-import time as t, serial, sys, datetime
-import requestcodes
+import time as systime
+import requestcodes, serial, sys, datetime, atexit
 
-### Functions ###
+"""
+Returns a formatted string from raw serial input
 
-def parseTemperature(rawData):
-    rawTemperature = rawData[0:4] #TODO: Convert to 32 bit float
-    rawSensorId = rawData[4]
-    rawTimeStamp = rawData[5]
-    return "( Temp: {}, ID: {}, Time: {} )".format(rawTemperature, rawSensorId, rawTimeStamp)
+:param buf: Raw serial input
+:returns: Formatted string for writing to console or log
+"""
 
-def parseRadiation(rawData):
-    #TODO: Implement
-    return "This function is yet to be implemented"
-
-def parseTest(rawData):
-    return "{}".format(rawData[0])
 
 def processReceived(buf):
     version = buf[1]
+    code = buf[0]
     if version == requestcodes.VERSION:
         rawData = buf[2:]
-        if buf[0] == requestcodes.TEMPERATURE:
-            data = parseTemperature(rawData)
-            type = "Temperature"
-        elif buf[0] == requestcodes.RADIATION:
-            data = parseRadiation(rawData)
-            type = "Radiation"
-        elif buf[0] == requestcodes.TEST:
-            data = parseTest(rawData)
-            type = "Test"
-        else:
-            return "Invalid Type Received"
+        data = requestcodes.dispatch[code](rawData)
     else:
         return "Invalid Version Received"
 
-    return "V{} {}: {}".format(version, type, data)
+    return "V{} {}".format(version, data)
+
+
+"""
+Sends a debug request to the MSP432 and returns the raw value of the received input
+
+:param code: The code of the debug request to be sent, see requestcodes.py 
+:returns: The raw value of the received input, or False if read was unsuccessful
+"""
+
 
 def debugRequest(code):
-
     ser.flushInput()  # flush input buffer, discarding all its contents
     ser.flushOutput()  # flush output buffer, aborting current output and discard all that is in buffer
 
@@ -48,7 +40,7 @@ def debugRequest(code):
     bytesToRead = ser.inWaiting()
     receivedResponse = False
 
-    while receivedResponse == False: # TODO: Fix to exit via timeout instead of staying in infinite loop
+    while receivedResponse == False:  # TODO: Fix to exit via timeout instead of staying in infinite loop
         if bytesToRead > 0:
             buf = ser.readline(bytesToRead)
             if buf[0] == code:
@@ -57,8 +49,23 @@ def debugRequest(code):
     return False
 
 
+"""
+Closes open files and serial ports
+"""
+
+
+def closeHandles():
+    print("Closing Log File")
+    f.close()
+    print("Closing Serial Port")
+    ser.close()
+    print("Debug Client Terminated")
+
+
 ### Main Program ###
 
+
+atexit.register(closeHandles)
 userPort = input("Enter port (COM4):") or "COM4"
 userBaud = input("Enter baud rate (115200):") or 115200
 userByteOrder = input("Set Endianness - [b]ig/[l]ittle/(s)ystem")
@@ -77,11 +84,11 @@ ser.baudrate = userBaud
 ser.bytesize = serial.EIGHTBITS
 ser.parity = serial.PARITY_NONE
 ser.stopbits = serial.STOPBITS_ONE
-ser.timeout = 1      #TODO: Check if should have a timeout
-ser.xonxoff = False     #disable software flow control
-ser.rtscts = False     #disable hardware (RTS/CTS) flow control
-ser.dsrdtr = False       #disable hardware (DSR/DTR) flow control
-ser.writeTimeout = 2     #timeout for write
+ser.timeout = 1  # TODO: Check if should have a timeout
+ser.xonxoff = False  # disable software flow control
+ser.rtscts = False  # disable hardware (RTS/CTS) flow control
+ser.dsrdtr = False  # disable hardware (DSR/DTR) flow control
+ser.writeTimeout = 2  # timeout for write
 
 try:
     ser.open()
@@ -106,14 +113,11 @@ while ser.isOpen():
             f.write(str(time) + ": " + processReceived(buf) + "\n")
             f.flush()
             print('')
-        t.sleep(1)
+        systime.sleep(1)
 
     except Exception as e:
         print("Error:" + str(e))
         f.close()
         exit()
 
-print("Stop DebugClient")
-f.close()
-
-
+closeHandles()
