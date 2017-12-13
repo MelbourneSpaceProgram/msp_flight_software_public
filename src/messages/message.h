@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 
-#include <src/messages/SerialisedMessage.h>
+#include "src/messages/serialised_message.h"
 
 class Message {
 public:

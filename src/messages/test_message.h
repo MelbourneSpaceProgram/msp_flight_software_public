@@ -1,8 +1,8 @@
-#ifndef TESTMESSAGE_H_
-#define TESTMESSAGE_H_
+#ifndef TEST_MESSAGE_H_
+#define TEST_MESSAGE_H_
 
-#include <src/messages/Message.h>
 #include <stdint.h>
+#include "message.h"
 
 class TestMessage: public Message {
 public:
@@ -13,4 +13,4 @@ private:
     char message_content;
 };
 
-#endif /* TESTMESSAGE_H_ */
+#endif /* TEST_MESSAGE_H_ */

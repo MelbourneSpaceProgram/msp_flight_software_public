@@ -1,5 +1,5 @@
-#include <src/CDH/util/SerialisedMessageBuilder.h>
-#include <src/messages/TemperatureMessage.h>
+#include <src/CDH/util/serialised_message_builder.h>
+#include "src/messages/temperature_message.h"
 
 TemperatureMessage::TemperatureMessage() {
     // Auto-generated constructor stub
@@ -14,8 +14,6 @@ TemperatureMessage::TemperatureMessage(float temperature, uint8_t timestamp, uin
 
 SerialisedMessage TemperatureMessage::Serialise() {
     SerialisedMessageBuilder builder(SerialisedMessageBuilder::kTemperatureSensor, SerialisedMessageBuilder::kV1);
-    builder.AddData<int>(sensor_id);
-    builder.AddData<int>(timestamp);
-    builder.AddData<float>(temperature);
+    builder.AddData<uint8_t>(sensor_id).AddData<uint8_t>(timestamp).AddData<float>(temperature);
     return builder.Build();
 }
