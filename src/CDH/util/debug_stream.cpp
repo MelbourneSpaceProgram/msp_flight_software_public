@@ -1,9 +1,9 @@
-#include <src/CDH/util/debug_stream.h>
-#include <src/CDH/util/serialised_message_builder.h>
 #include <xdc/std.h>
 #include <ti/sysbios/knl/Task.h>
 #include "src/messages/test_message.h"
 #include "src/util/data_types.h"
+#include "src/CDH/util/debug_stream.h"
+#include "src/CDH/util/serialised_message_builder.h"
 #include "Board.h"
 
 #define UARTA0 MSP_EXP432P401R_UARTA0
