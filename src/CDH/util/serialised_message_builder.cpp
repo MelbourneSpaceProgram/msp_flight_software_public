@@ -1,5 +1,5 @@
-#include <src/CDH/util/serialised_message_builder.h>
 #include <stdint.h>
+#include "src/CDH/util/serialised_message_builder.h"
 
 SerialisedMessageBuilder::SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version) {
     serialised_length = 0;
