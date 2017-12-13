@@ -1,4 +1,4 @@
-#include <src/CDH/util/SerialisedMessageBuilder.h>
+#include <src/CDH/util/serialised_message_builder.h>
 #include <stdint.h>
 
 SerialisedMessageBuilder::SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version) {
@@ -16,7 +16,7 @@ int SerialisedMessageBuilder::GetSerialisedLength() {
     return serialised_length;
 }
 
-char* SerialisedMessageBuilder::GetSerialisedMessageBuffer() {
+byte* SerialisedMessageBuilder::GetSerialisedMessageBuffer() {
     return serialised_message_buffer;
 }
 

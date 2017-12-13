@@ -1,15 +1,15 @@
-#include <src/messages/SerialisedMessage.h>
 #include <stdint.h>
 #include <stddef.h>
+#include "src/messages/serialised_message.h"
 
 SerialisedMessage::SerialisedMessage(uint16_t size) {
-    buffer = new char[size];
+    buffer = new byte[size];
     this->size = size;
 }
 
-SerialisedMessage::SerialisedMessage(uint16_t size, char* message) {
+SerialisedMessage::SerialisedMessage(uint16_t size, byte* message) {
     this->size = size;
-    buffer = new char[size];
+    buffer = new byte[size];
     std::memcpy(buffer, message, (size_t) size);
 }
 

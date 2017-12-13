@@ -1,5 +1,5 @@
-#include <src/CDH/util/SerialisedMessageBuilder.h>
-#include <src/messages/TestMessage.h>
+#include <src/CDH/util/serialised_message_builder.h>
+#include "src/messages/test_message.h"
 
 TestMessage::TestMessage(char data) {
     message_content = data;

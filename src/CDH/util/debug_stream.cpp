@@ -1,8 +1,9 @@
+#include <src/CDH/util/debug_stream.h>
+#include <src/CDH/util/serialised_message_builder.h>
 #include <xdc/std.h>
-#include <src/CDH/util/DebugStream.h>
 #include <ti/sysbios/knl/Task.h>
-#include <src/messages/TestMessage.h>
-#include <src/CDH/util/SerialisedMessageBuilder.h>
+#include "src/messages/test_message.h"
+#include "src/util/data_types.h"
 #include "Board.h"
 
 #define UARTA0 MSP_EXP432P401R_UARTA0
@@ -22,13 +23,13 @@ DebugStream::~DebugStream() {
 }
 
 void DebugStream::SendMessage(SerialisedMessage serial_msg) {
-    debug.perform_write_transaction(serial_msg.buffer, serial_msg.size);
+    debug.perform_write_transaction((char*) serial_msg.buffer, serial_msg.size); //TODO: Remove explicit typecast after UART cleanup
 }
 
 uint8_t DebugStream::ReceiveCode() {
-    char read_code[1];
+    uint8_t read_code[1];
     uint8_t read_code_length = 1;
-    debug.perform_read_transaction(read_code, read_code_length);
+    debug.perform_read_transaction((char*) read_code, read_code_length); //TODO: Remove explicit typecast after UART cleanup
     return (uint8_t)read_code[0];
 }
 
@@ -63,7 +64,7 @@ void *DebugStream::InitDebugStream() { // TODO: Determine proper scoping of this
     }
 }
 
-void DebugStream::SendTestMessage(DebugStream debug_stream, char data) {
+void DebugStream::SendTestMessage(DebugStream debug_stream, byte data) {
     TestMessage msg(data);
     SerialisedMessage serial_msg = msg.Serialise();
     debug_stream.SendMessage(serial_msg);

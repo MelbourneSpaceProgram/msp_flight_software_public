@@ -1,8 +1,9 @@
-#ifndef SERIALISEDMESSAGEBUILDER_H_
-#define SERIALISEDMESSAGEBUILDER_H_
+#ifndef SERIALISED_MESSAGE_BUILDER_H_
+#define SERIALISED_MESSAGE_BUILDER_H_
 
-#include <src/messages/SerialisedMessage.h>
 #include <cstdio>
+#include "src/messages/serialised_message.h"
+#include "src/util/data_types.h"
 
 const uint16_t kBufferSize = 256;
 
@@ -15,7 +16,7 @@ public:
     SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version);
     virtual ~SerialisedMessageBuilder();
     int GetSerialisedLength();
-    char *GetSerialisedMessageBuffer();
+    byte *GetSerialisedMessageBuffer();
     SerialisedMessage Build();
     template <class T>
     SerialisedMessageBuilder& AddData(T data) {
@@ -29,7 +30,7 @@ public:
     }
 private:
     int serialised_length;
-    char serialised_message_buffer[kBufferSize];
+    byte serialised_message_buffer[kBufferSize];
 };
 
-#endif /* SERIALISEDMESSAGEBUILDER_H_ */
+#endif /* SERIALISED_MESSAGE_BUILDER_H_ */

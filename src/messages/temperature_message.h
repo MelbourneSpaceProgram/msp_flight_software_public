@@ -1,8 +1,8 @@
-#ifndef TEMPERATUREMESSAGE_H_
-#define TEMPERATUREMESSAGE_H_
+#ifndef TEMPERATURE_MESSAGE_H_
+#define TEMPERATURE_MESSAGE_H_
 
-#include <src/messages/Message.h>
 #include <stdint.h>
+#include "message.h"
 
 class TemperatureMessage: public Message {
 public:
@@ -14,4 +14,4 @@ public:
     SerialisedMessage Serialise();
 };
 
-#endif /* TEMPERATUREMESSAGE_H_ */
+#endif /* TEMPERATURE_MESSAGE_H_ */
