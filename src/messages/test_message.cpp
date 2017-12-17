@@ -5,10 +5,6 @@ TestMessage::TestMessage(char data) {
     message_content = data;
 }
 
-TestMessage::~TestMessage() {
-    // Auto-generated destructor stub
-}
-
 SerialisedMessage TestMessage::Serialise() {
     SerialisedMessageBuilder builder(SerialisedMessageBuilder::kTestSensor, SerialisedMessageBuilder::kV1);
     builder.AddData<char>(message_content);

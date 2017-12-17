@@ -7,7 +7,7 @@
 class TestMessage: public Message {
 public:
     TestMessage(char data);
-    virtual ~TestMessage();
+    virtual ~TestMessage() {};
     SerialisedMessage Serialise();
 private:
     char message_content;

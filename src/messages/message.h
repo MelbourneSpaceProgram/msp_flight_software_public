@@ -5,8 +5,8 @@
 
 class Message {
 public:
-    Message();
-    virtual ~Message();
+    Message() {};
+    virtual ~Message() {};
     virtual SerialisedMessage Serialise() = 0;
 };
 

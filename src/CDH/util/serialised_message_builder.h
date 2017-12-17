@@ -14,7 +14,7 @@ public:
                                    kTestSensor = 3};    //TODO: Should this enum necessarily be in this file?
     enum SerialisedMessageVersion {kV1 = 0};
     SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version);
-    virtual ~SerialisedMessageBuilder();
+    virtual ~SerialisedMessageBuilder() {};
     int GetSerialisedLength();
     byte *GetSerialisedMessageBuffer();
     SerialisedMessage Build();

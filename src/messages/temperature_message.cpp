@@ -3,7 +3,6 @@
 
 TemperatureMessage::TemperatureMessage() {
     // Auto-generated constructor stub
-
 }
 
 TemperatureMessage::TemperatureMessage(float temperature, uint8_t timestamp, uint8_t sensor_id) {
