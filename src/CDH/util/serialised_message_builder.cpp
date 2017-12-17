@@ -8,10 +8,6 @@ SerialisedMessageBuilder::SerialisedMessageBuilder(SerialisedMessageType type, S
     serialised_length = 2;
 }
 
-SerialisedMessageBuilder::~SerialisedMessageBuilder() {
-    // Auto-generated destructor stub
-}
-
 int SerialisedMessageBuilder::GetSerialisedLength() {
     return serialised_length;
 }

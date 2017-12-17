@@ -18,10 +18,6 @@ DebugStream::DebugStream() {
     debug.perform_write_transaction(echo_prompt, sizeof(echo_prompt));
 }
 
-DebugStream::~DebugStream() {
-    // Auto-generated destructor stub
-}
-
 void DebugStream::SendMessage(SerialisedMessage serial_msg) {
     debug.perform_write_transaction((char*) serial_msg.buffer, serial_msg.size); //TODO: Remove explicit typecast after UART cleanup
 }

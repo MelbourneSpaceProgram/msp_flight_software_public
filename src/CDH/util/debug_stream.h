@@ -17,7 +17,7 @@ private:
     UART debug;
 public:
     static void *InitDebugStream();
-    virtual ~DebugStream();
+    virtual ~DebugStream() {};
     void SendMessage(SerialisedMessage serial_msg);
     uint8_t ReceiveCode();
 };
