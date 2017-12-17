@@ -1,7 +1,8 @@
-#include <stdint.h>
 #include "src/CDH/util/serialised_message_builder.h"
+#include <stdint.h>
 
-SerialisedMessageBuilder::SerialisedMessageBuilder(SerialisedMessageType type, SerialisedMessageVersion version) {
+SerialisedMessageBuilder::SerialisedMessageBuilder(
+    SerialisedMessageType type, SerialisedMessageVersion version) {
     serialised_length = 0;
     serialised_message_buffer[0] = type;
     serialised_message_buffer[1] = version;
@@ -19,4 +20,3 @@ byte* SerialisedMessageBuilder::GetSerialisedMessageBuffer() {
 SerialisedMessage SerialisedMessageBuilder::Build() {
     return SerialisedMessage(serialised_length, serialised_message_buffer);
 }
-
