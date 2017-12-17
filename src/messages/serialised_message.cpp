@@ -14,5 +14,5 @@ SerialisedMessage::SerialisedMessage(uint16_t size, byte* message) {
 }
 
 SerialisedMessage::~SerialisedMessage() {
-    // Auto-generated destructor stub
+    delete[] buffer;
 }
