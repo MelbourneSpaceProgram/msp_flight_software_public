@@ -1,11 +1,11 @@
-#ifndef TEMPERATURE_MESSAGE_H_
-#define TEMPERATURE_MESSAGE_H_
+#ifndef SRC_MESSAGES_TEMPERATURE_MESSAGE_H_
+#define SRC_MESSAGES_TEMPERATURE_MESSAGE_H_
 
 #include <stdint.h>
-#include "message.h"
+#include "src/messages/message.h"
 
-class TemperatureMessage: public Message {
-public:
+class TemperatureMessage : public Message {
+   public:
     TemperatureMessage();
     TemperatureMessage(float, uint8_t, uint8_t);
     float temperature;
@@ -14,4 +14,4 @@ public:
     SerialisedMessage Serialise();
 };
 
-#endif /* TEMPERATURE_MESSAGE_H_ */
+#endif /* SRC_MESSAGES_TEMPERATURE_MESSAGE_H_ */
