@@ -1,13 +1,10 @@
+#include <src/CDH/util/debug_stream.h>
+#include <src/CDH/util/serialised_message_builder.h>
 #include <src/tasks/tasks.hpp>
 #include <xdc/std.h>
 #include <ti/sysbios/knl/Task.h>
-
-#include <src/uart/uart_configuration.hpp>
-#include <src/uart/uart.hpp>
-
-#include <src/CDH/util/DebugStream.h>
-
-#include <src/messages/TemperatureMessage.h>
+#include <src/messages/serialised_message.h>
+#include <src/messages/test_message.h>
 #include "Board.h"
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
@@ -15,18 +12,6 @@
 Task_Struct debugStream_task_struct;
 Char debugStream_stack[2048];
 
-void *debugStream(){
-    DebugStream debugStream;
-
-
-    while(1){
-        // Generate some various messages
-        TemperatureMessage msg(229, 33, 44);
-        SerialisedMessage serialMsg = msg.serialise();
-        debugStream.sendMessage(serialMsg);
-        Task_sleep(50);
-    }
-}
 void InitTasks() {
 
     Task_Params taskParams;
@@ -36,8 +21,8 @@ void InitTasks() {
     taskParams.stack = &debugStream_stack;
     taskParams.priority = 6;
 
-    Task_construct(&debugStream_task_struct, (Task_FuncPtr) debugStream, &taskParams, NULL);
+    Task_construct(&debugStream_task_struct, (Task_FuncPtr) DebugStream::InitDebugStream, &taskParams, NULL);
     Task_Handle task = Task_handle(&debugStream_task_struct);
 
-    InitMCP9808ReadTask();
+    //InitMCP9808ReadTask();
 }
