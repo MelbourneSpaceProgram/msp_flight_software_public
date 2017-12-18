@@ -7,9 +7,7 @@
 #include "Board.h"
 
 
-int main(void)
-    {
-
+int main(void) {
     init_core();
     init_time();
     init_logger();
