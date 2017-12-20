@@ -36,7 +36,7 @@ uint8_t DebugStream::ReceiveCode() {
 
 // TODO(dingbenjamin): Determine proper scoping of this function, should it be
 // static?
-void *DebugStream::InitDebugStream() {
+void *DebugStream::InitTestDebugStream() {
     DebugStream debug_stream;
     while (1) {
         uint8_t code = debug_stream.ReceiveCode();

@@ -19,7 +19,7 @@ class DebugStream {
     UART debug;
 
    public:
-    static void *InitDebugStream();
+    static void *InitTestDebugStream();
     virtual ~DebugStream() {}
     void SendMessage(SerialisedMessage serial_msg);
     uint8_t ReceiveCode();
