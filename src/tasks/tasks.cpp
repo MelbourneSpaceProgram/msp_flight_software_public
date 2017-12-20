@@ -21,7 +21,7 @@ void InitTasks() {
     taskParams.stack = &debugStream_stack;
     taskParams.priority = 6;
 
-    Task_construct(&debugStream_task_struct, (Task_FuncPtr) DebugStream::InitDebugStream, &taskParams, NULL);
+    Task_construct(&debugStream_task_struct, (Task_FuncPtr) DebugStream::InitTestDebugStream, &taskParams, NULL);
     Task_Handle task = Task_handle(&debugStream_task_struct);
 
     //InitMCP9808ReadTask();
