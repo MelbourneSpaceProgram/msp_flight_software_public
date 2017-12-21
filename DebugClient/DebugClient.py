@@ -10,16 +10,17 @@ Returns a formatted string from raw serial input
 
 
 def processReceived(buf):
-    version = buf[1]
-    code = buf[0]
-    if version == requestcodes.VERSION:
-        rawData = buf[2:]
-        data = requestcodes.dispatch[code](rawData)
-    else:
-        return "Invalid Version Received"
+    if len(buf) > 2:
+        version = buf[1]
+        code = buf[0]
+        if version == requestcodes.VERSION:
+            rawData = buf[2:]
+            data = requestcodes.dispatch[code](rawData)
+        else:
+            return "Invalid Version Received"
 
-    return "V{} {}".format(version, data)
-
+        return "V{} {}".format(version, data)
+    return "Invalid data received"
 
 """
 Sends a debug request to the MSP432 and returns the raw value of the received input
@@ -41,8 +42,8 @@ def debugRequest(code):
     receivedResponse = False
 
     while receivedResponse == False:  # TODO: Fix to exit via timeout instead of staying in infinite loop
-        if bytesToRead > 0:
-            buf = ser.readline(bytesToRead)
+        if bytesToRead > 2: # Must contain at least version and response code bytes
+            buf = ser.read(bytesToRead)
             if buf[0] == code:
                 return buf[1:]
         bytesToRead = ser.inWaiting()
@@ -84,7 +85,7 @@ ser.baudrate = userBaud
 ser.bytesize = serial.EIGHTBITS
 ser.parity = serial.PARITY_NONE
 ser.stopbits = serial.STOPBITS_ONE
-ser.timeout = 1  # TODO: Check if should have a timeout
+ser.timeout = None  # TODO: Check if should have a timeout
 ser.xonxoff = False  # disable software flow control
 ser.rtscts = False  # disable hardware (RTS/CTS) flow control
 ser.dsrdtr = False  # disable hardware (DSR/DTR) flow control
