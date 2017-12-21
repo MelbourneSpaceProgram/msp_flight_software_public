@@ -6,11 +6,11 @@
 
 class SerialisedMessage {
    public:
-    byte* buffer;
+    static const uint16_t kMaxSerialisedSize = 300;
+    byte buffer[kMaxSerialisedSize];
     uint16_t size;
     explicit SerialisedMessage(uint16_t size);
     SerialisedMessage(uint16_t size, byte* message);
-    ~SerialisedMessage();
 };
 
-#endif /* SRC_MESSAGES_SERIALISED_MESSAGE_H_ */
+#endif  // SRC_MESSAGES_SERIALISED_MESSAGE_H_
