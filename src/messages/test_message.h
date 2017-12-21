@@ -3,10 +3,11 @@
 
 #include <stdint.h>
 #include "src/messages/message.h"
+#include "src/util/data_types.h"
 
 class TestMessage : public Message {
    public:
-    explicit TestMessage(char data);
+    explicit TestMessage(byte data);
     virtual ~TestMessage() {}
     SerialisedMessage Serialise();
 
