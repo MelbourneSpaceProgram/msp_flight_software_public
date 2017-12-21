@@ -101,9 +101,16 @@ print("Port " + ser.portstr + " opened.")
 f = open(userLogName, "a+")
 f.write("Start Log: " + str(datetime.datetime.now()) + "\n")
 
+toggle = True
 while ser.isOpen():
     try:
-        buf = debugRequest(requestcodes.TEST)
+        if toggle:
+            buf = debugRequest(requestcodes.TEMPERATURE)
+            toggle = False
+        else:
+            buf = debugRequest(requestcodes.TEST)
+            toggle = True
+
         if buf == False:
             print("Received debug message invalid")
         else:
