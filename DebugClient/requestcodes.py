@@ -15,9 +15,9 @@ Parses bytes data (minus header information) to retrieve temperature
 
 
 def parseTemperature(rawData):
-    rawTemperature = rawData[0:4]  # TODO: Convert to 32 bit float
-    rawSensorId = rawData[4]
-    rawTimeStamp = rawData[5]
+    rawTemperature = rawData[2:6]  # TODO: Convert to 32 bit float
+    rawSensorId = rawData[0]
+    rawTimeStamp = rawData[1]
     return "Temp: {}, ID: {}, Time: {}".format(rawTemperature, rawSensorId, rawTimeStamp)
 
 

@@ -1,6 +1,8 @@
 #ifndef MSP_DATA_TYPES_HPP
 #define MSP_DATA_TYPES_HPP
 
-typedef unsigned char byte;
+#include <stdint.h>
 
-#endif //MSP_DATA_TYPES_HPP
+typedef uint8_t byte;
+
+#endif  // MSP_DATA_TYPES_HPP

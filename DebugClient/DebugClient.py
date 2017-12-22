@@ -10,15 +10,17 @@ Returns a formatted string from raw serial input
 
 
 def processReceived(buf):
-    version = buf[1]
-    code = buf[0]
-    if version == requestcodes.VERSION:
-        rawData = buf[2:]
-        data = requestcodes.dispatch[code](rawData)
-    else:
-        return "Invalid Version Received"
+    if len(buf) > 2:
+        version = buf[1]
+        code = buf[0]
+        if version == requestcodes.VERSION:
+            rawData = buf[2:]
+            data = requestcodes.dispatch[code](rawData)
+        else:
+            return "Invalid Version Received"
 
-    return "V{} {}".format(version, data)
+        return "V{} {}".format(version, data)
+    return "Invalid data received"
 
 
 """
@@ -29,21 +31,21 @@ Sends a debug request to the MSP432 and returns the raw value of the received in
 """
 
 
-def debugRequest(code):
+def requestMessage(messageType):
     ser.flushInput()  # flush input buffer, discarding all its contents
     ser.flushOutput()  # flush output buffer, aborting current output and discard all that is in buffer
 
     # Write code
-    ser.write([code])
+    ser.write([messageType])
 
     # Read code
     bytesToRead = ser.inWaiting()
     receivedResponse = False
 
     while receivedResponse == False:  # TODO: Fix to exit via timeout instead of staying in infinite loop
-        if bytesToRead > 0:
-            buf = ser.readline(bytesToRead)
-            if buf[0] == code:
+        if bytesToRead > 2:  # Must contain at least version and response code bytes
+            buf = ser.read(bytesToRead)
+            if buf[0] == messageType:
                 return buf[1:]
         bytesToRead = ser.inWaiting()
     return False
@@ -60,6 +62,40 @@ def closeHandles():
     print("Closing Serial Port")
     ser.close()
     print("Debug Client Terminated")
+
+
+"""
+Loop for testing of debug stream
+"""
+
+
+def testLoop():
+    toggle = True
+    while ser.isOpen():
+        try:
+            if toggle:
+                buf = requestMessage(requestcodes.TEMPERATURE)
+                toggle = False
+            else:
+                buf = requestMessage(requestcodes.TEST)
+                toggle = True
+
+            if buf == False:
+                print("Received debug message invalid")
+            else:
+                time = datetime.datetime.now()
+                print(time)
+                print("Raw Data: {}".format(buf))
+                print(processReceived(buf))
+                f.write(str(time) + ": " + processReceived(buf) + "\n")
+                f.flush()
+                print('')
+            systime.sleep(1)
+
+        except Exception as e:
+            print("Error:" + str(e))
+            f.close()
+            exit()
 
 
 ### Main Program ###
@@ -84,7 +120,7 @@ ser.baudrate = userBaud
 ser.bytesize = serial.EIGHTBITS
 ser.parity = serial.PARITY_NONE
 ser.stopbits = serial.STOPBITS_ONE
-ser.timeout = 1  # TODO: Check if should have a timeout
+ser.timeout = None  # TODO: Check if should have a timeout
 ser.xonxoff = False  # disable software flow control
 ser.rtscts = False  # disable hardware (RTS/CTS) flow control
 ser.dsrdtr = False  # disable hardware (DSR/DTR) flow control
@@ -100,24 +136,6 @@ print("Port " + ser.portstr + " opened.")
 f = open(userLogName, "a+")
 f.write("Start Log: " + str(datetime.datetime.now()) + "\n")
 
-while ser.isOpen():
-    try:
-        buf = debugRequest(requestcodes.TEST)
-        if buf == False:
-            print("Received debug message invalid")
-        else:
-            time = datetime.datetime.now()
-            print(time)
-            print("Raw Data: {}".format(buf))
-            print(processReceived(buf))
-            f.write(str(time) + ": " + processReceived(buf) + "\n")
-            f.flush()
-            print('')
-        systime.sleep(1)
-
-    except Exception as e:
-        print("Error:" + str(e))
-        f.close()
-        exit()
+testLoop()
 
 closeHandles()

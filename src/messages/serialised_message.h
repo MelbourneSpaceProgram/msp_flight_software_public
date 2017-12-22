@@ -6,11 +6,11 @@
 
 class SerialisedMessage {
    public:
-    byte* buffer;
     uint16_t size;
+    byte* buffer;
     explicit SerialisedMessage(uint16_t size);
     SerialisedMessage(uint16_t size, byte* message);
-    virtual ~SerialisedMessage();
+    ~SerialisedMessage();
 };
 
-#endif /* SRC_MESSAGES_SERIALISED_MESSAGE_H_ */
+#endif  // SRC_MESSAGES_SERIALISED_MESSAGE_H_
