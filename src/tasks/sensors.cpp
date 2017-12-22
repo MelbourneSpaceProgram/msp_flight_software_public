@@ -5,8 +5,6 @@
 #include <src/i2c/i2c_configuration.hpp>
 #include <src/i2c/sensors/mcp9808.hpp>
 #include <src/observers/sample_temp_observer.hpp>
-#include <xdc/std.h>
-#include <xdc/runtime/Log.h>
 
 Task_Struct mcp9808_read_task_struct;
 Char mcp9808_stack[TASKSTACKSIZE];
@@ -30,8 +28,6 @@ void MCP9808ReadTask() {
     double reading = mcp9808.get_reading();
 
     string id = mcp9808.get_id();
-
-    Log_info0("Hello world");
 
     i2c_bus.close();
 
