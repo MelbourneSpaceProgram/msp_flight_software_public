@@ -11,10 +11,6 @@ class SerialisedMessage {
     explicit SerialisedMessage(uint16_t size);
     SerialisedMessage(uint16_t size, byte* message);
     ~SerialisedMessage();
-
-   private:
-    SerialisedMessage(const SerialisedMessage&);
-    SerialisedMessage& operator=(const SerialisedMessage&);
 };
 
 #endif  // SRC_MESSAGES_SERIALISED_MESSAGE_H_
