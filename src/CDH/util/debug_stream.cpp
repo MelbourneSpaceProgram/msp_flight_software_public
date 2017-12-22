@@ -19,7 +19,7 @@ DebugStream::DebugStream() {
     debug.perform_write_transaction(echo_prompt, sizeof(echo_prompt));
 }
 
-void DebugStream::SendMessage(SerialisedMessage serial_msg) {
+void DebugStream::SendMessage(const SerialisedMessage &serial_msg) {
     // TODO(dingbenjamin): Remove explicit typecast after UART cleanup
     debug.perform_write_transaction(reinterpret_cast<char *>(serial_msg.buffer),
                                     serial_msg.size);
@@ -43,8 +43,7 @@ void *DebugStream::InitTestDebugStream() {
         switch (code) {
             case SerialisedMessageBuilder::kTemperatureSensor: {
                 TemperatureMessage temp_msg(220.0, 44, 50);
-                SerialisedMessage serial_msg = temp_msg.Serialise();
-                debug_stream.SendMessage(serial_msg);
+                debug_stream.SendMessage(temp_msg.Serialise());
                 break;
             }
 
@@ -71,6 +70,5 @@ void *DebugStream::InitTestDebugStream() {
 
 void DebugStream::SendTestMessage(DebugStream debug_stream, byte data) {
     TestMessage msg(data);
-    SerialisedMessage serial_msg = msg.Serialise();
-    debug_stream.SendMessage(serial_msg);
+    debug_stream.SendMessage(msg.Serialise());
 }

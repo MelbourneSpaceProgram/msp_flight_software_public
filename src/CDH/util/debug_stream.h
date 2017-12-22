@@ -21,7 +21,7 @@ class DebugStream {
    public:
     static void *InitTestDebugStream();
     virtual ~DebugStream() {}
-    void SendMessage(SerialisedMessage serial_msg);
+    void SendMessage(const SerialisedMessage &serial_msg);
     uint8_t ReceiveCode();
 };
 
