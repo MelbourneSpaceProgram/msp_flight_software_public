@@ -6,7 +6,6 @@
 
 class TemperatureMessage : public Message {
    public:
-    TemperatureMessage() {}
     TemperatureMessage(float, uint8_t, uint8_t);
     float temperature;
     uint8_t sensor_id;
