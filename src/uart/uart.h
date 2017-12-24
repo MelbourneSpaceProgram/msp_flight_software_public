@@ -1,24 +1,16 @@
-/**
-  i2c_bus.hpp
-  Purpose: Represents an UART bus.
+#ifndef SRC_UART_UART_H_
+#define SRC_UART_UART_H_
 
-  @author Brett Clark
-  @version 1.0
-  @date 3/5/2017
-*/
-
-#ifndef _UART_HPP_
-#define _UART_HPP_
-
+#include <src/uart/uart_configuration.h>
+#include <src/util/data_types.h>
 #include <ti/drivers/UART.h>
-#include <src/uart/uart_configuration.hpp>
 
 /**
   UARTBus class.
 
   This describes the UART configuration.
 */
-class UART {
+class Uart {
    public:
     /**
       UARTBus constructor.
@@ -27,19 +19,12 @@ class UART {
       @param index The index of the UART bus on the board.
       @return The UARTBus object.
     */
-    UART(UARTConfiguration* config, int index);
-
-    UART();
+    Uart(UartConfiguration config, uint8_t index);
 
     /**
-      Function that opens the UART bus.
-    */
-    void open(void);
-
-    /**
-      Function that closes the UART bus.
-    */
-    void close(void);
+      UART destructor, closes the UART bus
+     */
+    ~Uart();
 
     /**
       Function that returns a handle to the open UART bus. Must be called after
@@ -47,7 +32,14 @@ class UART {
 
       @return The UART_Handle.
     */
-    UART_Handle get_handle(void);
+    UART_Handle GetHandle() const;
+
+    /**
+      Returns a constant reference to the configuration of the UART bus
+
+      @return The UART Configuration
+    */
+    const UartConfiguration& GetConfig() const;
 
     /**
       Function that performs an UART write operation.
@@ -57,8 +49,8 @@ class UART {
       write to the UART device.
       @param write_buffer_length The length of the write buffer.
     */
-    bool perform_write_transaction(const char* write_buffer,
-                                   int write_buffer_length);
+    bool PerformWriteTransaction(const byte* write_buffer,
+                                 uint16_t write_buffer_length) const;
 
     /**
       Function that performs an UART write operation.
@@ -66,18 +58,39 @@ class UART {
       @param read_buffer The buffer to which the UART device will write.
       @param read_buffer_length The length of the read buffer.
     */
-    bool perform_read_transaction(char* read_buffer, int read_buffer_length);
+    bool PerformReadTransaction(byte* read_buffer,
+                                uint16_t read_buffer_length) const;
 
    private:
     /**
+      Private copy constructor to ensure no double deletion
+    */
+    Uart(const Uart&);
+
+    /**
+      Private assignment operator to ensure no double deletion
+    */
+    Uart& operator=(const Uart&);
+
+    /**
+      Function that opens the UART bus.
+    */
+    void Open();
+
+    /**
+      Function that closes the UART bus.
+    */
+    void Close();
+
+    /**
       The UART configuration for the bus.
     */
-    UARTConfiguration* config;
+    UartConfiguration config;
 
     /**
       The index of the UART bus on the board.
     */
-    int index;
+    const uint8_t index;
 
     /**
       The handle to the open UART bus.
@@ -85,4 +98,4 @@ class UART {
     UART_Handle handle;
 };
 
-#endif  // _UART_BUS_HPP_
+#endif  // SRC_UART_UART_H_

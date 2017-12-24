@@ -9,28 +9,23 @@
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
 
-DebugStream::DebugStream() {
+DebugStream::DebugStream()
+    : debug(UartConfiguration(UartConfiguration::kBaud115200), UARTA0) {
     char echo_prompt[] = "Debug stream started.\r\n";
     GPIO_init();
     UART_init();
-    debug_config = UARTConfiguration(UARTConfiguration::BLOCKING_MODE,
-                                     UARTConfiguration::BAUD_115200);
-    debug = UART(&debug_config, UARTA0);
-    debug.perform_write_transaction(echo_prompt, sizeof(echo_prompt));
+    debug.PerformWriteTransaction(reinterpret_cast<byte *>(echo_prompt),
+                                  sizeof(echo_prompt));
 }
 
 void DebugStream::SendMessage(const SerialisedMessage &serial_msg) {
-    // TODO(dingbenjamin): Remove explicit typecast after UART cleanup
-    debug.perform_write_transaction(reinterpret_cast<char *>(serial_msg.buffer),
-                                    serial_msg.size);
+    debug.PerformWriteTransaction(serial_msg.buffer, serial_msg.size);
 }
 
 uint8_t DebugStream::ReceiveCode() {
     uint8_t read_code[1];
     uint8_t read_code_length = 1;
-    // TODO(dingbenjamin): Remove explicit typecast after UART cleanup
-    debug.perform_read_transaction(reinterpret_cast<char *>(read_code),
-                                   read_code_length);
+    debug.PerformReadTransaction(read_code, read_code_length);
     return (uint8_t)read_code[0];
 }
 
@@ -54,21 +49,18 @@ void *DebugStream::InitTestDebugStream() {
             }
 
             case SerialisedMessageBuilder::kTestSensor: {
-                SendTestMessage(debug_stream, 0xF0);
+                TestMessage test_msg(0xF0);
+                debug_stream.SendMessage(test_msg.Serialise());
                 break;
             }
 
             default: {
                 // TODO(dingbenjamin): Replace with invalid request message
-                SendTestMessage(debug_stream, 0xFF);
+                TestMessage default_msg(0xFF);
+                debug_stream.SendMessage(default_msg.Serialise());
                 break;
             }
         }
         Task_sleep(500);
     }
-}
-
-void DebugStream::SendTestMessage(DebugStream debug_stream, byte data) {
-    TestMessage msg(data);
-    debug_stream.SendMessage(msg.Serialise());
 }
