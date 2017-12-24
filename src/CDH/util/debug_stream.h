@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include "src/messages/temperature_message.h"
-#include "src/uart/uart.hpp"
-#include "src/uart/uart_configuration.hpp"
+#include "src/uart/uart.h"
+#include "src/uart/uart_configuration.h"
 
 // TODO(dingbenjamin): Consider making singleton? Sort of a Singleton as only
 // InitDebugStream should be able to create a DebugStream object - can't think
@@ -13,10 +13,8 @@
 // message queue
 class DebugStream {
    private:
-    static void SendTestMessage(DebugStream debug_stream, byte data);
     DebugStream();
-    UARTConfiguration debug_config;
-    UART debug;
+    Uart debug;
 
    public:
     static void *InitTestDebugStream();

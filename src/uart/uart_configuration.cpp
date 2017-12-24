@@ -1,16 +1,15 @@
-#include <ti/drivers/UART.h>
-#include <src/uart/uart_configuration.hpp>
+#include <src/uart/uart_configuration.h>
 
-using namespace std;
+UartConfiguration::UartConfiguration() { UART_Params_init(&uart_params); }
 
-UARTConfiguration::UARTConfiguration(enum transfer_modes transfer_mode, enum bit_rates bit_rate) : transfer_mode(transfer_mode), bit_rate(bit_rate) {}
-UARTConfiguration::UARTConfiguration() {};
-int UARTConfiguration::get_transfer_mode() {
-    return this->transfer_mode;
+UartConfiguration::UartConfiguration(uint32_t bit_rate) {
+    UART_Params_init(&uart_params);
+    uart_params.baudRate = bit_rate;
 }
 
-int UARTConfiguration::get_bit_rate() {
-    return this->bit_rate;
+UartConfiguration::UartConfiguration(UART_Params uart_params)
+    : uart_params(uart_params) {}
+
+const UART_Params& UartConfiguration::GetUARTParams() const {
+    return uart_params;
 }
-
-
