@@ -1,10 +1,11 @@
-#include "src/CDH/util/debug_stream.h"
+#include <Board.h>
+#include <src/CDH/util/debug_stream.h>
+#include <src/messages/serialised_message_builder.h>
+#include <src/messages/test_message.h>
+#include <src/util/data_types.h>
+#include <src/util/message_codes.h>
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/std.h>
-#include "Board.h"
-#include "src/CDH/util/serialised_message_builder.h"
-#include "src/messages/test_message.h"
-#include "src/util/data_types.h"
 
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
@@ -19,7 +20,7 @@ DebugStream::DebugStream()
 }
 
 void DebugStream::SendMessage(const SerialisedMessage &serial_msg) {
-    debug.PerformWriteTransaction(serial_msg.buffer, serial_msg.size);
+    debug.PerformWriteTransaction(serial_msg.GetBuffer(), serial_msg.GetSize());
 }
 
 uint8_t DebugStream::ReceiveCode() {
@@ -36,19 +37,19 @@ void *DebugStream::InitTestDebugStream() {
     while (1) {
         uint8_t code = debug_stream.ReceiveCode();
         switch (code) {
-            case SerialisedMessageBuilder::kTemperatureSensor: {
+            case kMockTemperatureSensor: {
                 TemperatureMessage temp_msg(220.0, 44, 50);
                 debug_stream.SendMessage(temp_msg.Serialise());
                 break;
             }
 
-            case SerialisedMessageBuilder::kRadiationSensor: {
+            case kMockRadiationSensor: {
                 // TODO(dingbenjamin): Implement after RadiationSensor data is
                 // confirmed
                 break;
             }
 
-            case SerialisedMessageBuilder::kTestSensor: {
+            case kMockTestSensor: {
                 TestMessage test_msg(0xF0);
                 debug_stream.SendMessage(test_msg.Serialise());
                 break;

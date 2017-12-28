@@ -1,6 +1,6 @@
 #include <src/CDH/util/debug_stream.h>
-#include <src/CDH/util/serialised_message_builder.h>
 #include <src/messages/serialised_message.h>
+#include <src/messages/serialised_message_builder.h>
 #include <src/messages/test_message.h>
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/std.h>

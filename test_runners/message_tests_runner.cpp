@@ -32,7 +32,10 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestSerialiseMessage(void);
+extern void TestTestMessageSerialise(void);
+extern void TestTempMessageSerialise(void);
+extern void TestContainerMessageSerialise(void);
+extern void TestSerialisedMessageBuilder(void);
 
 
 /*=======Suite Setup=====*/
@@ -67,8 +70,11 @@ void resetTest(void)
 int message_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src\\messages\\tests\\message_tests.cpp");
-  RUN_TEST(TestSerialiseMessage, 6);
+  UnityBegin("src/messages/tests/message_tests.cpp");
+  RUN_TEST(TestTestMessageSerialise, 12);
+  RUN_TEST(TestTempMessageSerialise, 26);
+  RUN_TEST(TestContainerMessageSerialise, 45);
+  RUN_TEST(TestSerialisedMessageBuilder, 66);
 
   return suite_teardown(UnityEnd());
 }
