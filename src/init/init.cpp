@@ -6,7 +6,9 @@
 #include "Board.h"
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
+
 #include <pthread.h>
+#include <test_runners/master_runner.h>
 #include <src/public_headers/init/init.hpp>
 #include <src/tasks/tasks.hpp>
 
@@ -77,7 +79,7 @@ void init_satellite() {
             ;
     }
 
-    retc = pthread_create(&thread, &attrs, test_task, NULL);
+    retc = pthread_create(&thread, &attrs, master_tests_thread, NULL);
     if (retc != 0) {
         /* pthread_create() failed */
         while (1)
