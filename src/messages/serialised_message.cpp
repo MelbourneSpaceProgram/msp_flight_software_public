@@ -1,21 +1,11 @@
-#include "src/messages/serialised_message.h"
+#include <src/messages/serialised_message.h>
+#include <src/util/data_types.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "src/util/data_types.h"
-
-SerialisedMessage::SerialisedMessage(uint16_t size) : size(size) {
-    buffer = new byte[size];
-}
 
 SerialisedMessage::SerialisedMessage(uint16_t size, byte* message)
-    : size(size) {
-    buffer = new byte[size];
-    std::memcpy(buffer, message, (size_t)size);
-}
+    : size(size), buffer(message) {}
 
-SerialisedMessage::~SerialisedMessage() {
-    if (buffer != NULL) {
-        delete[] buffer;
-        buffer = NULL;
-    }
-}
+byte* SerialisedMessage::GetBuffer() const { return buffer; }
+
+uint16_t SerialisedMessage::GetSize() const { return size; }
