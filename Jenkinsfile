@@ -14,9 +14,11 @@ pipeline {
     post {
       failure {
         updateGitlabCommitStatus name: 'build', state: 'failed'
+        addGitLabMRComment comment: ":new_moon_with_face: [Build failed!](${BUILD_URL}) :new_moon_with_face:\n\nPlease click the link and check Console Output to find out why."
       }
       success {
         updateGitlabCommitStatus name: 'build', state: 'success'
+        addGitLabMRComment comment: ":full_moon_with_face: [Build succeeded!](${BUILD_URL}) :full_moon_with_face:\n\nPlease click the link and check for any warnings."
       }
     }
     
