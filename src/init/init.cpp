@@ -10,7 +10,7 @@
 #include <pthread.h>
 #include <test_runners/master_runner.h>
 #include <src/public_headers/init/init.hpp>
-#include <src/tasks/tasks.hpp>
+#include <src/tasks/tasks.h>
 
 #define THREADSTACKSIZE 1024
 

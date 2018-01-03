@@ -4,64 +4,27 @@
 #include <src/messages/test_message.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
-#include <ti/sysbios/knl/Task.h>
-#include <xdc/std.h>
 
 #define UARTA0 MSP_EXP432P401R_UARTA0
 #define UARTA2 MSP_EXP432P401R_UARTA2
 
 DebugStream::DebugStream()
-    : debug(UartConfiguration(UartConfiguration::kBaud115200), UARTA0) {
+    : debug_uart(UartConfiguration(UartConfiguration::kBaud115200), UARTA0) {
     char echo_prompt[] = "Debug stream started.\r\n";
     GPIO_init();
     UART_init();
-    debug.PerformWriteTransaction(reinterpret_cast<byte *>(echo_prompt),
-                                  sizeof(echo_prompt));
+    debug_uart.PerformWriteTransaction(reinterpret_cast<byte *>(echo_prompt),
+                                       sizeof(echo_prompt));
 }
 
 void DebugStream::SendMessage(const SerialisedMessage &serial_msg) {
-    debug.PerformWriteTransaction(serial_msg.GetBuffer(), serial_msg.GetSize());
+    debug_uart.PerformWriteTransaction(serial_msg.GetBuffer(),
+                                       serial_msg.GetSize());
 }
 
 uint8_t DebugStream::ReceiveCode() {
     uint8_t read_code[1];
     uint8_t read_code_length = 1;
-    debug.PerformReadTransaction(read_code, read_code_length);
+    debug_uart.PerformReadTransaction(read_code, read_code_length);
     return (uint8_t)read_code[0];
-}
-
-// TODO(dingbenjamin): Determine proper scoping of this function, should it be
-// static?
-void *DebugStream::InitTestDebugStream() {
-    DebugStream debug_stream;
-    while (1) {
-        uint8_t code = debug_stream.ReceiveCode();
-        switch (code) {
-            case kMockTemperatureSensor: {
-                TemperatureMessage temp_msg(220.0, 44, 50);
-                debug_stream.SendMessage(temp_msg.Serialise());
-                break;
-            }
-
-            case kMockRadiationSensor: {
-                // TODO(dingbenjamin): Implement after RadiationSensor data is
-                // confirmed
-                break;
-            }
-
-            case kMockTestSensor: {
-                TestMessage test_msg(0xF0);
-                debug_stream.SendMessage(test_msg.Serialise());
-                break;
-            }
-
-            default: {
-                // TODO(dingbenjamin): Replace with invalid request message
-                TestMessage default_msg(0xFF);
-                debug_stream.SendMessage(default_msg.Serialise());
-                break;
-            }
-        }
-        Task_sleep(500);
-    }
 }
