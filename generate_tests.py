@@ -110,7 +110,7 @@ if __name__ == "__main__":
     print("This will delete all automatically generated files in")
     print("the test_runners/ directory. Please confirm you have")
     print("not manually created any files here.")
-    response = input("Confirm (Y/n): ")
+    response = input("Confirm (y/N): ")
 
     if not (response == 'y' or response == 'Y'):
         print("Aborting test generator")
