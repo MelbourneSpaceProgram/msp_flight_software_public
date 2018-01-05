@@ -57,8 +57,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest(void);
-void resetTest(void)
+void resetTest_message_tests_runner(void);
+void resetTest_message_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -70,7 +70,7 @@ void resetTest(void)
 int message_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/messages/tests/message_tests.cpp");
+  UnityBegin("src\\messages\\tests\\message_tests.cpp");
   RUN_TEST(TestTestMessageSerialise, 12);
   RUN_TEST(TestTempMessageSerialise, 26);
   RUN_TEST(TestContainerMessageSerialise, 45);
