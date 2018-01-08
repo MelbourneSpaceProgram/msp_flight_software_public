@@ -3,7 +3,7 @@
 #ifndef TEST_RUNNERS_MASTER_RUNNER_H_
 #define TEST_RUNNERS_MASTER_RUNNER_H_
 
-void *master_tests_thread(void *);
+void master_tests_thread();
 void message_tests_runner();
 void SetUp();
 void TearDown();

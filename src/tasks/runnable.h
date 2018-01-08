@@ -5,6 +5,7 @@ typedef void (*fnptr)(void);
 
 class Runnable {
    public:
+    // TODO(dingbenjamin): Change fnptr signature to be task ptr
     virtual fnptr GetRunnablePointer() = 0;
     virtual ~Runnable();
 };

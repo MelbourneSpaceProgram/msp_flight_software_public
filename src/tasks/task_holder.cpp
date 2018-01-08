@@ -31,8 +31,4 @@ void TaskHolder::Init() {
     handle = Task_handle(&task_struct);
 }
 
-Task_Handle TaskHolder::GetTaskHandle() const {
-    // TODO(dingbenjamin): Figure out if this is acceptable to copy, or if it
-    // should be returned by reference
-    return handle;
-}
+Task_Handle TaskHolder::GetTaskHandle() const { return handle; }

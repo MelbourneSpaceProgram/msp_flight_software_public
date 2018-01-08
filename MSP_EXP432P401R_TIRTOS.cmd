@@ -36,7 +36,7 @@
 
 --stack_size=16384   /* C stack is also used for ISR stack */
 
-HEAPSIZE = 0x4000;  /* Size of heap buffer used by HeapMem */
+HEAPSIZE = 0x8000;  /* Size of heap buffer used by HeapMem */
 
 MEMORY
 {

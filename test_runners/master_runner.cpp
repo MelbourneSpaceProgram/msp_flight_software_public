@@ -2,9 +2,8 @@
 
 #include <test_runners/message_tests.h>
 #include <test_runners/master_runner.h>
-void *master_tests_thread(void *) {
+void master_tests_thread() {
     message_tests_runner();
-    return 0;
 }
 
 
