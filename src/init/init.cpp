@@ -19,6 +19,6 @@ void PreBiosInit() {
     MSP_pwm_init();
 
     TaskHolder *post_bios_initialiser_task =
-        new TaskHolder(512, "Initialiser", 10, new PostBiosInitialiser());
+        new TaskHolder(1024, "Initialiser", 10, new PostBiosInitialiser());
     post_bios_initialiser_task->Init();
 }
