@@ -4,6 +4,7 @@
 #define TEST_RUNNERS_MASTER_RUNNER_H_
 
 void master_tests_thread();
+void debug_interface_tests_runner();
 void message_tests_runner();
 void SetUp();
 void TearDown();
