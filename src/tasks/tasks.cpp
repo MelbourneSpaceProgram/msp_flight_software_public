@@ -1,8 +1,6 @@
-#include <Board.h>
-#include <src/tasks/runnable_debug_stream.h>
+#include <src/debug_interface/runnable_debug_stream.h>
 #include <src/tasks/task_holder.h>
 #include <src/tasks/tasks.h>
-#include <xdc/std.h>
 
 void TasksInit() {
     TaskHolder *debug_task =
