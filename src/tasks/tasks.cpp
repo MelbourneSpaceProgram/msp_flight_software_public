@@ -4,7 +4,7 @@
 #include <src/tasks/tasks.h>
 #include <xdc/std.h>
 
-void InitTasks() {
+void TasksInit() {
     TaskHolder *debug_task =
         new TaskHolder(4096, "DebugStream", 6, new RunnableDebugStream());
     debug_task->Init();
