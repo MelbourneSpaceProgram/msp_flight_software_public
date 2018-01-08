@@ -1,20 +1,11 @@
-#include <pthread.h>
+#include <Board.h>
+#include <src/init/init.h>
+#include <src/tasks/tasks.h>
+#include <test_runners/master_runner.h>
 #include <ti/sysbios/BIOS.h>
-#include <src/public_headers/init/init.hpp>
-
-/* Example/Board Header files */
-#include "Board.h"
 
 int main(void) {
-    init_core();
-    init_time();
-
-    // All basic systems should now be operational. Start the main loop of the
-    // satellite.
-    init_satellite();
-
-    // Start BIOS
-    BIOS_start();
-
+    PreBiosInit();
+    BIOS_start();  // Infinite Loop
     return (0);
 }

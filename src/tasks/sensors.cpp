@@ -1,9 +1,9 @@
 #include <src/tasks/sensors.hpp>
-#include <src/public_headers/init/init.hpp>
 #include <Board.h>
 #include <src/i2c/i2c_bus.hpp>
 #include <src/i2c/i2c_configuration.hpp>
 #include <src/i2c/sensors/mcp9808.hpp>
+#include <src/init/init.h>
 #include <src/observers/sample_temp_observer.hpp>
 
 Task_Struct mcp9808_read_task_struct;

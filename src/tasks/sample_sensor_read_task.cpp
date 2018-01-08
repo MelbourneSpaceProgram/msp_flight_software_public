@@ -1,6 +1,6 @@
 #include <src/tasks/sample_sensor_read_task.hpp>
-#include <src/public_headers/init/init.hpp>
 #include <src/config/sensor_config.hpp>
+#include <src/init/init.h>
 #include <xdc/std.h>
 #include <xdc/runtime/Log.h>
 
