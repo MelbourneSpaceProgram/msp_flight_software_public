@@ -1,5 +1,5 @@
-#ifndef TEST_CONTAINER_MESSAGE_H_
-#define TEST_CONTAINER_MESSAGE_H_
+#ifndef SRC_MESSAGES_TEST_CONTAINER_MESSAGE_H_
+#define SRC_MESSAGES_TEST_CONTAINER_MESSAGE_H_
 
 #include <src/messages/message.h>
 #include <src/util/data_types.h>
@@ -16,4 +16,4 @@ class TestContainerMessage : public Message {
     Message *contained_message;
 };
 
-#endif  // TEST_CONTAINER_MESSAGE_H_
+#endif  // SRC_MESSAGES_TEST_CONTAINER_MESSAGE_H_

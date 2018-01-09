@@ -10,7 +10,6 @@
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
 
-#include <src/public_headers/SatelliteTime.hpp>
 #include <src/pwm/pwm.hpp>
 
 // TODO(dingbenjamin): Remove, along with applications reliant on this define
