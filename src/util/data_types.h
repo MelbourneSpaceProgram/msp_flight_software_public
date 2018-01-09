@@ -1,8 +1,8 @@
-#ifndef MSP_DATA_TYPES_HPP
-#define MSP_DATA_TYPES_HPP
+#ifndef SRC_UTIL_DATA_TYPES_H_
+#define SRC_UTIL_DATA_TYPES_H_
 
 #include <stdint.h>
 
 typedef uint8_t byte;
 
-#endif  // MSP_DATA_TYPES_HPP
+#endif  // SRC_UTIL_DATA_TYPES_H_

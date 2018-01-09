@@ -1,6 +1,6 @@
-#ifndef _SENSORS_H_
-#define _SENSORS_H_
+#ifndef SRC_TASKS_SENSORS_HPP_
+#define SRC_TASKS_SENSORS_HPP_
 
 void InitMCP9808ReadTask(void);
 
-#endif // _SENSORS_H_
+#endif  // SRC_TASKS_SENSORS_HPP_
