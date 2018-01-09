@@ -14,7 +14,7 @@ void Uart::Open() {
     UART_Params uart_params = config.GetUARTParams();
     this->handle = UART_open(this->index, &uart_params);
     if (this->handle == NULL) {
-        // TODO: Throw Exception after exceptions designed
+        // TODO(dingbenjamin): Throw Exception after exceptions designed
     }
 }
 

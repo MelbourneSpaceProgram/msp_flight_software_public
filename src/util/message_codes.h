@@ -16,4 +16,4 @@ enum DebugMessageVersion { kV1 = 0 };
 
 enum PayloadType { kTestPayloadCode = 4 };
 
-#endif  // SRC_UTIL_MESSAGE_COES_H_
+#endif  // SRC_UTIL_MESSAGE_CODES_H_
