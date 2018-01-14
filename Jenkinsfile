@@ -10,8 +10,12 @@ pipeline {
             script: 'if test -d /var/lib/jenkins/CCS_WS/; then echo "True"; else echo "False"; fi',
             returnStdout: true
         ).trim()
+        PR_ID = sh (
+            script: 'if [ -z ${CHANGE_ID+x} ]; then echo "-1"; else echo "$CHANGE_ID"; fi',
+            returnStdout: true
+            ).trim()
     }
-
+    
     stages {
         stage('Warnings Report') {
             steps {
@@ -26,11 +30,6 @@ pipeline {
                 sh 'mkdir checker_output'
                 sh 'python cpplint.py --recursive src 2>&1 | tee ./checker_output/cpplint.txt'
                 sh 'cppcheck --enable=all --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
-            }
-        }
-
-        stage('Report Analysis') {
-            steps {
                 withCredentials([string(credentialsId: '36ba8ce1-8f3b-40cf-ac7d-1cff6b65e937', variable: 'personal_access_token')]) {
                     step([
                         $class: 'ViolationsToGitHubRecorder', 
@@ -38,7 +37,7 @@ pipeline {
                             gitHubUrl: 'https://api.github.com/', 
                             repositoryOwner: 'AKremor', 
                             repositoryName: 'msp_flight_software', 
-                            pullRequestId: "1", 
+                            pullRequestId: "${PR_ID}", 
                             createCommentWithAllSingleFileComments: false, 
                             createSingleFileComments: false, 
                             commentOnlyChangedContent: true, 
@@ -60,10 +59,9 @@ pipeline {
             }
         }
 
-
         stage('Build') { 
             steps {
-                lock('my-resource-name') {
+                lock('workspace') {
                     script {
                         if (Boolean.parseBoolean(CCS_WS_exists)) {
                             echo 'The workspace exists. Not importing new project.'
@@ -76,6 +74,7 @@ pipeline {
                     sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"'
                 }
             }
+
         }
     }
 }
