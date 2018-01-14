@@ -12,53 +12,7 @@ pipeline {
         ).trim()
     }
 
-    post {
-      failure {
-        updateGitlabCommitStatus name: 'build', state: 'failed'
-        addGitLabMRComment comment: ":new_moon_with_face: [Build failed!](${BUILD_URL}) :new_moon_with_face:\n\nPlease click the link and check Console Output to find out why."
-      }
-      success {
-        updateGitlabCommitStatus name: 'build', state: 'success'
-        addGitLabMRComment comment: ":full_moon_with_face: [Build succeeded!](${BUILD_URL}) :full_moon_with_face:\n\nPlease click the link and check for any warnings."
-      }
-    }
-    
-    options {
-        gitLabConnection('MSP GitLab')
-        // CCS will error if two projects try to build concurrently
-        disableConcurrentBuilds()
-    }
-
-    triggers {
-        gitlab(
-            triggerOnPush: true,
-            triggerOnMergeRequest: true,
-            triggerOnNoteRequest: true,
-            noteRegex: "Jenkins please retry a build",
-            skipWorkInProgressMergeRequest: false,
-            ciSkip: false,
-            setBuildDescription: true,
-            addNoteOnMergeRequest: true,
-            addCiMessage: true,
-            addVoteOnMergeRequest: true,
-            acceptMergeRequestOnSuccess: false,
-            branchFilterType: "All")
-    }
-
     stages {
-        stage('Checkout Source') {
-            steps {
-                checkout changelog: true, poll: true, scm: [
-                    $class: 'GitSCM',
-                    branches: [[name: "origin/${env.gitlabSourceBranch}"]],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'PreBuildMerge', options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[name: 'origin', credentialsId: '5f8fc669-3371-4992-9c73-8ec204092c26', url: 'git@git.spaceprogram.melbourne:CS-1/CDH_software.git']]
-                ]
-            }
-        }
-
         stage('Warnings Report') {
             steps {
                 warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
@@ -72,47 +26,55 @@ pipeline {
                 sh 'mkdir checker_output'
                 sh 'python cpplint.py --recursive src 2>&1 | tee ./checker_output/cpplint.txt'
                 sh 'cppcheck --enable=all --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
-                // This is the ID of the credential to use, not the credential itself
-                withCredentials([string(credentialsId: '98993260-e306-44c2-b523-a70fe6746f6c', variable: 'personal_access_token')]) {
+            }
+        }
+
+        stage('Report Analysis') {
+            steps {
+                withCredentials([string(credentialsId: '36ba8ce1-8f3b-40cf-ac7d-1cff6b65e937', variable: 'personal_access_token')]) {
                     step([
-                        $class: 'ViolationsToGitLabRecorder',
+                        $class: 'ViolationsToGitHubRecorder', 
                         config: [
-                            gitLabUrl: 'https://git.spaceprogram.melbourne',
-                            projectId: env.gitlabMergeRequestTargetProjectId,
-                            mergeRequestId: env.gitlabMergeRequestIid,
-                            commentOnlyChangedContent: true,
-                            createCommentWithAllSingleFileComments: true,
+                            gitHubUrl: 'https://api.github.com/', 
+                            repositoryOwner: 'AKremor', 
+                            repositoryName: 'msp_flight_software', 
+                            pullRequestId: "1", 
+                            createCommentWithAllSingleFileComments: false, 
+                            createSingleFileComments: false, 
+                            commentOnlyChangedContent: true, 
+                            useOAuth2Token: false, 		
+                            oAuth2Token: "", 		
+                            useUsernamePassword: true, 		
+                            username: 'MelbourneSpaceSteward', 		
+                            password: "${personal_access_token}", 		
+                            useUsernamePasswordCredentials: false, 		
+                            usernamePasswordCredentialsId: '',
                             minSeverity: 'INFO',
-                            useApiToken: true,
-                            apiToken: "${personal_access_token}",
-                            useApiTokenCredentials: false,
-                            apiTokenCredentialsId: "",
-                            apiTokenPrivate: true,
-                            authMethodHeader: true,
-                            ignoreCertificateErrors: true,
                             keepOldComments: false,
-                            shouldSetWip: true,
                             violationConfigs: [
                                 [ pattern: '.*/checker_output/.*\\.xml$', parser: 'CPPCHECK', reporter: 'CPPCHECK' ]
                             ]
                         ]
-                    ])
+                    ]) 
                 }
             }
         }
 
-        stage('Build') {
+
+        stage('Build') { 
             steps {
-                script {
-                    if (Boolean.parseBoolean(CCS_WS_exists)) {
-                        echo 'The workspace exists. Not importing new project.'
-                    } else {
-                        echo 'The workspace does not exist. Creating new project.'
-                        sh 'mkdir -p ${CCS_WS_DIR}'
-                        sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectImport -ccs.location $WORKSPACE'
+                lock('my-resource-name') {
+                    script {
+                        if (Boolean.parseBoolean(CCS_WS_exists)) {
+                            echo 'The workspace exists. Not importing new project.'
+                        } else {
+                            echo 'The workspace does not exist. Creating new project.'
+                            sh 'mkdir -p ${CCS_WS_DIR}'
+                            sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectImport -ccs.location $WORKSPACE'
+                        }
                     }
+                    sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"'
                 }
-                sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"'
             }
         }
     }
