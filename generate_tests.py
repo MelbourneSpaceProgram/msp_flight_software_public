@@ -12,7 +12,7 @@ def find_all_test_files(directory_root="./"):
     called 'tests'. Do not name any other directory test."""
 
     # directory_root should not start with a /, but it should end with one
-    return glob.glob(directory_root + "src/*/tests/*")
+    return glob.glob(directory_root + "src/**/tests/*", recursive=True)
 
 
 def generate_test_runner_definition(test_file_path):
