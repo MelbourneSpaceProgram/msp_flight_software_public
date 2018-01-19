@@ -17,45 +17,42 @@ pipeline {
     }
     
     stages {
-        stage('Warnings Report') {
-            steps {
-                warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
-                step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
-            }
-        }
-
-        stage('Static Analysis') {
+       stage('Static Analysis') {
             steps {
                 sh 'if [ -d "checker_output" ]; then rm -Rf checker_output; fi'
                 sh 'mkdir checker_output'
                 sh 'python cpplint.py --recursive src 2>&1 | tee ./checker_output/cpplint.txt'
                 sh 'cppcheck --enable=all --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
-                withCredentials([string(credentialsId: '36ba8ce1-8f3b-40cf-ac7d-1cff6b65e937', variable: 'personal_access_token')]) {
-                    step([
-                        $class: 'ViolationsToGitHubRecorder', 
-                        config: [
-                            gitHubUrl: 'https://api.github.com/', 
-                            repositoryOwner: 'AKremor', 
-                            repositoryName: 'msp_flight_software', 
-                            pullRequestId: "${PR_ID}", 
-                            createCommentWithAllSingleFileComments: false, 
-                            createSingleFileComments: false, 
-                            commentOnlyChangedContent: true, 
-                            useOAuth2Token: false, 		
-                            oAuth2Token: "", 		
-                            useUsernamePassword: true, 		
-                            username: 'MelbourneSpaceSteward', 		
-                            password: "${personal_access_token}", 		
-                            useUsernamePasswordCredentials: false, 		
-                            usernamePasswordCredentialsId: '',
-                            minSeverity: 'INFO',
-                            keepOldComments: false,
-                            violationConfigs: [
-                                [ pattern: '.*/checker_output/.*\\.xml$', parser: 'CPPCHECK', reporter: 'CPPCHECK' ]
-                            ]
+                warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
+                step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
+                sh 'cppcheck-htmlreport --source-encoding="iso8859-1" --title="MSP" --source-dir=. --report-dir=./checker_output/ --file=./checker_output/cppcheck.xml' 
+                sh 'echo PR_ID "${PR_ID}"'
+                sh 'echo ghprbPullId "${ghprbPullId}"'
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: './checker_output/', reportFiles: 'index.html', reportName: 'Static Analysis', reportTitles: ''])
+                step([
+                    $class: 'ViolationsToGitHubRecorder', 
+                    config: [
+                        gitHubUrl: 'https://api.github.com/', 
+                        repositoryOwner: 'MelbourneSpaceProgram', 
+                        repositoryName: 'flight_software', 
+                        pullRequestId: "${PR_ID}", 
+                        createCommentWithAllSingleFileComments: true, 
+                        createSingleFileComments: true, 
+                        commentOnlyChangedContent: false, 
+                        useOAuth2Token: false, 		
+                        oAuth2Token: "", 		
+                        useUsernamePassword: false, 		
+                        username: '', 		
+                        password: "", 		
+                        useUsernamePasswordCredentials: true, 		
+                        usernamePasswordCredentialsId: 'a2c805e2-79f1-4a00-9fa5-d8e144e50245',
+                        minSeverity: 'INFO',
+                        keepOldComments: false,
+                        violationConfigs: [
+                            [ pattern: '.*/checker_output/.*\\.xml$', parser: 'CPPCHECK', reporter: 'CPPCHECK' ]
                         ]
-                    ]) 
-                }
+                    ]
+                ])
             }
         }
 
