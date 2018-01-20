@@ -1,7 +1,7 @@
 #ifndef SRC_I2C_MULTIPLEXERS_I2C_MULTIPLEXER_HPP_
 #define SRC_I2C_MULTIPLEXERS_I2C_MULTIPLEXER_HPP_
 
-#include <src/i2c/i2c_bus.hpp>
+#include <src/i2c/i2c.h>
 
 /**
   I2CMultiplexer class.
@@ -17,14 +17,14 @@ class I2CMultiplexer {
       @param address The address of the multiplexer.
       @return The I2CMultiplexer object.
     */
-    I2CMultiplexer(I2CBus* bus, int address);
+    I2CMultiplexer(I2c* bus, int address);
 
     /**
       Method that returns a reference to the multiplexer bus.
 
       @return A reference to the multiplexer bus.
     */
-    I2CBus* get_bus(void);
+    I2c* get_bus(void);
 
     /**
       Method that returns the multiplexer address.
@@ -49,7 +49,7 @@ class I2CMultiplexer {
     /**
       The bus that the multiplexer is connected to.
     */
-    I2CBus* bus;
+    I2c* bus;
 
     /**
       The address of the multiplexer.

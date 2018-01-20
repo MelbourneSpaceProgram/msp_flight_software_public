@@ -1,7 +1,7 @@
 #ifndef SRC_I2C_MULTIPLEXERS_TCA9548A_HPP_
 #define SRC_I2C_MULTIPLEXERS_TCA9548A_HPP_
 
-#include <src/i2c/i2c_bus.hpp>
+#include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.hpp>
 
 /**
@@ -18,7 +18,7 @@ class TCA9548A : public I2CMultiplexer {
       @param address The address of the multiplexer.
       @return The TCA9548A object.
     */
-    TCA9548A(I2CBus* bus, int address);
+    TCA9548A(I2c* bus, int address);
 
     /**
       Method that opens a channel of the multiplexer.
@@ -53,7 +53,7 @@ class TCA9548A : public I2CMultiplexer {
     /**
       A reference to the bus that the multiplexer is connected to.
     */
-    I2CBus* bus;
+    I2c* bus;
 
     /**
       The address of the multiplexer.
