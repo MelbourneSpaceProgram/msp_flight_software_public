@@ -1,14 +1,5 @@
-/**
-  sample_temp_observer.hpp
-  Purpose: This is a template for writing an observer.
-
-  @author Brett Clark
-  @version 1.0
-  @date 12/8/2017
-*/
-
-#ifndef _SAMPLE_TEMP_OBSERVER_HPP_
-#define _SAMPLE_TEMP_OBSERVER_HPP_
+#ifndef SRC_OBSERVERS_SAMPLE_TEMP_OBSERVER_HPP_
+#define SRC_OBSERVERS_SAMPLE_TEMP_OBSERVER_HPP_
 
 #include <src/observers/observer.hpp>
 
@@ -19,7 +10,6 @@
   depending upon the temperature reading.
 */
 class SampleTempObserver : public Observer {
-
 public:
   /**
     This function is called by the subject, i.e. the sensor, when a
@@ -30,4 +20,4 @@ public:
   void update(I2CSensor* sensor);
 };
 
-#endif // _SAMPLE_TEMP_OBSERVER_HPP_
+#endif  // SRC_OBSERVERS_SAMPLE_TEMP_OBSERVER_HPP_

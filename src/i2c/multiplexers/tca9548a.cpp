@@ -1,6 +1,6 @@
 #include <src/i2c/multiplexers/tca9548a.hpp>
 
-TCA9548A::TCA9548A(I2CBus* bus, int address) : I2CMultiplexer(bus, address) {}
+TCA9548A::TCA9548A(I2c* bus, int address) : I2CMultiplexer(bus, address) {}
 
 const int TCA9548A::CHANNEL_0 = 0x01;
 const int TCA9548A::CHANNEL_1 = 0x02;
@@ -19,7 +19,8 @@ void TCA9548A::open_channel(int channel) {
   write_buffer[0] = channel;
 
   // Perform I2C transaction.
-  this->get_bus()->perform_write_transaction(this->get_address(), write_buffer, 1);
+  this->get_bus()->PerformWriteTransaction(this->get_address(),
+                                           write_buffer, 1);
 }
 
 void TCA9548A::close_all_channels() {
@@ -27,12 +28,13 @@ void TCA9548A::close_all_channels() {
 
     write_buffer[0] = 0x00;
     // Perform I2C transaction.
-      this->get_bus()->perform_write_transaction(this->get_address(), write_buffer, 1);
+      this->get_bus()->PerformWriteTransaction(this->get_address(),
+                                               write_buffer, 1);
 }
 
 uint8_t* TCA9548A::get_channel_states(uint8_t* read_buffer) {
-  
-    this->get_bus()->perform_read_transaction(this->get_address(), read_buffer, 1);
+    this->get_bus()->PerformReadTransaction(this->get_address(),
+                                            read_buffer, 1);
 
     return read_buffer;
 }

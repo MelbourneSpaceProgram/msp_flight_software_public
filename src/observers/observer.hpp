@@ -1,18 +1,7 @@
-/**
-  observer.hpp
-  Purpose: This is the abstract observer class.
-
-  @author Brett Clark
-  @version 1.0
-  @date 12/8/2017
-*/
-
-#ifndef _OBSERVER_HPP_
-#define _OBSERVER_HPP_
+#ifndef SRC_OBSERVERS_OBSERVER_HPP_
+#define SRC_OBSERVERS_OBSERVER_HPP_
 
 #include <src/i2c/sensors/i2c_sensor.hpp>
-
-using namespace std;
 
 // Forward declaration of I2CSensor.
 class I2CSensor;
@@ -24,7 +13,6 @@ class I2CSensor;
   are derived.
 */
 class Observer {
-
 public:
   /**
     Virtual function which is called by subjects, i.e. sensors.
@@ -34,4 +22,4 @@ public:
   virtual void update(I2CSensor* sensor) = 0;
 };
 
-#endif // _OBSERVER_HPP_
+#endif  // SRC_OBSERVERS_OBSERVER_HPP_

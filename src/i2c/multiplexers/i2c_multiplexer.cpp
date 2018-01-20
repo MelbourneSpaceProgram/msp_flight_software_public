@@ -1,8 +1,9 @@
 #include <src/i2c/multiplexers/i2c_multiplexer.hpp>
 
-I2CMultiplexer::I2CMultiplexer(I2CBus* bus, int address) : bus(bus), address(address) {}
+I2CMultiplexer::I2CMultiplexer(I2c* bus, int address) : bus(bus),
+                                            address(address) {}
 
-I2CBus* I2CMultiplexer::get_bus(void) {
+I2c* I2CMultiplexer::get_bus(void) {
   return this->bus;
 }
 

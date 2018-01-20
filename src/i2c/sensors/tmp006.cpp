@@ -2,8 +2,6 @@
 #include "cmath"
 #include "iostream"
 
-using namespace std;
-
 /**
   Constants of the TMP006 class.
 */
@@ -15,15 +13,17 @@ const int TMP006::DIE_TEMP_REGISTER = 0x01;
   Public methods of the TMP006 class.
 */
 
-TMP006::TMP006(I2CBus* bus, int address, string id, double constant) : I2CSensor(bus, address, id), constant(constant) {}
+TMP006::TMP006(I2c* bus, int address, std::string id, double constant)
+                : I2CSensor(bus, address, id), constant(constant) {}
 
 void TMP006::take_reading(void) {
-  //double sensor_voltage = get_sensor_voltage();
+  // double sensor_voltage = get_sensor_voltage();
   double die_temperature = get_die_temperature();
 
-  //double object_temp = get_object_temperature(sensor_voltage, die_temperature);
+  // double object_temp = get_object_temperature(sensor_voltage,
+  // die_temperature);
 
-  //return object_temp;
+  // return object_temp;
   reading = die_temperature;
 }
 
@@ -43,7 +43,7 @@ double TMP006::get_die_temperature(void) {
   write_buffer[0] = TMP006::DIE_TEMP_REGISTER;
 
   // Perform I2C transaction.
-  bus->perform_transaction(this->get_address(), read_buffer, 2, write_buffer, 1);
+  bus->PerformTransaction(this->get_address(), read_buffer, 2, write_buffer, 1);
 
   // Perform necessary bitshifting on read buffer.
   double temperature = (read_buffer[0] << 6) | (read_buffer[1] >> 2);
@@ -55,13 +55,15 @@ double TMP006::get_die_temperature(void) {
 
 
 
-double TMP006::get_object_temperature(double sensor_voltage, double die_temperature) {
-  double object_temp_power_4 = pow(die_temperature, 4) + (sensor_voltage / this->constant);
+double TMP006::get_object_temperature(double sensor_voltage,
+                                      double die_temperature) {
+  double object_temp_power_4 = std::pow(die_temperature, 4) + (sensor_voltage /
+                                                          this->constant);
 
   // Handle negative reading.
   if (object_temp_power_4 < 0) {
     return NULL;
   }
 
-  return pow(object_temp_power_4, 1.0 / 4);
+  return std::pow(object_temp_power_4, 1.0 / 4);
 }
