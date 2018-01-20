@@ -1,18 +1,8 @@
-/**
-  mcp9808.hpp
-  Purpose: Reads values from a MCP9808 sensor.
+#ifndef SRC_I2C_SENSORS_MCP9808_HPP_
+#define SRC_I2C_SENSORS_MCP9808_HPP_
 
-  @author Brett Clark
-  @version 1.0
-  @date 15/5/2017
-*/
-
-#ifndef _MCP9808_HPP_
-#define _MCP9808_HPP_
-
+#include <string>
 #include <src/i2c/sensors/i2c_sensor.hpp>
-
-using namespace std;
 
 /**
   MCP9808 class.
@@ -20,9 +10,7 @@ using namespace std;
   This describes a single MCP9808 sensor.
 */
 class MCP9808 : public I2CSensor {
-
 public:
-
   /**
     MCP9808 constructor.
 
@@ -31,7 +19,7 @@ public:
     @param id The unique ID by which the sensor is identified.
     @return The MCP9808 object.
   */
-  MCP9808(I2CBus* bus, int address, string id);
+  MCP9808(I2c* bus, int address, std::string id);
 
   /**
     Method that causes the MCP9808 to take a reading. The value is then
@@ -43,7 +31,6 @@ public:
   void take_reading(void);
 
 private:
-
   /**
     The register in which the MCP9808 temperature is stored.
   */
@@ -55,7 +42,6 @@ private:
     @return The sensor voltage.
   */
   double get_temperature(void);
-
 };
 
-#endif // _MCP9808_HPP_
+#endif  //  SRC_I2C_SENSORS_MCP9808_HPP_

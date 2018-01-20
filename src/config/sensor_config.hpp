@@ -2,8 +2,8 @@
 #define SRC_CONFIG_SENSOR_CONFIG_HPP_
 
 #include <map>
-#include <src/i2c/sensors/i2c_sensor.hpp>
 #include <string>
+#include <src/i2c/sensors/i2c_sensor.hpp>
 
 /**
   SensorConfig class.
@@ -23,7 +23,7 @@ class SensorConfig {
 
       @param code The unique code for the sensor.
     */
-    I2CSensor* by_code(string code);
+    I2CSensor* by_code(std::string code);
 
     /**
       This function determines if the config has been built yet.
@@ -51,7 +51,7 @@ class SensorConfig {
     /**
       This is the map between the sensor code and a reference to sensor object.
     */
-    map<string, I2CSensor*> config;
+    std::map<std::string, I2CSensor*> config;
 };
 
 #endif  // SRC_CONFIG_SENSOR_CONFIG_HPP_
