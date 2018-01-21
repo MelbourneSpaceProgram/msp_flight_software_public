@@ -11,12 +11,12 @@ TaskHolder::TaskHolder(uint16_t stack_size, char* name, int priority,
       stack(new byte[stack_size]),
       runnable(runnable),
       task_struct(kEmptyTaskStruct),
+      task_params(),
       handle(NULL) {}
 
 TaskHolder::~TaskHolder() { delete[] stack; }
 
 void TaskHolder::Init() {
-    Task_Params task_params;
     Task_Params_init(&task_params);
     task_params.stackSize = stack_size;
     task_params.instance->name = name;
