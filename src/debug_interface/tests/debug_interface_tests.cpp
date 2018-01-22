@@ -22,10 +22,10 @@ void TestTestDebugMessageQueue() {
 
     for (uint8_t i = 0; i < 16; i++) {
         SerialisedMessage *serial_message = debug_stream->DequeueSerialised();
-        TEST_ASSERT_EQUAL_INT16(serial_message->GetSize(), 3);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[0], kMockTestSensor);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[1], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[2], i);
+        TEST_ASSERT_EQUAL_INT16(3, serial_message->GetSize());
+        TEST_ASSERT_EQUAL_INT8(kMockTestSensor, serial_message->GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_INT8(i, serial_message->GetBuffer()[2]);
 
         DeleteAllocatedSerialMessage(serial_message);
     }
@@ -45,11 +45,11 @@ void TestTempDebugMessageQueue() {
         SerialisedMessage *serial_message = debug_stream->DequeueSerialised();
 
         TEST_ASSERT_EQUAL_INT16(8, serial_message->GetSize());
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[0],
-                               kMockTemperatureSensor);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[1], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[2], i);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[3], 255 - i);
+        TEST_ASSERT_EQUAL_INT8(kMockTemperatureSensor,
+                               serial_message->GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_INT8(i, serial_message->GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_INT8(255 - i, serial_message->GetBuffer()[3]);
         // TODO(dingbenjamin): Assert the next four bytes convert to the correct
         // float
 
@@ -70,14 +70,14 @@ void TestContainerDebugMessageQueue() {
 
     for (uint8_t i = 0; i < 16; i++) {
         SerialisedMessage *serial_message = debug_stream->DequeueSerialised();
-        TEST_ASSERT_EQUAL_INT16(serial_message->GetSize(), 6);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[0],
-                               kMockTestContainer);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[1], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[2], i);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[3], kMockTestSensor);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[4], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[5], 255 - i);
+        TEST_ASSERT_EQUAL_INT16(6, serial_message->GetSize());
+        TEST_ASSERT_EQUAL_INT8(kMockTestContainer,
+                               serial_message->GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_INT8(i, serial_message->GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_INT8(kMockTestSensor, serial_message->GetBuffer()[3]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[4]);
+        TEST_ASSERT_EQUAL_INT8(255 - i, serial_message->GetBuffer()[5]);
 
         DeleteAllocatedSerialMessage(serial_message);
     }
@@ -108,10 +108,10 @@ void TestMixedDebugMessageQueue() {
 
     for (uint8_t i = 0; i < 16; i++) {
         SerialisedMessage *serial_message = debug_stream->DequeueSerialised();
-        TEST_ASSERT_EQUAL_INT16(serial_message->GetSize(), 3);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[0], kMockTestSensor);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[1], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[2], i);
+        TEST_ASSERT_EQUAL_INT16(3, serial_message->GetSize());
+        TEST_ASSERT_EQUAL_INT8(kMockTestSensor, serial_message->GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_INT8(i, serial_message->GetBuffer()[2]);
 
         DeleteAllocatedSerialMessage(serial_message);
     }
@@ -120,11 +120,11 @@ void TestMixedDebugMessageQueue() {
         SerialisedMessage *serial_message = debug_stream->DequeueSerialised();
 
         TEST_ASSERT_EQUAL_INT16(8, serial_message->GetSize());
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[0],
-                               kMockTemperatureSensor);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[1], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[2], i);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[3], 255 - i);
+        TEST_ASSERT_EQUAL_INT8(kMockTemperatureSensor,
+                               serial_message->GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_INT8(i, serial_message->GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_INT8(255 - i, serial_message->GetBuffer()[3]);
         // TODO(dingbenjamin): Assert the next four bytes convert to the correct
         // float
 
@@ -133,14 +133,14 @@ void TestMixedDebugMessageQueue() {
 
     for (uint8_t i = 0; i < 16; i++) {
         SerialisedMessage *serial_message = debug_stream->DequeueSerialised();
-        TEST_ASSERT_EQUAL_INT16(serial_message->GetSize(), 6);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[0],
-                               kMockTestContainer);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[1], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[2], i);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[3], kMockTestSensor);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[4], kCurrentVersion);
-        TEST_ASSERT_EQUAL_INT8(serial_message->GetBuffer()[5], 255 - i);
+        TEST_ASSERT_EQUAL_INT16(6, serial_message->GetSize());
+        TEST_ASSERT_EQUAL_INT8(kMockTestContainer,
+                               serial_message->GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_INT8(i, serial_message->GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_INT8(kMockTestSensor, serial_message->GetBuffer()[3]);
+        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message->GetBuffer()[4]);
+        TEST_ASSERT_EQUAL_INT8(255 - i, serial_message->GetBuffer()[5]);
 
         DeleteAllocatedSerialMessage(serial_message);
     }
