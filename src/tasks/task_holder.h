@@ -16,9 +16,7 @@ class TaskHolder {
     uint16_t stack_size;
     char *name;
     int priority;
-    void *stack;
     Runnable *runnable;
-    Task_Struct task_struct;
     Task_Params task_params;
     Task_Handle handle;
 
