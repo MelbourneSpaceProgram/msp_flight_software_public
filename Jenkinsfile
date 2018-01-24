@@ -22,12 +22,10 @@ pipeline {
                 sh 'if [ -d "checker_output" ]; then rm -Rf checker_output; fi'
                 sh 'mkdir checker_output'
                 sh 'python cpplint.py --recursive src 2>&1 | tee ./checker_output/cpplint.txt'
-                sh 'cppcheck --enable=all --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
+                sh 'cppcheck --force --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
                 warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
                 step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
                 sh 'cppcheck-htmlreport --source-encoding="iso8859-1" --title="MSP" --source-dir=. --report-dir=./checker_output/ --file=./checker_output/cppcheck.xml' 
-                sh 'echo PR_ID "${PR_ID}"'
-                sh 'echo ghprbPullId "${ghprbPullId}"'
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: './checker_output/', reportFiles: 'index.html', reportName: 'Static Analysis', reportTitles: ''])
                 step([
                     $class: 'ViolationsToGitHubRecorder', 
@@ -36,7 +34,7 @@ pipeline {
                         repositoryOwner: 'MelbourneSpaceProgram', 
                         repositoryName: 'flight_software', 
                         pullRequestId: "${PR_ID}", 
-                        createCommentWithAllSingleFileComments: true, 
+                        createCommentWithAllSingleFileComments: false, 
                         createSingleFileComments: true, 
                         commentOnlyChangedContent: false, 
                         useOAuth2Token: false, 		
