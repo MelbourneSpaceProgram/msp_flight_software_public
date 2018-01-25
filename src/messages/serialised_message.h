@@ -13,6 +13,7 @@ class SerialisedMessage {
 
    private:
     uint16_t size;
+    // TODO (dingbenjamin): Investigate need for destructor of VLA allocation
     byte* buffer;
 };
 

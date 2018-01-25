@@ -7,6 +7,7 @@
 #include <src/tasks/task_holder.h>
 #include <src/tasks/tasks.h>
 #include <src/telecomms/antenna.h>
+#include <src/telecomms/lithium.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -20,6 +21,10 @@ void PostBiosInitialiser::PostBiosInit() {
     I2c *bus = new I2c(I2cConfiguration(), Board_I2C0);
     Antenna *antenna = Antenna::GetAntenna();
     antenna->InitAntenna(bus);
+
+    // Initialise Singleton in thread safe manner
+    DebugStream::GetInstance();
+    Lithium::GetInstance();
 
     TaskHolder *test_task =
         new TaskHolder(4096, "Unit Tests", 7, new TestInitialiser());
