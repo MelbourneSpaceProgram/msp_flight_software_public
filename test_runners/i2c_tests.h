@@ -8,6 +8,7 @@
 #include <src/i2c/i2c.h>
 #include <src/i2c/i2c_configuration.h>
 #include <Board.h>
+#include <src/config/unit_tests.h>
 #include <ti/sysbios/knl/Task.h>
 
 void TestI2cWriteTransaction(void);

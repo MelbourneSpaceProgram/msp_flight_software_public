@@ -21,5 +21,6 @@
  */
 
 #define I2C_TESTS_IGNORED
+#define ANTENNA_TESTS_IGNORED
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
