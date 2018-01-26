@@ -27,15 +27,13 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "message_tests.h"
+#include "antenna_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestTestMessageSerialise(void);
-extern void TestTempMessageSerialise(void);
-extern void TestContainerMessageSerialise(void);
-extern void TestSerialisedMessageBuilder(void);
+extern void TestSafeDeploy(void);
+extern void TestForceDeploy(void);
 
 
 /*=======Suite Setup=====*/
@@ -57,8 +55,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_message_tests_runner(void);
-void resetTest_message_tests_runner(void)
+void resetTest_antenna_tests_runner(void);
+void resetTest_antenna_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -66,15 +64,13 @@ void resetTest_message_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int message_tests_runner(void);
-int message_tests_runner(void)
+ int antenna_tests_runner(void);
+int antenna_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/messages/tests/message_tests.cpp");
-  RUN_TEST(TestTestMessageSerialise, 14);
-  RUN_TEST(TestTempMessageSerialise, 28);
-  RUN_TEST(TestContainerMessageSerialise, 47);
-  RUN_TEST(TestSerialisedMessageBuilder, 68);
+  UnityBegin("src/telecomms/tests/antenna_tests.cpp");
+  RUN_TEST(TestSafeDeploy, 15);
+  RUN_TEST(TestForceDeploy, 47);
 
   return suite_teardown(UnityEnd());
 }

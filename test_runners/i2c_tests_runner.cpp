@@ -69,8 +69,8 @@ int i2c_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/i2c/tests/i2c_tests.cpp");
-  RUN_TEST(TestI2cWriteTransaction, 10);
-  RUN_TEST(TestI2cReadTransaction, 22);
+  RUN_TEST(TestI2cWriteTransaction, 11);
+  RUN_TEST(TestI2cReadTransaction, 26);
 
   return suite_teardown(UnityEnd());
 }
