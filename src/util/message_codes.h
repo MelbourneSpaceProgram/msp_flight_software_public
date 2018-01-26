@@ -8,7 +8,8 @@ enum DebugMessageType {
     kMockRadiationSensor = 1,
     kMockTestContainer = 2,
     kMockTestSensor = 3,
-    kPopMessageQueue = 4
+    kPopMessageQueue = 4,
+    kAntenna = 5
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient
