@@ -1,3 +1,4 @@
+#include <src/messages/serialised_message_builder.h>
 #include <src/messages/temperature_message.h>
 #include <src/messages/test_container_message.h>
 #include <src/messages/test_message.h>
@@ -5,7 +6,6 @@
 #include <src/util/message_codes.h>
 #include <test_runners/message_tests.h>
 #include <test_runners/unity.h>
-#include <src/messages/serialised_message_builder.h>
 // TODO(dingbenjamin): serialised_message_builder.h needs to be the last include
 // or a linker error will occur, this needs to be fixed
 
@@ -90,4 +90,17 @@ void TestSerialisedMessageBuilder(void) {
                                  builder.Build().GetBuffer(), 5);
 
     delete[] buffer;
+}
+
+void TestRebuildableMessageFieldIterator(void) {
+    byte buffer[10];
+    TemperatureMessage message(123, 1, 2);
+    message.SerialiseTo(buffer);
+
+    // Now try rebuilding
+    TemperatureMessage rebuilt(buffer);
+
+    TEST_ASSERT_EQUAL_INT8(message.sensor_id, rebuilt.sensor_id);
+    TEST_ASSERT_EQUAL_INT8(message.timestamp, rebuilt.timestamp);
+    TEST_ASSERT_EQUAL_FLOAT(message.temperature, rebuilt.temperature);
 }
