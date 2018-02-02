@@ -1,5 +1,4 @@
 #include <Board.h>
-#include <pthread.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/tasks/task_holder.h>
