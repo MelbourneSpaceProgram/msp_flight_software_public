@@ -23,9 +23,9 @@ void PostBiosInitialiser::PostBiosInit() {
     DebugStream::GetInstance();
     Antenna::GetAntenna();
     Lithium::GetInstance();
-#ifndef I2C_TESTS_IGNORED
+#ifndef ANTENNA_TESTS_IGNORED
     I2c *bus = new I2c(I2cConfiguration(), Board_I2C0);
-    Antenna::GetAntenna->InitAntenna(bus);
+    Antenna::GetAntenna()->InitAntenna(bus);
 #endif
 
     TaskHolder *test_task =
