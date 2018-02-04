@@ -26,8 +26,7 @@ SensorConfig* SensorConfig::instance() {
 
 void SensorConfig::build_config() {
     // Create bus 1.
-    I2c bus_1(I2cConfiguration(I2cConfiguration::kBitRate400K),
-              Board_I2C_TMP);
+    I2c bus_1(Board_I2C_TMP);
 
     // Create h-bridge temperature sensor 1.
     MCP9808 hbridge_temp_1(&bus_1, 0x18, "HBRIDGE_TEMP_1");
