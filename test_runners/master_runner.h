@@ -6,9 +6,9 @@
 void master_tests_thread();
 void debug_interface_tests_runner();
 void i2c_tests_runner();
-void message_tests_runner();
 void antenna_tests_runner();
 void lithium_command_tests_runner();
+void message_tests_runner();
 void SetUp();
 void TearDown();
 

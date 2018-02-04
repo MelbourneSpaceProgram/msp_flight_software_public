@@ -3,7 +3,6 @@
 
 #include <src/debug_interface/debug_stream.h>
 #include <src/i2c/i2c.h>
-#include <src/i2c/i2c_configuration.h>
 #include <src/messages/antenna_message.h>
 #include <src/util/data_types.h>
 #include <ti/sysbios/knl/Task.h>

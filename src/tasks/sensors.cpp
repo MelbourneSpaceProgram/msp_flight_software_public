@@ -2,7 +2,6 @@
 #include <Board.h>
 #include <src/i2c/i2c.h>
 #include <src/init/init.h>
-#include <src/i2c/i2c_configuration.h>
 #include <string>
 #include <src/i2c/sensors/mcp9808.hpp>
 #include <src/observers/sample_temp_observer.hpp>
@@ -12,8 +11,7 @@ Char mcp9808_stack[TASKSTACKSIZE];
 
 void MCP9808ReadTask() {
     while (true) {
-        I2c i2c_bus(I2cConfiguration(I2cConfiguration::kBitRate100K),
-                    Board_I2C_TMP);
+        I2c i2c_bus(Board_I2C_TMP);
 
         MCP9808 mcp9808(&i2c_bus, 0x18, "SENSOR123");
 
