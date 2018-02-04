@@ -10,8 +10,8 @@ void master_tests_thread() {
     debug_interface_tests_runner();
     i2c_tests_runner();
     message_tests_runner();
-    lithium_command_tests_runner();
     antenna_tests_runner();
+    lithium_command_tests_runner();
 }
 
 
