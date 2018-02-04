@@ -2,8 +2,8 @@
 #include <src/uart/uart_configuration.h>
 #include <ti/drivers/UART.h>
 
-Uart::Uart(UartConfiguration config, uint8_t index)
-    : config(config), index(index) {
+Uart::Uart(UartConfiguration config, uint8_t bus_index)
+    : config(config), bus_index(bus_index) {
     Open();
 }
 
@@ -12,7 +12,7 @@ Uart::~Uart() { Close(); }
 void Uart::Open() {
     // Get a handle to the UART bus.
     UART_Params uart_params = config.GetUARTParams();
-    this->handle = UART_open(this->index, &uart_params);
+    this->handle = UART_open(this->bus_index, &uart_params);
     if (this->handle == NULL) {
         // TODO(dingbenjamin): Throw Exception after exceptions designed
     }
