@@ -1,4 +1,5 @@
 #include <Board.h>
+#include <src/config/unit_tests.h>
 #include <src/debug_interface/debug_stream.h>
 #include <src/i2c/i2c.h>
 #include <src/init/init.h>
@@ -17,14 +18,15 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
 
 void PostBiosInitialiser::PostBiosInit() {
     // TODO(dingbenjamin): Init var length array pool
-    DebugStream::GetInstance();  // Initialise Singleton in thread safe manner
-    I2c *bus = new I2c(I2cConfiguration(), Board_I2C0);
-    Antenna *antenna = Antenna::GetAntenna();
-    antenna->InitAntenna(bus);
 
-    // Initialise Singleton in thread safe manner
+    // Initialise Singletons in thread safe manner
     DebugStream::GetInstance();
+    Antenna::GetAntenna();
     Lithium::GetInstance();
+#ifndef I2C_TESTS_IGNORED
+    I2c *bus = new I2c(I2cConfiguration(), Board_I2C0);
+    Antenna::GetAntenna->InitAntenna(bus);
+#endif
 
     TaskHolder *test_task =
         new TaskHolder(4096, "Unit Tests", 7, new TestInitialiser());
