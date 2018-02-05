@@ -7,9 +7,11 @@ class GetConfigurationCommand : public LithiumCommand {
    public:
     GetConfigurationCommand();
     uint16_t GetLithiumPayloadSize() const;
+    const byte &GetCommandCode() const;
+    uint16_t GetReplyPayloadSize() const;
 
    private:
-    static const byte kGetConfigurationCommandCode = 0x05;
+    static const uint16_t kGetConfigReplyPayloadSize = 34;
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_COMMANDS_GET_CONFIGURATION_COMMAND_H_
