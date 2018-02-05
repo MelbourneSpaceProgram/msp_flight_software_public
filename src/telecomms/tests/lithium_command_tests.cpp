@@ -1,5 +1,5 @@
 #include <src/telecomms/lithium.h>
-#include <src/telecomms/runnable_lithium.h>
+#include <src/util/data_types.h>
 #include <test_runners/lithium_command_tests.h>
 #include <test_runners/unity.h>
 

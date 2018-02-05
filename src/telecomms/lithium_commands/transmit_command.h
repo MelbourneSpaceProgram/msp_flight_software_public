@@ -4,7 +4,6 @@
 #include <src/telecomms/lithium_commands/lithium_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/msp_payloads/transmit_packet.h>
-#include <src/telecomms/msp_payloads/transmit_payload.h>
 
 class TransmitCommand : public LithiumCommand {
    public:
@@ -12,9 +11,10 @@ class TransmitCommand : public LithiumCommand {
                     uint8_t total_rx_count, uint8_t valid_rx_count);
     virtual ~TransmitCommand() {}
     uint16_t GetLithiumPayloadSize() const;
+    uint16_t GetReplyPayloadSize() const;
+    const byte &GetCommandCode() const;
 
    private:
-    static const byte kTransmitCommandCode = 0x03;
     TransmitPacket transmit_packet;
 };
 

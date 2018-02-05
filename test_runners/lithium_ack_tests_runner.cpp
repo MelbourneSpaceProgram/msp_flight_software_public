@@ -27,13 +27,17 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "i2c_tests.h"
+#include "lithium_ack_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestI2cWriteTransaction(void);
-extern void TestI2cReadTransaction(void);
+extern void TestNoOpAckParse();
+extern void TestGetConfigAckParse();
+extern void TestResetSystemAckParse();
+extern void TestTransmitParse();
+extern void TestFailNoOpAckParse();
+extern void TestFailGetConfigAckParse();
 
 
 /*=======Suite Setup=====*/
@@ -55,8 +59,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_i2c_tests_runner(void);
-void resetTest_i2c_tests_runner(void)
+void resetTest_lithium_ack_tests_runner(void);
+void resetTest_lithium_ack_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -64,13 +68,17 @@ void resetTest_i2c_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int i2c_tests_runner(void);
-int i2c_tests_runner(void)
+ int lithium_ack_tests_runner(void);
+int lithium_ack_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/i2c/tests/i2c_tests.cpp");
-  RUN_TEST(TestI2cWriteTransaction, 10);
-  RUN_TEST(TestI2cReadTransaction, 25);
+  UnityBegin("src/telecomms/tests/lithium_ack_tests.cpp");
+  RUN_TEST(TestNoOpAckParse, 6);
+  RUN_TEST(TestGetConfigAckParse, 13);
+  RUN_TEST(TestResetSystemAckParse, 28);
+  RUN_TEST(TestTransmitParse, 35);
+  RUN_TEST(TestFailNoOpAckParse, 43);
+  RUN_TEST(TestFailGetConfigAckParse, 73);
 
   return suite_teardown(UnityEnd());
 }
