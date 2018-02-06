@@ -1,7 +1,7 @@
 #include <src/telecomms/lithium_configuration.h>
+#include <src/uart/uart.h>
 
-LithiumConfiguration::LithiumConfiguration()
-    : baud_rate(UartConfiguration::kBaud9600) {}
+LithiumConfiguration::LithiumConfiguration() : baud_rate(Uart::kBaud9600) {}
 
 SerialisedMessage LithiumConfiguration::SerialiseTo(byte *serial_buffer) {
     // TODO(dingbenjamin): Implement

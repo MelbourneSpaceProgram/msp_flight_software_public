@@ -11,7 +11,6 @@
 #include <src/telecomms/msp_payloads/transmit_packet.h>
 #include <src/telecomms/msp_payloads/transmit_payload.h>
 #include <src/uart/uart.h>
-#include <src/uart/uart_configuration.h>
 
 class Lithium {
    public:
@@ -56,7 +55,6 @@ class Lithium {
     uint8_t total_rx_counter;
     uint8_t valid_rx_counter;
     LithiumConfiguration lithium_config;
-    UartConfiguration uart_config;
     Uart uart;
 };
 
