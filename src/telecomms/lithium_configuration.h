@@ -2,7 +2,6 @@
 #define SRC_TELECOMMS_LITHIUM_CONFIGURATION_H_
 
 #include <src/messages/message.h>
-#include <src/uart/uart_configuration.h>
 
 class LithiumConfiguration : public Message {
    public:
