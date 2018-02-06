@@ -9,6 +9,8 @@
 #include <src/tasks/tasks.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
+#include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Semaphore.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -27,8 +29,14 @@ void PostBiosInitialiser::PostBiosInit() {
     I2c *bus = new I2c(Board_I2C0);
     Antenna::GetAntenna()->InitAntenna(bus);
 
+    Semaphore_Params sem_params;
+    Semaphore_Params_init(&sem_params);
+    Semaphore_Handle test_complete = Semaphore_create(0, &sem_params, NULL);
+    TestInitialiser::GetInstance()->InitSemaphore(test_complete);
     TaskHolder *test_task =
-        new TaskHolder(4096, "Unit Tests", 7, new TestInitialiser());
+        new TaskHolder(4096, "Unit Tests", 7, TestInitialiser::GetInstance());
     test_task->Init();
+    Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
+
     TasksInit();
 }
