@@ -6,10 +6,9 @@
 
 Lithium* Lithium::instance = NULL;
 
-Lithium::Lithium()
-    : lithium_config(),
-      uart_config(UartConfiguration::kBaud9600),
-      uart(uart_config, UARTA2) {}
+Lithium::Lithium() : lithium_config(), uart(UARTA2) {
+    uart.SetBaudRate(Uart::kBaud9600)->Open();
+}
 
 Lithium::LithiumReturnCode Lithium::PerformTransaction(
     LithiumCommand* command, byte* read_buffer) const {

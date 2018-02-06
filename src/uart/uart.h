@@ -1,32 +1,40 @@
 #ifndef SRC_UART_UART_H_
 #define SRC_UART_UART_H_
 
-#include <src/uart/uart_configuration.h>
 #include <src/util/data_types.h>
 #include <ti/drivers/UART.h>
 
+// TODO(dingbenjamin): Write hardware unit test
 class Uart {
    public:
-    Uart(UartConfiguration config, uint8_t bus_index);
+    explicit Uart(uint8_t bus_index);
     ~Uart();
+    void Open();
 
-    // Can only be called after the UART_Bus::open method.
+    // Must be called after the UART_Bus::open method.
     UART_Handle GetHandle() const;
-    const UartConfiguration& GetConfig() const;
-    bool PerformWriteTransaction(const byte* write_buffer,
-                                 uint16_t write_buffer_length) const;
-    bool PerformReadTransaction(byte* read_buffer,
-                                uint16_t read_buffer_length) const;
+    int PerformWriteTransaction(const byte* write_buffer,
+                                uint16_t write_buffer_length) const;
+    int PerformReadTransaction(byte* read_buffer,
+                               uint16_t read_buffer_length) const;
+    Uart* SetBaudRate(uint32_t baud_rate);
+    Uart* SetReadMode(UART_Mode read_mode);
+    Uart* SetWriteMode(UART_Mode write_mode);
+    Uart* SetReadCallback(UART_Callback read_callback);
+    Uart* SetWriteCallback(UART_Callback write_callback);
+    Uart* SetReadTimeout(uint32_t read_timeout);
+    Uart* SetWriteTimeout(uint32_t write_timeout);
+
+    static const uint32_t kBaud115200 = 115200;
+    static const uint32_t kBaud9600 = 9600;
 
    private:
     // Private copy/assignment to ensure no double deletion
     Uart(const Uart&);
     Uart& operator=(const Uart&);
-
-    void Open();
     void Close();
 
-    UartConfiguration config;
+    UART_Params uart_params;
     const uint8_t bus_index;
     UART_Handle handle;
 };

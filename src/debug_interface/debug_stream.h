@@ -4,7 +4,6 @@
 #include <src/messages/temperature_message.h>
 #include <src/tasks/task_holder.h>
 #include <src/uart/uart.h>
-#include <src/uart/uart_configuration.h>
 #include <ti/sysbios/knl/Queue.h>
 
 typedef struct QueueMessage {
