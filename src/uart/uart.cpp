@@ -3,6 +3,9 @@
 
 Uart::Uart(uint8_t bus_index) : bus_index(bus_index), handle(NULL) {
     UART_Params_init(&uart_params);
+    uart_params.readEcho = UART_ECHO_OFF;
+    uart_params.readDataMode = UART_DATA_BINARY;
+    uart_params.writeDataMode = UART_DATA_BINARY;
 }
 
 Uart::~Uart() { Close(); }
