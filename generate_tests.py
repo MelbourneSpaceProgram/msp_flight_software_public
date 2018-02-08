@@ -3,7 +3,7 @@ import glob
 from subprocess import call
 import os
 import argparse
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 def find_all_test_files(directory_root="./"):
@@ -24,7 +24,8 @@ def generate_test_runner_definition(test_file_path):
     test_runner_definition = {
         "main_name": "{}_runner".format(filename_wo_extension),
         "header_file": "test_runners/{}.h".format(filename_wo_extension),
-        "input_test_file": "{}".format(test_file_path),
+        # PurePosixPath ensures we are consistent in our path formatting across all platforms
+        "input_test_file": "{}".format(PurePosixPath(test_file_path)),
         "output_runner_file": "test_runners/{}_runner.cpp".format(filename_wo_extension)
     }
 
