@@ -71,7 +71,7 @@ void resetTest_message_tests_runner(void)
 int message_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src\\messages\\tests\\message_tests.cpp");
+  UnityBegin("src/messages/tests/message_tests.cpp");
   RUN_TEST(TestTestMessageSerialise, 14);
   RUN_TEST(TestTempMessageSerialise, 28);
   RUN_TEST(TestContainerMessageSerialise, 47);
