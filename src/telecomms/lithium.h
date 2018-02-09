@@ -11,51 +11,48 @@
 #include <src/telecomms/msp_payloads/transmit_packet.h>
 #include <src/telecomms/msp_payloads/transmit_payload.h>
 #include <src/uart/uart.h>
+#include <ti/sysbios/knl/Mailbox.h>
 
 class Lithium {
    public:
-    enum LithiumReturnCode {
-        kInvalidReceivedSync,
-        kInvalidReceivedDirection,
-        kInvalidReceivedCommandCode,
-        kInvalidReceivedSize,
-        kOverflowReceivedSize,
-        kInvalidReceivedChecksum,
-        kInvalidCommandSize,
-        kUartWriteError,
-        kUartReadError,
-        kNack,
-        kSuccess
-    };
-
-    static Lithium* GetInstance();  // Initial call is not thread safe
-    // TODO(dingbenjamin): Find a way to make this function private but still
-    // unit test
-    static LithiumReturnCode CheckIncomingHeader(LithiumCommand* command,
-                                                 byte* received,
-                                                 uint16_t received_size);
-    static uint16_t GetReplyPayloadSize(byte* received);
-    // The raw bytes are copied into output_buffer on success
-    LithiumReturnCode PerformTransaction(LithiumCommand* command,
-                                         byte* read_buffer) const;
-    const LithiumConfiguration& GetLithiumConfig() const;
-    void SetLithiumConfig(const LithiumConfiguration& lithium_config);
-
     static const uint16_t kMaxCommandSize = 300;
     static const uint16_t kMaxReceivedSize = 300;
+    static const uint16_t kReceivedPacketSize = 265;
+
+    static const uint8_t kLithiumHeaderSize = 8;
+    static const uint8_t kLithiumTailSize = 2;
+    static const uint8_t kLithiumSyncSize = 2;
+
+    static const byte kSyncCharOne = 0x48;
+    static const byte kSyncCharTwo = 0x65;
+    static const byte kDirectionIntoLithium = 0x10;
+    static const byte kDirectionOutOfLithium = 0x20;
+
+    static Lithium* GetInstance();  // Initial call is not thread safe
+    Mailbox_Handle GetMessageMailbox() const;
+    Mailbox_Handle GetCommandResponseMailbox() const;
+    const LithiumConfiguration& GetLithiumConfig() const;
+    void SetLithiumConfig(const LithiumConfiguration& lithium_config);
+    Uart* GetUart();
+
+    bool DoCommand(LithiumCommand* command) const;
 
    private:
-    Lithium();
-    LithiumReturnCode PerformWriteTransaction(LithiumCommand* command) const;
-    LithiumReturnCode PerformReadTransaction(LithiumCommand* command,
-                                             byte* read_buffer) const;
-
     static Lithium* instance;
+    static const uint32_t kUartWriteTimeoutMilli = 500;
+    static const uint32_t kWaitForAckMilli = 2000;
+
+    Mailbox_Params message_mailbox_params;
+    Mailbox_Handle message_mailbox_handle;
+    Mailbox_Params command_response_mailbox_params;
+    Mailbox_Handle command_response_mailbox_handle;
     uint8_t tx_counter;
     uint8_t total_rx_counter;
     uint8_t valid_rx_counter;
     LithiumConfiguration lithium_config;
     Uart uart;
+
+    Lithium();
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_H_

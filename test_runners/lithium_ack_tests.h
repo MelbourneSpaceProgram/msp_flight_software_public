@@ -5,14 +5,15 @@
 
 #include "unity.h"
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_command_tests.h>
 
-void TestNoOpAckParse(void);
-void TestGetConfigAckParse(void);
-void TestResetSystemAckParse(void);
-void TestTransmitParse(void);
-void TestFailNoOpAckParse(void);
+void TestNoOpAck(void);
+void TestGetConfigAck(void);
+void TestResetSystemAck(void);
+void TestTransmitAck(void);
+void TestFailNoOpAck(void);
 void TestFailGetConfigAckParse(void);
 
 #endif  // TEST_RUNNERS_LITHIUM_ACK_TESTS_H_
