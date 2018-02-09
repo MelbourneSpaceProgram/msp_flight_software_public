@@ -10,6 +10,7 @@ void message_tests_runner();
 void antenna_tests_runner();
 void lithium_ack_tests_runner();
 void lithium_command_tests_runner();
+void lithium_hardware_tests_runner();
 void SetUp();
 void TearDown();
 

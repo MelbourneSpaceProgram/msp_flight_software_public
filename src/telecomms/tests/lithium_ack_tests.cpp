@@ -1,16 +1,15 @@
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_command_tests.h>
 #include <test_runners/unity.h>
 
-void TestNoOpAckParse() {
-    NoOpCommand no_op;
+void TestNoOpAck() {
     byte mock_ack[8] = {0x48, 0x65, 0x20, 0x01, 0x0a, 0x0a, 0x35, 0xa1};
-    TEST_ASSERT_EQUAL_INT8(Lithium::kSuccess,
-                           Lithium::CheckIncomingHeader(&no_op, mock_ack, 8));
+    TEST_ASSERT(LithiumUtils::IsValidHeader(mock_ack));
 }
 
-void TestGetConfigAckParse() {
+void TestGetConfigAck() {
     GetConfigurationCommand config_command;
     // Data recorded from UART communications with Lithium
     byte mock_ack[44] = {0x48, 0x65, 0x20, 0x05, 0x00, 0x22, 0x47, 0xb1, 0x00,
@@ -18,56 +17,34 @@ void TestGetConfigAckParse() {
                          0xb1, 0xac, 0x06, 0x00, 0x4e, 0x4f, 0x43, 0x41, 0x4c,
                          0x4c, 0x43, 0x51, 0x20, 0x20, 0x20, 0x20, 0x10, 0x00,
                          0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kSuccess,
-        Lithium::CheckIncomingHeader(&config_command, mock_ack, 44));
+    TEST_ASSERT(LithiumUtils::IsValidHeader(mock_ack));
     TEST_ASSERT_EQUAL_UINT16(config_command.GetReplyPayloadSize(),
-                             Lithium::GetReplyPayloadSize(mock_ack));
+                             LithiumUtils::GetPayloadSize(mock_ack));
 }
 
-void TestResetSystemAckParse() {
-    ResetSystemCommand reset;
+void TestResetSystemAck() {
     byte mock_ack[8] = {0x48, 0x65, 0x20, 0x02, 0x0a, 0x0a, 0x36, 0xa4};
-    TEST_ASSERT_EQUAL_INT8(Lithium::kSuccess,
-                           Lithium::CheckIncomingHeader(&reset, mock_ack, 8));
+    TEST_ASSERT(LithiumUtils::IsValidHeader(mock_ack));
 }
 
-void TestTransmitParse() {
-    TestPayload test_payload;
-    TransmitCommand transmit(&test_payload, 0x67, 0x61, 0x62);
+void TestTransmitAck() {
     byte mock_ack[8] = {0x48, 0x65, 0x20, 0x03, 0x0a, 0x0a, 0x37, 0xa7};
-    TEST_ASSERT_EQUAL_INT8(Lithium::kSuccess, Lithium::CheckIncomingHeader(
-                                                  &transmit, mock_ack, 8));
+    TEST_ASSERT(LithiumUtils::IsValidHeader(mock_ack));
 }
 
-void TestFailNoOpAckParse() {
-    NoOpCommand no_op;
-
+void TestFailNoOpAck() {
     byte invalid_sync_a[8] = {0x49, 0x65, 0x20, 0x01, 0x0a, 0x0a, 0x35, 0xa1};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedSync,
-        Lithium::CheckIncomingHeader(&no_op, invalid_sync_a, 8));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_sync_a));
 
     byte invalid_sync_b[8] = {0x48, 0x63, 0x20, 0x01, 0x0a, 0x0a, 0x35, 0xa1};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedSync,
-        Lithium::CheckIncomingHeader(&no_op, invalid_sync_b, 8));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_sync_b));
 
     byte invalid_direction[8] = {0x48, 0x65, 0x21, 0x01,
                                  0x0a, 0x0a, 0x35, 0xa1};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedDirection,
-        Lithium::CheckIncomingHeader(&no_op, invalid_direction, 8));
-
-    byte invalid_code[8] = {0x48, 0x65, 0x20, 0x05, 0x0a, 0x0a, 0x35, 0xa1};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedCommandCode,
-        Lithium::CheckIncomingHeader(&no_op, invalid_code, 8));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_direction));
 
     byte invalid_checksum[8] = {0x48, 0x65, 0x20, 0x01, 0x0a, 0x0a, 0x42, 0x42};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedChecksum,
-        Lithium::CheckIncomingHeader(&no_op, invalid_checksum, 8));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_checksum));
 }
 
 void TestFailGetConfigAckParse() {
@@ -79,45 +56,28 @@ void TestFailGetConfigAckParse() {
         0x4e, 0x4f, 0x43, 0x41, 0x4c, 0x4c, 0x43, 0x51, 0x20, 0x20, 0x20,
         0x20, 0x10, 0x00, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
 
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedSync,
-        Lithium::CheckIncomingHeader(&get_config, invalid_sync_a, 44));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_sync_a));
 
     byte invalid_sync_b[44] = {
         0x48, 0xFF, 0x20, 0x05, 0x00, 0x22, 0x47, 0xb1, 0x00, 0x96, 0x01,
         0x01, 0x00, 0x00, 0xb1, 0xac, 0x06, 0x00, 0xb1, 0xac, 0x06, 0x00,
         0x4e, 0x4f, 0x43, 0x41, 0x4c, 0x4c, 0x43, 0x51, 0x20, 0x20, 0x20,
         0x20, 0x10, 0x00, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedSync,
-        Lithium::CheckIncomingHeader(&get_config, invalid_sync_b, 44));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_sync_b));
 
     byte invalid_direction[44] = {
         0x48, 0x65, 0x10, 0x05, 0x00, 0x22, 0x47, 0xb1, 0x00, 0x96, 0x01,
         0x01, 0x00, 0x00, 0xb1, 0xac, 0x06, 0x00, 0xb1, 0xac, 0x06, 0x00,
         0x4e, 0x4f, 0x43, 0x41, 0x4c, 0x4c, 0x43, 0x51, 0x20, 0x20, 0x20,
         0x20, 0x10, 0x00, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedDirection,
-        Lithium::CheckIncomingHeader(&get_config, invalid_direction, 44));
-
-    byte invalid_code[44] = {
-        0x48, 0x65, 0x20, 0x0F, 0x00, 0x22, 0x47, 0xb1, 0x00, 0x96, 0x01,
-        0x01, 0x00, 0x00, 0xb1, 0xac, 0x06, 0x00, 0xb1, 0xac, 0x06, 0x00,
-        0x4e, 0x4f, 0x43, 0x41, 0x4c, 0x4c, 0x43, 0x51, 0x20, 0x20, 0x20,
-        0x20, 0x10, 0x00, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedCommandCode,
-        Lithium::CheckIncomingHeader(&get_config, invalid_code, 44));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_direction));
 
     byte invalid_header_checksum[44] = {
         0x48, 0x65, 0x20, 0x05, 0x00, 0x22, 0x42, 0xb1, 0x00, 0x96, 0x01,
         0x01, 0x00, 0x00, 0xb1, 0xac, 0x06, 0x00, 0xb1, 0xac, 0x06, 0x00,
         0x4e, 0x4f, 0x43, 0x41, 0x4c, 0x4c, 0x43, 0x51, 0x20, 0x20, 0x20,
         0x20, 0x10, 0x00, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
-    TEST_ASSERT_EQUAL_INT8(
-        Lithium::kInvalidReceivedChecksum,
-        Lithium::CheckIncomingHeader(&get_config, invalid_header_checksum, 44));
+    TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_header_checksum));
 
     byte invalid_size[44] = {
         0x48, 0x65, 0x20, 0x05, 0x00, 0x20, 0x47, 0xb1, 0x00, 0x96, 0x01,
@@ -125,5 +85,5 @@ void TestFailGetConfigAckParse() {
         0x4e, 0x4f, 0x43, 0x41, 0x4c, 0x4c, 0x43, 0x51, 0x20, 0x20, 0x20,
         0x20, 0x10, 0x00, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0xab, 0xa8};
     TEST_ASSERT_FALSE(get_config.GetReplyPayloadSize() ==
-                      Lithium::GetReplyPayloadSize(invalid_size));
+                      LithiumUtils::GetPayloadSize(invalid_size));
 }

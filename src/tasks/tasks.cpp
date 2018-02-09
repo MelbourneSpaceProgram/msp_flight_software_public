@@ -2,6 +2,10 @@
 #include <src/tasks/task_holder.h>
 #include <src/tasks/tasks.h>
 
+#include <src/telecomms/lithium.h>
+#include <src/telecomms/runnable_lithium_listener.h>
+#include <stdio.h>
+
 void TasksInit() {
     TaskHolder *debug_task =
         new TaskHolder(4096, "DebugStream", 6, new RunnableDebugStream());

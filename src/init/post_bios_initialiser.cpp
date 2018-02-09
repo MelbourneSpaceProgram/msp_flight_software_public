@@ -9,6 +9,7 @@
 #include <src/tasks/tasks.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/runnable_lithium_listener.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
@@ -20,7 +21,6 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
 
 void PostBiosInitialiser::PostBiosInit() {
     // TODO(dingbenjamin): Init var length array pool
-
     // Initialise Singletons in thread safe manner
     DebugStream::GetInstance();
     Antenna::GetAntenna();
@@ -35,6 +35,9 @@ void PostBiosInitialiser::PostBiosInit() {
     TestInitialiser::GetInstance()->InitSemaphore(test_complete);
     TaskHolder *test_task =
         new TaskHolder(4096, "Unit Tests", 7, TestInitialiser::GetInstance());
+    TaskHolder *radio_listener = new TaskHolder(1024, "RadioListener", 11,
+                                                new RunnableLithiumListener());
+    radio_listener->Init();
     test_task->Init();
     Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
 
