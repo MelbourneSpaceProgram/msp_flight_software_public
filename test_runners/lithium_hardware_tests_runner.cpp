@@ -27,17 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "lithium_ack_tests.h"
+#include "lithium_hardware_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestNoOpAck();
-extern void TestGetConfigAck();
-extern void TestResetSystemAck();
-extern void TestTransmitAck();
-extern void TestFailNoOpAck();
-extern void TestFailGetConfigAckParse();
+extern void TestCommandAcks();
 
 
 /*=======Suite Setup=====*/
@@ -59,8 +54,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_lithium_ack_tests_runner(void);
-void resetTest_lithium_ack_tests_runner(void)
+void resetTest_lithium_hardware_tests_runner(void);
+void resetTest_lithium_hardware_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -68,17 +63,12 @@ void resetTest_lithium_ack_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int lithium_ack_tests_runner(void);
-int lithium_ack_tests_runner(void)
+ int lithium_hardware_tests_runner(void);
+int lithium_hardware_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/telecomms/tests/lithium_ack_tests.cpp");
-  RUN_TEST(TestNoOpAck, 7);
-  RUN_TEST(TestGetConfigAck, 12);
-  RUN_TEST(TestResetSystemAck, 25);
-  RUN_TEST(TestTransmitAck, 30);
-  RUN_TEST(TestFailNoOpAck, 35);
-  RUN_TEST(TestFailGetConfigAckParse, 50);
+  UnityBegin("src/telecomms/tests/lithium_hardware_tests.cpp");
+  RUN_TEST(TestCommandAcks, 8);
 
   return suite_teardown(UnityEnd());
 }

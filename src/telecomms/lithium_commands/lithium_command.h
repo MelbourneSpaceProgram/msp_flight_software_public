@@ -7,7 +7,6 @@
 
 class LithiumCommand : Message {
    public:
-    static void CalcChecksum(byte *checksum, byte *data, uint16_t data_size);
     virtual ~LithiumCommand() {}
     virtual uint16_t GetLithiumPayloadSize() const = 0;
     virtual const byte &GetCommandCode() const = 0;
@@ -15,14 +14,6 @@ class LithiumCommand : Message {
     SerialisedMessage SerialiseTo(byte *serial_buffer);
     uint16_t GetSerialisedSize() const;
 
-    static const uint8_t kLithiumCommandHeaderSize = 8;
-    static const uint8_t kLithiumCommandTailSize = 2;
-    static const uint8_t kLithiumCommandSyncSize = 2;
-
-    static const byte kSyncCharOne = 0x48;
-    static const byte kSyncCharTwo = 0x65;
-    static const byte kDirectionIntoLithium = 0x10;
-    static const byte kDirectionOutOfLithium = 0x20;
     static const uint16_t kNoPayload = 0;
 
    protected:

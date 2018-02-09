@@ -6,6 +6,7 @@
 #include <test_runners/antenna_tests.h>
 #include <test_runners/lithium_ack_tests.h>
 #include <test_runners/lithium_command_tests.h>
+#include <test_runners/lithium_hardware_tests.h>
 #include <test_runners/master_runner.h>
 void master_tests_thread() {
     debug_interface_tests_runner();
@@ -14,6 +15,7 @@ void master_tests_thread() {
     antenna_tests_runner();
     lithium_ack_tests_runner();
     lithium_command_tests_runner();
+    lithium_hardware_tests_runner();
 }
 
 
