@@ -38,8 +38,6 @@ class Antenna {
     static const byte kCommandModeHeaterTwoOnDefTime = 0x05;
     // Turn ON Heater 1 + 2 for 40 seconds
     static const byte kCommandModeHeaterOneTwoOnDefTime = 0x06;
-    // Go to SLEEP mode
-    static const byte kCommandModeSleep = 0x07;
     // Door 1 bit mask in status packet
     static const byte kDoorOneMask = 0b10000000;
     // Door 2 bit mask in status packet
@@ -52,13 +50,12 @@ class Antenna {
     static const byte kStateMask = 0b00000111;
     // Zero bit mask in status packet (Useful for endianess check)
     static const byte kZeroMask = 0b00001000;
-    // Time to wait after trying a heater
+    // Time to wait (in milliseconds) after trying a heater
     static const uint32_t kWaitTimeShort = 10000;
-    // Time to wait after trying a heater
+    // Time to wait (in milliseconds) after trying a heater
     static const uint32_t kWaitTimeLong = 20000;
 
     Antenna();
-    // bool ValidBitRate(I2cConfiguration::bit_rates bit_rate) const;
     bool TryHeater(const byte heat_command, uint32_t wait_time) const;
 
     bool initialised;
