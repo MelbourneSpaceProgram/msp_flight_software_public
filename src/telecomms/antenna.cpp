@@ -93,12 +93,10 @@ AntennaMessage Antenna::GetStatus() const {
     bus->PerformReadTransaction(kAddress, &read_buffer, 1);
     // Bit at the zero mask should ALWAYS be 0 as specified by data sheet
     // Bits at the door masks should be 1 when doors opened, 0 otherwise
-    AntennaMessage status((kZeroMask ^ read_buffer) & kZeroMask,
-                          (kDoorOneMask & read_buffer) & kDoorOneMask,
-                          (kDoorTwoMask & read_buffer) & kDoorTwoMask,
-                          (kDoorThreeMask & read_buffer) & kDoorThreeMask,
-                          (kDoorFourMask & read_buffer) & kDoorFourMask,
-                          kStateMask & read_buffer);
+    AntennaMessage status(
+        (kZeroMask ^ read_buffer) & kZeroMask, kDoorOneMask & read_buffer,
+        kDoorTwoMask & read_buffer, kDoorThreeMask & read_buffer,
+        kDoorFourMask & read_buffer, kStateMask & read_buffer);
     // TODO(wschuetz): Remove Task_sleep on overflow bug fix
     Task_sleep(100);
     return status;
