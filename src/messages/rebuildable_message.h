@@ -5,9 +5,6 @@
 #include <stdint.h>
 
 class RebuildableMessage : public Message {
-    // public:
-    // explicit RebuildableMessage(byte* serialised_message_buffer) {}
-
    private:
     virtual void SerialiseFrom(byte* serial_buffer) = 0;
 };
