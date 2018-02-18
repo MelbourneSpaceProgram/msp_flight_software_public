@@ -27,12 +27,13 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "database_tests.h"
+#include "lithium_configuration_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestHamming();
+extern void TestLithiumConfigurationSerialise();
+extern void TestLithiumConfigurationDeserialise();
 
 
 /*=======Suite Setup=====*/
@@ -54,8 +55,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_database_tests_runner(void);
-void resetTest_database_tests_runner(void)
+void resetTest_lithium_configuration_tests_runner(void);
+void resetTest_lithium_configuration_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -63,12 +64,13 @@ void resetTest_database_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int database_tests_runner(void);
-int database_tests_runner(void)
+ int lithium_configuration_tests_runner(void);
+int lithium_configuration_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/database/tests/database_tests.cpp");
-  RUN_TEST(TestHamming, 4);
+  UnityBegin("src/telecomms/tests/lithium_configuration_tests.cpp");
+  RUN_TEST(TestLithiumConfigurationSerialise, 6);
+  RUN_TEST(TestLithiumConfigurationDeserialise, 14);
 
   return suite_teardown(UnityEnd());
 }
