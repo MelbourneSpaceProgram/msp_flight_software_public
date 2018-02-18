@@ -4,6 +4,7 @@
 #define TEST_RUNNERS_DATABASE_TESTS_H_
 
 #include "unity.h"
+#include <src/database/HammingCoder.h>
 
 void TestHamming(void);
 
