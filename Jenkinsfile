@@ -1,9 +1,8 @@
 pipeline {
-    
     agent {
         label 'master'
     }
-    
+
     environment {
         PR_ID = sh (
             script: 'if [ -z ${CHANGE_ID+x} ]; then echo "-1"; else echo "$CHANGE_ID"; fi',
@@ -59,18 +58,18 @@ pipeline {
             steps {
                 sh '''
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    docker exec -t ccs7_smaller mkdir /tmp/code
-                    docker cp ${WORKSPACE}/CDH_software.tar.gz ccs7_smaller:/tmp/code
-                    docker exec -t ccs7_smaller tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
-                    docker exec -t ccs7_smaller /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectImport -ccs.location /tmp/code
-                    docker exec -t ccs7_smaller /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
+                    docker-compose up -d
+                    docker exec -t ec2user_ccs7_1 mkdir /tmp/code
+                    docker cp ${WORKSPACE}/CDH_software.tar.gz ec2user_ccs7_1:/tmp/code
+                    docker exec -t ec2user_ccs7_1 tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
+                    docker exec -t ec2user_ccs7_1 /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectImport -ccs.location /tmp/code
+                    docker exec -t ec2user_ccs7_1 /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
                 '''
             }
             post {
                 always {
                     sh '''
-                      docker exec -t ccs7_smaller rm -rf /opt/CDH_Software/workspace
-                      docker exec -t ccs7_smaller rm -rf /tmp/code
+                       docker-compose down
                     '''
                 }
             }
