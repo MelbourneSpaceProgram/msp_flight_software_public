@@ -1,15 +1,10 @@
 pipeline {
     
-    agent any
-
+    agent {
+        label 'master'
+    }
+    
     environment {
-        // We need to create a separate folder for the CCS workspace
-        // As it gets upset if we make it the same as our project directory
-        CCS_WS_DIR = '/var/lib/jenkins/CCS_WS/'
-        CCS_WS_exists = sh (
-            script: 'if test -d /var/lib/jenkins/CCS_WS/; then echo "True"; else echo "False"; fi',
-            returnStdout: true
-        ).trim()
         PR_ID = sh (
             script: 'if [ -z ${CHANGE_ID+x} ]; then echo "-1"; else echo "$CHANGE_ID"; fi',
             returnStdout: true
@@ -18,6 +13,9 @@ pipeline {
     
     stages {
        stage('Static Analysis') {
+            agent {
+                label 'master'
+            }
             steps {
                 sh 'if [ -d "checker_output" ]; then rm -Rf checker_output; fi'
                 sh 'mkdir checker_output'
@@ -37,12 +35,12 @@ pipeline {
                         createCommentWithAllSingleFileComments: false, 
                         createSingleFileComments: true, 
                         commentOnlyChangedContent: false, 
-                        useOAuth2Token: false, 		
-                        oAuth2Token: "", 		
-                        useUsernamePassword: false, 		
-                        username: '', 		
-                        password: "", 		
-                        useUsernamePasswordCredentials: true, 		
+                        useOAuth2Token: false,         
+                        oAuth2Token: "",         
+                        useUsernamePassword: false,         
+                        username: '',         
+                        password: "",         
+                        useUsernamePasswordCredentials: true,         
                         usernamePasswordCredentialsId: 'a2c805e2-79f1-4a00-9fa5-d8e144e50245',
                         minSeverity: 'INFO',
                         keepOldComments: false,
@@ -53,23 +51,29 @@ pipeline {
                 ])
             }
         }
-
+    
         stage('Build') { 
+            agent {
+                label 'AWS_Docker_Agent'
+            }
             steps {
-                lock('workspace') {
-                    script {
-                        if (Boolean.parseBoolean(CCS_WS_exists)) {
-                            echo 'The workspace exists. Not importing new project.'
-                        } else {
-                            echo 'The workspace does not exist. Creating new project.'
-                            sh 'mkdir -p ${CCS_WS_DIR}'
-                            sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectImport -ccs.location $WORKSPACE'
-                        }
-                    }
-                    sh '/home/akremor/ti/ccsv7/eclipse/eclipse -noSplash -data "${CCS_WS_DIR}" -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"'
+                sh '''
+                    tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
+                    docker exec -t ccs7_smaller mkdir /tmp/code
+                    docker cp ${WORKSPACE}/CDH_software.tar.gz ccs7_smaller:/tmp/code
+                    docker exec -t ccs7_smaller tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
+                    docker exec -t ccs7_smaller /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectImport -ccs.location /tmp/code
+                    docker exec -t ccs7_smaller /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
+                '''
+            }
+            post {
+                always {
+                    sh '''
+                      docker exec -t ccs7_smaller rm -rf /opt/CDH_Software/workspace
+                      docker exec -t ccs7_smaller rm -rf /tmp/code
+                    '''
                 }
             }
-
         }
     }
 }
