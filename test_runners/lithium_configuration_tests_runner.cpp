@@ -34,6 +34,7 @@ extern void SetUp(void);
 extern void TearDown(void);
 extern void TestLithiumConfigurationSerialise();
 extern void TestLithiumConfigurationDeserialise();
+extern void TestFunctionConfigDeserialise();
 
 
 /*=======Suite Setup=====*/
@@ -69,8 +70,9 @@ int lithium_configuration_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/telecomms/tests/lithium_configuration_tests.cpp");
-  RUN_TEST(TestLithiumConfigurationSerialise, 6);
-  RUN_TEST(TestLithiumConfigurationDeserialise, 14);
+  RUN_TEST(TestLithiumConfigurationSerialise, 7);
+  RUN_TEST(TestLithiumConfigurationDeserialise, 16);
+  RUN_TEST(TestFunctionConfigDeserialise, 49);
 
   return suite_teardown(UnityEnd());
 }
