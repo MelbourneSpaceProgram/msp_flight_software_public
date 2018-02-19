@@ -18,8 +18,7 @@ LithiumConfiguration::LithiumConfiguration()
       destination(kDefaultDestination),
       tx_preamble(kDefaultTxPreamble),
       tx_postamble(kDefaultTxPostamble),
-      function_config(kDefaultFunctionConfig),
-      function_config2(kDefaultFunctionConfig2) {}
+      function_config() {}
 
 LithiumConfiguration::LithiumConfiguration(byte* serialised_message_buffer)
     : interface_baud_rate(kDefaultInterfaceBaudRate),
@@ -34,8 +33,7 @@ LithiumConfiguration::LithiumConfiguration(byte* serialised_message_buffer)
       destination(kDefaultDestination),
       tx_preamble(kDefaultTxPreamble),
       tx_postamble(kDefaultTxPostamble),
-      function_config(kDefaultFunctionConfig),
-      function_config2(kDefaultFunctionConfig2) {
+      function_config() {
     SerialiseFrom(serialised_message_buffer);
 }
 
@@ -64,21 +62,23 @@ SerialisedMessage LithiumConfiguration::SerialiseTo(byte* serial_buffer) {
         .AddData<char>(destination.at(5))
         .AddData<uint16_t>(tx_preamble)
         .AddData<uint16_t>(tx_postamble)
-        .AddData<uint16_t>(function_config)
-        .AddData<uint16_t>(function_config2)
+        .AddMessage(&function_config)
         .Build();
 }
 
 void LithiumConfiguration::SerialiseFrom(byte* serial_buffer) {
     uint8_t tx_modulation_temp, rx_modulation_temp, tx_rf_baud_rate_temp,
         rx_rf_baud_rate_temp, interface_baud_rate_temp;
+    byte function_config_bytes[4];
     char destination_temp[6];
     char source_temp[6];
 
     RebuildableMessageFieldIterator config_iterator(serial_buffer,
                                                     GetSerialisedSize());
-    config_iterator.FetchData<uint16_t>(&function_config2);
-    config_iterator.FetchData<uint16_t>(&function_config);
+    config_iterator.FetchData<byte>(&function_config_bytes[3]);
+    config_iterator.FetchData<byte>(&function_config_bytes[2]);
+    config_iterator.FetchData<byte>(&function_config_bytes[1]);
+    config_iterator.FetchData<byte>(&function_config_bytes[0]);
     config_iterator.FetchData<uint16_t>(&tx_postamble);
     config_iterator.FetchData<uint16_t>(&tx_preamble);
     for (int char_index = kCallsignLength - 1; char_index >= 0; char_index--) {
@@ -105,6 +105,7 @@ void LithiumConfiguration::SerialiseFrom(byte* serial_buffer) {
         static_cast<LithiumBaudRate>(interface_baud_rate_temp);
     source = std::string(source_temp, kCallsignLength);
     destination = std::string(destination_temp, kCallsignLength);
+    function_config = LithiumFunctionConfig(function_config_bytes);
 }
 
 uint16_t LithiumConfiguration::GetSerialisedSize() const {
@@ -115,20 +116,12 @@ const std::string LithiumConfiguration::GetDestination() const {
     return destination;
 }
 
-uint16_t LithiumConfiguration::GetFunctionConfig() const {
-    return function_config;
+LithiumFunctionConfig* LithiumConfiguration::GetFunctionConfig() {
+    return &function_config;
 }
 
-void LithiumConfiguration::SetFunctionConfig(uint16_t function_config) {
+void LithiumConfiguration::SetFunctionConfig(LithiumFunctionConfig function_config) {
     this->function_config = function_config;
-}
-
-uint16_t LithiumConfiguration::GetFunctionConfig2() const {
-    return function_config2;
-}
-
-void LithiumConfiguration::SetFunctionConfig2(uint16_t function_config_2) {
-    function_config2 = function_config_2;
 }
 
 LithiumConfiguration::LithiumBaudRate
