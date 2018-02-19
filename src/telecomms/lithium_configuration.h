@@ -6,6 +6,7 @@
 #include <src/messages/rebuildable_message_field_iterator.h>
 #include <src/util/data_types.h>
 #include <string>
+#include "lithium_function_config.h"
 
 class LithiumConfiguration : public RebuildableMessage {
    public:
@@ -34,74 +35,14 @@ class LithiumConfiguration : public RebuildableMessage {
         kPinToggleCommand = 0x34
     };
 
-    // Refer to Radio Interface Manual for full descriptions
-    // of function config enumerations below
-
-    // Pin 12
-    enum LithiumExternalEventFunctions {
-        kExternalEventOffLogicLow = 0b0000000000000000,
-        k2500MsToggle = 0b0000000000000001,
-        kTxPacket12MsToggle = 0b0000000000000010,
-        kRxPacket1250UsToggle = 0b0000000000000011
-    };
-
-    // Pin 13
-    enum LithiumConfig2Functions {
-        kPin13OffLogicLow = 0b0000000000000000,
-        kTxRxSwitch = 0b0000000000000100,
-        k2500kHzWdt = 0b000000000001000,
-        kRxPacketToggle = 0b0000000000001100
-    };
-
-    // Pin 14
-    enum LithiumConfig1Functions {
-        kPin14OffLogicLow = 0b0000000000000000,
-        kDioOaEnable = 0b0000000000010000,
-        kDioOaPatternA = 0b0000000000000000,
-        kDioOaPatternB = 0b0000000000100000
-    };
-
-    enum LithiumCrcFunctions {
-        kRxCrcDisable = 0b0000000000000000,
-        kRxCrcEnable = 0b0000000001000000,
-        kTxCrcDisable = 0b0000000000000000,  // TBD by Astrodev
-        kTxCrcEnable = 0b0000000010000000    // TBD by Astrodev
-    };
-
-    enum LithiumTelemetryFunctions {
-        kTelemetryPacketLoggingDisable = 0b0000000000000000,
-        kTelemetryPacketLoggingEnable = 0b0000000100000000,
-        kTelemetryPacketLoggingRate100mHz = 0b0000000000000000,
-        kTelemetryPacketLoggingRate1Hz = 0b0000001000000000,
-        kTelemetryPacketLoggingRate2Hz = 0b0000010000000000,
-        kTelemetryPacketLoggingRate4Hz = 0b0000011000000000,
-        kTelemetryPacketDumpDisable = 0b0000000000000000,
-        kTelemetryPacketDumpEnable = 0b0000100000000000
-    };
-
-    enum LithiumBeaconFunctions {
-        kOaCommandsDisable = 0b0000000000000000,
-        kOaCOmmandsEnable = 0b0001000000000000,
-        kCodeUploadDisable = 0b0000000000000000,
-        kCodeUploadEnable = 0b0010000000000000,
-        kRadioResetDisable = 0b0000000000000000,
-        kRadioResetEnable = 0b0100000000000000
-    };
-
-    enum LithiumFactoryDefaultsRestored {
-        kFactorySettingsRestoreCompleteFlag = 0b1000000000000000
-    };
-
     LithiumConfiguration();
     explicit LithiumConfiguration(byte* serialised_message_buffer);
     SerialisedMessage SerialiseTo(byte* serial_buffer);
     uint16_t GetSerialisedSize() const;
 
     const std::string GetDestination() const;
-    uint16_t GetFunctionConfig() const;
-    void SetFunctionConfig(uint16_t function_config);
-    uint16_t GetFunctionConfig2() const;
-    void SetFunctionConfig2(uint16_t function_config_2);
+    LithiumFunctionConfig* GetFunctionConfig();
+    void SetFunctionConfig(LithiumFunctionConfig function_config);
     LithiumBaudRate GetInterfaceBaudRate() const;
     void SetInterfaceBaudRate(LithiumBaudRate interface_baud_rate);
     uint32_t GetRxFreq() const;
@@ -159,10 +100,9 @@ class LithiumConfiguration : public RebuildableMessage {
         destination;  // AX25 Mode Destination Call Sign (harware default CQ)
     uint16_t
         tx_preamble;  // AX25 Mode Tx Preamble Byte Length (0x00 = 20 flags)
-    uint16_t tx_postamble;      // AX25 Mode Tx Postamble Byte Length (0x00 = 20
-                                // flags)
-    uint16_t function_config;   // Radio Configuration Discrete Behaviors
-    uint16_t function_config2;  // Radio Configuration Discrete Behaviors #2
+    uint16_t tx_postamble;  // AX25 Mode Tx Postamble Byte Length (0x00 = 20
+                            // flags)
+    LithiumFunctionConfig function_config;  // Radio Configuration Discrete Behaviors
 
     void SerialiseFrom(byte* serial_buffer);
 };
