@@ -10,7 +10,7 @@ TransmitPacket::TransmitPacket(TransmitPayload *transmit_payload,
     this->transmit_payload = transmit_payload;
 }
 
-SerialisedMessage TransmitPacket::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage TransmitPacket::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
     builder.AddData<uint8_t>(tx_count)
         .AddData<uint8_t>(total_rx_count)

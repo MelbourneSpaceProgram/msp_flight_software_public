@@ -37,7 +37,7 @@ class LithiumConfiguration : public RebuildableMessage {
 
     LithiumConfiguration();
     explicit LithiumConfiguration(byte* serialised_message_buffer);
-    SerialisedMessage SerialiseTo(byte* serial_buffer);
+    SerialisedMessage SerialiseTo(byte* serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
     const std::string GetDestination() const;
@@ -102,7 +102,8 @@ class LithiumConfiguration : public RebuildableMessage {
         tx_preamble;  // AX25 Mode Tx Preamble Byte Length (0x00 = 20 flags)
     uint16_t tx_postamble;  // AX25 Mode Tx Postamble Byte Length (0x00 = 20
                             // flags)
-    LithiumFunctionConfig function_config;  // Radio Configuration Discrete Behaviors
+    LithiumFunctionConfig
+        function_config;  // Radio Configuration Discrete Behaviors
 
     void SerialiseFrom(byte* serial_buffer);
 };

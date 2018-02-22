@@ -5,7 +5,7 @@
 LithiumCommand::LithiumCommand(byte command_code, Message *lithium_payload)
     : lithium_payload(lithium_payload), command_code(command_code) {}
 
-SerialisedMessage LithiumCommand::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage LithiumCommand::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
     BuildHeader(&builder);
     if (lithium_payload != NULL) {
@@ -17,7 +17,7 @@ SerialisedMessage LithiumCommand::SerialiseTo(byte *serial_buffer) {
 
 // Documentation on building a Lithium header can be found in the the Radio
 // Interface Manual at CS1-TXT-14
-void LithiumCommand::BuildHeader(SerialisedMessageBuilder *builder) {
+void LithiumCommand::BuildHeader(SerialisedMessageBuilder *builder) const {
     byte header[Lithium::kLithiumHeaderSize];
     uint16_t serial_payload_size = GetLithiumPayloadSize();
 
@@ -43,7 +43,7 @@ void LithiumCommand::BuildHeader(SerialisedMessageBuilder *builder) {
     }
 }
 
-void LithiumCommand::BuildTail(SerialisedMessageBuilder *builder) {
+void LithiumCommand::BuildTail(SerialisedMessageBuilder *builder) const {
     byte tail_checksum[2];
     // Checksum is calculated over all bytes except the first two sync chars
     byte *checksum_data = builder->GetSerialisedMessageBuffer() + 2;

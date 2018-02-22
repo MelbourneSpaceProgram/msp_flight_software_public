@@ -15,7 +15,7 @@ class SerialisedMessageBuilder {
     uint16_t GetSerialisedLength() const;
     byte* GetSerialisedMessageBuffer() const;
     SerialisedMessage Build();
-    SerialisedMessageBuilder& AddMessage(Message* message);
+    SerialisedMessageBuilder& AddMessage(const Message* message);
     template <class T>
     SerialisedMessageBuilder& AddData(T data) {
         if (sizeof(T) > buffer_size - serialised_length) {

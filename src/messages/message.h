@@ -7,9 +7,9 @@
 class Message {
    public:
     virtual ~Message() {}
-    virtual SerialisedMessage SerialiseTo(byte *serial_buffer) = 0;
+    virtual SerialisedMessage SerialiseTo(byte *serial_buffer) const = 0;
     virtual uint16_t GetSerialisedSize() const = 0;
-    SerialisedMessage Serialise();
+    SerialisedMessage Serialise() const;
 };
 
 #endif  // SRC_MESSAGES_MESSAGE_H_

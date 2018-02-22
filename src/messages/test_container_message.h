@@ -7,7 +7,7 @@
 class TestContainerMessage : public Message {
    public:
     explicit TestContainerMessage(byte base_data, Message *contained_message);
-    SerialisedMessage SerialiseTo(byte *serial_buffer);
+    SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
    private:
