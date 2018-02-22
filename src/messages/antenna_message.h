@@ -10,7 +10,7 @@ class AntennaMessage : public Message {
     AntennaMessage(bool valid_status, bool door_one_open, bool door_two_open,
                    bool door_three_open, bool door_four_open,
                    byte antenna_state);
-    SerialisedMessage SerialiseTo(byte *serial_buffer);
+    SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
     byte GetAntennaState() const;

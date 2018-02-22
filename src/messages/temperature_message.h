@@ -7,7 +7,7 @@
 
 class TemperatureMessage : public RebuildableMessage {
    public:
-    SerialisedMessage SerialiseTo(byte *serial_buffer);
+    SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
     TemperatureMessage(float, uint8_t, uint8_t);
     explicit TemperatureMessage(byte *serialised_message_buffer);

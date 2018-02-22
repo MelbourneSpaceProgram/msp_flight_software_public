@@ -3,7 +3,7 @@
 
 TestMessage::TestMessage(byte data) : message_content(data) {}
 
-SerialisedMessage TestMessage::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage TestMessage::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize(),
                                      kMockTestSensor, kV1);
     builder.AddData<byte>(message_content);

@@ -8,7 +8,7 @@ class TransmitPacket : public Message {
    public:
     TransmitPacket(TransmitPayload *transmit_payload, uint8_t tx_count,
                    uint8_t total_rx_count, uint8_t valid_rx_count);
-    SerialisedMessage SerialiseTo(byte *serial_buffer);
+    SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
    private:

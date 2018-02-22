@@ -37,7 +37,7 @@ LithiumConfiguration::LithiumConfiguration(byte* serialised_message_buffer)
     SerialiseFrom(serialised_message_buffer);
 }
 
-SerialisedMessage LithiumConfiguration::SerialiseTo(byte* serial_buffer) {
+SerialisedMessage LithiumConfiguration::SerialiseTo(byte* serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
 
     return builder.AddData<uint8_t>(interface_baud_rate)
@@ -120,7 +120,8 @@ LithiumFunctionConfig* LithiumConfiguration::GetFunctionConfig() {
     return &function_config;
 }
 
-void LithiumConfiguration::SetFunctionConfig(LithiumFunctionConfig function_config) {
+void LithiumConfiguration::SetFunctionConfig(
+    LithiumFunctionConfig function_config) {
     this->function_config = function_config;
 }
 

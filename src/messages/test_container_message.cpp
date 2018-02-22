@@ -6,7 +6,7 @@ TestContainerMessage::TestContainerMessage(byte base_data,
                                            Message *contained_message)
     : base_data(base_data), contained_message(contained_message) {}
 
-SerialisedMessage TestContainerMessage::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage TestContainerMessage::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize(),
                                      kMockTestContainer, kV1);
     builder.AddData<byte>(base_data);
