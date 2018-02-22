@@ -20,7 +20,7 @@ SerialisedMessageBuilder::SerialisedMessageBuilder(byte* serial_buffer,
 }
 
 SerialisedMessageBuilder& SerialisedMessageBuilder::AddMessage(
-    Message* message) {
+    const Message* message) {
     uint16_t message_size = message->GetSerialisedSize();
     if (message_size > buffer_size - serialised_length) {
         // TODO(dingbenjamin): Throw and handle exception after exception

@@ -11,7 +11,7 @@ class LithiumCommand : Message {
     virtual uint16_t GetLithiumPayloadSize() const = 0;
     virtual const byte &GetCommandCode() const = 0;
     virtual uint16_t GetReplyPayloadSize() const = 0;
-    SerialisedMessage SerialiseTo(byte *serial_buffer);
+    SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
     static const uint16_t kNoPayload = 0;
@@ -22,8 +22,8 @@ class LithiumCommand : Message {
    private:
     // Documentation on building a Lithium header, tail, and checksum can be
     // found in the the Radio Interface Manual at CS1-TXT-14
-    void BuildHeader(SerialisedMessageBuilder *builder);
-    void BuildTail(SerialisedMessageBuilder *builder);
+    void BuildHeader(SerialisedMessageBuilder *builder) const;
+    void BuildTail(SerialisedMessageBuilder *builder) const;
 
     Message *lithium_payload;
     byte command_code;

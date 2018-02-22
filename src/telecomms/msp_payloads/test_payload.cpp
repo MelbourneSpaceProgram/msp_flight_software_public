@@ -8,7 +8,7 @@ const char *TestPayload::kTestMessage =
 
 TestPayload::TestPayload() {}
 
-SerialisedMessage TestPayload::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage TestPayload::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
     for (int i = 0; i < kTestMessageSize - 1; i++) {
         builder.AddData<char>(kTestMessage[i]);

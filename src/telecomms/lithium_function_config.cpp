@@ -31,7 +31,8 @@ LithiumFunctionConfig::LithiumFunctionConfig(byte* serial_buffer)
     SerialiseFrom(serial_buffer);
 }
 
-SerialisedMessage LithiumFunctionConfig::SerialiseTo(byte* serial_buffer) {
+SerialisedMessage LithiumFunctionConfig::SerialiseTo(
+    byte* serial_buffer) const {
     uint32_t function_config_bits =
         static_cast<uint16_t>(external_event_function) |
         static_cast<uint16_t>(config_2_function) |
@@ -98,8 +99,8 @@ void LithiumFunctionConfig::SetCodeUploadFunctionEnable(
     this->code_upload_function_enable = code_upload_function_enable;
 }
 
-LithiumFunctionConfig::LithiumConfig1Function LithiumFunctionConfig::GetConfig1Function()
-    const {
+LithiumFunctionConfig::LithiumConfig1Function
+LithiumFunctionConfig::GetConfig1Function() const {
     return config_1_function;
 }
 
@@ -108,8 +109,8 @@ void LithiumFunctionConfig::SetConfig1Function(
     this->config_1_function = config_1_function;
 }
 
-LithiumFunctionConfig::LithiumConfig2Function LithiumFunctionConfig::GetConfig2Function()
-    const {
+LithiumFunctionConfig::LithiumConfig2Function
+LithiumFunctionConfig::GetConfig2Function() const {
     return config_2_function;
 }
 
@@ -132,7 +133,9 @@ bool LithiumFunctionConfig::IsFactorySettingsFlag() const {
     return factory_settings_flag;
 }
 
-bool LithiumFunctionConfig::IsOaFunctionEnable() const { return oa_function_enable; }
+bool LithiumFunctionConfig::IsOaFunctionEnable() const {
+    return oa_function_enable;
+}
 
 void LithiumFunctionConfig::SetOaFunctionEnable(bool oa_function_enable) {
     this->oa_function_enable = oa_function_enable;
@@ -151,7 +154,8 @@ bool LithiumFunctionConfig::IsRxCrcFunctionEnable() const {
     return rx_crc_function_enable;
 }
 
-void LithiumFunctionConfig::SetRxCrcFunctionEnable(bool rx_crc_function_enable) {
+void LithiumFunctionConfig::SetRxCrcFunctionEnable(
+    bool rx_crc_function_enable) {
     this->rx_crc_function_enable = rx_crc_function_enable;
 }
 
@@ -169,6 +173,7 @@ bool LithiumFunctionConfig::IsTxCrcFunctionEnable() const {
     return tx_crc_function_enable;
 }
 
-void LithiumFunctionConfig::SetTxCrcFunctionEnable(bool tx_crc_function_enable) {
+void LithiumFunctionConfig::SetTxCrcFunctionEnable(
+    bool tx_crc_function_enable) {
     this->tx_crc_function_enable = tx_crc_function_enable;
 }

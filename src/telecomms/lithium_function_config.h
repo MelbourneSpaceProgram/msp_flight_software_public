@@ -58,7 +58,7 @@ class LithiumFunctionConfig : public RebuildableMessage {
         0b0000000100000000;
     LithiumFunctionConfig();
     explicit LithiumFunctionConfig(byte* serial_buffer);
-    SerialisedMessage SerialiseTo(byte* serial_buffer);
+    SerialisedMessage SerialiseTo(byte* serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
     bool IsAutoFrequencyControlEnable() const;

@@ -7,7 +7,7 @@
 class TestPayload : public TransmitPayload {
    public:
     TestPayload();
-    SerialisedMessage SerialiseTo(byte* serial_buffer);
+    SerialisedMessage SerialiseTo(byte* serial_buffer) const;
     uint16_t GetSerialisedSize() const;
     uint8_t GetPayloadCode() const;
 

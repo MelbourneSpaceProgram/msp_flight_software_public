@@ -9,7 +9,7 @@ class TestMessage : public Message {
    public:
     explicit TestMessage(byte data);
     virtual ~TestMessage() {}
-    SerialisedMessage SerialiseTo(byte *serial_buffer);
+    SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
    private:

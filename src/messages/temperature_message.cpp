@@ -5,16 +5,13 @@
 
 TemperatureMessage::TemperatureMessage(float temperature, uint8_t timestamp,
                                        uint8_t sensor_id)
-    : temperature(temperature),
-      timestamp(timestamp),
-      sensor_id(sensor_id) {}
+    : temperature(temperature), timestamp(timestamp), sensor_id(sensor_id) {}
 
-TemperatureMessage::TemperatureMessage(byte *serialised_message_buffer)
-     {
+TemperatureMessage::TemperatureMessage(byte *serialised_message_buffer) {
     SerialiseFrom(serialised_message_buffer);
 }
 
-SerialisedMessage TemperatureMessage::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage TemperatureMessage::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize(),
                                      kMockTemperatureSensor, kV1);
     builder.AddData<uint8_t>(sensor_id)

@@ -16,7 +16,7 @@ AntennaMessage::AntennaMessage(bool valid_status, bool door_one_open,
 // TODO(dingbenjamin) This function is wasteful in terms of memory, the direct
 // I2C reading from the antenna can be sent but this way is more clear and
 // easier to debug. Still, consider implementing a more efficient version
-SerialisedMessage AntennaMessage::SerialiseTo(byte *serial_buffer) {
+SerialisedMessage AntennaMessage::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, kSerialisedSize, kAntenna,
                                      kV1);
     // bool is not well defined in the C++ standard, but the conversion from
