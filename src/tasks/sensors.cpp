@@ -4,7 +4,7 @@
 #include <src/init/init.h>
 #include <string>
 #include <src/i2c/sensors/mcp9808.hpp>
-#include <src/observers/sample_temp_observer.hpp>
+#include <src/observers/specific_observers/sample_temp_observer.hpp>
 
 Task_Struct mcp9808_read_task_struct;
 Char mcp9808_stack[TASKSTACKSIZE];
@@ -17,11 +17,11 @@ void MCP9808ReadTask() {
 
         SampleTempObserver sto;
 
-        mcp9808.add_observer(&sto);
+        mcp9808.AddObserver(&sto);
 
-        mcp9808.take_reading();
+        mcp9808.TakeReading();
 
-        double reading = mcp9808.get_reading();
+        double reading = mcp9808.GetReading();
 
         std::string id = mcp9808.get_id();
 

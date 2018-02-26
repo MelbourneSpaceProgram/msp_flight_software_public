@@ -6,6 +6,7 @@
 void master_tests_thread();
 void database_tests_runner();
 void message_tests_runner();
+void generic_sensor_tests_runner();
 void matrix_tests_runner();
 void lithium_hardware_tests_runner();
 void lithium_command_tests_runner();
