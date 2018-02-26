@@ -16,7 +16,7 @@ const int TMP006::DIE_TEMP_REGISTER = 0x01;
 TMP006::TMP006(I2c* bus, int address, std::string id, double constant)
                 : I2CSensor(bus, address, id), constant(constant) {}
 
-void TMP006::take_reading(void) {
+void TMP006::TakeReading(void) {
   // double sensor_voltage = get_sensor_voltage();
   double die_temperature = get_die_temperature();
 

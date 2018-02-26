@@ -29,7 +29,7 @@ public:
 
     @return The sensor reading.
   */
-  void take_reading(void);
+  void TakeReading(void);
 
 private:
   /**

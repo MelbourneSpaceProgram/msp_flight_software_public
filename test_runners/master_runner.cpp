@@ -5,6 +5,7 @@
 #include <test_runners/matrix_tests.h>
 #include <test_runners/lithium_hardware_tests.h>
 #include <test_runners/lithium_command_tests.h>
+#include <test_runners/generic_sensor_tests.h>
 #include <test_runners/lithium_ack_tests.h>
 #include <test_runners/lithium_configuration_tests.h>
 #include <test_runners/antenna_tests.h>
@@ -14,9 +15,7 @@
 void master_tests_thread() {
     database_tests_runner();
     message_tests_runner();
-    matrix_tests_runner();
-    lithium_hardware_tests_runner();
-    lithium_command_tests_runner();
+    generic_sensor_tests_runner();
     lithium_ack_tests_runner();
     lithium_configuration_tests_runner();
     antenna_tests_runner();

@@ -3,7 +3,7 @@
 #include <src/i2c/i2c.h>
 #include <string>
 #include <src/i2c/sensors/mcp9808.hpp>
-#include <src/observers/sample_temp_observer.hpp>
+#include <src/observers/specific_observers/sample_temp_observer.hpp>
 
 SensorConfig::SensorConfig() {
     // Set built false initially.
@@ -32,7 +32,7 @@ void SensorConfig::build_config() {
     MCP9808 hbridge_temp_1(&bus_1, 0x18, "HBRIDGE_TEMP_1");
     // Create and add observers.
     SampleTempObserver observer;
-    hbridge_temp_1.add_observer(&observer);
+    hbridge_temp_1.AddObserver(&observer);
     // Add sensor to the config.
     config["HBRIDGE_TEMP_1"] = &hbridge_temp_1;
 }
