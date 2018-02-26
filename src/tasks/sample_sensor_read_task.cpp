@@ -16,7 +16,7 @@ void SampleSensorReadTask() {
 
     while (true) {
         // Read from the sensor.
-        hbridge_temp_1->take_reading();
+        hbridge_temp_1->TakeReading();
 
         // Perform non-blocking sleep for 1 second.
         Task_sleep((UInt)1000);

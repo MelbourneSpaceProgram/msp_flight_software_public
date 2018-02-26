@@ -1,20 +1,18 @@
 #ifndef SRC_I2C_SENSORS_I2C_SENSOR_HPP_
 #define SRC_I2C_SENSORS_I2C_SENSOR_HPP_
 
+#include <src/sensors/generic_sensor.h>
 #include <src/i2c/i2c.h>
 #include <string>
 #include <vector>
-#include <src/observers/observer.hpp>
-
-// Forward declarations.
-class Observer;
+#include <src/observers/observer.h>
 
 /**
   I2CSensor class.
 
   This base class describes an I2CSensor.
 */
-class I2CSensor {
+class I2CSensor : public GenericSensor<double> {
 public:
   /**
     I2CSensor constructor.
@@ -48,25 +46,11 @@ public:
   std::string get_id(void);
 
   /**
-    Method that returns the sensor reading.
-
-    @return The sensor reading.
-   */
-  double get_reading(void);
-
-  /**
-    Method that adds an observer to the list.
-
-    @param observer A class that is interested in the sensor reading.
-   */
-  void add_observer(Observer* observer);
-
-  /**
     Virtual method that should be overwritten by any derived classes.
     This method should take a sensor reading and call the notify_observers
     method to notify all observers in the list.
   */
-  virtual void take_reading(void) = 0;
+  virtual void TakeReading(void) = 0;
 
 protected:
   /**
@@ -83,22 +67,6 @@ protected:
     The unique ID used to identify the sensor.
   */
   std::string id;
-
-  /**
-    The sensor reading.
-  */
-  double reading;
-
-  /**
-    The list of observers.
-  */
-  std::vector<Observer*> observers;
-
-  /**
-    Method that notifies all attached observers that the sensor
-    reading has been taken.s
-   */
-  void notify_observers(void);
 };
 
 #endif  //  SRC_I2C_SENSORS_I2C_SENSOR_HPP_

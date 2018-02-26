@@ -6,7 +6,7 @@ const int MCP9808::TEMP_REGISTER = 0x05;
 MCP9808::MCP9808(I2c* bus, int address, std::string id) :
         I2CSensor(bus, address, id) {}
 
-void MCP9808::take_reading() {
+void MCP9808::TakeReading() {
   uint8_t  read_buffer[2];
   uint8_t  write_buffer[1];
 
@@ -23,5 +23,5 @@ void MCP9808::take_reading() {
 
   reading = temperature;
 
-  notify_observers();
+  NotifyObservers();
 }
