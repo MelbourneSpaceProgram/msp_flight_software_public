@@ -66,13 +66,13 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     Mailbox_pend(i2c_mailbox, &transfer_outcome,
                  kTimeoutMilliSeconds*1000/Clock_tickPeriod);
 
+    Mailbox_delete(&i2c_mailbox);
+
     if (transfer_outcome == false) {
         I2C_cancel(handle);
         // TODO(wschuetz) Throw exception
         return false;
     }
-
-    Mailbox_delete(&i2c_mailbox);
 
     return true;
 }
