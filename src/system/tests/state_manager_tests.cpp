@@ -11,14 +11,15 @@
 
 void TestStateManager(void) {
     StateManager* state_manager = StateManager::GetStateManager();
-    BatteryChargeStateMachine battery_charge_sm(state_manager);
-    BatteryTempStateMachine battery_temp_sm(state_manager);
-    PowerStateMachine power_sm(state_manager, &battery_charge_sm,
-                               &battery_temp_sm);
-    state_manager->AddSystemStateMachine(&power_sm);
+    BatteryChargeStateMachine battery_charge_state_machine(state_manager);
+    BatteryTempStateMachine battery_temp_state_machine(state_manager);
+    PowerStateMachine power_state_machine(state_manager,
+                                          &battery_charge_state_machine,
+                                          &battery_temp_state_machine);
+    state_manager->AddSystemStateMachine(&power_state_machine);
 
     TestI2cSensor battery_charge_sensor("soc_sensor");
-    battery_charge_sm.RegisterWithSensor(&battery_charge_sensor);
+    battery_charge_state_machine.RegisterWithSensor(&battery_charge_sensor);
 
     // A reading of SOC = 0 should put power state machine into state
     // kPowerEverythingOff
@@ -27,7 +28,7 @@ void TestStateManager(void) {
 
     state_manager->ProcessStateChanges();
 
-    TEST_ASSERT_EQUAL_INT(kPowerEverythingOff, power_sm.GetCurrentState());
+    TEST_ASSERT_EQUAL_INT(kPowerEverythingOff, power_state_machine.GetCurrentState());
 
     state_manager->RemoveLastSystemStateMachine();
 }
