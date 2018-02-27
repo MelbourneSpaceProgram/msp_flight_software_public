@@ -3,9 +3,9 @@
 
 #include <src/observers/generic_observer.h>
 
-class TestI2cSensor;
+class TestIntSensor;
 
-class TestObserver : public GenericObserver<TestI2cSensor> {
+class TestObserver : public GenericObserver<TestIntSensor> {
    public:
     void Update();
     int GetObservedReading() const;
