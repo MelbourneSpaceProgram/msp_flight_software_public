@@ -26,7 +26,9 @@ void PostBiosInitialiser::PostBiosInit() {
     DebugStream::GetInstance();
     Antenna::GetAntenna();
     Lithium::GetInstance();
-    StateManager::GetStateManager();
+    StateManager* state_manager = StateManager::GetStateManager();
+
+    state_manager->CreateStateMachines();
 
     I2c *bus = new I2c(Board_I2C0);
     Antenna::GetAntenna()->InitAntenna(bus);

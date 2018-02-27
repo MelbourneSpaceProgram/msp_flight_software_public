@@ -62,7 +62,7 @@ bool StateManager::AddSystemStateMachine(
 }
 
 void StateManager::ProcessStateChanges() {
-    // Block until a state change has occured
+    // Block until a state change has occurred
     Semaphore_pend(state_update_semaphore_handle, BIOS_WAIT_FOREVER);
     NotifySystems();
 }
@@ -108,7 +108,6 @@ void StateManager::CreateStateMachines() {
 }
 
 void StateManager::RemoveLastSystemStateMachine() {
-    // Undefined behavior occurs if exceptions are not used and vector is empty
     if (system_state_machines.available()) {
         system_state_machines.pop_back();
     }
