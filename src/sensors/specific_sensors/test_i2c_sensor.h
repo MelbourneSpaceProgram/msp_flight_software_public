@@ -4,14 +4,14 @@
 #include <src/sensors/generic_sensor.h>
 #include <string>
 
-class TestI2cSensor : public GenericSensor<int> {
+class TestI2cSensor : public GenericSensor<double> {
    public:
     explicit TestI2cSensor(std::string id);
     void TakeReading();
-    void SetDummySensorData(int dummy_data);
+    void SetDummySensorData(double dummy_data);
 
    private:
-    int dummy_data;
+    double dummy_data;
     std::string id;
 };
 

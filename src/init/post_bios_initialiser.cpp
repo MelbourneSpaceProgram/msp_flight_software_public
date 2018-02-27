@@ -5,6 +5,7 @@
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
+#include <src/system/state_manager.h>
 #include <src/tasks/task_holder.h>
 #include <src/tasks/tasks.h>
 #include <src/telecomms/antenna.h>
@@ -25,6 +26,7 @@ void PostBiosInitialiser::PostBiosInit() {
     DebugStream::GetInstance();
     Antenna::GetAntenna();
     Lithium::GetInstance();
+    StateManager::GetStateManager();
 
     I2c *bus = new I2c(Board_I2C0);
     Antenna::GetAntenna()->InitAntenna(bus);

@@ -5,16 +5,19 @@
 
 void master_tests_thread();
 void database_tests_runner();
+void debug_interface_tests_runner();
+void i2c_tests_runner();
 void message_tests_runner();
 void generic_sensor_tests_runner();
-void matrix_tests_runner();
-void lithium_hardware_tests_runner();
-void lithium_command_tests_runner();
-void lithium_ack_tests_runner();
-void lithium_configuration_tests_runner();
+void sensor_state_logic_tests_runner();
+void state_manager_tests_runner();
+void system_state_logic_tests_runner();
 void antenna_tests_runner();
-void i2c_tests_runner();
-void debug_interface_tests_runner();
+void lithium_ack_tests_runner();
+void lithium_command_tests_runner();
+void lithium_configuration_tests_runner();
+void lithium_hardware_tests_runner();
+void matrix_tests_runner();
 void SetUp();
 void TearDown();
 

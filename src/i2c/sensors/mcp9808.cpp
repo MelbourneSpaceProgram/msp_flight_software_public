@@ -1,5 +1,5 @@
-#include <string>
 #include <src/i2c/sensors/mcp9808.hpp>
+#include <string>
 
 const int MCP9808::TEMP_REGISTER = 0x05;
 

@@ -4,9 +4,9 @@
 #define TEST_RUNNERS_GENERIC_SENSOR_TESTS_H_
 
 #include "unity.h"
-#include <test_runners/generic_sensor_tests.h>
-#include <src/sensors/specific_sensors/test_i2c_sensor.h>
 #include <src/observers/specific_observers/test_observer.h>
+#include <test_runners/generic_sensor_tests.h>
+#include <src/sensors/specific_sensors/test_int_sensor.h>
 
 void TestGenericSensor(void);
 
