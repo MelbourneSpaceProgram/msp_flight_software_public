@@ -13,9 +13,6 @@ void PreBiosInit() {
     I2C_init();
     SPI_init();
     UART_init();
-    PWM_init();
-
-    MSP_pwm_init();
 
     TaskHolder *post_bios_initialiser_task =
         new TaskHolder(1024, "Initialiser", 10, new PostBiosInitialiser());

@@ -10,8 +10,6 @@
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
 
-#include <src/pwm/pwm.hpp>
-
 // TODO(dingbenjamin): Remove, along with applications reliant on this define
 #define TASKSTACKSIZE 8096
 Task_Struct allocatorTaskStruct;
