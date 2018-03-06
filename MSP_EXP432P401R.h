@@ -51,7 +51,7 @@ extern "C" {
 
 /* LEDs on MSP_EXP432P401R are active high. */
 #define MSP_EXP432P401R_GPIO_LED_OFF (0)
-#define MSP_EXP432P401R_GPIO_LED_ON  (1)
+#define MSP_EXP432P401R_GPIO_LED_ON (1)
 
 /*!
  *  @def    MSP_EXP432P401R_ADCName
@@ -101,15 +101,27 @@ typedef enum MSP_EXP432P401R_CaptureName {
  *  @def    MSP_EXP432P401R_GPIOName
  *  @brief  Enum of GPIO names on the MSP_EXP432P401R dev board
  */
-typedef enum MSP_EXP432P401R_GPIOName {
-    MSP_EXP432P401R_GPIO_S1 = 0,
-    MSP_EXP432P401R_GPIO_S2,
-    MSP_EXP432P401R_GPIO_LED1,
-    MSP_EXP432P401R_GPIO_LED_RED,
-    MSP_EXP432P401R_GPIO_LED_GREEN,
-    MSP_EXP432P401R_GPIO_LED_BLUE,
-    MSP_EXP432P401R_GPIOCOUNT
-} MSP_EXP432P401R_GPIOName;
+typedef enum Board_GPIOName {
+    INT1_P_CDH = 0,
+    INT2_P_CDH = 1,
+    ENABLE_P_CDH = 2,
+    INT_CDH_CMS = 3,
+    BYP1_CDH_CMS = 4,
+    BYP2_CDH_CMS = 5,
+    RESET_CDH_CMS = 6,
+    X_Mag_DIR_CDH_FS = 7,
+    Y_Mag_DIR_CDH_FS = 8,
+    Z_Mag_DIR_CDH_FS = 9,
+    NVM_nCS = 10,
+    HEARTBEAT_LED = 11,
+    NVM_nCS_1 = 12,
+    NVM_nCS_2 = 13,
+    NVM_nCS_3 = 14,
+    INT_MCU_MCU_1 = 15,
+    INT_MCU_MCU_2 = 16,
+    BUS_SWITCH_ENABLE = 17,
+    Board_GPIOCOUNT
+} Board_GPIOName;
 
 /*!
  *  @def    MSP_EXP432P401R_I2CName
