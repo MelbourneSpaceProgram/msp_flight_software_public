@@ -1,5 +1,5 @@
 #include <src/observers/specific_observers/test_observer.h>
-#include <src/sensors/specific_sensors/test_int_sensor.h>
+#include <src/sensors/test_sensors/test_int_sensor.h>
 
 void TestObserver::Update() {
     TestIntSensor* sensor_with_reading = GetSensorWithReading();

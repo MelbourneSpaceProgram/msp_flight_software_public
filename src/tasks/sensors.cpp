@@ -3,7 +3,7 @@
 #include <src/i2c/i2c.h>
 #include <src/init/init.h>
 #include <string>
-#include <src/i2c/sensors/mcp9808.hpp>
+#include <src/sensors/i2c_sensors/mcp9808.hpp>
 #include <src/observers/specific_observers/sample_temp_observer.hpp>
 
 Task_Struct mcp9808_read_task_struct;
@@ -23,7 +23,7 @@ void MCP9808ReadTask() {
 
         double reading = mcp9808.GetReading();
 
-        std::string id = mcp9808.get_id();
+        std::string id = mcp9808.GetId();
 
 
         Task_sleep((UInt)1000);

@@ -15,10 +15,12 @@ bool Sensor::AddObserver(Observer* observer) {
 }
 
 void Sensor::NotifyObservers() {
+    new_reading = true;
     for (etl::vector<Observer*, kMaxObservers>::iterator it = observers.begin();
          it != observers.end(); it++) {
         (*it)->Update();
     }
+    new_reading = false;
 }
 
 bool Sensor::HasNewReading() {
