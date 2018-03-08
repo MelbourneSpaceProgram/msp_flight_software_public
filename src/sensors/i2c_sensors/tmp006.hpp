@@ -1,15 +1,15 @@
-#ifndef SRC_I2C_SENSORS_TMP006_HPP_
-#define SRC_I2C_SENSORS_TMP006_HPP_
+#ifndef SRC_SENSORS_I2C_SENSORS_TMP006_HPP_
+#define SRC_SENSORS_I2C_SENSORS_TMP006_HPP_
 
+#include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <string>
-#include <src/i2c/sensors/i2c_sensor.hpp>
 
 /**
   TMP006 class.
 
   This describes a single TMP006 sensor.
 */
-class TMP006 : public I2CSensor {
+class TMP006 : public I2cSensor<double> {
 public:
   /**
     TMP006 constructor.
@@ -29,7 +29,7 @@ public:
 
     @return The sensor reading.
   */
-  void TakeReading(void);
+  bool TakeReading(void);
 
 private:
   /**
@@ -72,4 +72,4 @@ private:
   double get_object_temperature(double sensor_voltage, double die_temperature);
 };
 
-#endif  //  SRC_I2C_SENSORS_TMP006_HPP_
+#endif  //  SRC_SENSORS_I2C_SENSORS_TMP006_HPP_
