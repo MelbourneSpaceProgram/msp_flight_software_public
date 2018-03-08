@@ -1,5 +1,5 @@
+#include <src/sensors/test_sensors/test_i2c_sensor.h>
 #include <src/system/sensor_state_machines/battery_charge_state_machine.h>
-#include <src/sensors/specific_sensors/test_i2c_sensor.h>
 
 BatteryChargeStateMachine::BatteryChargeStateMachine(
     StateManager* state_manager)

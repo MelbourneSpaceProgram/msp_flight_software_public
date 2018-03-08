@@ -12,7 +12,7 @@ void SampleSensorReadTask() {
     SensorConfig* config = SensorConfig::instance();
 
     // Load the h-bridge sensor.
-    I2CSensor* hbridge_temp_1 = config->by_code("HBRIDGE_TEMP_1");
+    I2cSensor<double>* hbridge_temp_1 = config->by_code("HBRIDGE_TEMP_1");
 
     while (true) {
         // Read from the sensor.

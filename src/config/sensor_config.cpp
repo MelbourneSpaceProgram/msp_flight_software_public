@@ -1,9 +1,9 @@
-#include <src/config/sensor_config.hpp>
 #include <Board.h>
 #include <src/i2c/i2c.h>
-#include <string>
-#include <src/i2c/sensors/mcp9808.hpp>
+#include <src/config/sensor_config.hpp>
 #include <src/observers/specific_observers/sample_temp_observer.hpp>
+#include <src/sensors/i2c_sensors/mcp9808.hpp>
+#include <string>
 
 SensorConfig::SensorConfig() {
     // Set built false initially.
@@ -37,4 +37,6 @@ void SensorConfig::build_config() {
     config["HBRIDGE_TEMP_1"] = &hbridge_temp_1;
 }
 
-I2CSensor* SensorConfig::by_code(std::string code) { return config[code]; }
+I2cSensor<double>* SensorConfig::by_code(std::string code) {
+    return config[code];
+}

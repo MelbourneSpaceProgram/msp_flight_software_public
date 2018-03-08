@@ -1,15 +1,15 @@
-#ifndef SRC_I2C_SENSORS_MCP9808_HPP_
-#define SRC_I2C_SENSORS_MCP9808_HPP_
+#ifndef SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
+#define SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
 
+#include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <string>
-#include <src/i2c/sensors/i2c_sensor.hpp>
 
 /**
   MCP9808 class.
 
   This describes a single MCP9808 sensor.
 */
-class MCP9808 : public I2CSensor {
+class MCP9808 : public I2cSensor<double> {
 public:
   /**
     MCP9808 constructor.
@@ -28,7 +28,7 @@ public:
 
     @return The sensor reading.
   */
-  void TakeReading();
+  bool TakeReading();
 
 private:
   /**
@@ -44,4 +44,4 @@ private:
   double get_temperature(void);
 };
 
-#endif  //  SRC_I2C_SENSORS_MCP9808_HPP_
+#endif  //  SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_

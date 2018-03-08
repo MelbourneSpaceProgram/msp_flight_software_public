@@ -5,7 +5,6 @@
 #include <src/system/state_definitions.h>
 #include <src/system/state_machine.h>
 #include <src/system/state_manager.h>
-#include <src/i2c/sensors/i2c_sensor.hpp>
 
 template <typename T>
 class SensorStateMachine : public GenericObserver<T>, public StateMachine {

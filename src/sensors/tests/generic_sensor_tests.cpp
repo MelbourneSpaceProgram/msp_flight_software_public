@@ -1,7 +1,7 @@
 #include <src/observers/specific_observers/test_observer.h>
+#include <src/sensors/test_sensors/test_int_sensor.h>
 #include <test_runners/generic_sensor_tests.h>
 #include <test_runners/unity.h>
-#include <src/sensors/specific_sensors/test_int_sensor.h>
 
 void TestGenericSensor(void) {
     TestObserver observer;
