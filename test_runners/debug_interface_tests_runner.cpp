@@ -32,10 +32,8 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestTestDebugMessageQueue();
-extern void TestTempDebugMessageQueue();
-extern void TestContainerDebugMessageQueue();
-extern void TestMixedDebugMessageQueue();
+extern void TestRequestReceiveMessageFromSimulator();
+extern void TestPostMessageToDebugClient();
 
 
 /*=======Suite Setup=====*/
@@ -71,10 +69,8 @@ int debug_interface_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
-  RUN_TEST(TestTestDebugMessageQueue, 15);
-  RUN_TEST(TestTempDebugMessageQueue, 34);
-  RUN_TEST(TestContainerDebugMessageQueue, 60);
-  RUN_TEST(TestMixedDebugMessageQueue, 86);
+  RUN_TEST(TestRequestReceiveMessageFromSimulator, 13);
+  RUN_TEST(TestPostMessageToDebugClient, 39);
 
   return suite_teardown(UnityEnd());
 }

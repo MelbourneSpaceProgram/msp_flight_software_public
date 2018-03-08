@@ -4,18 +4,18 @@
 #define TEST_RUNNERS_DEBUG_INTERFACE_TESTS_H_
 
 #include "unity.h"
+#include <external/etl/exception.h>
+#include <external/nanopb/pb_decode.h>
+#include <external/nanopb/pb_encode.h>
+#include <src/config/unit_tests.h>
 #include <src/debug_interface/debug_stream.h>
-#include <src/debug_interface/runnable_debug_stream.h>
-#include <src/messages/serialised_message.h>
-#include <src/messages/temperature_message.h>
-#include <src/messages/test_container_message.h>
-#include <src/messages/test_message.h>
+#include <src/messages/SensorReading.pb.h>
 #include <src/util/message_codes.h>
 #include <test_runners/debug_interface_tests.h>
+#include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Semaphore.h>
 
-void TestTestDebugMessageQueue(void);
-void TestTempDebugMessageQueue(void);
-void TestContainerDebugMessageQueue(void);
-void TestMixedDebugMessageQueue(void);
+void TestRequestReceiveMessageFromSimulator(void);
+void TestPostMessageToDebugClient(void);
 
 #endif  // TEST_RUNNERS_DEBUG_INTERFACE_TESTS_H_

@@ -36,6 +36,7 @@
  *  MSP_EXP432P401R board.
  */
 
+#include <src/config/unit_tests.h>
 #include <stdbool.h>
 
 #include <ti/drivers/Power.h>
@@ -199,6 +200,7 @@ const UDMAMSP432_HWAttrs udmaMSP432HWAttrs = {
 
 const UDMAMSP432_Config UDMAMSP432_config = {.object = &udmaMSP432Object,
                                              .hwAttrs = &udmaMSP432HWAttrs};
+
 
 /*
  *  ======== MSP_EXP432P401R_initGeneral ========
@@ -515,6 +517,7 @@ const UARTMSP432_HWAttrsV1 uartMSP432HWAttrs[Board_UARTCOUNT] = {
         .rxPin = UARTMSP432_P3_3_UCA2RXD,
         .txPin = UARTMSP432_P3_2_UCA2TXD,
     },
+#ifdef SATELLITE_CONFIG
     {
         .baseAddr = EUSCI_A3_BASE,
         .intNum = INT_EUSCIA3,
@@ -529,6 +532,20 @@ const UARTMSP432_HWAttrsV1 uartMSP432HWAttrs[Board_UARTCOUNT] = {
         .rxPin = UARTMSP432_P9_6_UCA3RXD,
         .txPin = UARTMSP432_P9_7_UCA3TXD,
     },
+#else
+    {.baseAddr = EUSCI_A0_BASE,
+     .intNum = INT_EUSCIA0,
+     .intPriority = (~0),
+     .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
+     .bitOrder = EUSCI_A_UART_LSB_FIRST,
+     .numBaudrateEntries =
+         sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
+     .baudrateLUT = uartMSP432Baudrates,
+     .ringBufPtr = uartMSP432RingBuffer[MSP_EXP432P401R_UARTA0],
+     .ringBufSize = sizeof(uartMSP432RingBuffer[MSP_EXP432P401R_UARTA0]),
+     .rxPin = UARTMSP432_P1_2_UCA0RXD,
+     .txPin = UARTMSP432_P1_3_UCA0TXD},
+#endif
     {
         .baseAddr = EUSCI_A1_BASE,
         .intNum = INT_EUSCIA1,
