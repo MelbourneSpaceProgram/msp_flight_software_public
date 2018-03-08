@@ -165,10 +165,7 @@ typedef enum MSP_EXP432P401R_PWMName {
  *  @def    MSP_EXP432P401R_SPIName
  *  @brief  Enum of SPI names on the MSP_EXP432P401R dev board
  */
-typedef enum Board_SPIName {
-    NVM = 0,
-   Board_SPICOUNT
-} Board_SPIName;
+typedef enum Board_SPIName { NVM = 0, Board_SPICOUNT } Board_SPIName;
 
 /*!
  *  @def    MSP_EXP432P401R_TimerName
@@ -188,11 +185,20 @@ typedef enum MSP_EXP432P401R_TimerName {
  *  @def    MSP_EXP432P401R_UARTName
  *  @brief  Enum of UART names on the MSP_EXP432P401R dev board
  */
+#ifndef SATELLITE_CONFIG
+typedef enum MSP_EXP432P401R_UARTName {
+    MSP_EXP432P401R_UARTA0 = 0,
+    MSP_EXP432P401R_UARTA2,
+
+    MSP_EXP432P401R_UARTCOUNT
+} MSP_EXP432P401R_UARTName;
+#endif
+
 typedef enum Board_UARTName {
-    UART_MCU_MCU = 0,
-    UART_CDH_UMB = 1,
-    UART_CMS_CDH = 2,
-    Board_UARTCOUNT
+      UART_MCU_MCU = 0,
+      UART_CDH_UMB = 1,
+      UART_CMS_CDH = 2,
+      Board_UARTCOUNT
 } Board_UARTName;
 
 /*!
