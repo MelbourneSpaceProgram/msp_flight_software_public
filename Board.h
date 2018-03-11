@@ -73,11 +73,8 @@ extern "C" {
 #define Board_GPIO_BUTTON0          MSP_EXP432P401R_GPIO_S1
 #define Board_GPIO_BUTTON1          MSP_EXP432P401R_GPIO_S2
 
-#define Board_I2C0                  MSP_EXP432P401R_I2CB0
-#define Board_I2C_TPL0401           MSP_EXP432P401R_I2CB0
-#define Board_I2C_TMP               MSP_EXP432P401R_I2CB1
-
-#define Board_I2CSLAVE0             MSP_EXP432P401R_I2CSLAVEB0
+#define Board_I2C_TMP               I2C_BUS_A
+#define Board_I2C0                  I2C_BUS_A
 
 #define Board_PWM0                  MSP_EXP432P401R_PWM_TA1_1
 #define Board_PWM1                  MSP_EXP432P401R_PWM_TA1_2

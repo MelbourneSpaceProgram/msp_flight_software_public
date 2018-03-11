@@ -127,12 +127,17 @@ typedef enum Board_GPIOName {
  *  @def    MSP_EXP432P401R_I2CName
  *  @brief  Enum of I2C names on the MSP_EXP432P401R dev board
  */
-typedef enum MSP_EXP432P401R_I2CName {
-    MSP_EXP432P401R_I2CB0 = 0,
-    MSP_EXP432P401R_I2CB1,
-
-    MSP_EXP432P401R_I2CCOUNT
-} MSP_EXP432P401R_I2CName;
+/*!
+ *  @def    MSP_EXP432P401R_I2CName
+ *  @brief  Enum of I2C names on the MSP_EXP432P401R dev board
+ */
+typedef enum Board_I2CName {
+    I2C_BUS_A = 0,
+    I2C_BUS_B = 1,
+    I2C_BUS_C = 2,
+    I2C_BUS_D = 3,
+    Board_I2CCOUNT
+} Board_I2CName;
 
 /*!
  *  @def    MSP_EXP432P401R_I2CSlaveName
