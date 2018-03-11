@@ -297,31 +297,59 @@ const GPIOMSP432_Config GPIOMSP432_config = {
 #include <ti/drivers/I2C.h>
 #include <ti/drivers/i2c/I2CMSP432.h>
 
-I2CMSP432_Object i2cMSP432Objects[MSP_EXP432P401R_I2CCOUNT];
+I2CMSP432_Object i2cMSP432Objects[Board_I2CCOUNT];
 
-const I2CMSP432_HWAttrsV1 i2cMSP432HWAttrs[MSP_EXP432P401R_I2CCOUNT] = {
-    {.baseAddr = EUSCI_B0_BASE,
-     .intNum = INT_EUSCIB0,
-     .intPriority = (~0),
-     .clockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK,
-     .dataPin = I2CMSP432_P1_6_UCB0SDA,
-     .clkPin = I2CMSP432_P1_7_UCB0SCL},
-    {.baseAddr = EUSCI_B1_BASE,
-     .intNum = INT_EUSCIB1,
-     .intPriority = (~0),
-     .clockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK,
-     .dataPin = I2CMSP432_P6_4_UCB1SDA,
-     .clkPin = I2CMSP432_P6_5_UCB1SCL}};
+const I2CMSP432_HWAttrsV1 i2cMSP432HWAttrs[Board_I2CCOUNT] = {
+    {
+        .baseAddr = EUSCI_B0_BASE,
+        .intNum = INT_EUSCIB0,
+        .intPriority = (~0),
+        .clockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK,
+        .dataPin = I2CMSP432_P1_6_UCB0SDA,
+        .clkPin = I2CMSP432_P1_7_UCB0SCL,
+    },
+    {
+        .baseAddr = EUSCI_B1_BASE,
+        .intNum = INT_EUSCIB1,
+        .intPriority = (~0),
+        .clockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK,
+        .dataPin = I2CMSP432_P6_4_UCB1SDA,
+        .clkPin = I2CMSP432_P6_5_UCB1SCL,
+    },
+    {
+        .baseAddr = EUSCI_B3_BASE,
+        .intNum = INT_EUSCIB3,
+        .intPriority = (~0),
+        .clockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK,
+        .dataPin = I2CMSP432_P10_2_UCB3SDA,
+        .clkPin = I2CMSP432_P10_3_UCB3SCL,
+    },
+    {
+        .baseAddr = EUSCI_B2_BASE,
+        .intNum = INT_EUSCIB2,
+        .intPriority = (~0),
+        .clockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK,
+        .dataPin = I2CMSP432_P3_6_UCB2SDA,
+        .clkPin = I2CMSP432_P3_7_UCB2SCL,
+    },
+};
 
-const I2C_Config I2C_config[MSP_EXP432P401R_I2CCOUNT] = {
+const I2C_Config I2C_config[Board_I2CCOUNT] = {
     {.fxnTablePtr = &I2CMSP432_fxnTable,
-     .object = &i2cMSP432Objects[MSP_EXP432P401R_I2CB0],
-     .hwAttrs = &i2cMSP432HWAttrs[MSP_EXP432P401R_I2CB0]},
+     .object = &i2cMSP432Objects[I2C_BUS_A],
+     .hwAttrs = &i2cMSP432HWAttrs[I2C_BUS_A]},
     {.fxnTablePtr = &I2CMSP432_fxnTable,
-     .object = &i2cMSP432Objects[MSP_EXP432P401R_I2CB1],
-     .hwAttrs = &i2cMSP432HWAttrs[MSP_EXP432P401R_I2CB1]}};
+     .object = &i2cMSP432Objects[I2C_BUS_B],
+     .hwAttrs = &i2cMSP432HWAttrs[I2C_BUS_B]},
+    {.fxnTablePtr = &I2CMSP432_fxnTable,
+     .object = &i2cMSP432Objects[I2C_BUS_C],
+     .hwAttrs = &i2cMSP432HWAttrs[I2C_BUS_C]},
+    {.fxnTablePtr = &I2CMSP432_fxnTable,
+     .object = &i2cMSP432Objects[I2C_BUS_D],
+     .hwAttrs = &i2cMSP432HWAttrs[I2C_BUS_D]},
+};
 
-const uint_least8_t I2C_count = MSP_EXP432P401R_I2CCOUNT;
+const uint_least8_t I2C_count = Board_I2CCOUNT;
 
 /*
  *  =============================== I2CSlave ===============================
