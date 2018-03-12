@@ -5,6 +5,7 @@
 #include <test_runners/i2c_tests.h>
 #include <test_runners/message_tests.h>
 #include <test_runners/generic_sensor_tests.h>
+#include <test_runners/i2c_sensor_tests.h>
 #include <test_runners/sensor_state_logic_tests.h>
 #include <test_runners/state_manager_tests.h>
 #include <test_runners/system_state_logic_tests.h>
@@ -21,6 +22,7 @@ void master_tests_thread() {
     i2c_tests_runner();
     message_tests_runner();
     generic_sensor_tests_runner();
+    i2c_sensor_tests_runner();
     sensor_state_logic_tests_runner();
     state_manager_tests_runner();
     system_state_logic_tests_runner();
