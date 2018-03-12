@@ -27,14 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "system_state_logic_tests.h"
+#include "i2c_sensor_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestPowerStateLogic();
-extern void TestTelecomsStateLogic();
-extern void TestAdcsStateLogic();
+extern void TestADC(void);
 
 
 /*=======Suite Setup=====*/
@@ -56,8 +54,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_system_state_logic_tests_runner(void);
-void resetTest_system_state_logic_tests_runner(void)
+void resetTest_i2c_sensor_tests_runner(void);
+void resetTest_i2c_sensor_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -65,14 +63,12 @@ void resetTest_system_state_logic_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int system_state_logic_tests_runner(void);
-int system_state_logic_tests_runner(void)
+ int i2c_sensor_tests_runner(void);
+int i2c_sensor_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/system/tests/system_state_logic_tests.cpp");
-  RUN_TEST(TestPowerStateLogic, 34);
-  RUN_TEST(TestTelecomsStateLogic, 82);
-  RUN_TEST(TestAdcsStateLogic, 123);
+  UnityBegin("src/sensors/i2c_sensors/tests/i2c_sensor_tests.cpp");
+  RUN_TEST(TestADC, 13);
 
   return suite_teardown(UnityEnd());
 }

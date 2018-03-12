@@ -6,8 +6,8 @@
 #include "unity.h"
 #include <src/config/unit_tests.h>
 #include <src/telecomms/lithium_configuration.h>
+#include <src/telecomms/lithium_function_config.h>
 #include <src/telecomms/lithium_utils.h>
-#include "../src/telecomms/lithium_function_config.h"
 
 void TestLithiumConfigurationSerialise(void);
 void TestLithiumConfigurationDeserialise(void);
