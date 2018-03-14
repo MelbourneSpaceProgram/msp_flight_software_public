@@ -37,7 +37,7 @@ extern void TestGetConfigAck();
 extern void TestResetSystemAck();
 extern void TestTransmitAck();
 extern void TestFailNoOpAck();
-extern void TestFailGetConfigAckParse();
+extern void TestFailGetConfigAck();
 
 
 /*=======Suite Setup=====*/
@@ -78,7 +78,7 @@ int lithium_ack_tests_runner(void)
   RUN_TEST(TestResetSystemAck, 25);
   RUN_TEST(TestTransmitAck, 30);
   RUN_TEST(TestFailNoOpAck, 35);
-  RUN_TEST(TestFailGetConfigAckParse, 50);
+  RUN_TEST(TestFailGetConfigAck, 50);
 
   return suite_teardown(UnityEnd());
 }

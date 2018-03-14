@@ -27,7 +27,7 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "lithium_command_tests.h"
+#include "lithium_command_serialise_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -35,7 +35,7 @@ extern void TearDown(void);
 extern void TestNoOpSerialisation();
 extern void TestResetSystemSerialisation();
 extern void TestGetConfigurationSerialisation();
-extern void TestTransmitTestPayload();
+extern void TestTransmitTestPayloadSerialisation();
 
 
 /*=======Suite Setup=====*/
@@ -57,8 +57,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_lithium_command_tests_runner(void);
-void resetTest_lithium_command_tests_runner(void)
+void resetTest_lithium_command_serialise_tests_runner(void);
+void resetTest_lithium_command_serialise_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -66,15 +66,15 @@ void resetTest_lithium_command_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int lithium_command_tests_runner(void);
-int lithium_command_tests_runner(void)
+ int lithium_command_serialise_tests_runner(void);
+int lithium_command_serialise_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/telecomms/tests/lithium_command_tests.cpp");
+  UnityBegin("src/telecomms/tests/lithium_command_serialise_tests.cpp");
   RUN_TEST(TestNoOpSerialisation, 6);
   RUN_TEST(TestResetSystemSerialisation, 26);
   RUN_TEST(TestGetConfigurationSerialisation, 47);
-  RUN_TEST(TestTransmitTestPayload, 68);
+  RUN_TEST(TestTransmitTestPayloadSerialisation, 68);
 
   return suite_teardown(UnityEnd());
 }
