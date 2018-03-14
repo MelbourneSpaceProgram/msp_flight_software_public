@@ -16,6 +16,10 @@ fnptr RunnableLithiumListener::GetRunnablePointer() {
 void RunnableLithiumListener::Receive() {
     byte read_buffer[Lithium::kMaxReceivedSize];
     while (1) {
+        // Ensure read buffer is reset
+        read_buffer[0] = 0;
+        read_buffer[1] = 0;
+
         // Blocking read that reads headers only
         Lithium::GetInstance()->GetUart()->PerformReadTransaction(
             read_buffer, Lithium::kLithiumHeaderSize);

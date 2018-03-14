@@ -69,8 +69,8 @@ int antenna_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/telecomms/tests/antenna_tests.cpp");
-  RUN_TEST(TestSafeDeploy, 15);
-  RUN_TEST(TestForceDeploy, 47);
+  RUN_TEST(TestSafeDeploy, 13);
+  RUN_TEST(TestForceDeploy, 45);
 
   return suite_teardown(UnityEnd());
 }

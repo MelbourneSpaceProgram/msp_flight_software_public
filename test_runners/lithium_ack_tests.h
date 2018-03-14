@@ -7,13 +7,13 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
-#include <test_runners/lithium_command_tests.h>
+#include <test_runners/lithium_command_serialise_tests.h>
 
 void TestNoOpAck(void);
 void TestGetConfigAck(void);
 void TestResetSystemAck(void);
 void TestTransmitAck(void);
 void TestFailNoOpAck(void);
-void TestFailGetConfigAckParse(void);
+void TestFailGetConfigAck(void);
 
 #endif  // TEST_RUNNERS_LITHIUM_ACK_TESTS_H_

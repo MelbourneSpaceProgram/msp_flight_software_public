@@ -28,6 +28,8 @@ class Lithium {
     static const byte kDirectionIntoLithium = 0x10;
     static const byte kDirectionOutOfLithium = 0x20;
 
+    static const uint16_t kInterCommandTimeMilli = 250;
+
     static Lithium* GetInstance();  // Initial call is not thread safe
     Mailbox_Handle GetMessageMailbox() const;
     Mailbox_Handle GetCommandResponseMailbox() const;

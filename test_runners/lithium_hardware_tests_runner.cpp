@@ -32,7 +32,9 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestCommandAcks();
+extern void TestNoOpHardware();
+extern void TestGetConfigHardware();
+extern void TestTransmitAckHardware();
 
 
 /*=======Suite Setup=====*/
@@ -68,7 +70,9 @@ int lithium_hardware_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/telecomms/tests/lithium_hardware_tests.cpp");
-  RUN_TEST(TestCommandAcks, 8);
+  RUN_TEST(TestNoOpHardware, 8);
+  RUN_TEST(TestGetConfigHardware, 16);
+  RUN_TEST(TestTransmitAckHardware, 24);
 
   return suite_teardown(UnityEnd());
 }

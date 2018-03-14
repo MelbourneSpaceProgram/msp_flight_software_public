@@ -4,6 +4,7 @@
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <ti/sysbios/knl/Clock.h>
+#include <ti/sysbios/knl/Task.h>
 
 Lithium* Lithium::instance = NULL;
 
@@ -45,6 +46,8 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
     // TODO(dingbenjamin): Increase mailbox robustness to out of syncness
     Mailbox_pend(command_response_mailbox_handle, &ack_buffer,
                  kWaitForAckMilli * 1000 / Clock_tickPeriod);
+    // TODO(dingbenjamin): Figure out why this is needed
+    Task_sleep(kInterCommandTimeMilli * 1000 / Clock_tickPeriod);
     if (LithiumUtils::IsValidHeader(ack_buffer) &&
         LithiumUtils::GetCommandCode(ack_buffer) == command->GetCommandCode()) {
         return true;

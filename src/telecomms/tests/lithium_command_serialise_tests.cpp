@@ -1,6 +1,6 @@
 #include <src/telecomms/lithium.h>
 #include <src/util/data_types.h>
-#include <test_runners/lithium_command_tests.h>
+#include <test_runners/lithium_command_serialise_tests.h>
 #include <test_runners/unity.h>
 
 void TestNoOpSerialisation() {
@@ -65,7 +65,7 @@ void TestGetConfigurationSerialisation() {
     TEST_ASSERT_EQUAL_UINT8(serial_buffer[7], 0x4f);
 }
 
-void TestTransmitTestPayload() {
+void TestTransmitTestPayloadSerialisation() {
     TestPayload test_payload;
     TransmitCommand transmit_command(&test_payload, 0x67, 0x61, 0x62);
     // 8 + 4 + 56 + 2 is Lithium header + MSP header + Message size + Tail
