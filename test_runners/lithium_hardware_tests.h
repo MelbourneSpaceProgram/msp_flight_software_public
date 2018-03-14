@@ -9,6 +9,8 @@
 #include <src/util/data_types.h>
 #include <test_runners/lithium_hardware_tests.h>
 
-void TestCommandAcks(void);
+void TestNoOpHardware(void);
+void TestGetConfigHardware(void);
+void TestTransmitAckHardware(void);
 
 #endif  // TEST_RUNNERS_LITHIUM_HARDWARE_TESTS_H_

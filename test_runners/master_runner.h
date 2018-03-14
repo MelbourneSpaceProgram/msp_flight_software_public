@@ -15,7 +15,7 @@ void state_manager_tests_runner();
 void system_state_logic_tests_runner();
 void antenna_tests_runner();
 void lithium_ack_tests_runner();
-void lithium_command_tests_runner();
+void lithium_command_serialise_tests_runner();
 void lithium_configuration_tests_runner();
 void lithium_hardware_tests_runner();
 void matrix_tests_runner();

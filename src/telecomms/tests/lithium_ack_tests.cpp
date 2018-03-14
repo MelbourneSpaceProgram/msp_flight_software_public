@@ -1,7 +1,7 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
-#include <test_runners/lithium_command_tests.h>
+#include <test_runners/lithium_command_serialise_tests.h>
 #include <test_runners/unity.h>
 
 void TestNoOpAck() {
@@ -47,7 +47,7 @@ void TestFailNoOpAck() {
     TEST_ASSERT_FALSE(LithiumUtils::IsValidHeader(invalid_checksum));
 }
 
-void TestFailGetConfigAckParse() {
+void TestFailGetConfigAck() {
     GetConfigurationCommand get_config;
 
     byte invalid_sync_a[44] = {

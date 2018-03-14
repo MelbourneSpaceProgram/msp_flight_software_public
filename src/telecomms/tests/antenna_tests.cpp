@@ -2,10 +2,8 @@
 #include <src/config/unit_tests.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
-#include <test_runners/i2c_tests.h>
+#include <test_runners/antenna_tests.h>
 #include <test_runners/unity.h>
-
-#include <stdio.h>
 
 // Tests defined in Arduino code at:
 // https://github.com/MelbourneSpaceProgram/hardware_unit_test_software

@@ -8,8 +8,7 @@
 #include <src/config/unit_tests.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
-#include <test_runners/i2c_tests.h>
-#include <stdio.h>
+#include <test_runners/antenna_tests.h>
 
 void TestSafeDeploy(void);
 void TestForceDeploy(void);
