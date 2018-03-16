@@ -39,9 +39,9 @@ class Rtc : public I2cSensor<RTime> {
 
     // bit_mask used to clear bits used by register for general purpose use
     static const byte kLowest8BitMask = ~(0);
-    static const byte kLowest7BitMask = ~(1 << 7);
-    static const byte kLowest6BitMask = ~(3 << 6);
-    static const byte kLowest5BitMask = ~(7 << 5);
+    static const byte kLowest7BitMask = static_cast<byte>(~(0x01u << 7));
+    static const byte kLowest6BitMask = static_cast<byte>(~(0x03u << 6));
+    static const byte kLowest5BitMask = static_cast<byte>(~(0x07u << 5));
     static const byte kHighest4BitMask = ~(15);
     static const byte kLowest4BitMask = (15);
 
