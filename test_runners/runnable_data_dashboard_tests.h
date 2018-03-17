@@ -14,6 +14,7 @@
 #include <test_runners/runnable_data_dashboard_tests.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <src/config/unit_tests.h>
 
 void TestTransmitMessage(void);
 

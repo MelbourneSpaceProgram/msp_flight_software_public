@@ -13,6 +13,6 @@ void TasksInit() {
 
     // TODO(rskew) review priority
     TaskHolder* data_dashboard_task = new TaskHolder(
-        1024, "DataDashboard", 5, new RunnableDataDashboard());
+        4096, "DataDashboard", 5, new RunnableDataDashboard());
     data_dashboard_task->Init();
 }
