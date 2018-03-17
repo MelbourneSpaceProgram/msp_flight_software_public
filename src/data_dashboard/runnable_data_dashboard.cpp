@@ -4,6 +4,7 @@
 #include <src/debug_interface/debug_stream.h>
 #include <src/init/init.h>
 #include <src/messages/SensorReading.pb.h>
+#include <src/messages/StateMachineStateReading.pb.h>
 #include <src/system/state_definitions.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
@@ -22,14 +23,41 @@ void RunnableDataDashboard::DataDashboard() {
     double increment = 0.01;
 
     while (1) {
-        // TODO(rskew) replace this with stubs of real sensors
-        SensorReading test_sensor_reading_message;
-        test_sensor_reading_message.value = 12345;
-        test_sensor_reading_message.timestamp_millis_unix_epoch = 54321;
+        SensorReading bms1_input_current_reading = SensorReading_init_zero;
+        // TODO(rskew) implement actual sensor readings
+        bms1_current += increment;
+        bms1_input_current_reading.value = bms1_current;
 
-        RunnableDataDashboard::TransmitMessage(
-            kTestSensorReadingCode, SensorReading_size, SensorReading_fields,
-            &test_sensor_reading_message);
+        TransmitMessage(kBms1InputCurrentReadingCode, SensorReading_size,
+                        SensorReading_fields, &bms1_input_current_reading);
+
+        SensorReading bms1_input_voltage_reading = SensorReading_init_zero;
+        bms1_input_voltage_reading.value = 88.88;
+
+        TransmitMessage(kBms1InputVoltageReadingCode, SensorReading_size,
+                        SensorReading_fields, &bms1_input_voltage_reading);
+
+        SensorReading primary_mcu_regulator_current_reading =
+            SensorReading_init_zero;
+        primary_mcu_regulator_current_reading.value = 77.77;
+
+        TransmitMessage(kPrimaryMcuRegulatorCurrentReadingCode,
+                        SensorReading_size, SensorReading_fields,
+                        &primary_mcu_regulator_current_reading);
+
+        SensorReading magnetorquer_x_current_reading = SensorReading_init_zero;
+        magnetorquer_x_current_reading.value = 66.66;
+
+        TransmitMessage(kMagnetorquerXCurrentReadingCode, SensorReading_size,
+                        SensorReading_fields, &magnetorquer_x_current_reading);
+
+        StateMachineStateReading adcs_system_state_reading =
+            StateMachineStateReading_init_zero;
+        adcs_system_state_reading.state = (uint32_t)kAdcsNominal;
+
+        TransmitMessage(
+            kAdcsSystemStateReadingCode, StateMachineStateReading_size,
+            StateMachineStateReading_fields, &adcs_system_state_reading);
 
         Task_sleep(50);
     }
