@@ -4,6 +4,8 @@
 #define TEST_RUNNERS_MASTER_RUNNER_H_
 
 void master_tests_thread();
+void b_dot_controller_tests_runner();
+void b_dot_estimator_tests_runner();
 void kalman_filter_tests_runner();
 void database_tests_runner();
 void payload_processor_tests_runner();

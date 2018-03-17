@@ -10,7 +10,6 @@ void TestMagnetometer() {
 #endif
     Magnetometer magnetometer("blah");
     bool success = magnetometer.TakeReading();
-    MagnetometerReading reading = magnetometer.GetReading();
 
     TEST_ASSERT_TRUE(success);
 }

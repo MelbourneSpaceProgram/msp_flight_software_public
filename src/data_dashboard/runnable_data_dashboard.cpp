@@ -8,6 +8,7 @@
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/system/state_definitions.h>
+#include <src/system/system_state_machines/adcs_state_machine.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -20,6 +21,7 @@ fnptr RunnableDataDashboard::GetRunnablePointer() {
 }
 
 void RunnableDataDashboard::DataDashboard() {
+    // TODO(rskew) replace string id
     Magnetometer magnetometer("");
 
     // TODO(rskew) remove this when actual sensor readings are implemented

@@ -27,13 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "debug_interface_tests.h"
+#include "b_dot_controller_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestRequestReceiveMessageFromSimulator();
-extern void TestPostMessageToDebugClient();
+extern void TestControl();
 
 
 /*=======Suite Setup=====*/
@@ -55,8 +54,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_debug_interface_tests_runner(void);
-void resetTest_debug_interface_tests_runner(void)
+void resetTest_b_dot_controller_tests_runner(void);
+void resetTest_b_dot_controller_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -64,13 +63,12 @@ void resetTest_debug_interface_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int debug_interface_tests_runner(void);
-int debug_interface_tests_runner(void)
+ int b_dot_controller_tests_runner(void);
+int b_dot_controller_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
-  RUN_TEST(TestRequestReceiveMessageFromSimulator, 13);
-  RUN_TEST(TestPostMessageToDebugClient, 40);
+  UnityBegin("src/adcs/tests/b_dot_controller_tests.cpp");
+  RUN_TEST(TestControl, 5);
 
   return suite_teardown(UnityEnd());
 }
