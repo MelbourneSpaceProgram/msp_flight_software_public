@@ -201,40 +201,6 @@ const UDMAMSP432_Config UDMAMSP432_config = {.object = &udmaMSP432Object,
                                              .hwAttrs = &udmaMSP432HWAttrs};
 
 /*
- *  ============================= Display =============================
- */
-#include <ti/display/Display.h>
-#include <ti/display/DisplayUart.h>
-#define MAXPRINTLEN 1024
-
-DisplayUart_Object displayUartObject;
-
-static char displayBuf[MAXPRINTLEN];
-
-const DisplayUart_HWAttrs displayUartHWAttrs = {
-    .uartIdx = MSP_EXP432P401R_UARTA0,
-    .baudRate = 115200,
-    .mutexTimeout = (unsigned int)(-1),
-    .strBuf = displayBuf,
-    .strBufLen = MAXPRINTLEN};
-
-#ifndef BOARD_DISPLAY_USE_UART_ANSI
-#define BOARD_DISPLAY_USE_UART_ANSI 0
-#endif
-
-const Display_Config Display_config[] = {{
-#if (BOARD_DISPLAY_USE_UART_ANSI)
-    .fxnTablePtr = &DisplayUartAnsi_fxnTable,
-#else /* Default to minimal UART with no cursor placement */
-    .fxnTablePtr = &DisplayUartMin_fxnTable,
-#endif
-    .object = &displayUartObject,
-    .hwAttrs = &displayUartHWAttrs}};
-
-const uint_least8_t Display_count =
-    sizeof(Display_config) / sizeof(Display_Config);
-
-/*
  *  ======== MSP_EXP432P401R_initGeneral ========
  */
 void MSP_EXP432P401R_initGeneral(void) { Power_init(); }
@@ -587,8 +553,8 @@ const uint_least8_t Timer_count = MSP_EXP432P401R_TIMERCOUNT;
 #include <ti/drivers/UART.h>
 #include <ti/drivers/uart/UARTMSP432.h>
 
-UARTMSP432_Object uartMSP432Objects[MSP_EXP432P401R_UARTCOUNT];
-unsigned char uartMSP432RingBuffer[MSP_EXP432P401R_UARTCOUNT][32];
+UARTMSP432_Object uartMSP432Objects[Board_UARTCOUNT];
+unsigned char uartMSP432RingBuffer[Board_UARTCOUNT][32];
 
 /*
  * The baudrate dividers were determined by using the MSP432 baudrate
@@ -598,55 +564,76 @@ unsigned char uartMSP432RingBuffer[MSP_EXP432P401R_UARTCOUNT][32];
 const UARTMSP432_BaudrateConfig uartMSP432Baudrates[] = {
     /* {baudrate, input clock, prescalar, UCBRFx, UCBRSx, oversampling} */
     {.outputBaudrate = 115200,
-     .inputClockFreq = 24000000,
-     .prescalar = 13,
-     .hwRegUCBRFx = 0,
-     .hwRegUCBRSx = 37,
+     .inputClockFreq = 12000000,
+     .prescalar = 6,
+     .hwRegUCBRFx = 8,
+     .hwRegUCBRSx = 32,
      .oversampling = 1},
-    {115200, 12000000, 6, 8, 32, 1},
     {115200, 6000000, 3, 4, 2, 1},
     {115200, 3000000, 1, 10, 0, 1},
-    {9600, 24000000, 156, 4, 0, 1},
     {9600, 12000000, 78, 2, 0, 1},
     {9600, 6000000, 39, 1, 0, 1},
     {9600, 3000000, 19, 8, 85, 1},
     {9600, 32768, 3, 0, 146, 0}};
 
-const UARTMSP432_HWAttrsV1 uartMSP432HWAttrs[MSP_EXP432P401R_UARTCOUNT] = {
-    {.baseAddr = EUSCI_A0_BASE,
-     .intNum = INT_EUSCIA0,
-     .intPriority = (~0),
-     .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
-     .bitOrder = EUSCI_A_UART_LSB_FIRST,
-     .numBaudrateEntries =
-         sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
-     .baudrateLUT = uartMSP432Baudrates,
-     .ringBufPtr = uartMSP432RingBuffer[MSP_EXP432P401R_UARTA0],
-     .ringBufSize = sizeof(uartMSP432RingBuffer[MSP_EXP432P401R_UARTA0]),
-     .rxPin = UARTMSP432_P1_2_UCA0RXD,
-     .txPin = UARTMSP432_P1_3_UCA0TXD},
-    {.baseAddr = EUSCI_A2_BASE,
-     .intNum = INT_EUSCIA2,
-     .intPriority = (~0),
-     .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
-     .bitOrder = EUSCI_A_UART_LSB_FIRST,
-     .numBaudrateEntries =
-         sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
-     .baudrateLUT = uartMSP432Baudrates,
-     .ringBufPtr = uartMSP432RingBuffer[MSP_EXP432P401R_UARTA2],
-     .ringBufSize = sizeof(uartMSP432RingBuffer[MSP_EXP432P401R_UARTA2]),
-     .rxPin = UARTMSP432_P3_2_UCA2RXD,
-     .txPin = UARTMSP432_P3_3_UCA2TXD}};
+const UARTMSP432_HWAttrsV1 uartMSP432HWAttrs[Board_UARTCOUNT] = {
+    {
+        .baseAddr = EUSCI_A2_BASE,
+        .intNum = INT_EUSCIA2,
+        .intPriority = (~0),
+        .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
+        .bitOrder = EUSCI_A_UART_LSB_FIRST,
+        .numBaudrateEntries =
+            sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
+        .baudrateLUT = uartMSP432Baudrates,
+        .ringBufPtr = uartMSP432RingBuffer[UART_MCU_MCU],
+        .ringBufSize = sizeof(uartMSP432RingBuffer[UART_MCU_MCU]),
+        .rxPin = UARTMSP432_P3_3_UCA2RXD,
+        .txPin = UARTMSP432_P3_2_UCA2TXD,
+    },
+    {
+        .baseAddr = EUSCI_A3_BASE,
+        .intNum = INT_EUSCIA3,
+        .intPriority = (~0),
+        .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
+        .bitOrder = EUSCI_A_UART_LSB_FIRST,
+        .numBaudrateEntries =
+            sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
+        .baudrateLUT = uartMSP432Baudrates,
+        .ringBufPtr = uartMSP432RingBuffer[UART_CDH_UMB],
+        .ringBufSize = sizeof(uartMSP432RingBuffer[UART_CDH_UMB]),
+        .rxPin = UARTMSP432_P9_6_UCA3RXD,
+        .txPin = UARTMSP432_P9_7_UCA3TXD,
+    },
+    {
+        .baseAddr = EUSCI_A1_BASE,
+        .intNum = INT_EUSCIA1,
+        .intPriority = (~0),
+        .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
+        .bitOrder = EUSCI_A_UART_LSB_FIRST,
+        .numBaudrateEntries =
+            sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
+        .baudrateLUT = uartMSP432Baudrates,
+        .ringBufPtr = uartMSP432RingBuffer[UART_CMS_CDH],
+        .ringBufSize = sizeof(uartMSP432RingBuffer[UART_CMS_CDH]),
+        .rxPin = UARTMSP432_P2_2_UCA1RXD,
+        .txPin = UARTMSP432_P2_3_UCA1TXD,
+    },
+};
 
-const UART_Config UART_config[MSP_EXP432P401R_UARTCOUNT] = {
+const UART_Config UART_config[Board_UARTCOUNT] = {
     {.fxnTablePtr = &UARTMSP432_fxnTable,
-     .object = &uartMSP432Objects[MSP_EXP432P401R_UARTA0],
-     .hwAttrs = &uartMSP432HWAttrs[MSP_EXP432P401R_UARTA0]},
+     .object = &uartMSP432Objects[UART_MCU_MCU],
+     .hwAttrs = &uartMSP432HWAttrs[UART_MCU_MCU]},
     {.fxnTablePtr = &UARTMSP432_fxnTable,
-     .object = &uartMSP432Objects[MSP_EXP432P401R_UARTA2],
-     .hwAttrs = &uartMSP432HWAttrs[MSP_EXP432P401R_UARTA2]}};
+     .object = &uartMSP432Objects[UART_CDH_UMB],
+     .hwAttrs = &uartMSP432HWAttrs[UART_CDH_UMB]},
+    {.fxnTablePtr = &UARTMSP432_fxnTable,
+     .object = &uartMSP432Objects[UART_CMS_CDH],
+     .hwAttrs = &uartMSP432HWAttrs[UART_CMS_CDH]},
+};
 
-const uint_least8_t UART_count = MSP_EXP432P401R_UARTCOUNT;
+const uint_least8_t UART_count = Board_UARTCOUNT;
 
 /*
  *  =============================== Watchdog ===============================
