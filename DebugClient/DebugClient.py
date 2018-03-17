@@ -5,7 +5,10 @@ import serial
 import sys
 import datetime
 import serial.tools.list_ports
+import MagnetometerReading_pb2
 import SensorReading_pb2
+import StateMachineStateReading_pb2
+import TorqueOutputReading_pb2
 import time
 import logging
 
@@ -21,10 +24,10 @@ console_logger.setFormatter(formatter)
 logger.addHandler(console_logger)
 
 """
-Sends a debug request to the MSP432 and returns the raw value of the received input
+Receives messages from the MSP432 and responds when appropriate.
 
-:param code: The code of the debug request to be sent, see requestcodes.py
-:returns: The raw value of the received input, or False if read was unsuccessful
+Stores/retrieves data from the Memcached buffer for transfers with
+the HIL simulation and the data dashboard.
 """
 
 
@@ -65,10 +68,109 @@ def testLoop(debug_serial_port):
             message_code, message_size, payload = wait_for_message(debug_serial_port)
 
             # TODO(akremor): Integrate this with request codes
-            if message_code == 0x09:
+            if message_code == 0x06:
+                # Magnetometer reading has been requested
+                # It should have a zero command size and payload
+                magnetometer_reading = \
+                    MagnetometerReading_pb2.MagnetometerReading()
+                if useMemcached:
+                    magnetometer_reading.x = float(mc.get("Simulation_Magnetometer_X"))
+                    magnetometer_reading.y = float(mc.get("Simulation_Magnetometer_Y"))
+                    magnetometer_reading.z = float(mc.get("Simulation_Magnetometer_Z"))
+                    magnetometer_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+                else:
+                    magnetometer_reading.x = 0
+                    magnetometer_reading.y = 0
+                    magnetometer_reading.z = 0
+                    magnetometer_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+
+                logger.info("Sending message: " + str(magnetometer_reading))
+                serialised_message = magnetometer_reading.SerializeToString()
+                send_message(debug_serial_port, 0x06, serialised_message)
+
+
+            elif message_code == 0x01:
+                bms1_input_current_reading = SensorReading_pb2.SensorReading()
+                bms1_input_current_reading.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(bms1_input_current_reading.value))
+                if useMemcached:
+                     mc.set("BMS1_Input_Current",
+                            bms1_input_current_reading.value)
+
+
+            elif message_code == 0x02:
+                bms1_input_voltage_reading = SensorReading_pb2.SensorReading()
+                bms1_input_voltage_reading.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(bms1_input_voltage_reading.value))
+                if useMemcached:
+                    mc.set("BMS1_Input_Voltage",
+                           bms1_input_voltage_reading.value)
+
+
+            elif message_code == 0x03:
+                primary_mcu_regulator_current_reading = \
+                    SensorReading_pb2.SensorReading()
+                primary_mcu_regulator_current_reading.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(primary_mcu_regulator_current_reading.value))
+                if useMemcached:
+                       mc.set("Primary_MCU_Regulator_Current",
+                              primary_mcu_regulator_current_reading.value)
+
+
+            elif message_code == 0x04:
+                magnetorquer_x_current_reading = \
+                    SensorReading_pb2.SensorReading()
+                magnetorquer_x_current_reading.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(magnetorquer_x_current_reading.value))
+                if useMemcached:
+                    mc.set("Magnetorquer_X_Current",
+                           magnetorquer_x_current_reading.value)
+
+
+            elif message_code == 0x05:
+                adcs_system_state_reading = \
+                    StateMachineStateReading_pb2.StateMachineStateReading()
+                adcs_system_state_reading.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(adcs_system_state_reading.state))
+                if useMemcached:
+                    mc.set("ADCS_System_State",
+                           adcs_system_state_reading.state)
+
+
+            elif message_code == 0x07:
+                # Torque Output reading has been sent
+
+                torque_output_reading = TorqueOutputReading_pb2.TorqueOutputReading()
+                torque_output_reading.ParseFromString(payload)
+                logger.info("Received message data: " + str(torque_output_reading))
+                if useMemcached:
+                    mc.set("Simulation_Torque_X",torque_output_reading.x)
+                    mc.set("Simulation_Torque_Y",torque_output_reading.y)
+                    mc.set("Simulation_Torque_Z",torque_output_reading.z)
+
+
+            elif message_code == 0x08:
+                # Magnetometer Reading Echo
+
+                magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
+                magnetometer_reading_echo.ParseFromString(payload)
+                logger.info("Message data: " + str(magnetometer_reading_echo))
+                if useMemcached:
+                    mc.set("Magnetometer_X",magnetometer_reading_echo.x)
+
+
+            elif message_code == 0x09:
                 # Test Sensor Reading, echo it back
 
                 send_message(debug_serial_port, 0x09, payload)
+
 
             elif message_code == 0x0A:
                 # Test request, send known data
