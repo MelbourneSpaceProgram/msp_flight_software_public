@@ -6,6 +6,7 @@
 void master_tests_thread();
 void kalman_filter_tests_runner();
 void database_tests_runner();
+void runnable_data_dashboard_tests_runner();
 void debug_interface_tests_runner();
 void i2c_tests_runner();
 void multiplexer_tests_runner();
