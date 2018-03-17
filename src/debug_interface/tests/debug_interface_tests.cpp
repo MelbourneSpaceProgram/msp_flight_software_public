@@ -11,9 +11,7 @@
 #include <ti/sysbios/knl/Semaphore.h>
 
 void TestRequestReceiveMessageFromSimulator() {
-#ifndef RUN_HIL
-    TEST_IGNORE_MESSAGE("HIL test ignored");
-#endif
+#ifdef RUN_HIL
     DebugStream *debug_stream = DebugStream::GetInstance();
 
     uint8_t buffer[SensorReading_size];
@@ -34,12 +32,13 @@ void TestRequestReceiveMessageFromSimulator() {
 
     TEST_ASSERT_EQUAL_DOUBLE(1234, reading.value);
     TEST_ASSERT_EQUAL_INT(4321, reading.timestamp_millis_unix_epoch);
+#else
+    TEST_IGNORE_MESSAGE("HIL test ignored");
+#endif
 }
 
 void TestPostMessageToDebugClient() {
-#ifndef RUN_HIL
-    TEST_IGNORE_MESSAGE("HIL test ignored");
-#endif
+#ifdef RUN_HIL
     DebugStream *debug_stream = DebugStream::GetInstance();
 
     SensorReading test_sensor_reading;
@@ -61,13 +60,10 @@ void TestPostMessageToDebugClient() {
 
     // Entering critical section
     Semaphore_pend(debug_stream->bus_available, BIOS_WAIT_FOREVER);
-
     debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
                                            SensorReading_size, buffer);
-
     debug_stream->ReceiveMessageFromSimulator(receive_buffer,
                                               SensorReading_size);
-
     Semaphore_post(debug_stream->bus_available);
     // Exited critical section
 
@@ -81,4 +77,7 @@ void TestPostMessageToDebugClient() {
     TEST_ASSERT_EQUAL_DOUBLE(-999, test_sensor_reading_received.value);
     TEST_ASSERT_EQUAL_INT(
         123456789, test_sensor_reading_received.timestamp_millis_unix_epoch);
+#else
+    TEST_IGNORE_MESSAGE("HIL test ignored");
+#endif
 }
