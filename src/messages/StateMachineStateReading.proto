@@ -1,0 +1,4 @@
+message StateMachineStateReading {
+    required int32 state = 1;
+    required fixed64 timestamp_millis_unix_epoch = 2;
+}
