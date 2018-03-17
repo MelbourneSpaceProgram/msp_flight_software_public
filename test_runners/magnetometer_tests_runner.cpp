@@ -27,12 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "runnable_data_dashboard_tests.h"
+#include "magnetometer_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestTransmitMessage();
+extern void TestMagnetometer();
 
 
 /*=======Suite Setup=====*/
@@ -54,8 +54,8 @@ static int suite_teardown(int num_failures)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_runnable_data_dashboard_tests_runner(void);
-void resetTest_runnable_data_dashboard_tests_runner(void)
+void resetTest_magnetometer_tests_runner(void);
+void resetTest_magnetometer_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -63,12 +63,12 @@ void resetTest_runnable_data_dashboard_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int runnable_data_dashboard_tests_runner(void);
-int runnable_data_dashboard_tests_runner(void)
+ int magnetometer_tests_runner(void);
+int magnetometer_tests_runner(void)
 {
   suite_setup();
-  UnityBegin("src/data_dashboard/tests/runnable_data_dashboard_tests.cpp");
-  RUN_TEST(TestTransmitMessage, 14);
+  UnityBegin("src/sensors/specific_sensors/tests/magnetometer_tests.cpp");
+  RUN_TEST(TestMagnetometer, 7);
 
   return suite_teardown(UnityEnd());
 }
