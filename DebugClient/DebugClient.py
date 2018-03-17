@@ -131,8 +131,8 @@ if __name__ == "__main__":
     #     python StandinMemcachedPopulator.py
     if useMemcached:
         mc = mcClient(('localhost',11211))
-        print(mc.set("hello","this should show on the memcached terminal if run with -vv"))
-
+        mc.set('hello',
+               'you should see this on the Memcached stdout when run with -vv')
 
     with serial.Serial(**serial_arguments) as debug_serial_port:
         logger.info("Port " + debug_serial_port.portstr + " opened.")
