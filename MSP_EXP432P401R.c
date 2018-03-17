@@ -386,113 +386,37 @@ const PWM_Config PWM_config[MSP_EXP432P401R_PWMCOUNT] = {
 const uint_least8_t PWM_count = MSP_EXP432P401R_PWMCOUNT;
 
 /*
- *  =============================== SDSPI ===============================
- */
-#include <ti/drivers/SDSPI.h>
-#include <ti/drivers/sdspi/SDSPIMSP432.h>
-
-SDSPIMSP432_Object sdspiMSP432Objects[MSP_EXP432P401R_SDSPICOUNT];
-
-const SDSPIMSP432_HWAttrsV1 sdspiMSP432HWAttrs[MSP_EXP432P401R_SDSPICOUNT] = {
-    {.baseAddr = EUSCI_B0_BASE,
-     .clockSource = EUSCI_B_SPI_CLOCKSOURCE_SMCLK,
-
-     /* CLK, MOSI & MISO ports & pins */
-     .sckPin = SDSPIMSP432_P1_5_UCB0CLK,
-     .somiPin = SDSPIMSP432_P1_7_UCB0SOMI,
-     .simoPin = SDSPIMSP432_P1_6_UCB0SIMO,
-
-     /* Chip select port & pin */
-     .csPin = SDSPIMSP432_P4_6_CS}};
-
-const SDSPI_Config SDSPI_config[MSP_EXP432P401R_SDSPICOUNT] = {
-    {.fxnTablePtr = &SDSPIMSP432_fxnTable,
-     .object = &sdspiMSP432Objects[MSP_EXP432P401R_SDSPIB0],
-     .hwAttrs = &sdspiMSP432HWAttrs[MSP_EXP432P401R_SDSPIB0]}};
-
-const uint_least8_t SDSPI_count = MSP_EXP432P401R_SDSPICOUNT;
-
-/*
  *  =============================== SPI ===============================
  */
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/spi/SPIMSP432DMA.h>
 
-SPIMSP432DMA_Object spiMSP432DMAObjects[MSP_EXP432P401R_SPICOUNT];
+/* SPI objects */
+SPIMSP432DMA_Object spiMSP432DMAObjects[Board_SPICOUNT];
 
-const SPIMSP432DMA_HWAttrsV1 spiMSP432DMAHWAttrs[MSP_EXP432P401R_SPICOUNT] = {
-    {.baseAddr = EUSCI_B0_BASE,
-     .bitOrder = EUSCI_B_SPI_MSB_FIRST,
-     .clockSource = EUSCI_B_SPI_CLOCKSOURCE_SMCLK,
-     .defaultTxBufValue = 0,
-     .dmaIntNum = INT_DMA_INT1,
-     .intPriority = (~0),
-     .rxDMAChannelIndex = DMA_CH1_EUSCIB0RX0,
-     .txDMAChannelIndex = DMA_CH0_EUSCIB0TX0,
-     .clkPin = SPIMSP432DMA_P1_5_UCB0CLK,
-     .simoPin = SPIMSP432DMA_P1_6_UCB0SIMO,
-     .somiPin = SPIMSP432DMA_P1_7_UCB0SOMI,
-     .stePin = SPIMSP432DMA_P1_4_UCB0STE,
-     .pinMode = EUSCI_SPI_3PIN
-
-    },
-    {.baseAddr = EUSCI_B2_BASE,
-     .bitOrder = EUSCI_B_SPI_MSB_FIRST,
-     .clockSource = EUSCI_B_SPI_CLOCKSOURCE_SMCLK,
-     .defaultTxBufValue = 0,
-     .dmaIntNum = INT_DMA_INT2,
-     .intPriority = (~0),
-     .rxDMAChannelIndex = DMA_CH5_EUSCIB2RX0,
-     .txDMAChannelIndex = DMA_CH4_EUSCIB2TX0,
-     .clkPin = SPIMSP432DMA_P3_5_UCB2CLK,
-     .simoPin = SPIMSP432DMA_P3_6_UCB2SIMO,
-     .somiPin = SPIMSP432DMA_P3_7_UCB2SOMI,
-     .stePin = SPIMSP432DMA_P3_4_UCB2STE,
-     .pinMode = EUSCI_SPI_3PIN},
-    {.baseAddr = EUSCI_A1_BASE,
-     .bitOrder = EUSCI_A_SPI_MSB_FIRST,
+/* SPI configuration structure */
+const SPIMSP432DMA_HWAttrsV1 spiMSP432DMAHWAttrs[Board_SPICOUNT] = {
+    {.baseAddr = EUSCI_A0_BASE,
+     .bitOrder = EUSCI_A_SPI_LSB_FIRST,
      .clockSource = EUSCI_A_SPI_CLOCKSOURCE_SMCLK,
      .defaultTxBufValue = 0,
      .dmaIntNum = INT_DMA_INT1,
      .intPriority = (~0),
-     .rxDMAChannelIndex = DMA_CH3_EUSCIA1RX,
-     .txDMAChannelIndex = DMA_CH2_EUSCIA1TX,
-     .clkPin = SPIMSP432DMA_P2_5_UCA1CLK,
-     .simoPin = SPIMSP432DMA_P2_6_UCA1SIMO,
-     .somiPin = SPIMSP432DMA_P2_7_UCA1SOMI,
-     .stePin = SPIMSP432DMA_P2_3_UCA1STE,
-     .pinMode = EUSCI_SPI_4PIN_UCxSTE_ACTIVE_HIGH
+     .rxDMAChannelIndex = DMA_CH1_EUSCIA0RX,
+     .txDMAChannelIndex = DMA_CH0_EUSCIA0TX,
+     .clkPin = SPIMSP432DMA_P1_1_UCA0CLK,
+     .simoPin = SPIMSP432DMA_P1_3_UCA0SIMO,
+     .somiPin = SPIMSP432DMA_P1_2_UCA0SOMI,
+     .pinMode = EUSCI_SPI_3PIN},
+};
 
-    },
-    {.baseAddr = EUSCI_B2_BASE,
-     .bitOrder = EUSCI_B_SPI_MSB_FIRST,
-     .clockSource = EUSCI_B_SPI_CLOCKSOURCE_SMCLK,
-     .defaultTxBufValue = 0,
-     .dmaIntNum = INT_DMA_INT2,
-     .intPriority = (~0),
-     .rxDMAChannelIndex = DMA_CH5_EUSCIB2RX0,
-     .txDMAChannelIndex = DMA_CH4_EUSCIB2TX0,
-     .clkPin = SPIMSP432DMA_P3_5_UCB2CLK,
-     .simoPin = SPIMSP432DMA_P3_6_UCB2SIMO,
-     .somiPin = SPIMSP432DMA_P3_7_UCB2SOMI,
-     .stePin = SPIMSP432DMA_P2_4_UCB2STE,
-     .pinMode = EUSCI_SPI_4PIN_UCxSTE_ACTIVE_HIGH}};
+const SPI_Config SPI_config[Board_SPICOUNT] = {
+    {.fxnTablePtr = &SPIMSP432DMA_fxnTable,
+     .object = &spiMSP432DMAObjects[NVM],
+     .hwAttrs = &spiMSP432DMAHWAttrs[NVM]},
+};
 
-const SPI_Config SPI_config[MSP_EXP432P401R_SPICOUNT] = {
-    {.fxnTablePtr = &SPIMSP432DMA_fxnTable,
-     .object = &spiMSP432DMAObjects[MSP_EXP432P401R_SPIB0],
-     .hwAttrs = &spiMSP432DMAHWAttrs[MSP_EXP432P401R_SPIB0]},
-    {.fxnTablePtr = &SPIMSP432DMA_fxnTable,
-     .object = &spiMSP432DMAObjects[MSP_EXP432P401R_SPIB2],
-     .hwAttrs = &spiMSP432DMAHWAttrs[MSP_EXP432P401R_SPIB2]},
-    {.fxnTablePtr = &SPIMSP432DMA_fxnTable,
-     .object = &spiMSP432DMAObjects[MSP_EXP432P401R_SPIB3],
-     .hwAttrs = &spiMSP432DMAHWAttrs[MSP_EXP432P401R_SPIB3]},
-    {.fxnTablePtr = &SPIMSP432DMA_fxnTable,
-     .object = &spiMSP432DMAObjects[MSP_EXP432P401R_SPIB4],
-     .hwAttrs = &spiMSP432DMAHWAttrs[MSP_EXP432P401R_SPIB4]}};
-
-const uint_least8_t SPI_count = MSP_EXP432P401R_SPICOUNT;
+const uint_least8_t SPI_count = Board_SPICOUNT;
 
 /*
  *  =============================== Timer ===============================

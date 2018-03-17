@@ -162,27 +162,13 @@ typedef enum MSP_EXP432P401R_PWMName {
 } MSP_EXP432P401R_PWMName;
 
 /*!
- *  @def    MSP_EXP432P401R_SDSPIName
- *  @brief  Enum of SDSPI names on the MSP_EXP432P401R dev board
- */
-typedef enum MSP_EXP432P401R_SDSPIName {
-    MSP_EXP432P401R_SDSPIB0 = 0,
-
-    MSP_EXP432P401R_SDSPICOUNT
-} EMSP_EXP432P401R_SDSPIName;
-
-/*!
  *  @def    MSP_EXP432P401R_SPIName
  *  @brief  Enum of SPI names on the MSP_EXP432P401R dev board
  */
-typedef enum MSP_EXP432P401R_SPIName {
-    MSP_EXP432P401R_SPIB0 = 0,
-    MSP_EXP432P401R_SPIB2,
-    MSP_EXP432P401R_SPIB3,
-    MSP_EXP432P401R_SPIB4,
-
-    MSP_EXP432P401R_SPICOUNT
-} MSP_EXP432P401R_SPIName;
+typedef enum Board_SPIName {
+    NVM = 0,
+   Board_SPICOUNT
+} Board_SPIName;
 
 /*!
  *  @def    MSP_EXP432P401R_TimerName
