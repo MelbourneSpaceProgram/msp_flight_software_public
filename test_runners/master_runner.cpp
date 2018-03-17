@@ -11,6 +11,7 @@
 #include <test_runners/generic_sensor_tests.h>
 #include <test_runners/rtc_tests.h>
 #include <test_runners/i2c_sensor_tests.h>
+#include <test_runners/magnetometer_tests.h>
 #include <test_runners/spi_tests.h>
 #include <test_runners/sensor_state_logic_tests.h>
 #include <test_runners/state_manager_tests.h>
@@ -36,6 +37,7 @@ void master_tests_thread() {
     generic_sensor_tests_runner();
     rtc_tests_runner();
     i2c_sensor_tests_runner();
+    magnetometer_tests_runner();
     spi_tests_runner();
     sensor_state_logic_tests_runner();
     state_manager_tests_runner();
