@@ -202,12 +202,12 @@ typedef enum MSP_EXP432P401R_TimerName {
  *  @def    MSP_EXP432P401R_UARTName
  *  @brief  Enum of UART names on the MSP_EXP432P401R dev board
  */
-typedef enum MSP_EXP432P401R_UARTName {
-    MSP_EXP432P401R_UARTA0 = 0,
-    MSP_EXP432P401R_UARTA2,
-
-    MSP_EXP432P401R_UARTCOUNT
-} MSP_EXP432P401R_UARTName;
+typedef enum Board_UARTName {
+    UART_MCU_MCU = 0,
+    UART_CDH_UMB = 1,
+    UART_CMS_CDH = 2,
+    Board_UARTCOUNT
+} Board_UARTName;
 
 /*!
  *  @def    MSP_EXP432P401R_WatchdogName

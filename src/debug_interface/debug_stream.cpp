@@ -9,7 +9,7 @@
 DebugStream *DebugStream::instance = NULL;
 
 DebugStream::DebugStream()
-    : debug_uart(UARTA0), debug_message_queue(Queue_create(NULL, NULL)) {
+    : debug_uart(UART_CDH_UMB), debug_message_queue(Queue_create(NULL, NULL)) {
     debug_uart.SetBaudRate(Uart::kBaud115200)->Open();
     char echo_prompt[] = "Debug stream started.\r\n";
     debug_uart.PerformWriteTransaction(reinterpret_cast<byte *>(echo_prompt),
