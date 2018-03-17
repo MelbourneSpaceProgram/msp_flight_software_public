@@ -1,6 +1,7 @@
 #ifndef SRC_SPI_SPI_H_
 #define SRC_SPI_SPI_H_
 
+#include <Board.h>
 #include <src/util/data_types.h>
 #include <ti/drivers/SPI.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -21,7 +22,7 @@ class Spi {
    private:
     static Spi *instance;
     static const uint32_t kTimeoutMilliSeconds = 500;
-    static const uint32_t kSpiIndex = 0;
+    static const uint32_t kSpiIndex = NVM;
 
     Spi();
     Spi(const Spi &);
