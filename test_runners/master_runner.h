@@ -7,6 +7,7 @@ void master_tests_thread();
 void database_tests_runner();
 void debug_interface_tests_runner();
 void i2c_tests_runner();
+void multiplexer_tests_runner();
 void message_tests_runner();
 void generic_sensor_tests_runner();
 void rtc_tests_runner();
