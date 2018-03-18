@@ -1,5 +1,7 @@
+#include <external/etl/array.h>
 #include <src/config/unit_tests.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_md5.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_hardware_tests.h>
 #include <test_runners/unity.h>
@@ -28,4 +30,16 @@ void TestTransmitAckHardware() {
     TestPayload test_payload;
     TransmitCommand transmit_command(&test_payload, 0x67, 0x61, 0x62);
     TEST_ASSERT(Lithium::GetInstance()->DoCommand(&transmit_command));
+}
+
+void TestWriteFlashHardware() {
+#ifdef LITHIUM_TESTS_IGNORED
+    TEST_IGNORE_MESSAGE("Hardware test ignored");
+#endif
+    etl::array<byte, LithiumMd5::kNumMd5Bytes> md5_bytes = {
+        0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
+        0x7f, 0xc1, 0x82, 0x89, 0x6d, 0x81, 0xc1, 0x12};
+    LithiumMd5 md5_message(&md5_bytes);
+    WriteFlashCommand flash_command(&md5_message);
+    TEST_ASSERT(Lithium::GetInstance()->DoCommand(&flash_command));
 }
