@@ -1,7 +1,6 @@
 pipeline {
-    agent {
-        label 'master'
-    }
+
+    agent any
 
     environment {
         PR_ID = sh (
@@ -19,7 +18,9 @@ pipeline {
                 sh 'if [ -d "checker_output" ]; then rm -Rf checker_output; fi'
                 sh 'mkdir checker_output'
                 sh 'python cpplint.py --recursive src 2>&1 | tee ./checker_output/cpplint.txt'
-                sh 'cppcheck --force --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
+                // Check conditional branches for "#define A" only. This doesn't exist, which means we skip the poor-scaling of checking all possible
+                // configurations, with the trade-off of weaker static analysis results.
+                sh 'cppcheck -DA --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
                 warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
                 step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
                 sh 'cppcheck-htmlreport --source-encoding="iso8859-1" --title="MSP" --source-dir=. --report-dir=./checker_output/ --file=./checker_output/cppcheck.xml' 
