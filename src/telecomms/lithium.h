@@ -6,6 +6,7 @@
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
+#include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/msp_payloads/test_payload.h>
 #include <src/telecomms/msp_payloads/transmit_packet.h>

@@ -4,13 +4,16 @@
 #define TEST_RUNNERS_LITHIUM_HARDWARE_TESTS_H_
 
 #include "unity.h"
+#include <external/etl/array.h>
 #include <src/config/unit_tests.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_md5.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_hardware_tests.h>
 
 void TestNoOpHardware(void);
 void TestGetConfigHardware(void);
 void TestTransmitAckHardware(void);
+void TestWriteFlashHardware(void);
 
 #endif  // TEST_RUNNERS_LITHIUM_HARDWARE_TESTS_H_
