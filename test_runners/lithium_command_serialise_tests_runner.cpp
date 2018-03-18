@@ -36,6 +36,7 @@ extern void TestNoOpSerialisation();
 extern void TestResetSystemSerialisation();
 extern void TestGetConfigurationSerialisation();
 extern void TestTransmitTestPayloadSerialisation();
+extern void TestWriteFlashSerialisation();
 
 
 /*=======Suite Setup=====*/
@@ -71,10 +72,11 @@ int lithium_command_serialise_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/telecomms/tests/lithium_command_serialise_tests.cpp");
-  RUN_TEST(TestNoOpSerialisation, 6);
-  RUN_TEST(TestResetSystemSerialisation, 26);
-  RUN_TEST(TestGetConfigurationSerialisation, 47);
-  RUN_TEST(TestTransmitTestPayloadSerialisation, 68);
+  RUN_TEST(TestNoOpSerialisation, 7);
+  RUN_TEST(TestResetSystemSerialisation, 27);
+  RUN_TEST(TestGetConfigurationSerialisation, 48);
+  RUN_TEST(TestTransmitTestPayloadSerialisation, 69);
+  RUN_TEST(TestWriteFlashSerialisation, 115);
 
   return suite_teardown(UnityEnd());
 }

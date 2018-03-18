@@ -1,4 +1,5 @@
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_command_serialise_tests.h>
 #include <test_runners/unity.h>
@@ -109,4 +110,47 @@ void TestTransmitTestPayloadSerialisation() {
     // Tail checksum
     TEST_ASSERT_EQUAL_UINT8(0xbf, serial_buffer[68]);
     TEST_ASSERT_EQUAL_UINT8(0xb0, serial_buffer[69]);
+}
+
+void TestWriteFlashSerialisation() {
+    byte command_buffer[16 + 8];
+
+    etl::array<byte, LithiumMd5::kNumMd5Bytes> md5_bytes = {
+        0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
+        0x7f, 0xc1, 0x82, 0x89, 0x6d, 0x81, 0xc1, 0x12};
+
+    // TODO(dingbenjamin): Figure out a way to use unity array assert with etl
+    // array
+    byte equivalent_md5_bytes[LithiumMd5::kNumMd5Bytes] = {
+        0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
+        0x7f, 0xc1, 0x82, 0x89, 0x6d, 0x81, 0xc1, 0x12};
+
+    LithiumMd5 md5_message(&md5_bytes);
+    WriteFlashCommand flash_command(&md5_message);
+
+    SerialisedMessage serial_command =
+        flash_command.SerialiseTo(command_buffer);
+    byte* serial_buffer = serial_command.GetBuffer();
+
+    // Size
+    TEST_ASSERT_EQUAL_UINT16(8 + 16 + 2, serial_command.GetSize());
+    TEST_ASSERT_EQUAL_UINT16(8 + 16 + 2, flash_command.GetSerialisedSize());
+    // Sync chars
+    TEST_ASSERT_EQUAL_UINT8(static_cast<uint8_t>('H'), serial_buffer[0]);
+    TEST_ASSERT_EQUAL_UINT8(static_cast<uint8_t>('e'), serial_buffer[1]);
+    // Command direction
+    TEST_ASSERT_EQUAL_UINT8(0x10, serial_buffer[2]);
+    // Command code
+    TEST_ASSERT_EQUAL_UINT8(0x08, serial_buffer[3]);
+    // Payload size
+    TEST_ASSERT_EQUAL_UINT8(0x00, serial_buffer[4]);
+    TEST_ASSERT_EQUAL_UINT8(0x10, serial_buffer[5]);
+    // Header checksum
+    TEST_ASSERT_EQUAL_UINT8(0x28, serial_buffer[6]);
+    TEST_ASSERT_EQUAL_UINT8(0x68, serial_buffer[7]);
+    // Payload
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(equivalent_md5_bytes, serial_buffer + 8, 16);
+    // Tail checksum
+    TEST_ASSERT_EQUAL_UINT8(0x80, serial_buffer[8 + 16]);
+    TEST_ASSERT_EQUAL_UINT8(0x48, serial_buffer[8 + 16 + 1]);
 }

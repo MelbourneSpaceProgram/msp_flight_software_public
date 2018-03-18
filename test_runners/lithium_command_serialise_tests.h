@@ -5,6 +5,7 @@
 
 #include "unity.h"
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_command_serialise_tests.h>
 
@@ -12,5 +13,6 @@ void TestNoOpSerialisation(void);
 void TestResetSystemSerialisation(void);
 void TestGetConfigurationSerialisation(void);
 void TestTransmitTestPayloadSerialisation(void);
+void TestWriteFlashSerialisation(void);
 
 #endif  // TEST_RUNNERS_LITHIUM_COMMAND_SERIALISE_TESTS_H_
