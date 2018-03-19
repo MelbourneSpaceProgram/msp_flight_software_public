@@ -59,18 +59,23 @@ pipeline {
             steps {
                 sh '''
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    docker-compose up -d
-                    docker exec -t ec2user_ccs7_1 mkdir /tmp/code
-                    docker cp ${WORKSPACE}/CDH_software.tar.gz ec2user_ccs7_1:/tmp/code
-                    docker exec -t ec2user_ccs7_1 tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
-                    docker exec -t ec2user_ccs7_1 /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectImport -ccs.location /tmp/code
-                    docker exec -t ec2user_ccs7_1 /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
+                    docker image ls
+                    buildid=${BUILD_ID}
+	            docker_name="ccs7build_$buildid"
+                    docker run -td --name $docker_name ccs7_final_image_v1
+                    docker exec -t $docker_name mkdir /tmp/code
+                    docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
+                    docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
+                    docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectImport -ccs.location /tmp/code
+                    docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
                 '''
             }
             post {
                 always {
                     sh '''
-                       docker-compose down
+		      buildid=${BUILD_ID}
+	              docker_name="ccs7build_$buildid"
+                      docker rm -f $docker_name
                     '''
                 }
             }
