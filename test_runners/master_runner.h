@@ -4,6 +4,7 @@
 #define TEST_RUNNERS_MASTER_RUNNER_H_
 
 void master_tests_thread();
+void kalman_filter_tests_runner();
 void database_tests_runner();
 void debug_interface_tests_runner();
 void i2c_tests_runner();
