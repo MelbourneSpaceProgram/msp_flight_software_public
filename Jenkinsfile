@@ -59,9 +59,9 @@ pipeline {
             steps {
                 sh '''
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    docker image ls
                     buildid=${BUILD_ID}
-	            docker_name="ccs7build_$buildid"
+		    gitcommit=${GIT_COMMIT}
+	            docker_name=$gitcommit"_"$buildid
                     docker run -td --name $docker_name ccs7_final_image_v1
                     docker exec -t $docker_name mkdir /tmp/code
                     docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
@@ -74,7 +74,8 @@ pipeline {
                 always {
                     sh '''
 		      buildid=${BUILD_ID}
-	              docker_name="ccs7build_$buildid"
+                      gitcommit=${GIT_COMMIT}
+                      docker_name=$gitcommit"_"$buildid
                       docker rm -f $docker_name
                     '''
                 }
