@@ -1,7 +1,52 @@
+#include <external/etl/exception.h>
+#include <math.h>
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
 #include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
+
+void TestCopyConstructor() {
+    double m22_A_data[2][2] = {{1, 2}, {3, 4}};
+    Matrix m22_A(m22_A_data);
+    double m22_B_data[2][2];
+
+    Matrix m22_B(m22_A, m22_B_data);
+
+    TEST_ASSERT_TRUE(m22_A.IsEqual(m22_B));
+
+    bool failed = false;
+    try {
+        double m32_data[3][2];
+        Matrix m32(m22_A, m32_data);
+    } catch (etl::exception& e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
+void TestSlice() {
+    double m44_data[4][4] = {
+        {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+    Matrix m44(m44_data);
+
+    double m22_slice_data[2][2];
+    Matrix m22_slice(m22_slice_data);
+    m22_slice.Fill(0);
+    m22_slice.Slice(1, 2, 1, 2, m44);
+
+    double m22_expected_data[2][2] = {{6, 7}, {10, 11}};
+    Matrix m22_expected(m22_expected_data);
+
+    TEST_ASSERT_TRUE(m22_expected.IsEqual(m22_slice));
+
+    bool failed = false;
+    try {
+        m22_slice.Get(2, 2);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
 
 void TestGetNRows() {
     double m42_data[4][2];
@@ -35,6 +80,14 @@ void TestGet() {
     TEST_ASSERT_EQUAL_DOUBLE(-1E-100, m22.Get(0, 1));
     TEST_ASSERT_EQUAL_DOUBLE(1.234E100, m22.Get(1, 0));
     TEST_ASSERT_EQUAL_DOUBLE(4, m22.Get(1, 1));
+
+    bool failed = false;
+    try {
+        m22.Get(10000, -111);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestSet() {
@@ -50,6 +103,14 @@ void TestSet() {
     TEST_ASSERT_EQUAL_DOUBLE(-1E-100, m22.Get(0, 1));
     TEST_ASSERT_EQUAL_DOUBLE(1.234E100, m22.Get(1, 0));
     TEST_ASSERT_EQUAL_DOUBLE(4, m22.Get(1, 1));
+
+    bool failed = false;
+    try {
+        m22.Set(10000, -111, 0);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestDoubleIsEqual() {
@@ -59,6 +120,14 @@ void TestDoubleIsEqual() {
     TEST_ASSERT_TRUE(Matrix::DoubleIsEqual(-1, -1 + 1E-5));
     TEST_ASSERT_FALSE(Matrix::DoubleIsEqual(-1, 1 + 1E-7));
     TEST_ASSERT_TRUE(Matrix::DoubleIsEqual(-1, -1 + 1E-7));
+
+    bool failed = false;
+    try {
+        Matrix::DoubleIsEqual(NAN, 0);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestIsEqual() {
@@ -71,6 +140,16 @@ void TestIsEqual() {
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_2));
     TEST_ASSERT_FALSE(m22.IsEqual(m22_3));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.IsEqual(m22);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestSameSize() {
@@ -118,6 +197,33 @@ void TestTranspose() {
     Matrix m22_expected(m22_expected_data);
     m22_2.Transpose(m22);
     TEST_ASSERT_TRUE(m22_2.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.Transpose(m22);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
+void TestVectorNorm() {
+    double m41_data[4][1] = {{1}, {2}, {3}, {4}};
+    Matrix m41(m41_data);
+
+    TEST_ASSERT_EQUAL_DOUBLE(5.47722557505, Matrix::VectorNorm(m41));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        Matrix::VectorNorm(m33);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestAdd() {
@@ -133,6 +239,16 @@ void TestAdd() {
     m22.Add(m22_2, m22_3);
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.Add(m22, m22_2);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestSubtract() {
@@ -148,6 +264,16 @@ void TestSubtract() {
     m22.Subtract(m22_3, m22_2);
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.Subtract(m22, m22_2);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestMultiply() {
@@ -164,6 +290,16 @@ void TestMultiply() {
     m33.Multiply(m32, m23);
 
     TEST_ASSERT_TRUE(m33.IsEqual(m33_expected));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.Multiply(m32, m32);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestMultiplyScalar() {
@@ -177,6 +313,41 @@ void TestMultiplyScalar() {
     m22.MultiplyScalar(m22, scale);
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.MultiplyScalar(m22, 0);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
+void TestCrossProduct() {
+    double m31_A_data[3][1] = {{1}, {2}, {3}};
+    Matrix m31_A(m31_A_data);
+    double m31_B_data[3][1] = {{4}, {1}, {9}};
+    Matrix m31_B(m31_B_data);
+    double m31_result_data[3][1];
+    Matrix m31_result(m31_result_data);
+    double m31_expected_data[3][1] = {{15}, {3}, {-7}};
+    Matrix m31_expected(m31_expected_data);
+
+    m31_result.CrossProduct(m31_A, m31_B);
+
+    TEST_ASSERT_TRUE(m31_expected.IsEqual(m31_result));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.CrossProduct(m31_A, m31_B);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestFill() {
@@ -190,15 +361,181 @@ void TestFill() {
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
 }
 
+void TestCopyInto() {
+    double m22_data[2][2] = {{1, 2}, {3, 4}};
+    Matrix m22(m22_data);
+    double m44_data[4][4];
+    Matrix m44(m44_data);
+    m44.Fill(0);
+
+    m44.CopyInto(1, 1, m22);
+
+    TEST_ASSERT_EQUAL_DOUBLE(m44.Get(1, 1), m22.Get(0, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(m44.Get(1, 2), m22.Get(0, 1));
+    TEST_ASSERT_EQUAL_DOUBLE(m44.Get(2, 1), m22.Get(1, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(m44.Get(2, 2), m22.Get(1, 1));
+    TEST_ASSERT_EQUAL_DOUBLE(m44.Get(3, 3), 0);
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.CopyInto(0, 1000, m44);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.CopyInto(0, 1, m44);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
 void TestIdentity() {
-    double m33_data[3][3];
-    Matrix m33(m33_data);
+    double m33_identity_data[3][3];
+    Matrix m33_identity(m33_identity_data);
+    m33_identity.Identity();
+
     double m33_expected_data[3][3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
     Matrix m33_expected(m33_expected_data);
 
-    m33.Identity();
+    TEST_ASSERT_TRUE(m33_expected.IsEqual(m33_identity));
 
-    TEST_ASSERT_TRUE(m33.IsEqual(m33_expected));
+    bool failed = false;
+    try {
+        double m34_identity_data[3][4];
+        Matrix m34_identity(m34_identity_data);
+        m34_identity.Identity();
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
+void TestQuaternionNormalise() {
+    double q_data[4][1] = {{34}, {12}, {0}, {0.3}};
+    Matrix q(q_data);
+    double q_normalised_data[4][1];
+    Matrix q_normalised(q_normalised_data);
+    double q_normalised_expected_data[4][1] = {
+        {0.942957693}, {0.3328085976}, {0}, {0.0083202149}};
+    Matrix q_normalised_expected(q_normalised_expected_data);
+
+    q_normalised.QuaternionNormalise(q);
+
+    TEST_ASSERT_TRUE(q_normalised.IsEqual(q_normalised_expected));
+
+    bool failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        m33.QuaternionNormalise(q);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        double m33_data[3][3];
+        Matrix m33(m33_data);
+        q.QuaternionNormalise(m33);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
+void TestRotationMatrixFromQuaternion() {
+    double q_data[4][1] = {{34}, {12}, {0}, {0.3}};
+    Matrix q(q_data);
+    double q_normalised_data[4][1];
+    Matrix q_normalised(q_normalised_data);
+    q_normalised.QuaternionNormalise(q);
+    double rotation_matrix_data[3][3];
+    Matrix rotation_matrix(rotation_matrix_data);
+
+    double rotation_matrix_expected_data[3][3] = {
+        {0.778476874677907, 0.627648855079264, 0.005538078133052},
+        {0.627648855079264, -0.778338422724581, -0.015691221376982},
+        {-0.005538078133052, 0.015691221376982, -0.999861548046674}};
+
+    Matrix rotation_matrix_expected(rotation_matrix_expected_data);
+
+    rotation_matrix.RotationMatrixFromQuaternion(q_normalised);
+
+    TEST_ASSERT_TRUE(rotation_matrix_expected.IsEqual(rotation_matrix));
+
+    bool failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m34.RotationMatrixFromQuaternion(q);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        rotation_matrix.RotationMatrixFromQuaternion(m34);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+}
+
+void TestSkewSymmetricFill() {
+    // Random vectors. Test by applying the matrix as a cross product.
+    double m31_input1_data[3][1] = {
+        {0.814723686393179}, {0.905791937075619}, {0.126986816293506}};
+    Matrix m31_input1(m31_input1_data);
+
+    double m31_input2_data[3][1] = {
+        {0.913375856139019}, {0.632359246225410}, {0.097540404999410}};
+    Matrix m31_input2(m31_input2_data);
+
+    double m31_expected_data[3][1] = {
+        {0.008050024955630}, {0.036518213717047}, {-0.312130429800687}};
+    Matrix m31_expected(m31_expected_data);
+
+    double m33_skew_symmetric_data[3][3];
+    Matrix m33_skew_symmetric(m33_skew_symmetric_data);
+    m33_skew_symmetric.SkewSymmetricFill(m31_input1);
+
+    double m31_result_data[3][1];
+    Matrix m31_result(m31_result_data);
+    m31_result.Multiply(m33_skew_symmetric, m31_input2);
+
+    TEST_ASSERT_TRUE(m31_expected.IsEqual(m31_result));
+
+    bool failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m34.SkewSymmetricFill(m31_input1);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m33_skew_symmetric.SkewSymmetricFill(m34);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestConcatenateHorizontally() {
@@ -214,6 +551,26 @@ void TestConcatenateHorizontally() {
     m25.ConcatenateHorizontally(m22, m23);
 
     TEST_ASSERT_TRUE(m25.IsEqual(m25_expected));
+
+    bool failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m34.ConcatenateHorizontally(m22, m23);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m25.ConcatenateHorizontally(m23, m34);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestConcatenateVertically() {
@@ -229,6 +586,26 @@ void TestConcatenateVertically() {
     m52.ConcatenateVertically(m22, m32);
 
     TEST_ASSERT_TRUE(m52.IsEqual(m52_expected));
+
+    bool failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m34.ConcatenateVertically(m32, m52);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        double m34_data[3][4];
+        Matrix m34(m34_data);
+        m52.ConcatenateVertically(m34, m32);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestAddRows() {
@@ -242,6 +619,22 @@ void TestAddRows() {
     m22.AddRows(0, 1, scale);
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        m22.AddRows(2, 100, 0);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        m22.AddRows(10000, 0, 0);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestMultiplyRow() {
@@ -254,10 +647,19 @@ void TestMultiplyRow() {
     m22.MultiplyRow(1, scale);
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        m22.MultiplyRow(100, 0);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestSwitchRows() {
     double m22_data[2][2] = {{1, 2}, {3, 4}};
+
     Matrix m22(m22_data);
     double m22_expected_data[2][2] = {{3, 4}, {1, 2}};
     Matrix m22_expected(m22_expected_data);
@@ -265,6 +667,22 @@ void TestSwitchRows() {
     m22.SwitchRows(0, 1);
 
     TEST_ASSERT_TRUE(m22.IsEqual(m22_expected));
+
+    bool failed = false;
+    try {
+        m22.SwitchRows(2, 100);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
+
+    failed = false;
+    try {
+        m22.SwitchRows(1000, -1);
+    } catch (etl::exception e) {
+        failed = true;
+    }
+    TEST_ASSERT_TRUE(failed);
 }
 
 void TestRowReduce() {
