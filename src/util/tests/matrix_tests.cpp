@@ -35,7 +35,6 @@ void TestGet() {
     TEST_ASSERT_EQUAL_DOUBLE(-1E-100, m22.Get(0, 1));
     TEST_ASSERT_EQUAL_DOUBLE(1.234E100, m22.Get(1, 0));
     TEST_ASSERT_EQUAL_DOUBLE(4, m22.Get(1, 1));
-    TEST_ASSERT_EQUAL_DOUBLE(0, m22.Get(100, 100));
 }
 
 void TestSet() {
@@ -47,8 +46,6 @@ void TestSet() {
     m22.Set(1, 0, 1.234E100);
     m22.Set(1, 1, 4);
 
-    m22.Set(100, 100, 0);
-
     TEST_ASSERT_EQUAL_DOUBLE(0, m22.Get(0, 0));
     TEST_ASSERT_EQUAL_DOUBLE(-1E-100, m22.Get(0, 1));
     TEST_ASSERT_EQUAL_DOUBLE(1.234E100, m22.Get(1, 0));
@@ -57,9 +54,9 @@ void TestSet() {
 
 void TestDoubleIsEqual() {
     TEST_ASSERT_TRUE(Matrix::DoubleIsEqual(0, -0));
-    TEST_ASSERT_FALSE(Matrix::DoubleIsEqual(0, 1E-100));
+    TEST_ASSERT_TRUE(Matrix::DoubleIsEqual(0, 1E-100));
     TEST_ASSERT_FALSE(Matrix::DoubleIsEqual(1, 2));
-    TEST_ASSERT_FALSE(Matrix::DoubleIsEqual(-1, -1 + 1E-5));
+    TEST_ASSERT_TRUE(Matrix::DoubleIsEqual(-1, -1 + 1E-5));
     TEST_ASSERT_FALSE(Matrix::DoubleIsEqual(-1, 1 + 1E-7));
     TEST_ASSERT_TRUE(Matrix::DoubleIsEqual(-1, -1 + 1E-7));
 }
