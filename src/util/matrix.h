@@ -1,6 +1,7 @@
 #ifndef SRC_UTIL_MATRIX_H_
 #define SRC_UTIL_MATRIX_H_
 
+#include <external/etl/exception.h>
 #include <src/util/data_types.h>
 
 class Matrix {
@@ -44,8 +45,8 @@ class Matrix {
     double *data;
     uint8_t nrows;
     uint8_t ncolumns;
-
-    static const double EPSILON = 1E-6; //  Comparison ratio
+    static const double EPSILON_MULT = 1E-6;  //  Comparison ratio
+    static const double EPSILON_ADD = 1E-4;   //  Comparison ratio
 };
 
 #endif  // SRC_UTIL_MATRIX_H_

@@ -1,4 +1,4 @@
-#include <cmath>
+#include <math.h>
 #include <src/util/matrix.h>
 
 uint8_t Matrix::GetNRows() const { return nrows; }
@@ -9,36 +9,46 @@ bool Matrix::IsSquare() const { return nrows == ncolumns; }
 
 double Matrix::Get(uint8_t row, uint8_t column) const {
     if (row >= nrows || column >= ncolumns) {  // uint8_t always > 0
-        return 0;  // throw exception
+        etl::exception e("Matrix::Get indices out of bounds", "__FILE__",
+                         __LINE__);
+        throw e;
     }
     return data[(row * ncolumns) + column];
 }
 
 void Matrix::Set(uint8_t row, uint8_t column, double value) {
     if (row >= nrows || column >= ncolumns) {  // uint8_t always > 0
-        return;  // throw exception
+        etl::exception e("Matrix::Set indices out of bounds", "__FILE__",
+                         __LINE__);
+        throw e;
     }
     data[(row * ncolumns) + column] = value;
 }
 
-//  Test equality using relative difference. Will fail comparing anything
-//  non-zero with zero
+//  Test equality using relative difference. Additive tolerance allows
+//  comparison with zero, but it's set arbitrarily.
 bool Matrix::DoubleIsEqual(double a, double b) {
-    if (isinf(a) && isinf(b) && ((a < 0) == (b < 0))) {
-        return true;
+    if (isinf(a) || isinf(b)) {
+        etl::exception e("Matrix::DoubleIsEqual argument isinf", "__FILE__",
+                         __LINE__);
+        throw e;
     }
     if (isnan(a) || isnan(b)) {
-        return false;  // throw exception
+        etl::exception e("Matrix::DoubleIsEqual argument is nan", "__FILE__",
+                         __LINE__);
+        throw e;
     }
     if (a > b) {
-        return std::fabs(a - b) <= std::fabs(a * EPSILON);
+        return std::fabs(a - b) <= std::fabs(a * EPSILON_MULT + EPSILON_ADD);
     }
-    return std::fabs(a - b) <= std::fabs(b * EPSILON);
+    return std::fabs(a - b) <= std::fabs(b * EPSILON_MULT + EPSILON_ADD);
 }
 
 bool Matrix::IsEqual(const Matrix &A) const {
     if (!SameSize(A)) {
-        return false;  // throw exception
+        etl::exception e("Matrix::IsEqual arguments' sizes don't match",
+                         "__FILE__", __LINE__);
+        throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
@@ -54,9 +64,7 @@ bool Matrix::SameSize(const Matrix &A) const {
     return SameNRows(A) && SameNColumns(A);
 }
 
-bool Matrix::SameNRows(const Matrix &A) const {
-    return nrows == A.GetNRows();
-}
+bool Matrix::SameNRows(const Matrix &A) const { return nrows == A.GetNRows(); }
 
 bool Matrix::SameNColumns(const Matrix &A) const {
     return ncolumns == A.GetNColumns();
@@ -64,7 +72,9 @@ bool Matrix::SameNColumns(const Matrix &A) const {
 
 void Matrix::Transpose(const Matrix &A) {
     if (nrows != A.GetNColumns() || ncolumns != A.GetNRows()) {
-        return;  // throw exception
+        etl::exception e("Matrix::Transpose arguments' sizes don't match",
+                         "__FILE__", __LINE__);
+        throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
@@ -86,7 +96,9 @@ void Matrix::Add(const Matrix &A, const Matrix &B) {
 
 void Matrix::Subtract(const Matrix &A, const Matrix &B) {
     if (!SameSize(A) || !SameSize(B)) {
-        return;  // throw exception
+        etl::exception e("Matrix::Subtract arguments' sizes don't match",
+                         "__FILE__", __LINE__);
+        throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
@@ -96,9 +108,10 @@ void Matrix::Subtract(const Matrix &A, const Matrix &B) {
 }
 
 void Matrix::Multiply(const Matrix &A, const Matrix &B) {
-    if (A.GetNColumns() != B.GetNRows() || !SameNRows(A) ||
-        !SameNColumns(B)) {
-        return;  // throw exception
+    if (A.GetNColumns() != B.GetNRows() || !SameNRows(A) || !SameNColumns(B)) {
+        etl::exception e("Matrix::Multiply dimensions don't match", "__FILE__",
+                         __LINE__);
+        throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
@@ -113,7 +126,9 @@ void Matrix::Multiply(const Matrix &A, const Matrix &B) {
 
 void Matrix::MultiplyScalar(const Matrix &A, double scale) {
     if (!SameSize(A)) {
-        return; // throw exception
+        etl::exception e("Matrix::MultiplyScalar arguments' sizes don't match",
+                         "__FILE__", __LINE__);
+        throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
@@ -161,7 +176,10 @@ void Matrix::ConcatenateHorizontally(const Matrix &A, const Matrix &B) {
 void Matrix::ConcatenateVertically(const Matrix &A, const Matrix &B) {
     if (!SameNColumns(A) || !SameNColumns(B) ||
         nrows != A.GetNRows() + B.GetNRows()) {
-        return;  // throw exception
+        etl::exception e(
+            "Matrix::ConcatenateVertically arguments' dimensions don't match",
+            "__FILE__", __LINE__);
+        throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
         for (uint8_t j = 0; j < A.GetNColumns(); j++) {
@@ -214,7 +232,9 @@ void Matrix::RowReduce() {
             }
         }
         if (DoubleIsEqual(max_element, 0)) {
-            return;
+            etl::exception e("Matrix::RowReduce linear system has no solution",
+                             "__FILE__", __LINE__);
+            throw e;
         }
 
         SwitchRows(i, max_row);
@@ -228,4 +248,3 @@ void Matrix::RowReduce() {
         }
     }
 }
-
