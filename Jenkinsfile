@@ -7,6 +7,10 @@ pipeline {
             script: 'if [ -z ${CHANGE_ID+x} ]; then echo "-1"; else echo "$CHANGE_ID"; fi',
             returnStdout: true
             ).trim()
+	container_uuid = sh (
+		script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1",
+		returnStdout: true,
+		).trim()
     }
     
     stages {
@@ -61,7 +65,7 @@ pipeline {
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
                     buildid=${BUILD_ID}
 		    gitcommit=${GIT_COMMIT}
-	            docker_name=$gitcommit"_"$buildid
+	            docker_name=$gitcommit"_"$buildid"_"${container_uuid}
                     docker run -td --name $docker_name ccs7_final_image_v1
                     docker exec -t $docker_name mkdir /tmp/code
                     docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
@@ -75,7 +79,7 @@ pipeline {
                     sh '''
 		      buildid=${BUILD_ID}
                       gitcommit=${GIT_COMMIT}
-                      docker_name=$gitcommit"_"$buildid
+                      docker_name=$gitcommit"_"$buildid"_"${container_uuid}
                       docker rm -f $docker_name
                     '''
                 }
