@@ -1,7 +1,6 @@
 #include <src/sensors/i2c_sensors/tmp006.hpp>
 
 #include <cmath>
-#include <iostream>
 
 /**
   Constants of the TMP006 class.
