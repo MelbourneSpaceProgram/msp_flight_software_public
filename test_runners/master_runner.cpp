@@ -17,6 +17,8 @@
 #include <test_runners/lithium_command_serialise_tests.h>
 #include <test_runners/lithium_configuration_tests.h>
 #include <test_runners/lithium_hardware_tests.h>
+#include <test_runners/finite_difference_symmetric_tests.h>
+#include <test_runners/first_order_iir_lowpass_tests.h>
 #include <test_runners/matrix_tests.h>
 #include <test_runners/master_runner.h>
 void master_tests_thread() {
@@ -37,6 +39,8 @@ void master_tests_thread() {
     lithium_command_serialise_tests_runner();
     lithium_configuration_tests_runner();
     lithium_hardware_tests_runner();
+    finite_difference_symmetric_tests_runner();
+    first_order_iir_lowpass_tests_runner();
     matrix_tests_runner();
 }
 
