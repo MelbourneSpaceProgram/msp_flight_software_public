@@ -21,6 +21,8 @@ void lithium_ack_tests_runner();
 void lithium_command_serialise_tests_runner();
 void lithium_configuration_tests_runner();
 void lithium_hardware_tests_runner();
+void finite_difference_symmetric_tests_runner();
+void first_order_iir_lowpass_tests_runner();
 void matrix_tests_runner();
 void SetUp();
 void TearDown();
