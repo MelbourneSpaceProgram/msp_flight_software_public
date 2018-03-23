@@ -2,6 +2,7 @@
 
 #include <test_runners/kalman_filter_tests.h>
 #include <test_runners/database_tests.h>
+#include <test_runners/payload_processor_tests.h>
 #include <test_runners/runnable_data_dashboard_tests.h>
 #include <test_runners/debug_interface_tests.h>
 #include <test_runners/i2c_tests.h>
@@ -27,6 +28,7 @@ void master_tests_thread() {
     kalman_filter_tests_runner();
     database_tests_runner();
     runnable_data_dashboard_tests_runner();
+    payload_processor_tests_runner();
     debug_interface_tests_runner();
     i2c_tests_runner();
     multiplexer_tests_runner();
