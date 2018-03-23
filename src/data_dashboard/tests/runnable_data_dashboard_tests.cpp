@@ -9,9 +9,10 @@
 #include <test_runners/unity.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <src/config/unit_tests.h>
 
 void TestTransmitMessage() {
-#ifdef RUN_HIL
+#ifndef RUN_HIL
     TEST_IGNORE_MESSAGE("HIL test ignored");
 #endif
     DebugStream* debug_stream = DebugStream::GetInstance();
