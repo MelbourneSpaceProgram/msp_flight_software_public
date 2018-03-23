@@ -26,7 +26,7 @@
 #define LITHIUM_TESTS_IGNORED
 #define RTC_TESTS_IGNORED
 #define MULTIPLEXER_TEST_IGNORED
-#define RUN_HIL
+//#define RUN_HIL // Uncomment if running a HIL configuration (with computer side)
 #define SATELLITE_CONFIG
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
