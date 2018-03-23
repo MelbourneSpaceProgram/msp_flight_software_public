@@ -83,7 +83,7 @@ void TestGet() {
 
     bool failed = false;
     try {
-        m22.Get(10000, -111);
+        m22.Get(255, 111);
     } catch (etl::exception e) {
         failed = true;
     }
@@ -106,7 +106,7 @@ void TestSet() {
 
     bool failed = false;
     try {
-        m22.Set(10000, -111, 0);
+        m22.Set(255, 111, 0);
     } catch (etl::exception e) {
         failed = true;
     }
@@ -380,7 +380,7 @@ void TestCopyInto() {
     try {
         double m33_data[3][3];
         Matrix m33(m33_data);
-        m33.CopyInto(0, 1000, m44);
+        m33.CopyInto(0, 212, m44);
     } catch (etl::exception e) {
         failed = true;
     }
@@ -630,7 +630,7 @@ void TestAddRows() {
 
     failed = false;
     try {
-        m22.AddRows(10000, 0, 0);
+        m22.AddRows(255, 0, 0);
     } catch (etl::exception e) {
         failed = true;
     }
@@ -678,7 +678,7 @@ void TestSwitchRows() {
 
     failed = false;
     try {
-        m22.SwitchRows(1000, -1);
+        m22.SwitchRows(255, 1);
     } catch (etl::exception e) {
         failed = true;
     }
