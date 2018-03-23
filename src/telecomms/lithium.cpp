@@ -23,8 +23,8 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
     }
 
     Mailbox_Params_init(&message_mailbox_params);
-    message_mailbox_handle =
-        Mailbox_create(kMaxReceivedSize, 1, &message_mailbox_params, NULL);
+    message_mailbox_handle = Mailbox_create(
+        kMaxReceivedSize, kMaxNumberOfPayloads, &message_mailbox_params, NULL);
     if (message_mailbox_handle == NULL) {
         // TODO(akremor): Throw exception
     }
