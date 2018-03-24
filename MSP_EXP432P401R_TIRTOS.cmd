@@ -56,6 +56,8 @@ SECTIONS
     .cinit  :   > MAIN
     .pinit  :   > MAIN
     .init_array : > MAIN
+    .ARM.extab  : > MAIN
+    .ARM.exidx  : > MAIN
 
     .data   :   > SRAM_DATA
     .bss    :   > SRAM_DATA
