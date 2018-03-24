@@ -14,6 +14,8 @@
 #include <ti/sysbios/knl/Mailbox.h>
 
 class Lithium {
+    friend class RunnableLithiumListener;
+
    public:
     static const uint16_t kMaxCommandSize = 300;
     static const uint16_t kMaxReceivedSize = 300;
@@ -35,7 +37,6 @@ class Lithium {
     Mailbox_Handle GetCommandResponseMailbox() const;
     const LithiumConfiguration& GetLithiumConfig() const;
     void SetLithiumConfig(const LithiumConfiguration& lithium_config);
-    Uart* GetUart();
 
     bool DoCommand(LithiumCommand* command) const;
 
@@ -58,6 +59,7 @@ class Lithium {
     Uart uart;
 
     Lithium();
+    Uart* GetUart();
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_H_
