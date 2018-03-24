@@ -7,15 +7,6 @@
 #include <ti/sysbios/knl/Task.h>
 #include <functional>
 
-typedef struct time {
-    byte sec;
-    byte min;
-    byte hour;
-    byte date;
-    byte month;
-    uint16_t year;
-} RTime;
-
 typedef etl::map<byte, byte, 6, std::less<uint8_t> > RTCMaskMap;
 
 class Rtc : public I2cSensor<RTime> {
