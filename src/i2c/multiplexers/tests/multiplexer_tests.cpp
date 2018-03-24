@@ -16,9 +16,9 @@ static const double kRoomTemperature = 25;
 static const double kAllowableError = 10;
 
 void TestMultiplexer(void) {
-#ifdef MULTIPLEXER_TEST_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!multiplexer_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     I2c bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&bus, kMultiplexerAddress);
     MCP9808 temp_sensor(&bus, kTempSensorAddress, "temp sensor");

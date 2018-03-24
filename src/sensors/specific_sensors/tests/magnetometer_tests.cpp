@@ -5,9 +5,9 @@
 #include <src/config/unit_tests.h>
 
 void TestMagnetometer() {
-#if defined(I2C_TESTS_IGNORED) && !defined(RUN_HIL)
-    TEST_IGNORE_MESSAGE("Ignore Magnetometer tests without HIL or I2C");
-#endif
+    if (!magnetometer_test_enabled || !hil_enabled) {
+        TEST_IGNORE_MESSAGE("Ignore Magnetometer tests without HIL or I2C");
+    }
     Magnetometer magnetometer("blah");
     bool success = magnetometer.TakeReading();
 

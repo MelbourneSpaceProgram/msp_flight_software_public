@@ -6,25 +6,25 @@
 
 // RunnableLithiumListener MUST be initialised to pass these
 void TestNoOpHardware() {
-#ifdef LITHIUM_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!lithium_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     NoOpCommand test_command;
     TEST_ASSERT(Lithium::GetInstance()->DoCommand(&test_command));
 }
 
 void TestGetConfigHardware() {
-#ifdef LITHIUM_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!lithium_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     GetConfigurationCommand config_command;
     TEST_ASSERT(Lithium::GetInstance()->DoCommand(&config_command));
 }
 
 void TestTransmitAckHardware() {
-#ifdef LITHIUM_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!lithium_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     TestPayload test_payload;
     TransmitCommand transmit_command(&test_payload, 0x67, 0x61, 0x62);
     TEST_ASSERT(Lithium::GetInstance()->DoCommand(&transmit_command));
