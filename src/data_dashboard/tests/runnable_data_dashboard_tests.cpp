@@ -12,9 +12,9 @@
 #include <src/config/unit_tests.h>
 
 void TestTransmitMessage() {
-#ifndef RUN_HIL
-    TEST_IGNORE_MESSAGE("HIL test ignored");
-#endif
+    if (!hil_enabled) {
+        TEST_IGNORE_MESSAGE("HIL test ignored");
+    }
     DebugStream* debug_stream = DebugStream::GetInstance();
     byte buffer[SensorReading_size];
 

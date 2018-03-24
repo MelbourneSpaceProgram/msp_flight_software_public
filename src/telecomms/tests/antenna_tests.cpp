@@ -11,9 +11,9 @@
 static const byte kTestHardwareAddr = 0x33;
 
 void TestSafeDeploy(void) {
-#ifdef ANTENNA_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!antenna_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     Task_sleep(500);
     byte test_code = 0xF1;
     uint8_t test_count = 4;
@@ -43,9 +43,9 @@ void TestSafeDeploy(void) {
 }
 
 void TestForceDeploy(void) {
-#ifdef ANTENNA_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!antenna_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     byte initial_state = 0x00;
     byte expected_final_state = 0x07;
     byte test_code = 0xF6;
