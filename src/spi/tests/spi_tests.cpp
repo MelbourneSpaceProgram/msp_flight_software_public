@@ -6,9 +6,9 @@
 #include <ti/sysbios/knl/Task.h>
 
 void TestSpiWriteTransaction(void) {
-#ifdef SPI_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!spi_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     for (uint32_t i = 0; i < 8; i++) {
         byte write_buffer = i;
         uint32_t write_buffer_len = 1;
@@ -18,9 +18,9 @@ void TestSpiWriteTransaction(void) {
 }
 
 void TestSpiReadTransaction(void) {
-#ifdef SPI_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!spi_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     for (uint32_t i = 0; i < 8; i++) {
         byte read_buffer = i;
         uint32_t read_buffer_len = 1;

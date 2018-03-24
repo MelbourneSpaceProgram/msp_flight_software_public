@@ -11,7 +11,9 @@
 #include <ti/sysbios/knl/Semaphore.h>
 
 void TestRequestReceiveMessageFromSimulator() {
-#ifdef RUN_HIL
+    if (!hil_enabled) {
+        TEST_IGNORE_MESSAGE("HIL test ignored");
+    }
     DebugStream *debug_stream = DebugStream::GetInstance();
 
     uint8_t buffer[SensorReading_size];
@@ -32,13 +34,12 @@ void TestRequestReceiveMessageFromSimulator() {
 
     TEST_ASSERT_EQUAL_DOUBLE(1234, reading.value);
     TEST_ASSERT_EQUAL_INT(4321, reading.timestamp_millis_unix_epoch);
-#else
-    TEST_IGNORE_MESSAGE("HIL test ignored");
-#endif
 }
 
 void TestPostMessageToDebugClient() {
-#ifdef RUN_HIL
+    if (!hil_enabled) {
+        TEST_IGNORE_MESSAGE("HIL test ignored");
+    }
     DebugStream *debug_stream = DebugStream::GetInstance();
 
     SensorReading test_sensor_reading;
@@ -77,7 +78,4 @@ void TestPostMessageToDebugClient() {
     TEST_ASSERT_EQUAL_DOUBLE(-999, test_sensor_reading_received.value);
     TEST_ASSERT_EQUAL_INT(
         123456789, test_sensor_reading_received.timestamp_millis_unix_epoch);
-#else
-    TEST_IGNORE_MESSAGE("HIL test ignored");
-#endif
 }

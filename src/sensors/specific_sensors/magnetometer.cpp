@@ -16,9 +16,9 @@
 Magnetometer::Magnetometer(std::string id) : id(id) {}
 
 bool Magnetometer::TakeReading() {
-#ifdef RUN_HIL
-    return TakeReadingHil();
-#endif
+    if (hil_enabled) {
+        return TakeReadingHil();
+    }
 
     // TODO(rskew): Implement the I2C read
     return false;

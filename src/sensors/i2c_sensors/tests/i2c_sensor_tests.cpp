@@ -11,9 +11,9 @@ static const byte test_adc_address = 0x48;
 static const std::string test_adc_id = "Adc1";
 
 void TestADC(void) {
-#ifdef I2C_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!adc_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     I2c test_i2c_bus(Board_I2C_TMP);
     Adc adc(&test_i2c_bus, test_adc_address, test_adc_id);
 
