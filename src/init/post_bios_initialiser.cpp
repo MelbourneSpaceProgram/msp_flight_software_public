@@ -30,7 +30,7 @@ void PostBiosInitialiser::PostBiosInit() {
 
     state_manager->CreateStateMachines();
 
-    I2c *bus = new I2c(Board_I2C0);
+    I2c *bus = new I2c(I2C_BUS_D);
     Antenna::GetAntenna()->InitAntenna(bus);
 
     Semaphore_Params sem_params;
