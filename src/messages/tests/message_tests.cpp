@@ -6,8 +6,6 @@
 #include <src/util/message_codes.h>
 #include <test_runners/message_tests.h>
 #include <test_runners/unity.h>
-// TODO(dingbenjamin): serialised_message_builder.h needs to be the last include
-// or a linker error will occur, this needs to be fixed
 
 static const DebugMessageVersion kCurrentVersion = kV1;
 
@@ -17,11 +15,11 @@ void TestTestMessageSerialise(void) {
         TestMessage test_message(data);
         SerialisedMessage serial_message = test_message.Serialise();
 
-        TEST_ASSERT_EQUAL_INT16(test_message.GetSerialisedSize(),
-                                serial_message.GetSize());
-        TEST_ASSERT_EQUAL_INT8(kMockTestSensor, serial_message.GetBuffer()[0]);
-        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message.GetBuffer()[1]);
-        TEST_ASSERT_EQUAL_INT8(data, serial_message.GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_UINT16(test_message.GetSerialisedSize(),
+                                 serial_message.GetSize());
+        TEST_ASSERT_EQUAL_UINT8(kMockTestSensor, serial_message.GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_UINT8(kCurrentVersion, serial_message.GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_UINT8(data, serial_message.GetBuffer()[2]);
     }
 }
 
@@ -32,13 +30,13 @@ void TestTempMessageSerialise(void) {
         TemperatureMessage temp_message(i * 1.10, timestamp, sensor_id);
         SerialisedMessage serial_message = temp_message.Serialise();
 
-        TEST_ASSERT_EQUAL_INT16(temp_message.GetSerialisedSize(),
-                                serial_message.GetSize());
-        TEST_ASSERT_EQUAL_INT8(kMockTemperatureSensor,
-                               serial_message.GetBuffer()[0]);
-        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message.GetBuffer()[1]);
-        TEST_ASSERT_EQUAL_INT8(sensor_id, serial_message.GetBuffer()[2]);
-        TEST_ASSERT_EQUAL_INT8(timestamp, serial_message.GetBuffer()[3]);
+        TEST_ASSERT_EQUAL_UINT16(temp_message.GetSerialisedSize(),
+                                 serial_message.GetSize());
+        TEST_ASSERT_EQUAL_UINT8(kMockTemperatureSensor,
+                                serial_message.GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_UINT8(kCurrentVersion, serial_message.GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_UINT8(sensor_id, serial_message.GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_UINT8(timestamp, serial_message.GetBuffer()[3]);
         // TODO(dingbenjamin): Assert the next four bytes convert to the correct
         // float
     }
@@ -52,44 +50,66 @@ void TestContainerMessageSerialise(void) {
         TestContainerMessage container_message(container_data, &test_message);
         SerialisedMessage serial_message = container_message.Serialise();
 
-        TEST_ASSERT_EQUAL_INT16(6, container_message.GetSerialisedSize());
-        TEST_ASSERT_EQUAL_INT16(container_message.GetSerialisedSize(),
-                                serial_message.GetSize());
-        TEST_ASSERT_EQUAL_INT8(kMockTestContainer,
-                               serial_message.GetBuffer()[0]);
-        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message.GetBuffer()[1]);
-        TEST_ASSERT_EQUAL_INT8(container_data, serial_message.GetBuffer()[2]);
-        TEST_ASSERT_EQUAL_INT8(kMockTestSensor, serial_message.GetBuffer()[3]);
-        TEST_ASSERT_EQUAL_INT8(kCurrentVersion, serial_message.GetBuffer()[4]);
-        TEST_ASSERT_EQUAL_INT8(inside_data, serial_message.GetBuffer()[5]);
+        TEST_ASSERT_EQUAL_UINT16(6, container_message.GetSerialisedSize());
+        TEST_ASSERT_EQUAL_UINT16(container_message.GetSerialisedSize(),
+                                 serial_message.GetSize());
+        TEST_ASSERT_EQUAL_UINT8(kMockTestContainer,
+                                serial_message.GetBuffer()[0]);
+        TEST_ASSERT_EQUAL_UINT8(kCurrentVersion, serial_message.GetBuffer()[1]);
+        TEST_ASSERT_EQUAL_UINT8(container_data, serial_message.GetBuffer()[2]);
+        TEST_ASSERT_EQUAL_UINT8(kMockTestSensor, serial_message.GetBuffer()[3]);
+        TEST_ASSERT_EQUAL_UINT8(kCurrentVersion, serial_message.GetBuffer()[4]);
+        TEST_ASSERT_EQUAL_UINT8(inside_data, serial_message.GetBuffer()[5]);
     }
 }
 
 void TestSerialisedMessageBuilder(void) {
-    byte* buffer = new byte[10];
+    byte buffer[10];
     SerialisedMessageBuilder builder(buffer, 10);
-    TEST_ASSERT_EQUAL_INT16(0, builder.GetSerialisedLength());
+    TEST_ASSERT_EQUAL_UINT16(0, builder.GetSerialisedLength());
 
     builder.AddData<byte>(0xF0);
-    TEST_ASSERT_EQUAL_INT16(1, builder.GetSerialisedLength());
+    TEST_ASSERT_EQUAL_UINT16(1, builder.GetSerialisedLength());
 
     builder.AddData<uint8_t>(0x0F);
-    TEST_ASSERT_EQUAL_INT16(2, builder.GetSerialisedLength());
+    TEST_ASSERT_EQUAL_UINT16(2, builder.GetSerialisedLength());
 
     TestMessage test_message(0xC0);
     builder.AddMessage(&test_message);
 
-    TEST_ASSERT_EQUAL_INT8(0xF0, buffer[0]);
-    TEST_ASSERT_EQUAL_INT8(0x0F, buffer[1]);
-    TEST_ASSERT_EQUAL_INT8(kMockTestSensor, buffer[2]);
-    TEST_ASSERT_EQUAL_INT8(kCurrentVersion, buffer[3]);
-    TEST_ASSERT_EQUAL_INT8(0xC0, buffer[4]);
-    TEST_ASSERT_EQUAL_INT8_ARRAY(buffer, builder.GetSerialisedMessageBuffer(),
-                                 5);
-    TEST_ASSERT_EQUAL_INT8_ARRAY(builder.GetSerialisedMessageBuffer(),
-                                 builder.Build().GetBuffer(), 5);
+    TEST_ASSERT_EQUAL_UINT8(0xF0, buffer[0]);
+    TEST_ASSERT_EQUAL_UINT8(0x0F, buffer[1]);
+    TEST_ASSERT_EQUAL_UINT8(kMockTestSensor, buffer[2]);
+    TEST_ASSERT_EQUAL_UINT8(kCurrentVersion, buffer[3]);
+    TEST_ASSERT_EQUAL_UINT8(0xC0, buffer[4]);
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(buffer, builder.GetSerialisedMessageBuffer(),
+                                  5);
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(builder.GetSerialisedMessageBuffer(),
+                                  builder.Build().GetBuffer(), 5);
+}
 
-    delete[] buffer;
+void TestPadWithZero(void) {
+    byte buffer[10];
+    SerialisedMessageBuilder builder(buffer, 10);
+
+    builder.AddData<byte>(0xF0);
+    TEST_ASSERT_EQUAL_UINT16(1, builder.GetSerialisedLength());
+
+    builder.AddData<uint8_t>(0x0F);
+    TEST_ASSERT_EQUAL_UINT16(2, builder.GetSerialisedLength());
+
+    try {
+        builder.PadZeroes();
+    } catch (etl::exception e) {
+        TEST_ASSERT(false);
+    }
+
+    SerialisedMessage serial_message = builder.Build();
+    TEST_ASSERT_EQUAL_UINT8(0xF0, serial_message.GetBuffer()[0]);
+    TEST_ASSERT_EQUAL_UINT8(0x0F, serial_message.GetBuffer()[1]);
+    for (uint8_t i = 2; i < 10; i++) {
+        TEST_ASSERT_EQUAL_UINT8(0x00, serial_message.GetBuffer()[i]);
+    }
 }
 
 void TestRebuildableMessageFieldIterator(void) {
@@ -100,7 +120,7 @@ void TestRebuildableMessageFieldIterator(void) {
     // Now try rebuilding
     TemperatureMessage rebuilt(buffer);
 
-    TEST_ASSERT_EQUAL_INT8(message.sensor_id, rebuilt.sensor_id);
-    TEST_ASSERT_EQUAL_INT8(message.timestamp, rebuilt.timestamp);
+    TEST_ASSERT_EQUAL_UINT8(message.sensor_id, rebuilt.sensor_id);
+    TEST_ASSERT_EQUAL_UINT8(message.timestamp, rebuilt.timestamp);
     TEST_ASSERT_EQUAL_FLOAT(message.temperature, rebuilt.temperature);
 }

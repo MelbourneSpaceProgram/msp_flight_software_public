@@ -23,8 +23,9 @@ SerialisedMessageBuilder& SerialisedMessageBuilder::AddMessage(
     const Message* message) {
     uint16_t message_size = message->GetSerialisedSize();
     if (message_size > buffer_size - serialised_length) {
-        // TODO(dingbenjamin): Throw and handle exception after exception
-        // system is determined
+        etl::exception e("Message builder buffer size overflow", "__FILE__",
+                         __LINE__);
+        throw e;
     } else {
         // Serialise to the smallest unused sub-address of the buffer if the
         // condition is met that the serialised bytes will fit
@@ -32,6 +33,12 @@ SerialisedMessageBuilder& SerialisedMessageBuilder::AddMessage(
         serialised_length += message_size;
     }
     return *this;
+}
+
+void SerialisedMessageBuilder::PadZeroes() {
+    for (uint16_t i = serialised_length; i < buffer_size; i++) {
+        AddData<byte>(0x00);
+    }
 }
 
 uint16_t SerialisedMessageBuilder::GetSerialisedLength() const {
