@@ -1,13 +1,13 @@
 #include <Board.h>
 #include <src/config/unit_tests.h>
+#include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/debug_interface/debug_stream.h>
-#include <src/i2c/i2c.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
 #include <src/system/state_manager.h>
+#include <src/system/tasks/runnable_state_management.h>
 #include <src/tasks/task_holder.h>
-#include <src/tasks/tasks.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_lithium_listener.h>
@@ -20,30 +20,55 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
     return &PostBiosInitialiser::PostBiosInit;
 }
 
-void PostBiosInitialiser::PostBiosInit() {
-    // TODO(dingbenjamin): Init var length array pool
-    // Initialise Singletons in thread safe manner
+void PostBiosInitialiser::InitSingletons(I2c* antenna_bus) {
     DebugStream::GetInstance();
-    Antenna::GetAntenna();
+    Antenna::GetAntenna()->InitAntenna(antenna_bus);
     Lithium::GetInstance();
-    StateManager* state_manager = StateManager::GetStateManager();
+    StateManager::GetStateManager()->CreateStateMachines();
+}
 
-    state_manager->CreateStateMachines();
+void PostBiosInitialiser::InitRadioListener() {
+    TaskHolder* radio_listener = new TaskHolder(1024, "RadioListener", 11,
+                                                new RunnableLithiumListener());
+    radio_listener->Init();
+}
 
-    I2c *bus = new I2c(I2C_BUS_D);
-    Antenna::GetAntenna()->InitAntenna(bus);
-
+void PostBiosInitialiser::RunUnitTests() {
     Semaphore_Params sem_params;
     Semaphore_Params_init(&sem_params);
     Semaphore_Handle test_complete = Semaphore_create(0, &sem_params, NULL);
     TestInitialiser::GetInstance()->InitSemaphore(test_complete);
-    TaskHolder *test_task =
+    TaskHolder* test_task =
         new TaskHolder(4096, "Unit Tests", 7, TestInitialiser::GetInstance());
-    TaskHolder *radio_listener = new TaskHolder(1024, "RadioListener", 11,
-                                                new RunnableLithiumListener());
-    radio_listener->Init();
     test_task->Init();
     Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
+}
 
-    TasksInit();
+void PostBiosInitialiser::InitStateManagement() {
+    // TODO(rskew) review priority
+    TaskHolder* state_management_task = new TaskHolder(
+        1024, "StateManagement", 8, new RunnableStateManagement());
+    state_management_task->Init();
+}
+
+void PostBiosInitialiser::InitDataDashboard() {
+    // TODO(rskew) review priority
+    TaskHolder* data_dashboard_task =
+        new TaskHolder(4096, "DataDashboard", 5, new RunnableDataDashboard());
+    data_dashboard_task->Init();
+}
+
+void PostBiosInitialiser::PostBiosInit() {
+    // TODO(dingbenjamin): Init var length array pool
+
+    // TODO(dingbenjamin): Initialise buses A-C and remove initialisation from
+    // inside other classes
+    I2c* bus_d = new I2c(I2C_BUS_D);
+
+    InitSingletons(bus_d);
+    InitRadioListener();
+    RunUnitTests();
+
+    InitStateManagement();
+    InitDataDashboard();
 }
