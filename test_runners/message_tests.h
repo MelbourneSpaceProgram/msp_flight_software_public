@@ -16,6 +16,7 @@ void TestTestMessageSerialise(void);
 void TestTempMessageSerialise(void);
 void TestContainerMessageSerialise(void);
 void TestSerialisedMessageBuilder(void);
+void TestPadWithZero(void);
 void TestRebuildableMessageFieldIterator(void);
 
 #endif  // TEST_RUNNERS_MESSAGE_TESTS_H_
