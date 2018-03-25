@@ -36,6 +36,7 @@ extern void TestTestMessageSerialise(void);
 extern void TestTempMessageSerialise(void);
 extern void TestContainerMessageSerialise(void);
 extern void TestSerialisedMessageBuilder(void);
+extern void TestPadWithZero(void);
 extern void TestRebuildableMessageFieldIterator(void);
 
 
@@ -72,11 +73,12 @@ int message_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/messages/tests/message_tests.cpp");
-  RUN_TEST(TestTestMessageSerialise, 14);
-  RUN_TEST(TestTempMessageSerialise, 28);
-  RUN_TEST(TestContainerMessageSerialise, 47);
-  RUN_TEST(TestSerialisedMessageBuilder, 68);
-  RUN_TEST(TestRebuildableMessageFieldIterator, 95);
+  RUN_TEST(TestTestMessageSerialise, 12);
+  RUN_TEST(TestTempMessageSerialise, 26);
+  RUN_TEST(TestContainerMessageSerialise, 45);
+  RUN_TEST(TestSerialisedMessageBuilder, 66);
+  RUN_TEST(TestPadWithZero, 91);
+  RUN_TEST(TestRebuildableMessageFieldIterator, 115);
 
   return suite_teardown(UnityEnd());
 }

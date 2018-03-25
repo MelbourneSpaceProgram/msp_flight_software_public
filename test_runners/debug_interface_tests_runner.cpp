@@ -70,7 +70,7 @@ int debug_interface_tests_runner(void)
   suite_setup();
   UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
   RUN_TEST(TestRequestReceiveMessageFromSimulator, 13);
-  RUN_TEST(TestPostMessageToDebugClient, 40);
+  RUN_TEST(TestPostMessageToDebugClient, 39);
 
   return suite_teardown(UnityEnd());
 }

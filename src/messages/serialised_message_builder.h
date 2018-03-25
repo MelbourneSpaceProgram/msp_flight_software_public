@@ -1,6 +1,7 @@
 #ifndef SRC_MESSAGES_SERIALISED_MESSAGE_BUILDER_H_
 #define SRC_MESSAGES_SERIALISED_MESSAGE_BUILDER_H_
 
+#include <external/etl/exception.h>
 #include <src/messages/message.h>
 #include <src/messages/serialised_message.h>
 #include <src/util/data_types.h>
@@ -16,11 +17,13 @@ class SerialisedMessageBuilder {
     byte* GetSerialisedMessageBuffer() const;
     SerialisedMessage Build();
     SerialisedMessageBuilder& AddMessage(const Message* message);
+    void PadZeroes();
     template <class T>
     SerialisedMessageBuilder& AddData(T data) {
         if (sizeof(T) > buffer_size - serialised_length) {
-            // TODO(dingbenjamin): Throw and handle exception after exception
-            // system is determined
+            etl::exception e("Message builder buffer size overflow", "__FILE__",
+                             __LINE__);
+            throw e;
         } else {
             std::memcpy(serialised_message_buffer + serialised_length, &data,
                         sizeof(T));

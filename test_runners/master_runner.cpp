@@ -4,12 +4,12 @@
 #include <test_runners/b_dot_estimator_tests.h>
 #include <test_runners/kalman_filter_tests.h>
 #include <test_runners/database_tests.h>
-#include <test_runners/payload_processor_tests.h>
 #include <test_runners/runnable_data_dashboard_tests.h>
 #include <test_runners/debug_interface_tests.h>
 #include <test_runners/i2c_tests.h>
 #include <test_runners/multiplexer_tests.h>
 #include <test_runners/message_tests.h>
+#include <test_runners/payload_processor_tests.h>
 #include <test_runners/generic_sensor_tests.h>
 #include <test_runners/rtc_tests.h>
 #include <test_runners/i2c_sensor_tests.h>
@@ -33,11 +33,11 @@ void master_tests_thread() {
     kalman_filter_tests_runner();
     database_tests_runner();
     runnable_data_dashboard_tests_runner();
-    payload_processor_tests_runner();
     debug_interface_tests_runner();
     i2c_tests_runner();
     multiplexer_tests_runner();
     message_tests_runner();
+    payload_processor_tests_runner();
     generic_sensor_tests_runner();
     rtc_tests_runner();
     i2c_sensor_tests_runner();
