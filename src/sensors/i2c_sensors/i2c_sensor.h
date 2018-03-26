@@ -9,12 +9,12 @@
 template <typename T>
 class I2cSensor : public GenericSensor<T> {
    public:
-    I2cSensor(I2c* bus, int address) : bus(bus), address(address) {}
+    I2cSensor(const I2c* bus, int address) : bus(bus), address(address) {}
     I2c* GetBus() { return bus; }
     byte GetAddress() { return address; }
 
    protected:
-    I2c* bus;
+    const I2c* bus;
     byte address;
 };
 
