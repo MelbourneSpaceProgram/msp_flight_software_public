@@ -16,11 +16,10 @@ class TMP006 : public I2cSensor<double> {
 
       @param bus The bus that the sensor is connected to.
       @param address The address of the sensor.
-      @param id The unique ID by which the sensor is identified.
       @param constant The calibration constant for the sensor.
       @return The TMP006 object.
     */
-    TMP006(I2c* bus, int address, double constant);
+    TMP006(const I2c* bus, int address, double constant);
 
     /**
       Method that causes the TMP006 to take a reading. It stores the
