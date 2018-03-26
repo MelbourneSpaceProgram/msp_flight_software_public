@@ -13,8 +13,8 @@ const int TMP006::DIE_TEMP_REGISTER = 0x01;
   Public methods of the TMP006 class.
 */
 
-TMP006::TMP006(I2c* bus, int address, std::string id, double constant)
-    : I2cSensor<double>(bus, address, id), constant(constant) {}
+TMP006::TMP006(I2c* bus, int address, double constant)
+    : I2cSensor<double>(bus, address), constant(constant) {}
 
 bool TMP006::TakeReading(void) {
     uint8_t read_buffer[2];

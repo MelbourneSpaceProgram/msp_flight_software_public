@@ -1,6 +1,6 @@
 #include <src/sensors/test_sensors/test_i2c_sensor.h>
 
-TestI2cSensor::TestI2cSensor(std::string id) : id(id) {}
+TestI2cSensor::TestI2cSensor() {}
 
 bool TestI2cSensor::TakeReading() {
     reading = dummy_data;

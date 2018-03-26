@@ -18,7 +18,7 @@ void TestStateManager(void) {
                                           &battery_temp_state_machine);
     state_manager->AddSystemStateMachine(&power_state_machine);
 
-    TestI2cSensor battery_charge_sensor("soc_sensor");
+    TestI2cSensor battery_charge_sensor;
     battery_charge_state_machine.RegisterWithSensor(&battery_charge_sensor);
 
     // A reading of SOC = 0 should put power state machine into state
@@ -28,7 +28,8 @@ void TestStateManager(void) {
 
     state_manager->ProcessStateChanges();
 
-    TEST_ASSERT_EQUAL_INT(kPowerEverythingOff, power_state_machine.GetCurrentState());
+    TEST_ASSERT_EQUAL_INT(kPowerEverythingOff,
+                          power_state_machine.GetCurrentState());
 
     state_manager->RemoveLastSystemStateMachine();
 }

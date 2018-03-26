@@ -6,13 +6,13 @@
 
 class TestI2cSensor : public GenericSensor<double> {
    public:
-    explicit TestI2cSensor(std::string id);
+    explicit TestI2cSensor();
     bool TakeReading();
     void SetDummySensorData(double dummy_data);
 
    private:
     double dummy_data;
-    std::string id;
+    uint8_t id;
 };
 
 #endif  //  SRC_SENSORS_TEST_SENSORS_TEST_I2C_SENSOR_H_

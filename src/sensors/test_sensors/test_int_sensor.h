@@ -6,13 +6,12 @@
 
 class TestIntSensor : public GenericSensor<int> {
    public:
-    explicit TestIntSensor(std::string id);
+    explicit TestIntSensor();
     bool TakeReading();
     void SetDummySensorData(int dummy_dat);
 
    private:
     int dummy_data;
-    std::string id;
 };
 
 #endif  //  SRC_SENSORS_TEST_SENSORS_TEST_INT_SENSOR_H_

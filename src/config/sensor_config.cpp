@@ -29,7 +29,7 @@ void SensorConfig::build_config() {
     I2c bus_1(Board_I2C_TMP);
 
     // Create h-bridge temperature sensor 1.
-    MCP9808 hbridge_temp_1(&bus_1, 0x18, "HBRIDGE_TEMP_1");
+    MCP9808 hbridge_temp_1(&bus_1, 0x18);
     // Create and add observers.
     SampleTempObserver observer;
     hbridge_temp_1.AddObserver(&observer);
