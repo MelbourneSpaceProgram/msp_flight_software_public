@@ -1,7 +1,6 @@
 #include <src/sensors/i2c_sensors/rtc.h>
 
-Rtc::Rtc(I2c* bus, int address, std::string id)
-    : I2cSensor<RTime>(bus, address, id) {
+Rtc::Rtc(I2c* bus, int address) : I2cSensor<RTime>(bus, address) {
     Rtc::bit_mask_map[kTimeRegisterSec] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterMin] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterHour] = kLowest6BitMask;
