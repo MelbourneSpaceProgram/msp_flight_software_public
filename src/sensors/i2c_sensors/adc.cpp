@@ -4,8 +4,8 @@ const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage6v144, kAdcVoltage4v096, kAdcVoltage2v048,
     kAdcVoltage1v024, kAdcVoltage0v512, kAdcVoltage0v256};
 
-Adc::Adc(I2c* bus, int address, std::string id)
-    : I2cSensor<double>(bus, address, id),
+Adc::Adc(I2c* bus, int address)
+    : I2cSensor<double>(bus, address),
       operational_status(kAdcDefaultOperationalStatus),
       mux_mode(kAdcDefaultMuxMode),
       gain_amplifier_level(kAdcDefaultGainAmplifierLevel),

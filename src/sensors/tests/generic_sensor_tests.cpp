@@ -5,7 +5,7 @@
 
 void TestGenericSensor(void) {
     TestObserver observer;
-    TestIntSensor test_i2c_sensor("test");
+    TestIntSensor test_i2c_sensor;
 
     uint8_t dummy_reading = 1;
 

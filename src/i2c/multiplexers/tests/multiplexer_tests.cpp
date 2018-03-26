@@ -21,8 +21,8 @@ void TestMultiplexer(void) {
     }
     I2c bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&bus, kMultiplexerAddress);
-    MCP9808 temp_sensor(&bus, kTempSensorAddress, "temp sensor");
-    MCP9808 temp_sensor2(&bus, kTempSensorAddress, "temp sensor");
+    MCP9808 temp_sensor(&bus, kTempSensorAddress);
+    MCP9808 temp_sensor2(&bus, kTempSensorAddress);
 
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
     TEST_ASSERT(temp_sensor.TakeReading());

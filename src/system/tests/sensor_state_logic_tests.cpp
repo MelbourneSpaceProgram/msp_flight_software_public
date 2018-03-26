@@ -85,7 +85,7 @@ void TestBatteryChargeStateFlow(void) {
     StateManager* state_manager = StateManager::GetStateManager();
     BatteryChargeStateMachine battery_charge_state_machine(state_manager);
 
-    TestI2cSensor battery_soc_sensor("battery_soc_sensor");
+    TestI2cSensor battery_soc_sensor;
     battery_charge_state_machine.RegisterWithSensor(&battery_soc_sensor);
 
     double kMaxSoc = 1;
@@ -119,7 +119,7 @@ void TestBatteryTempStateFlow(void) {
     StateManager* state_manager = StateManager::GetStateManager();
     BatteryTempStateMachine battery_temp_state_machine(state_manager);
 
-    TestI2cSensor battery_temp_sensor("battery_temp_sensor");
+    TestI2cSensor battery_temp_sensor;
     battery_temp_state_machine.RegisterWithSensor(&battery_temp_sensor);
 
     double kMaxTemp = 50;
@@ -153,7 +153,7 @@ void TestTelecomsTempStateFlow(void) {
     StateManager* state_manager = StateManager::GetStateManager();
     TelecomsTempStateMachine telecoms_temp_state_machine(state_manager);
 
-    TestI2cSensor telecoms_temp_sensor("telecoms_temp_sensor");
+    TestI2cSensor telecoms_temp_sensor;
     telecoms_temp_state_machine.RegisterWithSensor(&telecoms_temp_sensor);
 
     double kMaxTemp = kTempTelecomsOperationalMax + 10;

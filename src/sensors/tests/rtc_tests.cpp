@@ -12,7 +12,7 @@ void TestRtcReadTransaction(void) {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
     I2c test_i2c_bus(Board_I2C_TMP);
-    Rtc test_rtc(&test_i2c_bus, kTestRtcAddr, "ab_rtcmc_32");
+    Rtc test_rtc(&test_i2c_bus, kTestRtcAddr);
 
     bool success = test_rtc.TakeReading();
 
