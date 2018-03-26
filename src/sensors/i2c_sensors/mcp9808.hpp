@@ -19,7 +19,7 @@ class MCP9808 : public I2cSensor<double> {
       @param id The unique ID by which the sensor is identified.
       @return The MCP9808 object.
     */
-    MCP9808(I2c* bus, int address);
+    MCP9808(const I2c* bus, int address);
 
     /**
       Method that causes the MCP9808 to take a reading. The value is then

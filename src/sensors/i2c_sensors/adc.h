@@ -64,7 +64,7 @@ class Adc : public I2cSensor<double> {
     friend class AdcMeasurable;
 
    public:
-    Adc(I2c* bus, int address);
+    Adc(const I2c* bus, int address);
 
     void SetConfiguration();
 
