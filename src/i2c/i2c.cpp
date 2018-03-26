@@ -7,7 +7,7 @@ I2c::I2c(uint8_t index) : index(index) {
     I2C_Params_init(&i2c_params);
     i2c_params.transferMode = I2C_MODE_CALLBACK;
     i2c_params.transferCallbackFxn =
-            static_cast<I2C_CallbackFxn>(MangeI2cTimeout);
+            static_cast<I2C_CallbackFxn>(ManageI2cTimeout);
     Open();
 }
 
@@ -16,7 +16,7 @@ I2c::I2c(I2C_BitRate bit_rate, uint8_t index) : index(index) {
     i2c_params.bitRate = bit_rate;
     i2c_params.transferMode = I2C_MODE_CALLBACK;
     i2c_params.transferCallbackFxn =
-            static_cast<I2C_CallbackFxn>(MangeI2cTimeout);
+            static_cast<I2C_CallbackFxn>(ManageI2cTimeout);
     Open();
 }
 
@@ -89,7 +89,7 @@ bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
                                    NULL, 0);
 }
 
-void I2c::MangeI2cTimeout(I2C_Handle handle, I2C_Transaction *i2c_transaction,
+void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction *i2c_transaction,
                           bool success) {
     // Check to see whether the I2C_Transaction struct has been given a
     // mailbox handle. If it has put the outcome of the transfer in the mail.
