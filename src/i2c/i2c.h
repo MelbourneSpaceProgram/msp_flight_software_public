@@ -133,7 +133,7 @@ class I2c {
        @param success The outcome of the transfer.
        @return void
     */
-    static void MangeI2cTimeout(I2C_Handle handle,
+    static void ManageI2cTimeout(I2C_Handle handle,
                                     I2C_Transaction *i2c_transaction,
                                     bool success);
 
