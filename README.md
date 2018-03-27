@@ -2,10 +2,10 @@
 All code that will run on-board the satellite. The project is written in C++ and C, using the Code Composer Studio (CCS) compiler, provided by Texas Instruments for the MSP432.
 
 ### Quick Links
-[JAMA](https://melbournespaceprogram.jamacloud.com)
-[Jenkins](http://ci.spaceprogram.melbourne/) 
-[JIRA](jira.spaceprogram.melbourne) 
-[Slack](http://melbournespace.slack.com/) 
+- [JAMA](https://melbournespaceprogram.jamacloud.com)
+- [Jenkins](http://ci.spaceprogram.melbourne/) 
+- [JIRA](jira.spaceprogram.melbourne) 
+- [Slack](http://melbournespace.slack.com/) 
 
 ### Getting Started
 The default branch for this project is satellite, not master. Please ensure the satellite branch is used as the source branch for all work, and that all work is eventually merged back here.
@@ -13,9 +13,10 @@ The default branch for this project is satellite, not master. Please ensure the 
 Check out the [Software Onboarding Guide](https://docs.google.com/presentation/d/1aTFj6O11hw7FWGM_q_fx4gNXZuZPpbjtE1QgLcxke5M/edit#slide=id.g2c5c7b9d93_0_81).
 
 ### Prerequisites
-[Code Composer Studio](http://www.ti.com/tool/CCSTUDIO)
-[SimpleLink MSP432 SDK (v1.3+)](http://www.ti.com/tool/SIMPLELINK-MSP432-SDK)
-[MSP432 Launchpad](http://www.ti.com/tool/MSP-EXP432P401R)
+- [Code Composer Studio](http://www.ti.com/tool/CCSTUDIO)
+- [SimpleLink MSP432 SDK (v1.3+)](http://www.ti.com/tool/SIMPLELINK-MSP432-SDK)
+- [MSP432 Launchpad](http://www.ti.com/tool/MSP-EXP432P401R)
+
 When using CCS, be sure to change the Build Configuration to TIRTOS Build. The project will not build otherwise and you will get weird, cryptic errors. You can do this by right clicking on the MSP project -> Build Configurations -> Set Active -> TIRTOS Build.
 
 ### Automatic builds
@@ -141,9 +142,8 @@ It is possible to ignore tests using `TEST_IGNORE()` and `TEST_IGNORE_MESSAGE("s
 To ignore a Unity test, add the following to the beginning of the test method in [name_of_functionality]_tests.cpp:
 
 ```
-#ifdef [name_of_functionality]_TESTS_IGNORED
+if(![name_of_functionality]_test_enabled){
     TEST_IGNORE_MESSAGE("some informative message")
-#endif
+}
 ```
-It is also necessary add the following to src/config/unit_tests.h:
-`define [name_of_functionality]_TESTS_IGNORED`
+See `src/config/unit_tests.h` for the creation of the definition of this variable.
