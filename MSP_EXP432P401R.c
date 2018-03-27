@@ -42,7 +42,6 @@
 #include <ti/drivers/Power.h>
 #include <ti/drivers/power/PowerMSP432.h>
 
-#include <ti/devices/msp432p4xx/driverlib/adc14.h>
 #include <ti/devices/msp432p4xx/driverlib/dma.h>
 #include <ti/devices/msp432p4xx/driverlib/gpio.h>
 #include <ti/devices/msp432p4xx/driverlib/i2c.h>
@@ -59,65 +58,6 @@
 #include <ti/devices/msp432p4xx/inc/msp.h>
 
 #include "MSP_EXP432P401R.h"
-
-/*
- *  =============================== ADC ===============================
- */
-#include <ti/drivers/ADC.h>
-#include <ti/drivers/adc/ADCMSP432.h>
-
-/* ADC objects */
-ADCMSP432_Object adcMSP432Objects[MSP_EXP432P401R_ADCCOUNT];
-
-/* ADC configuration structure */
-const ADCMSP432_HWAttrsV1 adcMSP432HWAttrs[MSP_EXP432P401R_ADCCOUNT] = {
-    {.adcPin = ADCMSP432_P5_5_A0,
-     .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
-     .resolution = ADC_14BIT},
-    {.adcPin = ADCMSP432_P5_4_A1,
-     .refVoltage = ADCMSP432_REF_VOLTAGE_INT_1_45V,
-     .resolution = ADC_8BIT}};
-
-const ADC_Config ADC_config[MSP_EXP432P401R_ADCCOUNT] = {
-    {.fxnTablePtr = &ADCMSP432_fxnTable,
-     .object = &adcMSP432Objects[MSP_EXP432P401R_ADC0],
-     .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC0]},
-    {.fxnTablePtr = &ADCMSP432_fxnTable,
-     .object = &adcMSP432Objects[MSP_EXP432P401R_ADC1],
-     .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC1]}};
-
-const uint_least8_t ADC_count = MSP_EXP432P401R_ADCCOUNT;
-
-/*
- *  =============================== ADCBuf ===============================
- */
-#include <ti/drivers/ADCBuf.h>
-#include <ti/drivers/adcbuf/ADCBufMSP432.h>
-
-/* ADC objects */
-ADCBufMSP432_Object adcbufMSP432Objects[MSP_EXP432P401R_ADCBUFCOUNT];
-
-ADCBufMSP432_Channels
-    adcBuf0MSP432Channels[MSP_EXP432P401R_ADCBUF0CHANNELCOUNT] = {
-        {.adcPin = ADCBufMSP432_P5_5_A0,
-         .refSource = ADCBufMSP432_VREFPOS_INTBUF_VREFNEG_VSS,
-         .refVoltage = 2500000},
-        {.adcPin = ADCBufMSP432_P5_4_A1,
-         .refSource = ADCBufMSP432_VREFPOS_INTBUF_VREFNEG_VSS,
-         .refVoltage = 2500000}};
-
-/* ADC configuration structure */
-const ADCBufMSP432_HWAttrs adcbufMSP432HWAttrs[MSP_EXP432P401R_ADCBUFCOUNT] = {
-    {.intPriority = ~0,
-     .channelSetting = adcBuf0MSP432Channels,
-     .adcTimerTriggerSource = ADCBufMSP432_TIMERA0_CAPTURECOMPARE2}};
-
-const ADCBuf_Config ADCBuf_config[MSP_EXP432P401R_ADCBUFCOUNT] = {
-    {.fxnTablePtr = &ADCBufMSP432_fxnTable,
-     .object = &adcbufMSP432Objects[MSP_EXP432P401R_ADCBUF0],
-     .hwAttrs = &adcbufMSP432HWAttrs[MSP_EXP432P401R_ADCBUF0]}};
-
-const uint_least8_t ADCBuf_count = MSP_EXP432P401R_ADCBUFCOUNT;
 
 /*
  *  ============================= Capture =============================
@@ -320,30 +260,6 @@ const I2C_Config I2C_config[Board_I2CCOUNT] = {
 const uint_least8_t I2C_count = Board_I2CCOUNT;
 
 /*
- *  =============================== I2CSlave ===============================
- */
-#include <ti/drivers/I2CSlave.h>
-#include <ti/drivers/i2cslave/I2CSlaveMSP432.h>
-
-I2CSlaveMSP432_Object i2cSlaveMSP432Objects[MSP_EXP432P401R_I2CSLAVECOUNT];
-
-const I2CSlaveMSP432_HWAttrs
-    i2cSlaveMSP432HWAttrs[MSP_EXP432P401R_I2CSLAVECOUNT] = {
-        {.baseAddr = EUSCI_B0_BASE,
-         .intNum = INT_EUSCIB0,
-         .intPriority = ~0,
-         .slaveAddress = 0x48,
-         .dataPin = I2CSLAVEMSP432_P1_6_UCB0SDA,
-         .clkPin = I2CSLAVEMSP432_P1_7_UCB0SCL}};
-
-const I2CSlave_Config I2CSlave_config[MSP_EXP432P401R_I2CSLAVECOUNT] = {
-    {.fxnTablePtr = &I2CSlaveMSP432_fxnTable,
-     .object = &i2cSlaveMSP432Objects[MSP_EXP432P401R_I2CSLAVEB0],
-     .hwAttrs = &i2cSlaveMSP432HWAttrs[MSP_EXP432P401R_I2CSLAVEB0]}};
-
-const uint_least8_t I2CSlave_count = MSP_EXP432P401R_I2CSLAVECOUNT;
-
-/*
  *  =============================== Power ===============================
  */
 const PowerMSP432_ConfigV1 PowerMSP432_config = {
@@ -541,8 +457,8 @@ const UARTMSP432_HWAttrsV1 uartMSP432HWAttrs[Board_UARTCOUNT] = {
      .numBaudrateEntries =
          sizeof(uartMSP432Baudrates) / sizeof(UARTMSP432_BaudrateConfig),
      .baudrateLUT = uartMSP432Baudrates,
-     .ringBufPtr = uartMSP432RingBuffer[MSP_EXP432P401R_UARTA0],
-     .ringBufSize = sizeof(uartMSP432RingBuffer[MSP_EXP432P401R_UARTA0]),
+     .ringBufPtr = uartMSP432RingBuffer[UART_CDH_UMB],
+     .ringBufSize = sizeof(uartMSP432RingBuffer[UART_CDH_UMB]),
      .rxPin = UARTMSP432_P1_2_UCA0RXD,
      .txPin = UARTMSP432_P1_3_UCA0TXD},
 #endif
