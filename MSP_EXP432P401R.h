@@ -49,42 +49,6 @@
 extern "C" {
 #endif
 
-/* LEDs on MSP_EXP432P401R are active high. */
-#define MSP_EXP432P401R_GPIO_LED_OFF (0)
-#define MSP_EXP432P401R_GPIO_LED_ON (1)
-
-/*!
- *  @def    MSP_EXP432P401R_ADCName
- *  @brief  Enum of ADC channels on the MSP_EXP432P401R dev board
- */
-typedef enum MSP_EXP432P401R_ADCName {
-    MSP_EXP432P401R_ADC0 = 0,
-    MSP_EXP432P401R_ADC1,
-
-    MSP_EXP432P401R_ADCCOUNT
-} MSP_EXP432P401R_ADCName;
-
-/*!
- *  @def    MSP_EXP432P401R_ADCBufName
- *  @brief  Enum of ADC hardware peripherals on the MSP_EXP432P401R dev board
- */
-typedef enum MSP_EXP432P401R_ADCBufName {
-    MSP_EXP432P401R_ADCBUF0 = 0,
-
-    MSP_EXP432P401R_ADCBUFCOUNT
-} MSP_EXP432P401R_ADCBufName;
-
-/*!
- *  @def    MSP_EXP432P401R_ADCBuf0ChannelName
- *  @brief  Enum of ADCBuf channels on the MSP_EXP432P401R dev board
- */
-typedef enum MSP_EXP432P401R_ADCBuf0ChannelName {
-    MSP_EXP432P401R_ADCBUF0CHANNEL0 = 0,
-    MSP_EXP432P401R_ADCBUF0CHANNEL1,
-
-    MSP_EXP432P401R_ADCBUF0CHANNELCOUNT
-} MSP_EXP432P401R_ADCBuf0ChannelName;
-
 /*!
  *  @def    MSP_EXP432P401R_CaptureName
  *  @brief  Enum of Capture timer names on the MSP_EXP432P401R dev board
@@ -127,10 +91,6 @@ typedef enum Board_GPIOName {
  *  @def    MSP_EXP432P401R_I2CName
  *  @brief  Enum of I2C names on the MSP_EXP432P401R dev board
  */
-/*!
- *  @def    MSP_EXP432P401R_I2CName
- *  @brief  Enum of I2C names on the MSP_EXP432P401R dev board
- */
 typedef enum Board_I2CName {
     I2C_BUS_A = 0,
     I2C_BUS_B = 1,
@@ -138,16 +98,6 @@ typedef enum Board_I2CName {
     I2C_BUS_D = 3,
     Board_I2CCOUNT
 } Board_I2CName;
-
-/*!
- *  @def    MSP_EXP432P401R_I2CSlaveName
- *  @brief  Enum of I2CSlave names on the MSP_EXP432P401R dev board
- */
-typedef enum MSP_EXP432P401R_I2CSlaveName {
-    MSP_EXP432P401R_I2CSLAVEB0 = 0,
-
-    MSP_EXP432P401R_I2CSLAVECOUNT
-} MSP_EXP432P401R_I2CSlaveName;
 
 /*!
  *  @def    MSP_EXP432P401R_PWMName
@@ -185,15 +135,6 @@ typedef enum MSP_EXP432P401R_TimerName {
  *  @def    MSP_EXP432P401R_UARTName
  *  @brief  Enum of UART names on the MSP_EXP432P401R dev board
  */
-#ifndef SATELLITE_CONFIG
-typedef enum MSP_EXP432P401R_UARTName {
-    MSP_EXP432P401R_UARTA0 = 0,
-    MSP_EXP432P401R_UARTA2,
-
-    MSP_EXP432P401R_UARTCOUNT
-} MSP_EXP432P401R_UARTName;
-#endif
-
 typedef enum Board_UARTName {
       UART_MCU_MCU = 0,
       UART_CDH_UMB = 1,
