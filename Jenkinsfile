@@ -25,7 +25,6 @@ pipeline {
                 // Check conditional branches for "#define A" only. This doesn't exist, which means we skip the poor-scaling of checking all possible
                 // configurations, with the trade-off of weaker static analysis results.
                 sh 'cppcheck -DA --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
-                warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
                 step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
                 sh 'cppcheck-htmlreport --source-encoding="iso8859-1" --title="MSP" --source-dir=. --report-dir=./checker_output/ --file=./checker_output/cppcheck.xml' 
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: './checker_output/', reportFiles: 'index.html', reportName: 'Static Analysis', reportTitles: ''])
@@ -66,8 +65,9 @@ pipeline {
                     docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
                     docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectImport -ccs.location /tmp/code
                     docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
-                '''
-            }
+                    '''
+    		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
+    	    }
             post {
                 always {
                     sh '''
