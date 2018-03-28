@@ -73,7 +73,7 @@ class Adc : public I2cSensor<double> {
     bool ReadLoThreshRegister(etl::array<byte, 2>& read_buffer);
     bool ReadHiThreshRegister(etl::array<byte, 2>& read_buffer);
 
-    bool TakeReading(void);
+    double TakeI2cReading(void);
 
     // Getter and setter methods.
     AdcOperationalStatus GetOperationalStatus() const;

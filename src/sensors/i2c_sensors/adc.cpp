@@ -66,14 +66,15 @@ void Adc::SelectRegister(byte register_address) {
     bus->PerformWriteTransaction(address, &register_address, 1);
 }
 
-bool Adc::TakeReading(void) {
+double Adc::TakeI2cReading(void) {
     etl::array<byte, 2> read_buffer;
     bool reading_successful = ReadConversionRegister(read_buffer);
     if (reading_successful) {
-        reading = ConvertReadingToVoltage(read_buffer);
-        NotifyObservers();
+        return ConvertReadingToVoltage(read_buffer);
+    } else {
+        etl::exception e("Failed ADC Reading", "__FILE__", __LINE__);
+        throw e;
     }
-    return reading_successful;
 }
 
 double Adc::ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer) {

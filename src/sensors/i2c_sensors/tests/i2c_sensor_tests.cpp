@@ -22,8 +22,7 @@ void TestADC(void) {
 
     adc.SetOperationalStatus(kAdcConversion);
     adc.SetOperatingMode(kAdcContinuousConversion);
-    adc.TakeReading();
-    double read_voltage = adc.GetReading();
+    double read_voltage = adc.TakeI2cReading();
 
     multiplexer.CloseAllChannels();
 
