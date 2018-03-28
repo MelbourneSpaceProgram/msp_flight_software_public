@@ -1,20 +1,27 @@
 #include <Board.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/rtc.h>
+#include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <test_runners/rtc_tests.h>
 #include <test_runners/unity.h>
 #include <time.h>
 
-static const byte kTestRtcAddr = 0x68;
+static const byte kMultiplexerAddress = 0x76;
+static const byte kTestRtcAddr = 0x69;
 
 void TestRtcReadTransaction(void) {
     if (!rtc_test_enabled) {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
-    I2c test_i2c_bus(Board_I2C_TMP);
+    I2c test_i2c_bus(I2C_BUS_A);
+    I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
+
+    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
+
     Rtc test_rtc(&test_i2c_bus, kTestRtcAddr);
 
     bool success = test_rtc.TakeReading();
 
+    multiplexer.CloseAllChannels();
     TEST_ASSERT(success);
 }
