@@ -13,7 +13,7 @@ class Rtc : public I2cSensor<RTime> {
    public:
     Rtc(const I2c* bus, int address);
 
-    bool TakeReading(void);
+    RTime TakeI2cReading(void);
     void SetSensorData(RTime reading);
     byte GetUnitTime(byte write_buffer, byte read_buffer[]);
     bool ValidTime(RTime time);

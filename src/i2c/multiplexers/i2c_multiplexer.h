@@ -20,7 +20,8 @@ class I2cMultiplexer {
         kMuxChannel4 = 0x08,
         kMuxChannel5 = 0x10,
         kMuxChannel6 = 0x20,
-        kMuxChannel7 = 0x40
+        kMuxChannel7 = 0x40,
+        kMuxNoChannel = 0xFF
     };
 
    private:

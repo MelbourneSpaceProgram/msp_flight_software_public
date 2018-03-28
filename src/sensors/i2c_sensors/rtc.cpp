@@ -11,7 +11,7 @@ Rtc::Rtc(const I2c* bus, int address) : I2cSensor<RTime>(bus, address) {
 // TODO(naverill): transition data type of address to uint8_t
 // TODO(naverill): validate time is returned in 24h time
 
-bool Rtc::TakeReading() {
+RTime Rtc::TakeI2cReading() {
     RTime real_time;
     byte read_buffer[kReadBufLen];
 
@@ -23,10 +23,11 @@ bool Rtc::TakeReading() {
     real_time.year = kCurrCentury + GetUnitTime(kTimeRegisterYear, read_buffer);
 
     if (ValidTime(real_time)) {
-        SetSensorData(real_time);
-        return true;
+        return real_time;
+    } else {
+        etl::exception e("Failed RTC Reading", "__FILE__", __LINE__);
+        throw e;
     }
-    return false;
 }
 
 byte Rtc::GetUnitTime(byte time_register, byte read_buffer[]) {
