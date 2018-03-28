@@ -23,6 +23,4 @@ void Sensor::NotifyObservers() {
     new_reading = false;
 }
 
-bool Sensor::HasNewReading() {
-    return new_reading;
-}
+bool Sensor::HasNewReading() { return new_reading; }

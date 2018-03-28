@@ -28,7 +28,7 @@ class MCP9808 : public I2cSensor<double> {
 
       @return The sensor reading.
     */
-    bool TakeReading();
+    double TakeI2cReading();
 
    private:
     /**
