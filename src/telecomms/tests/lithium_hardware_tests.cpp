@@ -33,9 +33,9 @@ void TestTransmitAckHardware() {
 }
 
 void TestWriteFlashHardware() {
-#ifdef LITHIUM_TESTS_IGNORED
-    TEST_IGNORE_MESSAGE("Hardware test ignored");
-#endif
+    if (!lithium_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
     etl::array<byte, LithiumMd5::kNumMd5Bytes> md5_bytes = {
         0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
         0x7f, 0xc1, 0x82, 0x89, 0x6d, 0x81, 0xc1, 0x12};
