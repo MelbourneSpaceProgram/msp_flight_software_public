@@ -2,10 +2,10 @@
 #define SRC_SENSORS_SPECIFIC_SENSORS_MAGNETOMETER_H_
 
 #include <src/messages/MagnetometerReading.pb.h>
-#include <src/sensors/generic_sensor.h>
 #include <string>
+#include "../generic_measurable.h"
 
-class Magnetometer : public GenericSensor<MagnetometerReading> {
+class Magnetometer : public GenericMeasurable<MagnetometerReading> {
    public:
     explicit Magnetometer(std::string id);
     bool TakeReading();

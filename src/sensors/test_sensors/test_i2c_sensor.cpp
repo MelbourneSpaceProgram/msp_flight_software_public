@@ -1,6 +1,6 @@
 #include <src/sensors/test_sensors/test_i2c_sensor.h>
 
-TestI2cSensor::TestI2cSensor() : I2cSensor<double>(NULL, kTestI2cAddress) {}
+TestI2cSensor::TestI2cSensor() : I2cMeasurable<double>(NULL) {}
 
 double TestI2cSensor::TakeI2cReading() { return dummy_data; }
 

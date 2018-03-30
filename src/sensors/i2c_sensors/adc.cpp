@@ -4,8 +4,9 @@ const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage6v144, kAdcVoltage4v096, kAdcVoltage2v048,
     kAdcVoltage1v024, kAdcVoltage0v512, kAdcVoltage0v256};
 
-Adc::Adc(const I2c* bus, int address)
-    : I2cSensor<double>(bus, address),
+Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
+         I2cMultiplexer::MuxChannels channel)
+    : I2cSensor(bus, address, multiplexer, channel),
       operational_status(kAdcDefaultOperationalStatus),
       mux_mode(kAdcDefaultMuxMode),
       gain_amplifier_level(kAdcDefaultGainAmplifierLevel),
@@ -15,7 +16,6 @@ Adc::Adc(const I2c* bus, int address)
       comparator_polarity(kAdcDefaultComparatorPolarity),
       latching_comparator(kAdcDefaultLatchingComparator),
       comparator_queue(kAdcDefaultComparatorQueue) {
-    inputs.fill(NULL);
     SetAdcGainAmplifierFullScaleRange();
     SetConfiguration();
 }
@@ -96,7 +96,6 @@ bool Adc::ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer) {
     if (bus->PerformReadTransaction(address, i2c_buffer, 2)) {
         read_buffer.at(0) = i2c_buffer[0];
         read_buffer.at(1) = i2c_buffer[1];
-        reading = 0;
         return true;
     } else {
         return false;

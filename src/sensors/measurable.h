@@ -1,18 +1,18 @@
-#ifndef SRC_SENSORS_SENSOR_H_
-#define SRC_SENSORS_SENSOR_H_
+#ifndef SRC_SENSORS_MEASURABLE_H_
+#define SRC_SENSORS_MEASURABLE_H_
 
 #include <external/etl/vector.h>
 
 class Observer;
 
-class Sensor {
+class Measurable {
    public:
     virtual bool TakeReading() = 0;
     bool AddObserver(Observer* observer);
     bool HasNewReading();
 
    protected:
-    Sensor();
+    Measurable();
     void NotifyObservers();
 
    private:
@@ -21,4 +21,4 @@ class Sensor {
     bool new_reading;
 };
 
-#endif  //  SRC_SENSORS_SENSOR_H_
+#endif  //  SRC_SENSORS_MEASURABLE_H_

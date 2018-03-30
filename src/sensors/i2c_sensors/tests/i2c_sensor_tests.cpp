@@ -1,9 +1,9 @@
 #include <Board.h>
 #include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
+#include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/observers/specific_observers/test_observer.h>
 #include <src/sensors/i2c_sensors/adc.h>
-#include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <test_runners/i2c_sensor_tests.h>
 #include <test_runners/unity.h>
 
@@ -29,8 +29,8 @@ void TestADC(void) {
     // Check that the reading is within +-full_scale_range
     TEST_ASSERT_DOUBLE_WITHIN(2 * adc.GetAdcGainAmplifierFullScaleRange(),
                               adc.GetAdcGainAmplifierFullScaleRange(),
-                              adc.GetReading());
+                              read_voltage);
     TEST_ASSERT_DOUBLE_WITHIN(2 * adc.GetAdcGainAmplifierFullScaleRange(),
                               -adc.GetAdcGainAmplifierFullScaleRange(),
-                              adc.GetReading());
+                              read_voltage);
 }

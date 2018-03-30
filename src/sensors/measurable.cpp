@@ -1,9 +1,9 @@
 #include <src/observers/observer.h>
-#include <src/sensors/sensor.h>
+#include <src/sensors/measurable.h>
 
-Sensor::Sensor() : new_reading(false) {}
+Measurable::Measurable() : new_reading(false) {}
 
-bool Sensor::AddObserver(Observer* observer) {
+bool Measurable::AddObserver(Observer* observer) {
     if (observers.available()) {
         observers.push_back(observer);
         return true;
@@ -14,7 +14,7 @@ bool Sensor::AddObserver(Observer* observer) {
     }
 }
 
-void Sensor::NotifyObservers() {
+void Measurable::NotifyObservers() {
     new_reading = true;
     for (etl::vector<Observer*, kMaxObservers>::iterator it = observers.begin();
          it != observers.end(); it++) {
@@ -23,4 +23,4 @@ void Sensor::NotifyObservers() {
     new_reading = false;
 }
 
-bool Sensor::HasNewReading() { return new_reading; }
+bool Measurable::HasNewReading() { return new_reading; }
