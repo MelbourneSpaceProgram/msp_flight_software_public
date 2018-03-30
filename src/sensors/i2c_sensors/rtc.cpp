@@ -1,6 +1,8 @@
 #include <src/sensors/i2c_sensors/rtc.h>
 
-Rtc::Rtc(const I2c* bus, int address) : I2cSensor<RTime>(bus, address) {
+Rtc::Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
+         I2cMultiplexer::MuxChannels channel)
+    : I2cSensor(bus, address, multiplexer, channel) {
     Rtc::bit_mask_map[kTimeRegisterSec] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterMin] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterHour] = kLowest6BitMask;
@@ -11,7 +13,7 @@ Rtc::Rtc(const I2c* bus, int address) : I2cSensor<RTime>(bus, address) {
 // TODO(naverill): transition data type of address to uint8_t
 // TODO(naverill): validate time is returned in 24h time
 
-RTime Rtc::TakeI2cReading() {
+RTime Rtc::GetTime() {
     RTime real_time;
     byte read_buffer[kReadBufLen];
 
@@ -49,8 +51,6 @@ byte Rtc::GetUnitTime(byte time_register, byte read_buffer[]) {
 byte Rtc::BCDToBinary(byte output) {
     return 10 * ((output & kHighest4BitMask) >> 4) + (output & kLowest4BitMask);
 }
-
-void Rtc::SetSensorData(RTime reading) { this->reading = reading; }
 
 bool Rtc::ValidTime(RTime time) {
     byte s = time.sec;

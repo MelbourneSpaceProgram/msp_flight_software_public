@@ -9,17 +9,18 @@
 
   This describes a single MCP9808 sensor.
 */
-class MCP9808 : public I2cSensor<double> {
+class MCP9808 : public I2cSensor {
    public:
     /**
       MCP9808 constructor.
 
       @param bus The bus that the sensor is connected to.
       @param address The address of the sensor.
-      @param id The unique ID by which the sensor is identified.
       @return The MCP9808 object.
     */
-    MCP9808(const I2c* bus, int address);
+    MCP9808(
+        const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
+        I2cMultiplexer::MuxChannels channel = I2cMultiplexer::kMuxNoChannel);
 
     /**
       Method that causes the MCP9808 to take a reading. The value is then

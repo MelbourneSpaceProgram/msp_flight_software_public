@@ -12,6 +12,7 @@ class I2cMultiplexer {
     void CloseChannel(uint8_t channel) const;
     void CloseAllChannels() const;
     byte GetChannelStates() const;
+    // TODO(dingbenjamin): Have mux logic handle kMuxNoChannel
     enum MuxChannels {
         kMuxChannel0 = 0x00,
         kMuxChannel1 = 0x01,

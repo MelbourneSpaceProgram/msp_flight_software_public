@@ -1,7 +1,7 @@
 #include <Board.h>
 #include <src/config/unit_tests.h>
-#include <src/sensors/i2c_sensors/rtc.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
+#include <src/sensors/i2c_sensors/rtc.h>
 #include <test_runners/rtc_tests.h>
 #include <test_runners/unity.h>
 #include <time.h>
@@ -19,9 +19,8 @@ void TestRtcReadTransaction(void) {
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
 
     Rtc test_rtc(&test_i2c_bus, kTestRtcAddr);
-
-    bool success = test_rtc.TakeReading();
+    RTime time = test_rtc.GetTime();
 
     multiplexer.CloseAllChannels();
-    TEST_ASSERT(success);
+    TEST_ASSERT(test_rtc.ValidTime(time));
 }

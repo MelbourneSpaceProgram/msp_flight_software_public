@@ -7,7 +7,7 @@
 #include <src/debug_interface/debug_stream.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
-#include <src/sensors/generic_sensor.h>
+#include <src/sensors/generic_measurable.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>

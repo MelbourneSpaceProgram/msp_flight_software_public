@@ -1,11 +1,11 @@
 #ifndef SRC_SENSORS_SOFTWARE_SENSOR_SOFTWARE_SENSOR_H_
 #define SRC_SENSORS_SOFTWARE_SENSOR_SOFTWARE_SENSOR_H_
 
-#include <src/sensors/generic_sensor.h>
 #include <string>
 #include <vector>
+#include "../generic_measurable.h"
 
-class SoftwareSensor : public GenericSensor<double> {
+class SoftwareSensor : public GenericMeasurable<double> {
 public:
     explicit SoftwareSensor(std::string id);
     std::string GetId() const;

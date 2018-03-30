@@ -60,11 +60,10 @@ enum AdcMuxMode {
     kAdcP3NGnd = 0b111
 };
 
-class Adc : public I2cSensor<double> {
-    friend class AdcMeasurable;
-
+class Adc : public I2cSensor {
    public:
-    Adc(const I2c* bus, int address);
+    Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
+        I2cMultiplexer::MuxChannels channel = I2cMultiplexer::kMuxNoChannel);
 
     void SetConfiguration();
 
@@ -73,7 +72,7 @@ class Adc : public I2cSensor<double> {
     bool ReadLoThreshRegister(etl::array<byte, 2>& read_buffer);
     bool ReadHiThreshRegister(etl::array<byte, 2>& read_buffer);
 
-    double TakeI2cReading(void);
+    double TakeI2cReading();
 
     // Getter and setter methods.
     AdcOperationalStatus GetOperationalStatus() const;
@@ -163,8 +162,6 @@ class Adc : public I2cSensor<double> {
     bool ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
     void SelectRegister(byte register_address_pointer);
     double ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer);
-
-    etl::array<AdcMeasurable*, kAdcNumInputs> inputs;
 };
 
 #endif  // SRC_I2C_ADC_ADC_H
