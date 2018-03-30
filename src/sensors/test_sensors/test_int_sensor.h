@@ -1,10 +1,10 @@
 #ifndef SRC_SENSORS_TEST_SENSORS_TEST_INT_SENSOR_H_
 #define SRC_SENSORS_TEST_SENSORS_TEST_INT_SENSOR_H_
 
-#include <src/sensors/generic_sensor.h>
+#include <src/sensors/generic_measurable.h>
 #include <string>
 
-class TestIntSensor : public GenericSensor<int> {
+class TestIntSensor : public GenericMeasurable<int> {
    public:
     explicit TestIntSensor();
     bool TakeReading();
