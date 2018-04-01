@@ -77,5 +77,34 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') { 
+            agent {
+                label 'flatsat'
+            }
+            steps {
+                sh '''
+                    tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
+                    buildid=${BUILD_ID}
+                    gitcommit=${GIT_COMMIT}
+                    docker_name=$gitcommit"_"$buildid"_"${container_uuid}
+                    docker run -td --name $docker_name --privileged -v /dev/bus/usb:/dev/bus/usb jigglemein/ccs7_final_image_v3
+                    docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
+                    docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
+                    docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
+                    docker exec -t $docker_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/runner.js
+                    '''
+            }
+            post {
+                always {
+                    sh '''
+                        buildid=${BUILD_ID}
+                        gitcommit=${GIT_COMMIT}
+                        docker_name=$gitcommit"_"$buildid"_"${container_uuid}
+                        docker rm -f $docker_name
+                    '''
+                }
+            }
+        }
     }
 }
