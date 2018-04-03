@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/i2c/i2c.h>
 #include <ti/drivers/I2C.h>
 #include <ti/sysbios/knl/Mailbox.h>
@@ -25,7 +26,8 @@ I2c::~I2c() { Close(); }
 void I2c::Open() {
     handle = I2C_open(index, &i2c_params);
     if (handle == NULL) {
-        // TODO(wschuetz) Throw Exception
+        throw etl::exception("Failed to open I2C bus, possibly already in-use.",
+                             "__FILE__", __LINE__);
     }
 }
 
@@ -49,7 +51,8 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     Mailbox_Handle i2c_mailbox = Mailbox_create(sizeof(bool), 1,
                                                 &mailbox_params, NULL);
     if (i2c_mailbox == NULL) {
-        // TODO(wschuetz) Throw exception
+        throw etl::exception("Failed to create I2C bus timeout mailbox.",
+                             "__FILE__", __LINE__);
     }
 
     i2c_transaction.slaveAddress = address;
@@ -70,7 +73,6 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
     if (transfer_outcome == false) {
         I2C_cancel(handle);
-        // TODO(wschuetz) Throw exception
         return false;
     }
 
