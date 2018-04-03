@@ -7,6 +7,7 @@ void master_tests_thread();
 void b_dot_controller_tests_runner();
 void b_dot_estimator_tests_runner();
 void kalman_filter_tests_runner();
+void sgp4_tests_runner();
 void database_tests_runner();
 void runnable_data_dashboard_tests_runner();
 void debug_interface_tests_runner();
