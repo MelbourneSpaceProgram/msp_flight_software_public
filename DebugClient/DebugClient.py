@@ -105,7 +105,8 @@ def testLoop(debug_serial_port):
                             str(bms1_input_current_reading.value))
                 if useMemcached:
                      mc.set("BMS1_Input_Current",
-                            bms1_input_current_reading.value)
+                            struct.pack('>d',
+                                bms1_input_current_reading.value))
 
 
             elif message_code == 0x02:
@@ -115,7 +116,8 @@ def testLoop(debug_serial_port):
                             str(bms1_input_voltage_reading.value))
                 if useMemcached:
                     mc.set("BMS1_Input_Voltage",
-                           bms1_input_voltage_reading.value)
+                           struct.pack('>d',
+                               bms1_input_voltage_reading.value))
 
 
             elif message_code == 0x03:
@@ -126,7 +128,8 @@ def testLoop(debug_serial_port):
                             str(primary_mcu_regulator_current_reading.value))
                 if useMemcached:
                        mc.set("Primary_MCU_Regulator_Current",
-                              primary_mcu_regulator_current_reading.value)
+                              struct.pack('>d',
+                                  primary_mcu_regulator_current_reading.value))
 
 
             elif message_code == 0x04:
@@ -137,7 +140,7 @@ def testLoop(debug_serial_port):
                             str(magnetorquer_x_current_reading.value))
                 if useMemcached:
                     mc.set("Magnetorquer_X_Current",
-                           magnetorquer_x_current_reading.value)
+                           struct.pack('>d',magnetorquer_x_current_reading.value))
 
 
             elif message_code == 0x05:
@@ -148,7 +151,7 @@ def testLoop(debug_serial_port):
                             str(adcs_system_state_reading.state))
                 if useMemcached:
                     mc.set("ADCS_System_State",
-                           adcs_system_state_reading.state)
+                           struct.pack('>i',adcs_system_state_reading.state))
 
 
             elif message_code == 0x07:
@@ -159,11 +162,11 @@ def testLoop(debug_serial_port):
                 logger.info("Received message data: " + str(torque_output_reading))
                 if useMemcached:
                     mc.set("Simulation_Torque_X",
-                           struct.pack('>d',float(torque_output_reading.x)))
+                           struct.pack('>d',torque_output_reading.x))
                     mc.set("Simulation_Torque_Y",
-                           struct.pack('>d',float(torque_output_reading.y)))
+                           struct.pack('>d',torque_output_reading.y))
                     mc.set("Simulation_Torque_Z",
-                           struct.pack('>d',float(torque_output_reading.z)))
+                           struct.pack('>d',torque_output_reading.z))
 
 
             elif message_code == 0x08:
@@ -173,7 +176,8 @@ def testLoop(debug_serial_port):
                 magnetometer_reading_echo.ParseFromString(payload)
                 logger.info("Message data: " + str(magnetometer_reading_echo))
                 if useMemcached:
-                    mc.set("Magnetometer_X",magnetometer_reading_echo.x)
+                    mc.set("Magnetometer_X",
+                           struct.pack('>d',magnetometer_reading_echo.x))
 
 
             elif message_code == 0x09:
@@ -213,12 +217,9 @@ def detect_serial_port():
 if __name__ == "__main__":
 
     suggested_port = detect_serial_port()
-    #userPort = input("Enter port ({}):".format(suggested_port)) or suggested_port
-    userPort = "/dev/ttyACM0"
-    #userBaud = input("Enter baud rate (115200):") or 115200
-    userBaud = 115200
-    #useMemcached_yn = input("Use Memcached as part of ADCS simulation? y/n (n)") or 'n'
-    useMemcached_yn = 'y'
+    userPort = input("Enter port ({}):".format(suggested_port)) or suggested_port
+    userBaud = input("Enter baud rate (115200):") or 115200
+    useMemcached_yn = input("Use Memcached as part of ADCS simulation? y/n (n)") or 'n'
     if useMemcached_yn == 'y':
         useMemcached = True
     else:
