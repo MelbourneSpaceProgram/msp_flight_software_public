@@ -11,6 +11,7 @@ import StateMachineStateReading_pb2
 import TorqueOutputReading_pb2
 import time
 import logging
+import struct
 
 logger = logging.getLogger('debug_interface')
 logger.setLevel(logging.DEBUG)
@@ -30,6 +31,8 @@ Stores/retrieves data from the Memcached buffer for transfers with
 the HIL simulation and the data dashboard.
 """
 
+console_logger = logging.StreamHandler()
+console_logger.setLevel(logging.DEBUG)
 
 def send_message(debug_serial_port, messageCode, serialisedMessage):
     debug_serial_port.flushInput()  # flush input buffer, discarding all its contents
@@ -73,10 +76,14 @@ def testLoop(debug_serial_port):
                 # It should have a zero command size and payload
                 magnetometer_reading = \
                     MagnetometerReading_pb2.MagnetometerReading()
-                if useMemcached:
-                    magnetometer_reading.x = float(mc.get("Simulation_Magnetometer_X"))
-                    magnetometer_reading.y = float(mc.get("Simulation_Magnetometer_Y"))
-                    magnetometer_reading.z = float(mc.get("Simulation_Magnetometer_Z"))
+                if useMemcached and mc.get("Simulation_Magnetometer_X") != None:
+                    magnetometer_reading.x = \
+                        struct.unpack('>d', mc.get("Simulation_Magnetometer_X"))[0]
+                    magnetometer_reading.y = \
+                        struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0]
+                    magnetometer_reading.z = \
+                        struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0]
+
                     magnetometer_reading.timestamp_millis_unix_epoch = \
                         round(time.time()*1000)
                 else:
@@ -151,9 +158,12 @@ def testLoop(debug_serial_port):
                 torque_output_reading.ParseFromString(payload)
                 logger.info("Received message data: " + str(torque_output_reading))
                 if useMemcached:
-                    mc.set("Simulation_Torque_X",torque_output_reading.x)
-                    mc.set("Simulation_Torque_Y",torque_output_reading.y)
-                    mc.set("Simulation_Torque_Z",torque_output_reading.z)
+                    mc.set("Simulation_Torque_X",
+                           struct.pack('>d',float(torque_output_reading.x)))
+                    mc.set("Simulation_Torque_Y",
+                           struct.pack('>d',float(torque_output_reading.y)))
+                    mc.set("Simulation_Torque_Z",
+                           struct.pack('>d',float(torque_output_reading.z)))
 
 
             elif message_code == 0x08:
@@ -203,9 +213,12 @@ def detect_serial_port():
 if __name__ == "__main__":
 
     suggested_port = detect_serial_port()
-    userPort = input("Enter port ({}):".format(suggested_port)) or suggested_port
-    userBaud = input("Enter baud rate (115200):") or 115200
-    useMemcached_yn = input("Use Memcached as part of ADCS simulation? y/n (n)") or 'n'
+    #userPort = input("Enter port ({}):".format(suggested_port)) or suggested_port
+    userPort = "/dev/ttyACM0"
+    #userBaud = input("Enter baud rate (115200):") or 115200
+    userBaud = 115200
+    #useMemcached_yn = input("Use Memcached as part of ADCS simulation? y/n (n)") or 'n'
+    useMemcached_yn = 'y'
     if useMemcached_yn == 'y':
         useMemcached = True
     else:
