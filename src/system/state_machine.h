@@ -11,6 +11,7 @@ class StateMachine {
     StateManager* GetStateManager() const;
     bool IsLocked() const;
     void OverrideState(StateId new_state);
+    virtual ~StateMachine();
 
    protected:
     StateMachine(StateManager* state_manager, StateId initial_state);

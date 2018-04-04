@@ -20,8 +20,10 @@ class StateManager {
     bool AddSystemStateMachine(SystemStateMachine* system_state_machine);
     void CreateStateMachines();
     void RemoveLastSystemStateMachine();
+    void DeleteInstance();
 
    private:
+    ~StateManager();
     void NotifySystems();
     static StateManager* instance;
     static const uint8_t TotalSystemStateMachines = 3;
