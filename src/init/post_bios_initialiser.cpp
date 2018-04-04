@@ -13,6 +13,7 @@
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <src/config/unit_tests.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -70,4 +71,8 @@ void PostBiosInitialiser::PostBiosInit() {
 
     StateManager* state_manager = StateManager::GetStateManager();
     state_manager->CreateStateMachines();
+
+    if (hil_enabled) {
+        InitDataDashboard();
+    }
 }
