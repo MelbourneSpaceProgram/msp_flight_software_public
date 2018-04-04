@@ -21,17 +21,12 @@ fnptr RunnableDataDashboard::GetRunnablePointer() {
 }
 
 void RunnableDataDashboard::DataDashboard() {
-    // TODO(rskew) replace string id
-    Magnetometer magnetometer("");
 
     // TODO(rskew) remove this when actual sensor readings are implemented
     double bms1_current = 0.0;
     double increment = 0.01;
 
-    while (1) {
-        // Do the magnetometer dance
-        magnetometer.TakeReading();
-
+    //while (1) {
         SensorReading bms1_input_current_reading = SensorReading_init_zero;
         // TODO(rskew) implement actual sensor readings
         bms1_current += increment;
@@ -68,8 +63,8 @@ void RunnableDataDashboard::DataDashboard() {
             kAdcsSystemStateReadingCode, StateMachineStateReading_size,
             StateMachineStateReading_fields, &adcs_system_state_reading);
 
-        Task_sleep(50);
-    }
+    //    Task_sleep(50);
+    //}
 }
 
 void RunnableDataDashboard::TransmitMessage(const byte message_code,

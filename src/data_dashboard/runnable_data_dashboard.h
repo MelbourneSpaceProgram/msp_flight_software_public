@@ -14,7 +14,7 @@ class RunnableDataDashboard : public Runnable {
                                 const pb_field_t* message_fields,
                                 const void* message_struct);
 
-   private:
+    //private:
     static void DataDashboard();
 };
 

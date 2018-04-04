@@ -12,7 +12,6 @@ class Magnetometer : public GenericMeasurable<MagnetometerReading> {
 
    private:
     std::string id;
-    MagnetometerReading reading;
     bool TakeReadingHil();
 };
 
