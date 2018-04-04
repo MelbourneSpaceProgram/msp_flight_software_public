@@ -18,8 +18,10 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
+#include <xdc/runtime/Error.h>
 #include <xdc/std.h>
 #include <string>
 
@@ -130,7 +132,7 @@ void PostBiosInitialiser::PostBiosInit() {
 
         RunUnitTests();
         InitStateManagement();
-        if (hil_enabled) InitDataDashboard();
+        //if (hil_enabled) InitDataDashboard();
 
         DeploymentWait();
 

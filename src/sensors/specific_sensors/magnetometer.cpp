@@ -28,20 +28,23 @@ bool Magnetometer::TakeReadingHil() {
     DebugStream *debug_stream = DebugStream::GetInstance();
     uint8_t buffer[MagnetometerReading_size];
 
-    debug_stream->RequestMessageFromSimulator(kMagnetometerReadingRequestCode,
-                                              buffer, MagnetometerReading_size);
+    bool success =
+        debug_stream->RequestMessageFromSimulator(kMagnetometerReadingRequestCode,
+                                                  buffer, MagnetometerReading_size);
 
-    pb_istream_t stream =
-        pb_istream_from_buffer(buffer, MagnetometerReading_size);
+    if (success) {
+        pb_istream_t stream =
+            pb_istream_from_buffer(buffer, MagnetometerReading_size);
 
-    bool status = pb_decode(&stream, MagnetometerReading_fields, &reading);
-    if (!status) {
-        etl::exception e("Magnetometer::TakeReadingHil pb_decode failed",
-                         __FILE__, __LINE__);
-        throw e;
+        bool status = pb_decode(&stream, MagnetometerReading_fields, &reading);
+        if (!status) {
+            etl::exception e("pb_decode failed",
+                             __FILE__, __LINE__);
+            throw e;
+        }
+
+        NotifyObservers();
     }
 
-    NotifyObservers();
-
-    return true;
+    return success;
 }

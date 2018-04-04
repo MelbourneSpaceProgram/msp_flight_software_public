@@ -9,9 +9,13 @@ import MagnetometerReading_pb2
 import SensorReading_pb2
 import StateMachineStateReading_pb2
 import TorqueOutputReading_pb2
+import Tle_pb2
+import Time_pb2
+import LocationReading_pb2
 import time
 import logging
 import struct
+from messagecodes import message_codes
 
 logger = logging.getLogger('debug_interface')
 logger.setLevel(logging.DEBUG)
@@ -48,9 +52,10 @@ def send_message(debug_serial_port, messageCode, serialisedMessage):
 def wait_for_message(debug_serial_port):
 
     try:
-        logger.info("Waiting for messages from satellite")
         # Read response code
         message_code = int.from_bytes(debug_serial_port.read(1), byteorder='big')
+        if message_code == 0:
+            return (None, None, None)
         bytes_to_read = int.from_bytes(debug_serial_port.read(1), byteorder='big')
 
         logger.info("Messaged received with code " + str(message_code))
@@ -74,11 +79,12 @@ def testLoop(debug_serial_port):
     try:
         while True:
             message_code, message_size, payload = wait_for_message(debug_serial_port)
+            if message_code == None:
+                continue
 
             # TODO(akremor): Integrate this with request codes
-            if message_code == 0x06:
-                # Magnetometer reading has been requested
-                # It should have a zero command size and payload
+            if message_code == \
+                message_codes["magnetometer_reading_request_code"]:
                 magnetometer_reading = \
                     MagnetometerReading_pb2.MagnetometerReading()
                 if useMemcached and mc.get("Simulation_Magnetometer_X") != None:
@@ -88,7 +94,6 @@ def testLoop(debug_serial_port):
                         struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0]
                     magnetometer_reading.z = \
                         struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0]
-
                     magnetometer_reading.timestamp_millis_unix_epoch = \
                         round(time.time()*1000)
                 else:
@@ -103,7 +108,8 @@ def testLoop(debug_serial_port):
                 send_message(debug_serial_port, 0x06, serialised_message)
 
 
-            elif message_code == 0x01:
+            elif message_code == \
+                 message_codes["bms1_input_current_reading_code"]:
                 bms1_input_current_reading = SensorReading_pb2.SensorReading()
                 bms1_input_current_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
@@ -114,7 +120,8 @@ def testLoop(debug_serial_port):
                                 bms1_input_current_reading.value))
 
 
-            elif message_code == 0x02:
+            elif message_code == \
+                message_codes["bms1_input_voltage_reading_code"]:
                 bms1_input_voltage_reading = SensorReading_pb2.SensorReading()
                 bms1_input_voltage_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
@@ -125,7 +132,8 @@ def testLoop(debug_serial_port):
                                bms1_input_voltage_reading.value))
 
 
-            elif message_code == 0x03:
+            elif message_code == \
+                message_codes["primary_mcu_regulator_current_reading_code"]:
                 primary_mcu_regulator_current_reading = \
                     SensorReading_pb2.SensorReading()
                 primary_mcu_regulator_current_reading.ParseFromString(payload)
@@ -137,7 +145,8 @@ def testLoop(debug_serial_port):
                                   primary_mcu_regulator_current_reading.value))
 
 
-            elif message_code == 0x04:
+            elif message_code == \
+                message_codes["magnetorquer_x_current_reading_code"]:
                 magnetorquer_x_current_reading = \
                     SensorReading_pb2.SensorReading()
                 magnetorquer_x_current_reading.ParseFromString(payload)
@@ -148,7 +157,8 @@ def testLoop(debug_serial_port):
                            struct.pack('>d',magnetorquer_x_current_reading.value))
 
 
-            elif message_code == 0x05:
+            elif message_code == \
+                message_codes["adcs_system_state_reading_code"]:
                 adcs_system_state_reading = \
                     StateMachineStateReading_pb2.StateMachineStateReading()
                 adcs_system_state_reading.ParseFromString(payload)
@@ -159,8 +169,8 @@ def testLoop(debug_serial_port):
                            struct.pack('>i',adcs_system_state_reading.state))
 
 
-            elif message_code == 0x07:
-                # Torque Output reading has been sent
+            elif message_code == \
+                message_codes["torque_output_reading_code"]:
 
                 torque_output_reading = TorqueOutputReading_pb2.TorqueOutputReading()
                 torque_output_reading.ParseFromString(payload)
@@ -174,7 +184,8 @@ def testLoop(debug_serial_port):
                            struct.pack('>d',torque_output_reading.z))
 
 
-            elif message_code == 0x08:
+            elif message_code == \
+                message_codes["magnetometer_reading_code"]:
                 # Magnetometer Reading Echo
 
                 magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
@@ -185,7 +196,8 @@ def testLoop(debug_serial_port):
                            struct.pack('>d',magnetometer_reading_echo.x))
 
 
-            elif message_code == 0x09:
+            elif message_code == \
+                message_codes["test_sensor_reading_code"]:
                 # Test Sensor Reading, store it for the test reading request
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
@@ -196,7 +208,8 @@ def testLoop(debug_serial_port):
                     test_sensor_reading.timestamp_millis_unix_epoch
 
 
-            elif message_code == 0x0A:
+            elif message_code == \
+                message_codes["test_sensor_reading_linked_request_code"]:
                 # Follow-up test request, send stored data
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
@@ -207,7 +220,8 @@ def testLoop(debug_serial_port):
                              test_sensor_reading.SerializeToString())
 
 
-            elif message_code == 0x0B:
+            elif message_code == \
+                message_codes["test_sensor_reading_request_code"]:
                 # Test request, send known data
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
@@ -216,6 +230,68 @@ def testLoop(debug_serial_port):
                 send_message(debug_serial_port, 0x0B,
                              test_sensor_reading.SerializeToString())
 
+
+            elif message_code == \
+                message_codes["tle_request_code"]:
+
+                tle = Tle_pb2.Tle()
+                if useMemcached and mc.get("Simulation_TLE_Mean_Motion") != None:
+                    tle.mean_motion = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Mean_Motion"))[0]
+                    tle.mean_anomaly = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Mean_Anomaly"))[0]
+                    tle.inclination = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Inclination"))[0]
+                    tle.raan = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Raan"))[0]
+                    tle.bstar_drag = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Bstar"))[0]
+                    tle.epoch = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Epoch"))[0]
+                    tle.eccentricity_1e7 = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Eccentricity_1e7"))[0]
+                    tle.argument_of_perigee = \
+                        struct.unpack('>d',
+                                      mc.get("Simulation_TLE_Argument_Perigee"))[0]
+                else:
+                    # TODO (rskew) use better default values
+                    tle.mean_motion = 0
+                    tle.mean_anomaly = 0
+                    tle.inclination = 0
+                    tle.raan = 0
+                    tle.bstar_drag = 0
+                    tle.epoch = 0
+                    tle.eccentricity_1e7 = 0
+                    tle.argument_of_perigee = 0
+
+                logger.info("Sending message: " + str(tle))
+                serialised_message = tle.SerializeToString()
+                send_message(debug_serial_port, 0x0C, serialised_message)
+
+
+            elif message_code == \
+                message_codes["location_reading_code"]:
+
+                location_reading = LocationReading_pb2.LocationReading()
+                location_reading.ParseFromString(payload)
+                logger.info("Received location reading: " + str(location_reading))
+                if useMemcached:
+                    mc.set("Location_Lattitude_Geodetic_Degrees",
+                           struct.pack('>d',location_reading.lattitude_geodetic_degrees))
+                    mc.set("Location_Longitude_Degrees",
+                           struct.pack('>d',location_reading.longitude_degrees))
+                    mc.set("Location_Altitude_Above_Ellipsoid_Km",
+                           struct.pack('>d',
+                                       location_reading.altitude_above_ellipsoid_km))
+                    mc.set("Location_Timestamp_Millis_Unix_Epoch",
+                           struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
 
             else:
                 logger.info("Received unhandled message with ID ".format(message_code))
@@ -236,11 +312,13 @@ def detect_serial_port():
 
 
 if __name__ == "__main__":
-
     suggested_port = detect_serial_port()
-    userPort = input("Enter port ({}):".format(suggested_port)) or suggested_port
-    userBaud = input("Enter baud rate (115200):") or 115200
-    useMemcached_yn = input("Use Memcached as part of ADCS simulation? y/n (n)") or 'n'
+    print("Enter port ({}):".format(suggested_port))
+    userPort = sys.stdin.readline().strip() or suggested_port
+    print("Enter baud rate (115200):")
+    userBaud = sys.stdin.readline().strip() or 115200
+    print("Use Memcached as part of ADCS simulation? y/n (n)")
+    useMemcached_yn = sys.stdin.readline().strip() or 'n'
     if useMemcached_yn == 'y':
         useMemcached = True
     else:
@@ -252,7 +330,8 @@ if __name__ == "__main__":
                         "bytesize": serial.EIGHTBITS,
                         "parity": serial.PARITY_NONE,
                         "stopbits": serial.STOPBITS_ONE,
-                        "timeout": None,  # TODO: Check if should have a timeout
+                        #"timeout": 0.01,  # seconds
+                        "timeout": None,  # seconds
                         "xonxoff": False,  # disable software flow control
                         "rtscts": False,  # disable hardware (RTS/CTS) flow control
                         "dsrdtr": False,  # disable hardware (DSR/DTR) flow control
@@ -273,4 +352,5 @@ if __name__ == "__main__":
 
     with serial.Serial(**serial_arguments) as debug_serial_port:
         logger.info("Port " + debug_serial_port.portstr + " opened.")
+        debug_serial_port.flushInput()  # flush input buffer, discarding all its contents
         testLoop(debug_serial_port)

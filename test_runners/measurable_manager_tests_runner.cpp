@@ -76,7 +76,7 @@ int measurable_manager_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/sensors/tests/measurable_manager_tests.cpp");
-  RUN_TEST(TestManagerRead, 9);
+  RUN_TEST(TestManagerRead, 10);
 
   return suite_teardown(UnityEnd(), mem_test);
 }
