@@ -1,0 +1,11 @@
+--- old_unit_tests.h	2018-04-04 20:02:25.138637000 +1000
++++ unit_tests.h	2018-04-04 20:02:38.580546800 +1000
+@@ -31,7 +31,7 @@
+ // the if(var) approach without significant rework. The region of effect of this
+ // define is also small enough that we feel comfortable keeping it. It should
+ // not be used in the future without further discussion.
+-#define SATELLITE_CONFIG 1
++//#define SATELLITE_CONFIG 1
+ #define LAUNCHPAD_CONFIG 2
+ 
+ extern bool satellite_configuration;
