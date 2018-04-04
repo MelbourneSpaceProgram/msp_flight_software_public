@@ -4,13 +4,16 @@
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/test_message.h>
 #include <src/util/message_codes.h>
+#include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
 DebugStream *DebugStream::instance = NULL;
 
 DebugStream::DebugStream() : debug_uart(UART_CDH_UMB) {
-    debug_uart.SetBaudRate(Uart::kBaud115200)->Open();
+    debug_uart.SetBaudRate(Uart::kBaud115200)
+        ->SetReadTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))
+        ->Open();
 
     Semaphore_Params_init(&bus_available_params);
     bus_available = Semaphore_create(1, &bus_available_params, NULL);
@@ -25,7 +28,7 @@ DebugStream *DebugStream::GetInstance() {
     return instance;
 }
 
-void DebugStream::RequestMessageFromSimulator(byte message_code,
+bool DebugStream::RequestMessageFromSimulator(byte message_code,
                                               byte *response_buffer,
                                               uint8_t response_size) {
     uint8_t message_header[2];
@@ -35,9 +38,13 @@ void DebugStream::RequestMessageFromSimulator(byte message_code,
     // Entering critical section
     Semaphore_pend(bus_available, BIOS_WAIT_FOREVER);
     debug_uart.PerformWriteTransaction(message_header, 2);
-    debug_uart.PerformReadTransaction(response_buffer, response_size);
+    int bytes_read =
+        debug_uart.PerformReadTransaction(response_buffer, response_size);
     Semaphore_post(bus_available);
     // Exited critical section
+
+    // timeout causes less bytes to be read
+    return bytes_read == response_size;
 }
 
 void DebugStream::PostMessageToDebugClient(byte message_code,

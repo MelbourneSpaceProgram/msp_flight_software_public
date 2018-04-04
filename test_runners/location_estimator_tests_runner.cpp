@@ -27,13 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "debug_interface_tests.h"
+#include "location_estimator_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestRequestMessageFromSimulator();
-extern void TestPostMessageToDebugClient();
+extern void TestUpdateLocation();
 
 
 /*=======Suite Setup=====*/
@@ -63,8 +62,8 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_debug_interface_tests_runner(void);
-void resetTest_debug_interface_tests_runner(void)
+void resetTest_location_estimator_tests_runner(void);
+void resetTest_location_estimator_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -72,13 +71,12 @@ void resetTest_debug_interface_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int debug_interface_tests_runner(void);
-int debug_interface_tests_runner(void)
+ int location_estimator_tests_runner(void);
+int location_estimator_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
-  UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
-  RUN_TEST(TestRequestMessageFromSimulator, 11);
-  RUN_TEST(TestPostMessageToDebugClient, 35);
+  UnityBegin("src/adcs/tests/location_estimator_tests.cpp");
+  RUN_TEST(TestUpdateLocation, 5);
 
   return suite_teardown(UnityEnd(), mem_test);
 }

@@ -2,7 +2,6 @@
 #include <src/init/init.h>
 #include <test_runners/master_runner.h>
 #include <ti/sysbios/BIOS.h>
-
 int main(void) {
     PreBiosInit();
     BIOS_start();  // Infinite Loop

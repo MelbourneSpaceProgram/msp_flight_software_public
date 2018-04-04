@@ -7,6 +7,8 @@
 #include <external/sgp4/sgp4.h>
 #include <external/sgp4/sgp4_utils.h>
 #include <math.h>
+#include <src/adcs/state_estimators/location_estimator.h>
+#include <src/util/physical_constants.h>
 #include <test_runners/sgp4_tests.h>
 #include <src/util/memory_troubleshooter.h>
 

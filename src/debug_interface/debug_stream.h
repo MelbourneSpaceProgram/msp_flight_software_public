@@ -9,17 +9,19 @@
 class DebugStream {
    public:
     static DebugStream *GetInstance();  // Initial call is not thread safe
-    Uart debug_uart;
-    Semaphore_Handle bus_available;
-    void RequestMessageFromSimulator(byte message_code, byte *response_buffer,
+    bool RequestMessageFromSimulator(byte message_code, byte *response_buffer,
                                      uint8_t response_size);
     void PostMessageToDebugClient(byte message_code, uint8_t payload_size,
                                   byte *payload);
 
    private:
     Semaphore_Params bus_available_params;
+    Semaphore_Handle bus_available;
+    Uart debug_uart;
     DebugStream();
     static DebugStream *instance;
+
+    static const uint32_t kTimeoutMillis = 100;
 };
 
 #endif  // SRC_DEBUG_INTERFACE_DEBUG_STREAM_H_

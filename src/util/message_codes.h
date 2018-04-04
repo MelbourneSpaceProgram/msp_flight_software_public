@@ -14,6 +14,8 @@ enum DebugMessageType {
     kPopMessageQueue = 4,
     kAntenna = 5,
 
+    // A message code of zero looks like a read timeout to the DebugClient
+    kNoMessage = 0x00,
     kBms1InputCurrentReadingCode = 0x01,
     kBms1InputVoltageReadingCode = 0x02,
     kPrimaryMcuRegulatorCurrentReadingCode = 0x03,
@@ -24,7 +26,9 @@ enum DebugMessageType {
     kMagnetometerReadingCode = 0x08,
     kTestSensorReadingCode = 0x09,
     kTestSensorReadingRequestCode = 0x0A,
-    kTestRequestCode = 0x0B
+    kTestRequestCode = 0x0B,
+    kTleRequestCode = 0x0C,
+    kLocationReadingCode = 0x0D
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient

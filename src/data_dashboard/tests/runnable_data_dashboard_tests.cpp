@@ -24,8 +24,11 @@ void TestTransmitMessage() {
         kTestSensorReadingCode, SensorReading_size, SensorReading_fields,
         &test_sensor_reading_message);
 
-    debug_stream->RequestMessageFromSimulator(kTestSensorReadingRequestCode,
-                                              buffer, SensorReading_size);
+    bool success = debug_stream->RequestMessageFromSimulator(
+        kTestSensorReadingRequestCode, buffer, SensorReading_size);
+    if (!success) {
+        TEST_IGNORE_MESSAGE("Debug stream could not perform request");
+    }
 
     pb_istream_t stream = pb_istream_from_buffer(buffer, SensorReading_size);
 

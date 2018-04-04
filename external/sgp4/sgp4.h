@@ -40,6 +40,7 @@
  *       ---------------------------------------------------------------- */
 
 #include <external/sgp4/sgp4_utils.h>
+#include <src/messages/Tle.pb.h>
 
 typedef struct elsetrec {
     long int satnum;
@@ -79,13 +80,7 @@ typedef struct elsetrec {
 
 class Sgp4 {
    public:
-    static void InitialisePropagator(gravconsttype whichconst, char opsmode,
-                                     const int satn, const double epoch,
-                                     const double xbstar, const double xndot,
-                                     const double xnddot, const double xecco,
-                                     const double xargpo, const double xinclo,
-                                     const double xmo, const double xno,
-                                     const double xnodeo, elsetrec& satrec);
+    static void InitialisePropagator(Tle tle, elsetrec& satrec);
 
     static void Propagate(elsetrec& satrec, double tsince, double position[3],
                           double velocity[3]);
