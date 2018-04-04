@@ -47,45 +47,5 @@ bool Magnetometer::TakeReadingHil() {
 
     NotifyObservers();
 
-    // TODO(rskew) put this code in the controller task
-    // (done in HIL_ADCS branch)
-    // ==========================================================
-
-    // Echo reading to data dashboard
-    RunnableDataDashboard::TransmitMessage(
-        kMagnetometerReadingCode, MagnetometerReading_size,
-        MagnetometerReading_fields, &reading);
-
-    // Run estimator
-    BDotEstimator b_dot_estimator(50, 400);
-
-    double magnetometer_reading_data[3][1] = {
-        {reading.x}, {reading.y}, {reading.z}};
-    Matrix magnetometer_reading(magnetometer_reading_data);
-    double b_dot_estimate_data[3][1];
-    Matrix b_dot_estimate(b_dot_estimate_data);
-
-    b_dot_estimator.Estimate(magnetometer_reading, b_dot_estimate);
-
-    // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
-
-    // Run controller
-    double torque_output_data[3][1];
-    Matrix torque_output(torque_output_data);
-
-    BDotController::Control(magnetometer_reading, b_dot_estimate,
-                            torque_output);
-
-    // Send torque output to simulation
-    TorqueOutputReading torque_output_reading = TorqueOutputReading_init_zero;
-    torque_output_reading.x = torque_output.Get(0, 0);
-    torque_output_reading.y = torque_output.Get(1, 0);
-    torque_output_reading.z = torque_output.Get(2, 0);
-
-    RunnableDataDashboard::TransmitMessage(
-        kTorqueOutputReadingCode, TorqueOutputReading_size,
-        TorqueOutputReading_fields, &torque_output_reading);
-    // ==========================================================
-
     return true;
 }

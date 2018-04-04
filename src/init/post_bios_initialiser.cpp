@@ -1,4 +1,5 @@
 #include <Board.h>
+#include <src/adcs/runnable_orientation_control.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/debug_interface/debug_stream.h>
@@ -58,6 +59,13 @@ void PostBiosInitialiser::InitDataDashboard() {
     data_dashboard_task->Init();
 }
 
+void PostBiosInitialiser::InitOrientationControl() {
+    // TODO(rskew) review priority
+    TaskHolder* orientation_control_task = new TaskHolder(
+        4096, "OrientationControl", 7, new RunnableOrientationControl());
+    orientation_control_task->Init();
+}
+
 void PostBiosInitialiser::PostBiosInit() {
     // TODO(dingbenjamin): Init var length array pool
 
@@ -73,6 +81,7 @@ void PostBiosInitialiser::PostBiosInit() {
     state_manager->CreateStateMachines();
 
     if (hil_enabled) {
-        InitDataDashboard();
+        InitOrientationControl();
+        //InitDataDashboard();
     }
 }
