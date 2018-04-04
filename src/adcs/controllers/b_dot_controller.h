@@ -10,8 +10,6 @@ class BDotController {
 
    private:
     static const double max_achievable_dipole[3];
-    static const uint8_t input_vector_rows = 3;
-    static const uint8_t input_vector_columns = 1;
 };
 
 #endif  // SRC_ADCS_CONTROLLERS_B_DOT_CONTROLLER_H_
