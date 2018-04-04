@@ -18,9 +18,6 @@ class BDotEstimator {
     FiniteDifferenceSymmetric differentiator_x;
     FiniteDifferenceSymmetric differentiator_y;
     FiniteDifferenceSymmetric differentiator_z;
-
-    const static uint8_t input_vector_rows = 3;
-    const static uint8_t input_vector_columns = 1;
 };
 
 #endif  // SRC_ADCS_STATE_ESTIMATORS_B_DOT_ESTIMATOR_H_
