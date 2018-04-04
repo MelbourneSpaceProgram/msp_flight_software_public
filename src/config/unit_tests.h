@@ -32,6 +32,7 @@
 // define is also small enough that we feel comfortable keeping it. It should
 // not be used in the future without further discussion.
 #define SATELLITE_CONFIG 1
+#define LAUNCHPAD_CONFIG 2
 
 extern bool satellite_configuration;
 extern bool spi_test_enabled;

@@ -1,0 +1,16 @@
+--- old_unit_tests.cpp	2018-04-04 19:59:15.523467700 +1000
++++ unit_tests.cpp	2018-04-04 20:01:46.998579700 +1000
+@@ -1,6 +1,6 @@
+ #include <src/config/unit_tests.h>
+ 
+-bool satellite_configuration = SATELLITE_CONFIG;
++bool satellite_configuration = LAUNCHPAD_CONFIG;
+ 
+ bool spi_test_enabled = false;
+ bool i2c_test_enabled = false;
+@@ -10,4 +10,4 @@
+ bool multiplexer_test_enabled = false;
+ bool adc_test_enabled = false;
+ bool magnetometer_test_enabled = false;
+-bool hil_enabled = false;
++bool hil_enabled = true;
