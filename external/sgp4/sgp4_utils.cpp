@@ -23,8 +23,11 @@ vpef           Velocity vector (PEF)          km/s
 Edited by MSP
 */
 
-void Sgp4Utils::TemeToPef(double rteme[3], double vteme[3], double jdut1,
-                          double rpef[3], double vpef[3]) {
+void Sgp4Utils::TrueEquatorMeanEquinoxToPsuedoEarthFixed(double rteme[3],
+                                                         double vteme[3],
+                                                         double jdut1,
+                                                         double rpef[3],
+                                                         double vpef[3]) {
     double gmst;
     double st[3][3];
     double omegaearth[3];
@@ -98,7 +101,7 @@ void Sgp4Utils::TemeToPef(double rteme[3], double vteme[3], double jdut1,
 double Sgp4Utils::GreenwichMeanSiderealTime(double jdut1) {
     double temp, jcent_from_y2k;
 
-    jcent_from_y2k = (jdut1 - 2451545.0) / 36525.0;
+    jcent_from_y2k = (jdut1 - kJulianDayAtY2000H12) / 36525.0;
 
     temp = -6.2e-6 * jcent_from_y2k * jcent_from_y2k * jcent_from_y2k +
            0.093104 * jcent_from_y2k * jcent_from_y2k +
@@ -204,7 +207,7 @@ void Sgp4Utils::EcefXyzToLatLong(double recef[3], double& latgc, double& latgd,
     // ----------------- iterate to find geodetic latitude -----------------
     olddelta = latgd + 10.0;
 
-    for (int i = 1; (fabs(olddelta - latgd) >= small) && (i < 10); i++) {
+    for (uint8_t i = 1; (fabs(olddelta - latgd) >= small) && (i < 10); i++) {
         olddelta = latgd;
         double sintemp = sin(latgd);
         c = re / (sqrt(1.0 - eesqrd * sintemp * sintemp));
@@ -288,19 +291,20 @@ double Sgp4Utils::GeodeticToGeocentric(double latgd) {
  * ---------------------------------------------------------------------------
  */
 
-void Sgp4Utils::DaysToMonthDayHourMinuteSecond(int year, double days,
-                                               int& month, int& day, int& hour,
-                                               int& minute, double& sec) {
-    int day_of_year, months_days;
+void Sgp4Utils::DaysToMonthDayHourMinuteSecond(uint16_t year, double days,
+                                               uint8_t& month, uint8_t& day,
+                                               uint8_t& hour, uint8_t& minute,
+                                               double& second) {
+    uint16_t day_of_year, months_days;
     double hour_double, minutes_double;
-    int months[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    uint8_t months[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    day_of_year = (int)floor(days);
+    day_of_year = (uint16_t)floor(days);
     /* ----------------- find month and day of month ---------------- */
     if ((year % 4) == 0) months[2] = 29;
 
     months_days = 0;
-    for (int i = 1; i <= 12; i++) {
+    for (uint8_t i = 1; i <= 12; i++) {
         if (day_of_year > months_days + months[i] || i == 12) {
             month = i;
             break;
@@ -311,10 +315,10 @@ void Sgp4Utils::DaysToMonthDayHourMinuteSecond(int year, double days,
 
     /* ----------------- find hours minutes and seconds ------------- */
     hour_double = (days - day_of_year) * 24.0;
-    hour = (int)floor(hour_double);
+    hour = (uint8_t)floor(hour_double);
     minutes_double = (hour_double - hour) * 60.0;
-    minute = (int)floor(minutes_double);
-    sec = (minutes_double - minute) * 60.0;
+    minute = (uint8_t)floor(minutes_double);
+    second = (minutes_double - minute) * 60.0;
 }  // days2mdhms
 
 /* -----------------------------------------------------------------------------
@@ -350,8 +354,9 @@ void Sgp4Utils::DaysToMonthDayHourMinuteSecond(int year, double days,
  * ---------------------------------------------------------------------------
  */
 
-void Sgp4Utils::JulianDay(int year, int mon, int day, int hr, int minute,
-                          double sec, double& jd, double& jdFrac) {
+void Sgp4Utils::JulianDay(uint16_t year, uint8_t mon, uint8_t day, uint8_t hr,
+                          uint8_t minute, double sec, double& jd,
+                          double& jdFrac) {
     jd = 367.0 * year - floor((7 * (year + floor((mon + 9) / 12.0))) * 0.25) +
          floor(275 * mon / 9.0) + day +
          1721013.5;  // use - 678987.0 to go to mjd directly

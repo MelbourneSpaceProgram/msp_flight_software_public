@@ -31,7 +31,7 @@
 // the if(var) approach without significant rework. The region of effect of this
 // define is also small enough that we feel comfortable keeping it. It should
 // not be used in the future without further discussion.
-#define SATELLITE_CONFIG 1
+//#define SATELLITE_CONFIG 1
 #define LAUNCHPAD_CONFIG 2
 
 extern bool satellite_configuration;

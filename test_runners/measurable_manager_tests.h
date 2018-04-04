@@ -4,6 +4,7 @@
 #define TEST_RUNNERS_MEASURABLE_MANAGER_TESTS_H_
 
 #include "unity.h"
+#include <src/config/unit_tests.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/measurable_id.h>
 #include <test_runners/measurable_manager_tests.h>

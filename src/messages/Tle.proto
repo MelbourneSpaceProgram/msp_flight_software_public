@@ -1,0 +1,12 @@
+message Tle {
+    required double mean_motion = 1;
+    required double mean_anomaly = 2;
+    required double inclination = 3;
+    required double raan = 4;
+    required double bstar_drag = 5;
+    required double epoch = 6;
+    required double eccentricity_1e7 = 7;
+    required double argument_of_perigee = 8;
+    // note: no timestamp required, uplinked TLE
+    // is always immediately and unconditionally trusted
+}

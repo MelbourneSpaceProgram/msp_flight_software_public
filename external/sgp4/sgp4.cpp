@@ -22,6 +22,7 @@
 #include <external/etl/exception.h>
 #include <external/sgp4/sgp4.h>
 #include <math.h>
+#include <src/util/physical_constants.h>
 
 /*-----------------------------------------------------------------------------
 *
@@ -33,7 +34,6 @@
 *  author        : david vallado                  719-573-2600   28 jun 2005
 *
 *  inputs        :
-*    satn        - satellite number - not needed, placed in satrec
 *    xke         - reciprocal of tumin
 *    j2          - j2 zonal harmonic
 *    ecco        - eccentricity                           0.0 - 1.0
@@ -86,7 +86,6 @@ void Sgp4::InitialiseSgp4(double xke, double j2, double ecco, double epoch,
     /* --------------------- local variables ------------------------ */
     double ak, d1, del, adel, po, x2o3;
 
-
     /* ----------------------- earth constants ---------------------- */
     x2o3 = 2.0 / 3.0;
 
@@ -130,7 +129,6 @@ void Sgp4::InitialiseSgp4(double xke, double j2, double ecco, double epoch,
 *  inputs        :
 *    opsmode     - mode of operation afspc or improved 'a', 'i'
 *    whichconst  - which set of constants to use  72, 84
-*    satn        - satellite number
 *    bstar       - sgp4 type drag coefficient              kg/m2er
 *    ecco        - eccentricity
 *    epoch       - epoch time in days from jan 0, 1950. 0 hr
@@ -193,13 +191,49 @@ void Sgp4::InitialiseSgp4(double xke, double j2, double ecco, double epoch,
 *    vallado, crawford, hujsak, kelso  2006
 ----------------------------------------------------------------------------*/
 
-void Sgp4::InitialisePropagator(gravconsttype whichconst, char opsmode,
-                                const int satn, const double epoch,
-                                const double xbstar, const double xndot,
-                                const double xnddot, const double xecco,
-                                const double xargpo, const double xinclo,
-                                const double xmo, const double xno_kozai,
-                                const double xnodeo, elsetrec& satrec) {
+void Sgp4::InitialisePropagator(Tle tle, elsetrec& satrec) {
+    // Sgp4::InitialisePropagator expects epoch as number of days since
+    // Jan 1 1950 hour 0. The TLE epoch has last 2 digits of year appended
+    // to Julian Day-1950 as a string before being converted to a double.
+    // TODO (rskew) review if it's worth sending year as a separate byte
+
+    double epoch_days = fmod(tle.epoch, 1000);
+    uint16_t epoch_year = floor(tle.epoch / 1000);
+    double second, julian_day_whole, julian_day_fraction;
+    uint8_t month, day, hour, minute;
+    Sgp4Utils::DaysToMonthDayHourMinuteSecond(2000 + epoch_year, epoch_days,
+                                              month, day, hour, minute, second);
+    Sgp4Utils::JulianDay(2000 + epoch_year, month, day, hour, minute, second,
+                         julian_day_whole, julian_day_fraction);
+    // TODO (rskew) make this magic number a constant with a descriptive name
+    double epoch = julian_day_whole + julian_day_fraction - 2433281.5;
+
+    // TLE eccentricity is 7 digits with the leading decimal point assumed
+    double eccentricity = tle.eccentricity_1e7 * 1e-7;
+
+    gravconsttype gravitational_constants_id = wgs72;
+    char opsmode = 'a';
+
+    satrec.jdsatepoch = julian_day_whole;
+    satrec.jdsatepochF = julian_day_fraction;
+    satrec.no_kozai = tle.mean_motion;
+    satrec.ecco = eccentricity;
+    satrec.inclo = tle.inclination;
+    satrec.nodeo = tle.raan;
+    satrec.argpo = tle.argument_of_perigee;
+    satrec.mo = tle.mean_anomaly;
+    satrec.bstar = tle.bstar_drag;
+    satrec.ndot = 0;
+    satrec.nddot = 0;
+    satrec.no_kozai = satrec.no_kozai / Sgp4Utils::xpdotp;
+    satrec.ndot = satrec.ndot / (Sgp4Utils::xpdotp * kMinutesPerDay);
+    satrec.nddot =
+        satrec.nddot / (Sgp4Utils::xpdotp * kMinutesPerDay * kMinutesPerDay);
+    satrec.inclo = satrec.inclo * Sgp4Utils::kDegreesToRadians;
+    satrec.nodeo = satrec.nodeo * Sgp4Utils::kDegreesToRadians;
+    satrec.argpo = satrec.argpo * Sgp4Utils::kDegreesToRadians;
+    satrec.mo = satrec.mo * Sgp4Utils::kDegreesToRadians;
+
     /* --------------------- local variables ------------------------ */
     double ao, ainv, con42, cosio, sinio, cosio2, eccsq, omeosq, posq, rp,
         rteosq, qzms2t, ss, x2o3, r[3], v[3], qzms2ttemp;
@@ -237,24 +271,13 @@ void Sgp4::InitialisePropagator(gravconsttype whichconst, char opsmode,
     satrec.nodecf = 0.0;
 
     /* ------------------------ earth constants ----------------------- */
-    Sgp4Utils::GetGravConstants(whichconst, satrec.tumin, satrec.mu,
-                                satrec.radiusearthkm, satrec.xke, satrec.j2,
-                                satrec.j3, satrec.j4, satrec.j3oj2);
+    Sgp4Utils::GetGravConstants(gravitational_constants_id, satrec.tumin,
+                                satrec.mu, satrec.radiusearthkm, satrec.xke,
+                                satrec.j2, satrec.j3, satrec.j4, satrec.j3oj2);
 
     //-------------------------------------------------------------------------
 
     satrec.operationmode = opsmode;
-    satrec.satnum = satn;
-
-    satrec.bstar = xbstar;
-    satrec.ndot = xndot;
-    satrec.nddot = xnddot;
-    satrec.ecco = xecco;
-    satrec.argpo = xargpo;
-    satrec.inclo = xinclo;
-    satrec.mo = xmo;
-    satrec.no_kozai = xno_kozai;
-    satrec.nodeo = xnodeo;
 
     // single averaged mean elements
     satrec.am = satrec.em = satrec.im = satrec.Om = satrec.mm = satrec.nm = 0.0;
@@ -466,10 +489,10 @@ void Sgp4::Propagate(elsetrec& satrec, double tsince, double position[3],
     mm = mm + satrec.no_unkozai * templ;
     xlm = mm + argpm + nodem;
 
-    nodem = fmod(nodem, 2 * Sgp4Utils::kPi);
-    argpm = fmod(argpm, 2 * Sgp4Utils::kPi);
-    xlm = fmod(xlm, 2 * Sgp4Utils::kPi);
-    mm = fmod(xlm - argpm - nodem, 2 * Sgp4Utils::kPi);
+    nodem = fmod(nodem, 2 * kPi);
+    argpm = fmod(argpm, 2 * kPi);
+    xlm = fmod(xlm, 2 * kPi);
+    mm = fmod(xlm - argpm - nodem, 2 * kPi);
 
     satrec.am = am;
     satrec.em = em;
@@ -500,10 +523,10 @@ void Sgp4::Propagate(elsetrec& satrec, double tsince, double position[3],
     xl = mp + argpp + nodep + temp * satrec.xlcof * axnl;
 
     /* --------------------- solve kepler's equation --------------- */
-    u = fmod(xl - nodep, 2 * Sgp4Utils::kPi);
+    u = fmod(xl - nodep, 2 * kPi);
     eo1 = u;
     tem5 = 9999.9;
-    for (int i = 1; (fabs(tem5) >= 1.0e-12) && (i <= 10); i++) {
+    for (uint8_t i = 1; (fabs(tem5) >= 1.0e-12) && (i <= 10); i++) {
         sineo1 = sin(eo1);
         coseo1 = cos(eo1);
         tem5 = 1.0 - coseo1 * axnl - sineo1 * aynl;

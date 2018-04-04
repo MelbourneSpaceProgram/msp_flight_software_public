@@ -1,4 +1,4 @@
-## Description of the Algorithm
+## Description of the Kalman Filter Algorithm
 
 Notation: ![equation](http://latex.codecogs.com/gif.latex?\hat{q}) denotes the quaternion estimate, ![equation](http://latex.codecogs.com/gif.latex?P) denotes the error covariance matrix. The superscript ![equation](http://latex.codecogs.com/gif.latex?-) denotes the 'prior' version of a variable. ![equation](http://latex.codecogs.com/gif.latex?Q) and ![equation](http://latex.codecogs.com/gif.latex?R) denote the system input and output covariance matrices respectively.
 
