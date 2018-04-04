@@ -24,7 +24,6 @@ void PostBiosInitialiser::InitSingletons(I2c* antenna_bus) {
     DebugStream::GetInstance();
     Antenna::GetAntenna()->InitAntenna(antenna_bus);
     Lithium::GetInstance();
-    StateManager::GetStateManager()->CreateStateMachines();
 }
 
 void PostBiosInitialiser::InitRadioListener() {
@@ -69,6 +68,6 @@ void PostBiosInitialiser::PostBiosInit() {
     InitRadioListener();
     RunUnitTests();
 
-    InitStateManagement();
-    InitDataDashboard();
+    StateManager* state_manager = StateManager::GetStateManager();
+    state_manager->CreateStateMachines();
 }

@@ -112,3 +112,20 @@ void StateManager::RemoveLastSystemStateMachine() {
         system_state_machines.pop_back();
     }
 }
+
+void StateManager::DeleteInstance() {
+    delete instance;
+}
+
+StateManager::~StateManager() {
+    for (etl::array<StateMachine*, kNumStateMachines>::iterator
+             it = state_machines.begin();
+         it != state_machines.end(); it++) {
+        delete (*it);
+    }
+    state_machines.erase_range(0, kNumStateMachines - 1);
+    system_state_machines.clear();
+    Semaphore_delete(&state_update_semaphore_handle);
+    state_update_semaphore_handle = NULL;
+    instance = NULL;
+}

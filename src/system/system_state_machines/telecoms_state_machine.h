@@ -14,7 +14,6 @@ class TelecomsStateMachine : public SystemStateMachine {
     void CheckUpstreamStates();
 
    private:
-    StateManager* state_manager;
     PowerStateMachine* power_state_machine;
     TelecomsTempStateMachine* telecoms_temp_state_machine;
 };
