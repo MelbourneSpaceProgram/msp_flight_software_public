@@ -1,6 +1,8 @@
 #include <src/system/state_machine.h>
 #include <src/system/state_manager.h>
 
+StateMachine::~StateMachine() {}
+
 StateMachine::StateMachine(StateManager* state_manager, StateId initial_state)
     : state_manager(state_manager),
       current_state(initial_state),
