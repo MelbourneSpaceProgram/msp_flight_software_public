@@ -68,7 +68,7 @@ int rtc_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/sensors/tests/rtc_tests.cpp");
-  RUN_TEST(TestRtcReadTransaction, 10);
+  RUN_TEST(TestRtcReadTransaction, 12);
 
   return suite_teardown(UnityEnd());
 }

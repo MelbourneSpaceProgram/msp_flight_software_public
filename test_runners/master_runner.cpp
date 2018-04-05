@@ -28,7 +28,16 @@
 #include <test_runners/first_order_iir_lowpass_tests.h>
 #include <test_runners/matrix_tests.h>
 #include <test_runners/master_runner.h>
+
+static const char startMessage[] = "STARTING ON TARGET UNIT TESTS";
+static const char endMessage[] = "FINISHED ON TARGET UNIT TESTS";
+
 void master_tests_thread() {
+
+    UNITY_PRINT_EOL();
+    UnityPrint(startMessage);
+    UNITY_PRINT_EOL();
+
     b_dot_controller_tests_runner();
     b_dot_estimator_tests_runner();
     kalman_filter_tests_runner();
@@ -56,6 +65,10 @@ void master_tests_thread() {
     finite_difference_symmetric_tests_runner();
     first_order_iir_lowpass_tests_runner();
     matrix_tests_runner();
+
+    UNITY_PRINT_EOL();
+    UnityPrint(endMessage);
+    UNITY_PRINT_EOL();
 }
 
 

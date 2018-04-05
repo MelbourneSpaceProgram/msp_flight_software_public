@@ -68,7 +68,7 @@ int i2c_sensor_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/sensors/i2c_sensors/tests/i2c_sensor_tests.cpp");
-  RUN_TEST(TestADC, 13);
+  RUN_TEST(TestADC, 14);
 
   return suite_teardown(UnityEnd());
 }

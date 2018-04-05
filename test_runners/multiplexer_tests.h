@@ -8,9 +8,9 @@
 #include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
+#include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/util/data_types.h>
 #include <test_runners/i2c_tests.h>
-#include <ti/sysbios/knl/Task.h>
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
 
 void TestMultiplexer(void);
