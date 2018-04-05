@@ -80,8 +80,9 @@ void PostBiosInitialiser::PostBiosInit() {
     StateManager* state_manager = StateManager::GetStateManager();
     state_manager->CreateStateMachines();
 
+    InitOrientationControl();
+
     if (hil_enabled) {
-        InitOrientationControl();
-        //InitDataDashboard();
+        InitDataDashboard();
     }
 }

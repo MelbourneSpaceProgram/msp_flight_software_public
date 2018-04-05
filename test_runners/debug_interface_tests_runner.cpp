@@ -32,7 +32,7 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestRequestReceiveMessageFromSimulator();
+extern void TestRequestMessageFromSimulator();
 extern void TestPostMessageToDebugClient();
 
 
@@ -69,8 +69,8 @@ int debug_interface_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
-  RUN_TEST(TestRequestReceiveMessageFromSimulator, 13);
-  RUN_TEST(TestPostMessageToDebugClient, 39);
+  RUN_TEST(TestRequestMessageFromSimulator, 11);
+  RUN_TEST(TestPostMessageToDebugClient, 31);
 
   return suite_teardown(UnityEnd());
 }

@@ -12,10 +12,8 @@
 #include <src/messages/SensorReading.pb.h>
 #include <src/util/message_codes.h>
 #include <test_runners/debug_interface_tests.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
 
-void TestRequestReceiveMessageFromSimulator(void);
+void TestRequestMessageFromSimulator(void);
 void TestPostMessageToDebugClient(void);
 
 #endif  // TEST_RUNNERS_DEBUG_INTERFACE_TESTS_H_

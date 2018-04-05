@@ -68,7 +68,7 @@ int runnable_data_dashboard_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/data_dashboard/tests/runnable_data_dashboard_tests.cpp");
-  RUN_TEST(TestTransmitMessage, 14);
+  RUN_TEST(TestTransmitMessage, 12);
 
   return suite_teardown(UnityEnd());
 }

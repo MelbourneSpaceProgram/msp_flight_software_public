@@ -10,9 +10,6 @@
 #include <src/system/state_definitions.h>
 #include <src/system/system_state_machines/adcs_state_machine.h>
 #include <src/util/message_codes.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
-#include <string>
 
 RunnableDataDashboard::RunnableDataDashboard() {}
 
@@ -21,12 +18,11 @@ fnptr RunnableDataDashboard::GetRunnablePointer() {
 }
 
 void RunnableDataDashboard::DataDashboard() {
-
     // TODO(rskew) remove this when actual sensor readings are implemented
     double bms1_current = 0.0;
     double increment = 0.01;
 
-    //while (1) {
+    while (1) {
         SensorReading bms1_input_current_reading = SensorReading_init_zero;
         // TODO(rskew) implement actual sensor readings
         bms1_current += increment;
@@ -63,8 +59,8 @@ void RunnableDataDashboard::DataDashboard() {
             kAdcsSystemStateReadingCode, StateMachineStateReading_size,
             StateMachineStateReading_fields, &adcs_system_state_reading);
 
-    //    Task_sleep(50);
-    //}
+        Task_sleep(100);
+    }
 }
 
 void RunnableDataDashboard::TransmitMessage(const byte message_code,
