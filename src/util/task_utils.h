@@ -1,5 +1,5 @@
-#ifndef SRC_UTILS_TASK_UTILS_H_
-#define SRC_UTILS_TASK_UTILS_H_
+#ifndef SRC_UTIL_TASK_UTILS_H_
+#define SRC_UTIL_TASK_UTILS_H_
 
 #include <stdint.h>
 
@@ -12,4 +12,4 @@ class TaskUtils {
     TaskUtils();
 };
 
-#endif  // SRC_UTILS_TASK_UTILS_H_
+#endif  // SRC_UTIL_TASK_UTILS_H_
