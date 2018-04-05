@@ -96,7 +96,6 @@ void LithiumConfiguration::SerialiseFrom(byte* serial_buffer) {
     config_iterator.FetchData<uint8_t>(&tx_power_amp_level);
     config_iterator.FetchData<uint8_t>(&interface_baud_rate_temp);
 
-    // TODO(dingbenjamin): Handle exception on static cast?
     tx_modulation = static_cast<LithiumRfModulation>(tx_modulation_temp);
     rx_modulation = static_cast<LithiumRfModulation>(rx_modulation_temp);
     tx_rf_baud_rate = static_cast<LithiumRfBaudRate>(tx_rf_baud_rate_temp);

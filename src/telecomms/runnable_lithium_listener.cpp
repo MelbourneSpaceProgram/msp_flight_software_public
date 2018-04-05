@@ -4,6 +4,7 @@
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <external/etl/exception.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
@@ -25,7 +26,9 @@ void RunnableLithiumListener::Receive() {
             read_buffer, Lithium::kLithiumHeaderSize);
 
         if (!LithiumUtils::IsValidHeader(read_buffer)) {
-            // TODO(dingbenjamin): Throw exception
+            etl::exception e("Invalid Lithium header", "__FILE__",
+                         __LINE__);
+            throw e;
             continue;
         }
 
