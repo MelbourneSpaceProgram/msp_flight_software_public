@@ -23,7 +23,8 @@ enum DebugMessageType {
     kTorqueOutputReadingCode = 0x07,
     kMagnetometerReadingCode = 0x08,
     kTestSensorReadingCode = 0x09,
-    kTestRequestCode = 0x0A
+    kTestSensorReadingRequestCode = 0x0A,
+    kTestRequestCode = 0x0B
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient

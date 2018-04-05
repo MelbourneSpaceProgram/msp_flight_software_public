@@ -4,6 +4,8 @@
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/test_message.h>
 #include <src/util/message_codes.h>
+#include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Semaphore.h>
 
 DebugStream *DebugStream::instance = NULL;
 
@@ -23,16 +25,19 @@ DebugStream *DebugStream::GetInstance() {
     return instance;
 }
 
-void DebugStream::RequestMessageFromSimulator(byte message_code) {
+void DebugStream::RequestMessageFromSimulator(byte message_code,
+                                              byte *response_buffer,
+                                              uint8_t response_size) {
     uint8_t message_header[2];
     message_header[0] = message_code;
     message_header[1] = 0x00;
-    debug_uart.PerformWriteTransaction(message_header, 2);
-}
 
-void DebugStream::ReceiveMessageFromSimulator(byte *buffer,
-                                              uint8_t message_size) {
-    debug_uart.PerformReadTransaction(buffer, message_size);
+    // Entering critical section
+    Semaphore_pend(bus_available, BIOS_WAIT_FOREVER);
+    debug_uart.PerformWriteTransaction(message_header, 2);
+    debug_uart.PerformReadTransaction(response_buffer, response_size);
+    Semaphore_post(bus_available);
+    // Exited critical section
 }
 
 void DebugStream::PostMessageToDebugClient(byte message_code,
@@ -41,6 +46,11 @@ void DebugStream::PostMessageToDebugClient(byte message_code,
     uint8_t message_header[2];
     message_header[0] = message_code;
     message_header[1] = payload_size;
+
+    // Entering critical section
+    Semaphore_pend(bus_available, BIOS_WAIT_FOREVER);
     debug_uart.PerformWriteTransaction(message_header, 2);
     debug_uart.PerformWriteTransaction(payload, payload_size);
+    Semaphore_post(bus_available);
+    // Exited critical section
 }

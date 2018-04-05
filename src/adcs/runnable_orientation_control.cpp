@@ -3,13 +3,12 @@
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/debug_interface/debug_stream.h>
+#include <src/config/unit_tests.h>
 #include <src/init/init.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
 
 RunnableOrientationControl::RunnableOrientationControl() {}
 
@@ -30,10 +29,12 @@ void RunnableOrientationControl::ControlOrientation() {
         bool success = magnetometer.TakeReading();
         MagnetometerReading reading = magnetometer.GetReading();
 
+        if (hil_enabled) {
         // Echo reading to data dashboard
         RunnableDataDashboard::TransmitMessage(
             kMagnetometerReadingCode, MagnetometerReading_size,
             MagnetometerReading_fields, &reading);
+        }
 
         // Run estimator
         double magnetometer_reading_data[3][1] = {
@@ -58,13 +59,11 @@ void RunnableOrientationControl::ControlOrientation() {
         torque_output_reading.y = torque_output.Get(1, 0);
         torque_output_reading.z = torque_output.Get(2, 0);
 
+        if (hil_enabled) {
         RunnableDataDashboard::TransmitMessage(
             kTorqueOutputReadingCode, TorqueOutputReading_size,
             TorqueOutputReading_fields, &torque_output_reading);
-
-        // TODO(rskew): allow multiple tasks to write to debug stream
-        // so this doesn't have to be here
-        RunnableDataDashboard::DataDashboard();
+        }
 
         // TODO (rskew) use a hard real time timer to trigger this instead of
         // sleep

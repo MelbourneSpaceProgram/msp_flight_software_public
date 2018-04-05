@@ -11,8 +11,8 @@ class DebugStream {
     static DebugStream *GetInstance();  // Initial call is not thread safe
     Uart debug_uart;
     Semaphore_Handle bus_available;
-    void RequestMessageFromSimulator(byte message_code);
-    void ReceiveMessageFromSimulator(byte *buffer, uint8_t message_size);
+    void RequestMessageFromSimulator(byte message_code, byte *response_buffer,
+                                     uint8_t response_size);
     void PostMessageToDebugClient(byte message_code, uint8_t payload_size,
                                   byte *payload);
 

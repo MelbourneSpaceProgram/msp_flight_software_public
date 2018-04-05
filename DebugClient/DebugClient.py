@@ -66,6 +66,11 @@ def wait_for_message(debug_serial_port):
 
 
 def testLoop(debug_serial_port):
+
+    # Persistent var for flight-computer-side unit test
+    test_message_value = 0
+    test_message_timestamp = 0
+
     try:
         while True:
             message_code, message_size, payload = wait_for_message(debug_serial_port)
@@ -181,18 +186,34 @@ def testLoop(debug_serial_port):
 
 
             elif message_code == 0x09:
-                # Test Sensor Reading, echo it back
+                # Test Sensor Reading, store it for the test reading request
 
-                send_message(debug_serial_port, 0x09, payload)
+                test_sensor_reading = SensorReading_pb2.SensorReading()
+                test_sensor_reading.ParseFromString(payload)
+
+                test_message_value = test_sensor_reading.value
+                test_message_timestamp = \
+                    test_sensor_reading.timestamp_millis_unix_epoch
 
 
             elif message_code == 0x0A:
+                # Follow-up test request, send stored data
+
+                test_sensor_reading = SensorReading_pb2.SensorReading()
+                test_sensor_reading.value = test_message_value
+                test_sensor_reading.timestamp_millis_unix_epoch = \
+                                            test_message_timestamp
+                send_message(debug_serial_port, 0x0A,
+                             test_sensor_reading.SerializeToString())
+
+
+            elif message_code == 0x0B:
                 # Test request, send known data
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
                 test_sensor_reading.value = 1234
                 test_sensor_reading.timestamp_millis_unix_epoch = 4321
-                send_message(debug_serial_port, 0x0A,
+                send_message(debug_serial_port, 0x0B,
                              test_sensor_reading.SerializeToString())
 
 
