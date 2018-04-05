@@ -66,7 +66,7 @@ void LithiumFunctionConfig::SerialiseFrom(byte* serial_buffer) {
     radio_reset_function_enable = function_config_bits & kLithiumRadioResetMask;
     auto_frequency_control_enable =
         (function_config_bits >> 8) & kLithiumAutoFrequencyControlMask;
-    // TODO(dingbenjamin): Catch exception on failed static cast
+
     external_event_function = static_cast<LithiumExternalEventFunction>(
         function_config_bits & kLithiumExternalEventMask);
     config_1_function = static_cast<LithiumConfig1Function>(

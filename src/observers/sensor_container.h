@@ -1,6 +1,7 @@
 #ifndef SRC_OBSERVERS_SENSOR_CONTAINER_H_
 #define SRC_OBSERVERS_SENSOR_CONTAINER_H_
 
+#include <external/etl/exception.h>
 #include <external/etl/vector.h>
 
 template <typename T1, typename T2>
@@ -12,7 +13,9 @@ class SensorContainer {
             sensors.push_back(sensor);
             return true;
         } else {
-            // TODO(wschuetz) If exceptions used the if statement can be removed
+            etl::exception e("No capacity to add sensor", "__FILE__",
+                         __LINE__);
+            throw e;
             return false;
         }
     }

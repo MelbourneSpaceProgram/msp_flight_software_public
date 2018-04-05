@@ -3,6 +3,7 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
+#include <external/etl/exception.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Task.h>
 
@@ -19,14 +20,18 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
     command_response_mailbox_handle = Mailbox_create(
         kLithiumHeaderSize, 1, &command_response_mailbox_params, NULL);
     if (command_response_mailbox_handle == NULL) {
-        // TODO(akremor): Throw exception
+        etl::exception e("Unable to create Lithium command response mailbox", "__FILE__",
+                         __LINE__);
+        throw e;
     }
 
     Mailbox_Params_init(&message_mailbox_params);
     message_mailbox_handle = Mailbox_create(
         kMaxReceivedSize, kMaxNumberOfPayloads, &message_mailbox_params, NULL);
     if (message_mailbox_handle == NULL) {
-        // TODO(akremor): Throw exception
+        etl::exception e("Unable to create Lithium message response mailbox", "__FILE__",
+                         __LINE__);
+        throw e;
     }
 }
 

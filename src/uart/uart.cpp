@@ -1,4 +1,5 @@
 #include <src/uart/uart.h>
+#include <external/etl/exception.h>
 #include <ti/drivers/UART.h>
 
 Uart::Uart(uint8_t bus_index) : bus_index(bus_index), handle(NULL) {
@@ -14,7 +15,9 @@ void Uart::Open() {
     // Get a handle to the UART bus.
     this->handle = UART_open(this->bus_index, &uart_params);
     if (this->handle == NULL) {
-        // TODO(dingbenjamin): Throw Exception after exceptions designed
+        etl::exception e("Unable to open UART, possibly in-use", "__FILE__",
+                         __LINE__);
+        throw e;
     }
 }
 

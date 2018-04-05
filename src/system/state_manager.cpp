@@ -10,6 +10,7 @@
 #include <src/system/system_state_machines/power_state_machine.h>
 #include <src/system/system_state_machines/telecoms_state_machine.h>
 #include <src/util/data_types.h>
+#include <external/etl/exception.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
@@ -21,7 +22,9 @@ StateManager::StateManager() {
     state_update_semaphore_handle =
         Semaphore_create(0, &semaphore_params, NULL);
     if (state_update_semaphore_handle == NULL) {
-        // TODO(wschuetz) Throw exception
+        etl::exception e("Unable to create state update semaphore", "__FILE__",
+                         __LINE__);
+        throw e;
     }
 }
 
