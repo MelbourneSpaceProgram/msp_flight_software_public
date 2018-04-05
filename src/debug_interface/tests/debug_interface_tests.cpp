@@ -7,10 +7,8 @@
 #include <src/util/message_codes.h>
 #include <test_runners/debug_interface_tests.h>
 #include <test_runners/unity.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
 
-void TestRequestReceiveMessageFromSimulator() {
+void TestRequestMessageFromSimulator() {
     if (!hil_enabled) {
         TEST_IGNORE_MESSAGE("HIL test ignored");
     }
@@ -18,14 +16,8 @@ void TestRequestReceiveMessageFromSimulator() {
 
     uint8_t buffer[SensorReading_size];
 
-    // Entering critical section
-    Semaphore_pend(debug_stream->bus_available, BIOS_WAIT_FOREVER);
-
-    debug_stream->RequestMessageFromSimulator(kTestRequestCode);
-
-    debug_stream->ReceiveMessageFromSimulator(buffer, SensorReading_size);
-    Semaphore_post(debug_stream->bus_available);
-    // Exited critical section
+    debug_stream->RequestMessageFromSimulator(kTestRequestCode, buffer,
+                                              SensorReading_size);
 
     pb_istream_t stream = pb_istream_from_buffer(buffer, SensorReading_size);
 
@@ -59,14 +51,10 @@ void TestPostMessageToDebugClient() {
         throw e;
     }
 
-    // Entering critical section
-    Semaphore_pend(debug_stream->bus_available, BIOS_WAIT_FOREVER);
     debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
                                            SensorReading_size, buffer);
-    debug_stream->ReceiveMessageFromSimulator(receive_buffer,
-                                              SensorReading_size);
-    Semaphore_post(debug_stream->bus_available);
-    // Exited critical section
+    debug_stream->RequestMessageFromSimulator(
+        kTestSensorReadingRequestCode, receive_buffer, SensorReading_size);
 
     pb_istream_t receive_stream =
         pb_istream_from_buffer(receive_buffer, SensorReading_size);
@@ -78,4 +66,25 @@ void TestPostMessageToDebugClient() {
     TEST_ASSERT_EQUAL_DOUBLE(-999, test_sensor_reading_received.value);
     TEST_ASSERT_EQUAL_INT(
         123456789, test_sensor_reading_received.timestamp_millis_unix_epoch);
+
+    // Reset the test value on the DebugClient end.
+    // Stateful tests are no fun.
+    SensorReading reset_test_sensor_reading;
+    reset_test_sensor_reading.value = 0;
+    reset_test_sensor_reading.timestamp_millis_unix_epoch = 0;
+
+    uint8_t reset_buffer[SensorReading_size];
+    pb_ostream_t reset_stream =
+        pb_ostream_from_buffer(reset_buffer, sizeof(reset_buffer));
+
+    bool reset_status;
+    reset_status = pb_encode(&reset_stream, SensorReading_fields,
+                             &reset_test_sensor_reading);
+    if (!reset_status) {
+        etl::exception e("TestPostMessageToDebugClient pb_encode failed",
+                         "__FILE__", __LINE__);
+        throw e;
+    }
+    debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
+                                           SensorReading_size, reset_buffer);
 }

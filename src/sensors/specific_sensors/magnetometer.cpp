@@ -28,12 +28,8 @@ bool Magnetometer::TakeReadingHil() {
     DebugStream *debug_stream = DebugStream::GetInstance();
     uint8_t buffer[MagnetometerReading_size];
 
-    // Entering critical section
-    Semaphore_pend(debug_stream->bus_available, BIOS_WAIT_FOREVER);
-    debug_stream->RequestMessageFromSimulator(kMagnetometerReadingRequestCode);
-    debug_stream->ReceiveMessageFromSimulator(buffer, MagnetometerReading_size);
-    Semaphore_post(debug_stream->bus_available);
-    // Exited critical section
+    debug_stream->RequestMessageFromSimulator(kMagnetometerReadingRequestCode,
+                                              buffer, MagnetometerReading_size);
 
     pb_istream_t stream =
         pb_istream_from_buffer(buffer, MagnetometerReading_size);
