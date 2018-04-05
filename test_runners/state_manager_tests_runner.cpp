@@ -68,7 +68,7 @@ int state_manager_tests_runner(void)
 {
   suite_setup();
   UnityBegin("src/system/tests/state_manager_tests.cpp");
-  RUN_TEST(TestStateManager, 12);
+  RUN_TEST(TestStateManager, 11);
 
   return suite_teardown(UnityEnd());
 }
