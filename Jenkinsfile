@@ -92,7 +92,7 @@ pipeline {
                     docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
                     docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
                     docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
-                    docker exec -t $docker_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/runner.js
+                    docker exec -t $docker_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/code/targetConfigs/runner.js
                     '''
             }
             post {

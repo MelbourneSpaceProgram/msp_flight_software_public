@@ -7,7 +7,6 @@
 #include <src/config/unit_tests.h>
 #include <src/sensors/test_sensors/test_i2c_sensor.h>
 #include <src/system/sensor_state_machines/battery_charge_state_machine.h>
-#include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
 #include <src/system/system_state_machines/power_state_machine.h>
