@@ -31,6 +31,7 @@ void lithium_hardware_tests_runner();
 void finite_difference_symmetric_tests_runner();
 void first_order_iir_lowpass_tests_runner();
 void matrix_tests_runner();
+void memory_troubleshooter_tests_runner();
 void SetUp();
 void TearDown();
 

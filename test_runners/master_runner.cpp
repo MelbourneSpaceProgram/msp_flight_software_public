@@ -27,6 +27,7 @@
 #include <test_runners/finite_difference_symmetric_tests.h>
 #include <test_runners/first_order_iir_lowpass_tests.h>
 #include <test_runners/matrix_tests.h>
+#include <test_runners/memory_troubleshooter_tests.h>
 #include <test_runners/master_runner.h>
 
 static const char startMessage[] = "STARTING ON TARGET UNIT TESTS";
@@ -65,6 +66,7 @@ void master_tests_thread() {
     finite_difference_symmetric_tests_runner();
     first_order_iir_lowpass_tests_runner();
     matrix_tests_runner();
+    memory_troubleshooter_tests_runner();
 
     UNITY_PRINT_EOL();
     UnityPrint(endMessage);
