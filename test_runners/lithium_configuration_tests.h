@@ -8,6 +8,7 @@
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/lithium_function_config.h>
 #include <src/telecomms/lithium_utils.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestLithiumConfigurationSerialise(void);
 void TestLithiumConfigurationDeserialise(void);

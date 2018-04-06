@@ -10,6 +10,7 @@
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <test_runners/rtc_tests.h>
 #include <time.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestRtcReadTransaction(void);
 

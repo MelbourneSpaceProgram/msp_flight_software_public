@@ -7,6 +7,7 @@
 #include <src/adcs/kalman_filter.h>
 #include <src/util/matrix.h>
 #include <test_runners/matrix_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestKalmanPredictAndUpdate(void);
 

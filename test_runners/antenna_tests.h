@@ -9,6 +9,7 @@
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
 #include <test_runners/antenna_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestSafeDeploy(void);
 void TestForceDeploy(void);

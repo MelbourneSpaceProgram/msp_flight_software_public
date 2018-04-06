@@ -8,6 +8,7 @@
 #include <src/telecomms/lithium.h>
 #include <test_runners/payload_processor_tests.h>
 #include <src/payload_processor/commands/test_command.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestPayloadProcessor(void);
 

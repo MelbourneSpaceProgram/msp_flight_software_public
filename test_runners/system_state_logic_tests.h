@@ -11,6 +11,7 @@
 #include <src/system/system_state_machines/adcs_state_machine.h>
 #include <src/system/system_state_machines/power_state_machine.h>
 #include <src/system/system_state_machines/telecoms_state_machine.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestPowerStateLogic(void);
 void TestTelecomsStateLogic(void);

@@ -5,6 +5,7 @@
 
 #include "unity.h"
 #include <src/database/HammingCoder.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestHamming(void);
 

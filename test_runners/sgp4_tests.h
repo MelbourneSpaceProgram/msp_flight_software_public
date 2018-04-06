@@ -10,6 +10,7 @@
 #include <external/sgp4/sgp4.h>
 #include <math.h>
 #include <test_runners/sgp4_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestSimplifiedGeneralPerturbationModel(void);
 

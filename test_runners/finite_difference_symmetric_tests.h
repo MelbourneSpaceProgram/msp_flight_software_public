@@ -6,6 +6,7 @@
 #include "unity.h"
 #include <src/util/finite_difference_symmetric.h>
 #include <test_runners/finite_difference_symmetric_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestProcessSampleDifferentiator(void);
 
