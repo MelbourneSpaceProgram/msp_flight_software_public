@@ -8,6 +8,7 @@
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <test_runners/magnetometer_tests.h>
 #include <src/config/unit_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestMagnetometer(void);
 

@@ -15,6 +15,9 @@ extern "C"
 
 #include "unity_internals.h"
 
+
+static const char memoryLeakMessage[] = "MEMORY LEAK DETECTED";
+
 /*-------------------------------------------------------
  * Test Setup / Teardown
  *-------------------------------------------------------*/

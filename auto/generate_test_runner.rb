@@ -241,13 +241,15 @@ class UnityTestRunnerGenerator
 
   def create_suite_setup(output)
     output.puts("\n/*=======Suite Setup=====*/")
-    output.puts('static void suite_setup(void)')
+    output.puts('static MemoryTroubleshooter *suite_setup(void)')
     output.puts('{')
     if @options[:suite_setup].nil?
       # New style, call suiteSetUp() if we can use weak symbols
+      output.puts('  MemoryTroubleshooter *mem_test = new MemoryTroubleshooter();')
       output.puts('#if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)')
       output.puts('  suiteSetUp();')
       output.puts('#endif')
+      output.puts('  return mem_test;')
     else
       # Old style, C code embedded in the :suite_setup option
       output.puts(@options[:suite_setup])
@@ -257,8 +259,14 @@ class UnityTestRunnerGenerator
 
   def create_suite_teardown(output)
     output.puts("\n/*=======Suite Teardown=====*/")
-    output.puts('static int suite_teardown(int num_failures)')
+    output.puts('static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)')
     output.puts('{')
+    output.puts('    if(mem_test->MemoryLeakTest()){')
+    output.puts('        UNITY_PRINT_EOL();')
+    output.puts('        UnityPrint(memoryLeakMessage);')
+    output.puts('        UNITY_PRINT_EOL();')
+    output.puts('    }')
+    output.puts('    mem_test->~MemoryTroubleshooter();')
     if @options[:suite_teardown].nil?
       # New style, call suiteTearDown() if we can use weak symbols
       output.puts('#if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)')
@@ -361,7 +369,7 @@ class UnityTestRunnerGenerator
       output.puts("int #{main_name}(void)")
       output.puts('{')
     end
-    output.puts('  suite_setup();')
+    output.puts('  MemoryTroubleshooter *mem_test = suite_setup();')
     output.puts("  UnityBegin(\"#{filename.gsub(/\\/, '\\\\\\')}\");")
     if @options[:use_param_tests]
       tests.each do |test|
@@ -376,7 +384,7 @@ class UnityTestRunnerGenerator
     end
     output.puts
     output.puts('  CMock_Guts_MemFreeFinal();') unless used_mocks.empty?
-    output.puts("  return suite_teardown(UnityEnd());")
+    output.puts('  return suite_teardown(UnityEnd(), mem_test);')
     output.puts('}')
   end
 
@@ -393,6 +401,7 @@ class UnityTestRunnerGenerator
     testfile_includes.each do |inc|
       output.puts("#include #{inc.include?('<') ? inc : "\"#{inc.gsub('.h', '')}.h\""}")
     end
+    output.puts('#include <src/util/memory_troubleshooter.h>')
     output.puts "\n"
     tests.each do |test|
       if test[:params].nil? || test[:params].empty?

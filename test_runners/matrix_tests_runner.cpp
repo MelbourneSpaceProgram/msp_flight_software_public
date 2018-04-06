@@ -32,50 +32,27 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestCopyConstructor();
-extern void TestSlice();
-extern void TestGetNRows();
-extern void TestGetNColumns();
-extern void TestIsSquare();
-extern void TestGet();
-extern void TestSet();
-extern void TestDoubleIsEqual();
-extern void TestIsEqual();
-extern void TestSameSize();
-extern void TestSameNRows();
-extern void TestSameNColumns();
-extern void TestTranspose();
-extern void TestVectorNorm();
-extern void TestAdd();
-extern void TestSubtract();
-extern void TestMultiply();
-extern void TestMultiplyScalar();
-extern void TestCrossProduct();
-extern void TestFill();
-extern void TestCopyInto();
-extern void TestIdentity();
-extern void TestQuaternionNormalise();
-extern void TestRotationMatrixFromQuaternion();
-extern void TestSkewSymmetricFill();
-extern void TestConcatenateHorizontally();
-extern void TestConcatenateVertically();
-extern void TestAddRows();
-extern void TestMultiplyRow();
-extern void TestSwitchRows();
-extern void TestRowReduce();
 
 
 /*=======Suite Setup=====*/
-static void suite_setup(void)
+static MemoryTroubleshooter *suite_setup(void)
 {
+  MemoryTroubleshooter *mem_test = new MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   suiteSetUp();
 #endif
+  return mem_test;
 }
 
 /*=======Suite Teardown=====*/
-static int suite_teardown(int num_failures)
+static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 {
+    if(mem_test->MemoryLeakTest()){
+        UNITY_PRINT_EOL();
+        UnityPrint(memoryLeakMessage);
+        UNITY_PRINT_EOL();
+    }
+    mem_test->~MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -96,39 +73,8 @@ void resetTest_matrix_tests_runner(void)
  int matrix_tests_runner(void);
 int matrix_tests_runner(void)
 {
-  suite_setup();
+  MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/util/tests/matrix_tests.cpp");
-  RUN_TEST(TestCopyConstructor, 8);
-  RUN_TEST(TestSlice, 27);
-  RUN_TEST(TestGetNRows, 51);
-  RUN_TEST(TestGetNColumns, 58);
-  RUN_TEST(TestIsSquare, 65);
-  RUN_TEST(TestGet, 75);
-  RUN_TEST(TestSet, 93);
-  RUN_TEST(TestDoubleIsEqual, 116);
-  RUN_TEST(TestIsEqual, 133);
-  RUN_TEST(TestSameSize, 155);
-  RUN_TEST(TestSameNRows, 167);
-  RUN_TEST(TestSameNColumns, 179);
-  RUN_TEST(TestTranspose, 191);
-  RUN_TEST(TestVectorNorm, 212);
-  RUN_TEST(TestAdd, 229);
-  RUN_TEST(TestSubtract, 254);
-  RUN_TEST(TestMultiply, 279);
-  RUN_TEST(TestMultiplyScalar, 305);
-  RUN_TEST(TestCrossProduct, 328);
-  RUN_TEST(TestFill, 353);
-  RUN_TEST(TestCopyInto, 364);
-  RUN_TEST(TestIdentity, 400);
-  RUN_TEST(TestQuaternionNormalise, 421);
-  RUN_TEST(TestRotationMatrixFromQuaternion, 455);
-  RUN_TEST(TestSkewSymmetricFill, 496);
-  RUN_TEST(TestConcatenateHorizontally, 541);
-  RUN_TEST(TestConcatenateVertically, 576);
-  RUN_TEST(TestAddRows, 611);
-  RUN_TEST(TestMultiplyRow, 640);
-  RUN_TEST(TestSwitchRows, 660);
-  RUN_TEST(TestRowReduce, 688);
 
-  return suite_teardown(UnityEnd());
+  return suite_teardown(UnityEnd(), mem_test);
 }

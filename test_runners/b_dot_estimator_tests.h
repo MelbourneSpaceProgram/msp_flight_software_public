@@ -6,6 +6,7 @@
 #include "unity.h"
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <test_runners/b_dot_estimator_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestBDotEstimator(void);
 

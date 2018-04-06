@@ -11,6 +11,7 @@
 #include <src/observers/specific_observers/test_observer.h>
 #include <src/sensors/i2c_sensors/adc.h>
 #include <test_runners/i2c_sensor_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestADC(void);
 

@@ -9,7 +9,7 @@ class MemoryTroubleshooter {
     MemoryTroubleshooter();
     bool MemoryLeakTest();
     ~MemoryTroubleshooter();
-    static const int kMemBuff = 24;
+    static const int kMemBuff = 40;
 
    private:
     Memory_Stats *GetCurrMemStats();

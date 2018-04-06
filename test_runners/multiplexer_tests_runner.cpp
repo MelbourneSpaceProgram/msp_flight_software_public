@@ -36,16 +36,24 @@ extern void TestMultiplexer(void);
 
 
 /*=======Suite Setup=====*/
-static void suite_setup(void)
+static MemoryTroubleshooter *suite_setup(void)
 {
+  MemoryTroubleshooter *mem_test = new MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   suiteSetUp();
 #endif
+  return mem_test;
 }
 
 /*=======Suite Teardown=====*/
-static int suite_teardown(int num_failures)
+static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 {
+    if(mem_test->MemoryLeakTest()){
+        UNITY_PRINT_EOL();
+        UnityPrint(memoryLeakMessage);
+        UNITY_PRINT_EOL();
+    }
+    mem_test->~MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -66,9 +74,9 @@ void resetTest_multiplexer_tests_runner(void)
  int multiplexer_tests_runner(void);
 int multiplexer_tests_runner(void)
 {
-  suite_setup();
+  MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/i2c/multiplexers/tests/multiplexer_tests.cpp");
   RUN_TEST(TestMultiplexer, 18);
 
-  return suite_teardown(UnityEnd());
+  return suite_teardown(UnityEnd(), mem_test);
 }
