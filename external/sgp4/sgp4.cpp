@@ -805,7 +805,7 @@ bool sgp4
     // Check for convergence
     if (fabs(tem5) >= 1.0e-12) {
         etl::exception e("SGP4Funcs::sgp4 numerical solver didn't converge",
-                         "__FILE__",__LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
 

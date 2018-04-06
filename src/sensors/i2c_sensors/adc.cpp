@@ -72,7 +72,7 @@ double Adc::TakeI2cReading(void) {
     if (reading_successful) {
         return ConvertReadingToVoltage(read_buffer);
     } else {
-        etl::exception e("Failed ADC Reading", "__FILE__", __LINE__);
+        etl::exception e("Failed ADC Reading", __FILE__, __LINE__);
         throw e;
     }
 }

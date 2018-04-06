@@ -9,7 +9,7 @@ void Matrix::Slice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
         column_end >= A.GetNColumns() || column_end < column_start ||
         nrows != row_end - row_start + 1 ||
         ncolumns != column_end - column_start + 1) {
-        etl::exception e("Matrix::Slice arguments outside bounds", "__FILE__",
+        etl::exception e("Matrix::Slice arguments outside bounds", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -30,7 +30,7 @@ bool Matrix::IsSquare() const { return nrows == ncolumns; }
 
 double Matrix::Get(uint8_t row, uint8_t column) const {
     if (row >= nrows || column >= ncolumns) {  // uint8_t always > 0
-        etl::exception e("Matrix::Get indices out of bounds", "__FILE__",
+        etl::exception e("Matrix::Get indices out of bounds", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -39,7 +39,7 @@ double Matrix::Get(uint8_t row, uint8_t column) const {
 
 void Matrix::Set(uint8_t row, uint8_t column, double value) {
     if (row >= nrows || column >= ncolumns) {  // uint8_t always > 0
-        etl::exception e("Matrix::Set indices out of bounds", "__FILE__",
+        etl::exception e("Matrix::Set indices out of bounds", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -50,12 +50,12 @@ void Matrix::Set(uint8_t row, uint8_t column, double value) {
 //  comparison with zero, but it's set arbitrarily.
 bool Matrix::DoubleIsEqual(double a, double b) {
     if (isinf(a) || isinf(b)) {
-        etl::exception e("Matrix::DoubleIsEqual argument isinf", "__FILE__",
+        etl::exception e("Matrix::DoubleIsEqual argument isinf", __FILE__,
                          __LINE__);
         throw e;
     }
     if (isnan(a) || isnan(b)) {
-        etl::exception e("Matrix::DoubleIsEqual argument is nan", "__FILE__",
+        etl::exception e("Matrix::DoubleIsEqual argument is nan", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -68,7 +68,7 @@ bool Matrix::DoubleIsEqual(double a, double b) {
 bool Matrix::IsEqual(const Matrix &A) const {
     if (!SameSize(A)) {
         etl::exception e("Matrix::IsEqual arguments' sizes don't match",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -94,7 +94,7 @@ bool Matrix::SameNColumns(const Matrix &A) const {
 void Matrix::Transpose(const Matrix &A) {
     if (nrows != A.GetNColumns() || ncolumns != A.GetNRows()) {
         etl::exception e("Matrix::Transpose arguments' sizes don't match",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -107,7 +107,7 @@ void Matrix::Transpose(const Matrix &A) {
 double Matrix::VectorNorm(const Matrix &A) {
     if (A.GetNColumns() != 1) {
         etl::exception e("Matrix::VectorNorm must be a column vector",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     double sum_of_squares = 0;
@@ -119,7 +119,7 @@ double Matrix::VectorNorm(const Matrix &A) {
 
 void Matrix::Add(const Matrix &A, const Matrix &B) {
     if (!SameSize(A) || !SameSize(B)) {
-        etl::exception e("Matrix::Add arguments' sizes don't match", "__FILE__",
+        etl::exception e("Matrix::Add arguments' sizes don't match", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -133,7 +133,7 @@ void Matrix::Add(const Matrix &A, const Matrix &B) {
 void Matrix::Subtract(const Matrix &A, const Matrix &B) {
     if (!SameSize(A) || !SameSize(B)) {
         etl::exception e("Matrix::Subtract arguments' sizes don't match",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -145,7 +145,7 @@ void Matrix::Subtract(const Matrix &A, const Matrix &B) {
 
 void Matrix::Multiply(const Matrix &A, const Matrix &B) {
     if (A.GetNColumns() != B.GetNRows() || !SameNRows(A) || !SameNColumns(B)) {
-        etl::exception e("Matrix::Multiply dimensions don't match", "__FILE__",
+        etl::exception e("Matrix::Multiply dimensions don't match", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -163,7 +163,7 @@ void Matrix::Multiply(const Matrix &A, const Matrix &B) {
 void Matrix::MultiplyScalar(const Matrix &A, double scale) {
     if (!SameSize(A)) {
         etl::exception e("Matrix::MultiplyScalar arguments' sizes don't match",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -179,7 +179,7 @@ void Matrix::CrossProduct(const Matrix &A, const Matrix &B) {
         !SameSize(A)) {
         etl::exception e(
             "Matrix::CrossProduct arguments or 'this' aren't column vectors",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     Set(0, 0, A.Get(1, 0) * B.Get(2, 0) - A.Get(2, 0) * B.Get(1, 0));
@@ -201,7 +201,7 @@ void Matrix::CopyInto(uint8_t row_start, uint8_t column_start,
         ncolumns < A.GetNColumns() + column_start) {
         etl::exception e(
             "Matrix::CopyInto arguments exceed the bounds of 'this'",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
@@ -213,7 +213,7 @@ void Matrix::CopyInto(uint8_t row_start, uint8_t column_start,
 
 void Matrix::Identity() {
     if (!IsSquare()) {
-        etl::exception e("Matrix::Identity argument not square", "__FILE__",
+        etl::exception e("Matrix::Identity argument not square", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -230,7 +230,7 @@ void Matrix::QuaternionNormalise(const Matrix &q) {
     if (nrows != 4 || ncolumns != 1 || q.GetNRows() != 4 ||
         q.GetNColumns() != 1) {
         etl::exception e("Matrix::QuaternionNormalise not a 4x1 matrix",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     MultiplyScalar(q, 1 / VectorNorm(q));
@@ -241,7 +241,7 @@ void Matrix::RotationMatrixFromQuaternion(const Matrix &q) {
     if (nrows != 3 || ncolumns != 3 || q.nrows != 4 || q.ncolumns != 1) {
         etl::exception e(
             "Matrix::RotationMatrixFromQuaternion incorrect dimensions",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     double q_normed_data[4][1];
@@ -270,7 +270,7 @@ void Matrix::SkewSymmetricFill(const Matrix &A) {
     if (A.GetNColumns() != 1 || A.GetNRows() != 3 || nrows != 3 ||
         ncolumns != 3) {
         etl::exception e("Matrix::SkewSymmetricFill incorrect dimensions",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     Set(0, 0, 0);
@@ -289,7 +289,7 @@ void Matrix::ConcatenateHorizontally(const Matrix &A, const Matrix &B) {
         ncolumns != A.GetNColumns() + B.GetNColumns()) {
         etl::exception e(
             "Matrix::ConcatenateHorizontally arguments' dimensions don't match",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
@@ -309,7 +309,7 @@ void Matrix::ConcatenateVertically(const Matrix &A, const Matrix &B) {
         nrows != A.GetNRows() + B.GetNRows()) {
         etl::exception e(
             "Matrix::ConcatenateVertically arguments' dimensions don't match",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
@@ -328,7 +328,7 @@ void Matrix::AddRows(uint8_t row_to, uint8_t row_from, double scale) {
     if (row_to >= nrows || row_from >= nrows) {
         etl::exception e(
             "Matrix::AddRows arguments are outside matrix dimensions",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < ncolumns; i++) {
@@ -340,7 +340,7 @@ void Matrix::MultiplyRow(uint8_t row, double scale) {
     if (row >= nrows) {
         etl::exception e(
             "Matrix::MultiplyRow arguments are outside matrix dimensions",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < ncolumns; i++) {
@@ -352,7 +352,7 @@ void Matrix::SwitchRows(uint8_t row_a, uint8_t row_b) {
     if (row_a >= nrows || row_b >= nrows) {
         etl::exception e(
             "Matrix::SwitchRows arguments are outside matrix dimensions",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < ncolumns; i++) {
@@ -382,7 +382,7 @@ void Matrix::RowReduce() {
         }
         if (DoubleIsEqual(max_element, 0)) {
             etl::exception e("Matrix::RowReduce linear system has no solution",
-                             "__FILE__", __LINE__);
+                             __FILE__, __LINE__);
             throw e;
         }
 

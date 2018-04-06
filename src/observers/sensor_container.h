@@ -13,7 +13,7 @@ class SensorContainer {
             sensors.push_back(sensor);
             return true;
         } else {
-            etl::exception e("No capacity to add sensor", "__FILE__",
+            etl::exception e("No capacity to add sensor", __FILE__,
                          __LINE__);
             throw e;
             return false;

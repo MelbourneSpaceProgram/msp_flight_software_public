@@ -9,7 +9,7 @@ bool Measurable::AddObserver(Observer* observer) {
         observers.push_back(observer);
         return true;
     } else {
-        etl::exception e("No capacity to add observer", "__FILE__",
+        etl::exception e("No capacity to add observer", __FILE__,
                          __LINE__);
         throw e;
         return false;

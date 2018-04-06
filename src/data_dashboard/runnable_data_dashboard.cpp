@@ -77,7 +77,7 @@ void RunnableDataDashboard::TransmitMessage(const byte message_code,
     if (!status) {
         etl::exception e(
             "RunnableDataDashboard::TransmitMessage pb_encode failed",
-            "__FILE__", __LINE__);
+            __FILE__, __LINE__);
         throw e;
     }
 

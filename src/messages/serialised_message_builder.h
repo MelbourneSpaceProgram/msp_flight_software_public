@@ -21,7 +21,7 @@ class SerialisedMessageBuilder {
     template <class T>
     SerialisedMessageBuilder& AddData(T data) {
         if (sizeof(T) > buffer_size - serialised_length) {
-            etl::exception e("Message builder buffer size overflow", "__FILE__",
+            etl::exception e("Message builder buffer size overflow", __FILE__,
                              __LINE__);
             throw e;
         } else {
