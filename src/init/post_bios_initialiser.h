@@ -18,6 +18,7 @@ class PostBiosInitialiser : public Runnable {
     static void InitDataDashboard();
     static void InitOrientationControl();
     static void RunUnitTests();
+    static void InitHardware();
 };
 
 #endif  // SRC_INIT_POST_BIOS_INITIALISER_H_

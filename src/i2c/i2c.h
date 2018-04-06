@@ -1,6 +1,7 @@
 #ifndef SRC_I2C_I2C_H_
 #define SRC_I2C_I2C_H_
 
+#include <external/etl/array.h>
 #include <src/util/data_types.h>
 #include <ti/drivers/I2C.h>
 
@@ -32,11 +33,6 @@ class I2c {
       @return The I2c object.
     */
     I2c(I2C_BitRate bit_rate, uint8_t index);
-
-    /**
-      I2c destructor, closes the I2C bus
-    */
-    ~I2c();
 
     /**
       Function that returns a handle to the open I2C bus. Must be called after
@@ -93,6 +89,7 @@ class I2c {
     */
     bool PerformReadTransaction(byte address, byte* read_buffer,
                                 uint16_t read_buffer_length) const;
+    static void InitBusses();
 
    private:
     /**
@@ -109,11 +106,6 @@ class I2c {
       Function that opens the I2C bus.
     */
     void Open();
-
-    /**
-      Function that closes the I2C bus.
-    */
-    void Close();
 
     /**
       Sets I2C_params for callback mode
@@ -151,6 +143,9 @@ class I2c {
       The handle to the open I2C bus.
     */
     I2C_Handle handle;
+
+    static etl::array<I2C_Handle, 4> I2c_busses;
+    static etl::array<I2C_Params, 4> I2c_params;
 };
 
 #endif  // SRC_I2C_I2C_H_
