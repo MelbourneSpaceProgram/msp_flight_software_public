@@ -27,7 +27,7 @@ void I2c::Open() {
     handle = I2C_open(index, &i2c_params);
     if (handle == NULL) {
         throw etl::exception("Failed to open I2C bus, possibly already in-use.",
-                             "__FILE__", __LINE__);
+                             __FILE__, __LINE__);
     }
 }
 
@@ -52,7 +52,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
                                                 &mailbox_params, NULL);
     if (i2c_mailbox == NULL) {
         throw etl::exception("Failed to create I2C bus timeout mailbox.",
-                             "__FILE__", __LINE__);
+                             __FILE__, __LINE__);
     }
 
     i2c_transaction.slaveAddress = address;

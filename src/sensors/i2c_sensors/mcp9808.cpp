@@ -27,7 +27,7 @@ double MCP9808::TakeI2cReading() {
     if (reading_successful) {
         return temperature;
     } else {
-        etl::exception e("Failed MCP9808 Reading", "__FILE__", __LINE__);
+        etl::exception e("Failed MCP9808 Reading", __FILE__, __LINE__);
         throw e;
     }
 }

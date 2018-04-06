@@ -20,7 +20,7 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
     command_response_mailbox_handle = Mailbox_create(
         kLithiumHeaderSize, 1, &command_response_mailbox_params, NULL);
     if (command_response_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium command response mailbox", "__FILE__",
+        etl::exception e("Unable to create Lithium command response mailbox", __FILE__,
                          __LINE__);
         throw e;
     }
@@ -29,7 +29,7 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
     message_mailbox_handle = Mailbox_create(
         kMaxReceivedSize, kMaxNumberOfPayloads, &message_mailbox_params, NULL);
     if (message_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium message response mailbox", "__FILE__",
+        etl::exception e("Unable to create Lithium message response mailbox", __FILE__,
                          __LINE__);
         throw e;
     }

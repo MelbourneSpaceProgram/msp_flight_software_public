@@ -26,7 +26,7 @@ void RunnableLithiumListener::Receive() {
             read_buffer, Lithium::kLithiumHeaderSize);
 
         if (!LithiumUtils::IsValidHeader(read_buffer)) {
-            etl::exception e("Invalid Lithium header", "__FILE__",
+            etl::exception e("Invalid Lithium header", __FILE__,
                          __LINE__);
             throw e;
             continue;

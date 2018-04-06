@@ -28,7 +28,7 @@ Spi::Spi() {
     Semaphore_Params_init(&semaphore_params);
     transaction_complete = Semaphore_create(1, &semaphore_params, NULL);
     if (transaction_complete == NULL) {
-        throw etl::exception("Failed to create Semaphore.", "__FILE__",
+        throw etl::exception("Failed to create Semaphore.", __FILE__,
                              __LINE__);
     }
 
@@ -38,7 +38,7 @@ Spi::Spi() {
 void Spi::Open() {
     handle = SPI_open(kSpiIndex, &spi_params);
     if (handle == NULL) {
-        throw etl::exception("Failed to open Spi", "__FILE__", __LINE__);
+        throw etl::exception("Failed to open Spi", __FILE__, __LINE__);
     }
 }
 
@@ -62,7 +62,7 @@ bool Spi::PerformTransaction(uint32_t slave_select_index, byte *read_buffer,
     Mailbox_Handle spi_mailbox =
         Mailbox_create(sizeof(bool), 1, &mailbox_params, NULL);
     if (spi_mailbox == NULL) {
-        throw etl::exception("Failed to create mailbox", "__FILE__", __LINE__);
+        throw etl::exception("Failed to create mailbox", __FILE__, __LINE__);
     }
 
     spi_transaction.count = buffer_lengths;
