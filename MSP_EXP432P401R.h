@@ -84,6 +84,15 @@ typedef enum Board_GPIOName {
     INT_MCU_MCU_1 = 15,
     INT_MCU_MCU_2 = 16,
     BUS_SWITCH_ENABLE = 17,
+    // Used for the purposes of I2C bus sensing. Should not be used except in the I2c driver.
+    I2C_BUS_A_SCL = 18,
+    I2C_BUS_A_SDA = 19,
+    I2C_BUS_B_SCL = 20,
+    I2C_BUS_B_SDA = 21,
+    I2C_BUS_C_SCL = 22,
+    I2C_BUS_C_SDA = 23,
+    I2C_BUS_D_SCL = 24,
+    I2C_BUS_D_SDA = 25,
     Board_GPIOCOUNT
 } Board_GPIOName;
 

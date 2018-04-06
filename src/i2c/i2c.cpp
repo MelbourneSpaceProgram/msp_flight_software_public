@@ -1,39 +1,70 @@
+#include <MSP_EXP432P401R.h>
 #include <external/etl/exception.h>
 #include <src/i2c/i2c.h>
+#include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
-#include <ti/sysbios/knl/Mailbox.h>
 #include <ti/sysbios/knl/Clock.h>
+#include <ti/sysbios/knl/Mailbox.h>
 
-I2c::I2c(uint8_t index) : index(index) {
-    I2C_Params_init(&i2c_params);
-    i2c_params.transferMode = I2C_MODE_CALLBACK;
-    i2c_params.transferCallbackFxn =
-            static_cast<I2C_CallbackFxn>(ManageI2cTimeout);
-    Open();
-}
+etl::array<I2C_Handle, 4> I2c::I2c_busses = {NULL, NULL, NULL, NULL};
+etl::array<I2C_Params, 4> I2c::I2c_params = {
+    {{I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
+     {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
+     {I2C_MODE_CALLBACK, NULL, I2C_100kHz, NULL},
+     {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL}}};
 
-I2c::I2c(I2C_BitRate bit_rate, uint8_t index) : index(index) {
-    I2C_Params_init(&i2c_params);
-    i2c_params.bitRate = bit_rate;
-    i2c_params.transferMode = I2C_MODE_CALLBACK;
-    i2c_params.transferCallbackFxn =
-            static_cast<I2C_CallbackFxn>(ManageI2cTimeout);
-    Open();
-}
+void I2c::InitBusses() {
+    etl::array<uint8_t, 4> scl = {I2C_BUS_A_SCL, I2C_BUS_B_SCL, I2C_BUS_C_SCL,
+                                  I2C_BUS_D_SCL};
+    etl::array<uint8_t, 4> sda = {I2C_BUS_A_SDA, I2C_BUS_B_SDA, I2C_BUS_C_SDA,
+                                  I2C_BUS_D_SDA};
 
-I2c::~I2c() { Close(); }
+    for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
+        if (I2c_busses.at(i) == NULL) {
+            // TODO(akremor): Sense for a valid bus
+            int scl_pulled_up = GPIO_read(scl.at(i));
+            int sda_pulled_up = GPIO_read(sda.at(i));
 
-void I2c::Open() {
-    handle = I2C_open(index, &i2c_params);
-    if (handle == NULL) {
-        throw etl::exception("Failed to open I2C bus, possibly already in-use.",
-                             __FILE__, __LINE__);
+            if (!(scl_pulled_up && sda_pulled_up)) {
+                // Missing bus pull up resistors or bus is disconnected.
+                // Attempting to use the I2C bus will result in the CPU locking
+                // up as the transaction timeout functionality only works if the
+                // bus exists.
+
+                continue;
+
+                // TODO(akremor): Determine if we silently continue, log error
+                // (how?), or throw an exception
+                throw etl::exception(
+                    "SDA/SCL sensing low voltage. Pull-up resistors missing?",
+                    "__FILE__", __LINE__);
+            }
+
+            I2C_Params_init(&I2c_params.at(i));
+            I2c_params.at(i).transferMode = I2C_MODE_CALLBACK;
+            I2c_params.at(i).transferCallbackFxn =
+                static_cast<I2C_CallbackFxn>(ManageI2cTimeout);
+
+            I2c_busses.insert_at(i, I2C_open(i, &I2c_params.at(i)));
+            if (I2c_busses.at(i) == NULL) {
+                // TODO(akremor): Is this the desired behaviour? Perhaps log
+                // error and move on
+                throw etl::exception(
+                    "Failed to open I2C bus, possibly already in-use.",
+                    "__FILE__", __LINE__);
+            }
+        }
     }
 }
 
-void I2c::Close() {
-    if (handle != NULL) {
-        I2C_close(handle);
+I2c::I2c(uint8_t index) : index(index) { Open(); }
+
+void I2c::Open() {
+    handle = I2c_busses.at(index);
+    i2c_params = I2c_params.at(index);
+    if (handle == NULL) {
+        throw etl::exception("Failed to open I2C bus, possibly already in-use.",
+                             __FILE__, __LINE__);
     }
 }
 

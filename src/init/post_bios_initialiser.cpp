@@ -67,10 +67,13 @@ void PostBiosInitialiser::InitOrientationControl() {
     orientation_control_task->Init();
 }
 
+void PostBiosInitialiser::InitHardware() { I2c::InitBusses(); }
+
 void PostBiosInitialiser::PostBiosInit() {
     try {
         // TODO(dingbenjamin): Init var length array pool
 
+        InitHardware();
         // TODO(dingbenjamin): Initialise buses A-C and remove initialisation
         // from inside other classes
         I2c* bus_d = new I2c(I2C_BUS_D);
