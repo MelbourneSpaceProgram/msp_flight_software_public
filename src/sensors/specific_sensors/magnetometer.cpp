@@ -37,7 +37,7 @@ bool Magnetometer::TakeReadingHil() {
     bool status = pb_decode(&stream, MagnetometerReading_fields, &reading);
     if (!status) {
         etl::exception e("Magnetometer::TakeReadingHil pb_decode failed",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
 

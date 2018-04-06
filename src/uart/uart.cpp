@@ -15,7 +15,7 @@ void Uart::Open() {
     // Get a handle to the UART bus.
     this->handle = UART_open(this->bus_index, &uart_params);
     if (this->handle == NULL) {
-        etl::exception e("Unable to open UART, possibly in-use", "__FILE__",
+        etl::exception e("Unable to open UART, possibly in-use", __FILE__,
                          __LINE__);
         throw e;
     }

@@ -27,7 +27,7 @@ RTime Rtc::GetTime() {
     if (ValidTime(real_time)) {
         return real_time;
     } else {
-        etl::exception e("Failed RTC Reading", "__FILE__", __LINE__);
+        etl::exception e("Failed RTC Reading", __FILE__, __LINE__);
         throw e;
     }
 }

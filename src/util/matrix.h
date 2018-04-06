@@ -16,14 +16,14 @@ class Matrix {
         if (init_data == NULL) {
             etl::exception e(
                 "Matrix::Matrix(const Matrix &A ...) must pass in data matrix",
-                "__FILE__", __LINE__);
+                __FILE__, __LINE__);
             throw e;
         }
         if (rows != A.GetNRows() || columns != A.GetNColumns()) {
             etl::exception e(
                 "Matrix::Matrix(const Matrix &A ...) arguments sizes don't "
                 "match",
-                "__FILE__", __LINE__);
+                __FILE__, __LINE__);
             throw e;
         }
         nrows = A.GetNRows();

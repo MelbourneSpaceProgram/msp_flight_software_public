@@ -22,7 +22,7 @@ StateManager::StateManager() {
     state_update_semaphore_handle =
         Semaphore_create(0, &semaphore_params, NULL);
     if (state_update_semaphore_handle == NULL) {
-        etl::exception e("Unable to create state update semaphore", "__FILE__",
+        etl::exception e("Unable to create state update semaphore", __FILE__,
                          __LINE__);
         throw e;
     }

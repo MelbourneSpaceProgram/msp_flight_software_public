@@ -47,7 +47,7 @@ void TestPostMessageToDebugClient() {
     status = pb_encode(&stream, SensorReading_fields, &test_sensor_reading);
     if (!status) {
         etl::exception e("TestPostMessageToDebugClient pb_encode failed",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
 
@@ -82,7 +82,7 @@ void TestPostMessageToDebugClient() {
                              &reset_test_sensor_reading);
     if (!reset_status) {
         etl::exception e("TestPostMessageToDebugClient pb_encode failed",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
