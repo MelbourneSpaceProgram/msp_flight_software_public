@@ -14,7 +14,8 @@
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
-#include <src/config/unit_tests.h>
+#include <xdc/runtime/System.h>
+#include <xdc/std.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -67,22 +68,31 @@ void PostBiosInitialiser::InitOrientationControl() {
 }
 
 void PostBiosInitialiser::PostBiosInit() {
-    // TODO(dingbenjamin): Init var length array pool
+    try {
+        // TODO(dingbenjamin): Init var length array pool
 
-    // TODO(dingbenjamin): Initialise buses A-C and remove initialisation from
-    // inside other classes
-    I2c* bus_d = new I2c(I2C_BUS_D);
+        // TODO(dingbenjamin): Initialise buses A-C and remove initialisation
+        // from inside other classes
+        I2c* bus_d = new I2c(I2C_BUS_D);
 
-    InitSingletons(bus_d);
-    InitRadioListener();
-    RunUnitTests();
+        InitSingletons(bus_d);
+        InitRadioListener();
+        RunUnitTests();
 
-    StateManager* state_manager = StateManager::GetStateManager();
-    state_manager->CreateStateMachines();
+        StateManager* state_manager = StateManager::GetStateManager();
+        state_manager->CreateStateMachines();
 
-    InitOrientationControl();
+        InitOrientationControl();
 
-    if (hil_enabled) {
-        InitDataDashboard();
+        if (hil_enabled) {
+            InitDataDashboard();
+        }
+    } catch (etl::exception e) {
+        System_printf("EXCEPTION OCCURRED\n");
+        System_printf("File: %s, line %d\n", e.file_name(), e.line_number());
+        std::string message = e.what();
+        System_printf("Message: %s\n", message.c_str());
+
+        System_flush();
     }
 }
