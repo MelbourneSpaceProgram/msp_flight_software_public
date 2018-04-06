@@ -55,9 +55,7 @@ if(test_type === 'unittest'){
 nPC = debugSession.expression.evaluate("PC")
 
 if (nPC == loaderExit) {
-	script.traceSetConsoleLevel(TraceLevel.INFO)
-	script.traceWrite("TEST FAILED!")
-	script.traceEnd()
+	script.traceWrite("MSP432 CRASHED (HW exception)!")
 }
 
 debugSession.target.disconnect();
