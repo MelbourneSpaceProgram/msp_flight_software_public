@@ -4,7 +4,7 @@
 #include <src/util/matrix.h>
 #include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
-
+/*
 void TestCopyConstructor() {
     double m22_A_data[2][2] = {{1, 2}, {3, 4}};
     Matrix m22_A(m22_A_data);
@@ -696,3 +696,5 @@ void TestRowReduce() {
 
     TEST_ASSERT_TRUE(m34.IsEqual(m34_expected));
 }
+
+*/

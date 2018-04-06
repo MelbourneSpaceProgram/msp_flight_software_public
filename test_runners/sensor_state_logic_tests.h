@@ -13,6 +13,7 @@
 #include <src/system/state_manager.h>
 #include <test_runners/sensor_state_logic_tests.h>
 #include <string>
+#include <src/util/memory_troubleshooter.h>
 
 void TestBatteryChargeStateFlow(void);
 void TestBatteryTempStateFlow(void);

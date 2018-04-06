@@ -10,6 +10,7 @@
 #include <src/telecomms/lithium_md5.h>
 #include <src/util/data_types.h>
 #include <test_runners/lithium_hardware_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestNoOpHardware(void);
 void TestGetConfigHardware(void);

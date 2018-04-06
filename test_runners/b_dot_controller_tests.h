@@ -6,6 +6,7 @@
 #include "unity.h"
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <test_runners/b_dot_controller_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestControl(void);
 

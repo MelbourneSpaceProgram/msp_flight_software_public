@@ -36,16 +36,24 @@ extern void TestADC(void);
 
 
 /*=======Suite Setup=====*/
-static void suite_setup(void)
+static MemoryTroubleshooter *suite_setup(void)
 {
+  MemoryTroubleshooter *mem_test = new MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   suiteSetUp();
 #endif
+  return mem_test;
 }
 
 /*=======Suite Teardown=====*/
-static int suite_teardown(int num_failures)
+static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 {
+    if(mem_test->MemoryLeakTest()){
+        UNITY_PRINT_EOL();
+        UnityPrint(memoryLeakMessage);
+        UNITY_PRINT_EOL();
+    }
+    mem_test->~MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -66,9 +74,9 @@ void resetTest_i2c_sensor_tests_runner(void)
  int i2c_sensor_tests_runner(void);
 int i2c_sensor_tests_runner(void)
 {
-  suite_setup();
+  MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/sensors/i2c_sensors/tests/i2c_sensor_tests.cpp");
   RUN_TEST(TestADC, 14);
 
-  return suite_teardown(UnityEnd());
+  return suite_teardown(UnityEnd(), mem_test);
 }

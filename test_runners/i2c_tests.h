@@ -9,6 +9,7 @@
 #include <Board.h>
 #include <src/config/unit_tests.h>
 #include <ti/sysbios/knl/Task.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestI2cWriteTransaction(void);
 void TestI2cReadTransaction(void);

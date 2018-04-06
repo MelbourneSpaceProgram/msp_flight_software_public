@@ -12,6 +12,7 @@
 #include <src/system/system_state_machines/power_state_machine.h>
 #include <test_runners/sensor_state_logic_tests.h>
 #include <string>
+#include <src/util/memory_troubleshooter.h>
 
 void TestStateManager(void);
 

@@ -9,6 +9,7 @@
 #include <src/spi/spi.h>
 #include <test_runners/spi_tests.h>
 #include <ti/sysbios/knl/Task.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestSpiWriteTransaction(void);
 void TestSpiReadTransaction(void);

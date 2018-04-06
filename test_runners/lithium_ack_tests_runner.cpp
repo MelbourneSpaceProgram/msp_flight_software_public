@@ -41,16 +41,24 @@ extern void TestFailGetConfigAck();
 
 
 /*=======Suite Setup=====*/
-static void suite_setup(void)
+static MemoryTroubleshooter *suite_setup(void)
 {
+  MemoryTroubleshooter *mem_test = new MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   suiteSetUp();
 #endif
+  return mem_test;
 }
 
 /*=======Suite Teardown=====*/
-static int suite_teardown(int num_failures)
+static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 {
+    if(mem_test->MemoryLeakTest()){
+        UNITY_PRINT_EOL();
+        UnityPrint(memoryLeakMessage);
+        UNITY_PRINT_EOL();
+    }
+    mem_test->~MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -71,7 +79,7 @@ void resetTest_lithium_ack_tests_runner(void)
  int lithium_ack_tests_runner(void);
 int lithium_ack_tests_runner(void)
 {
-  suite_setup();
+  MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/telecomms/tests/lithium_ack_tests.cpp");
   RUN_TEST(TestNoOpAck, 7);
   RUN_TEST(TestGetConfigAck, 12);
@@ -80,5 +88,5 @@ int lithium_ack_tests_runner(void)
   RUN_TEST(TestFailNoOpAck, 35);
   RUN_TEST(TestFailGetConfigAck, 50);
 
-  return suite_teardown(UnityEnd());
+  return suite_teardown(UnityEnd(), mem_test);
 }
