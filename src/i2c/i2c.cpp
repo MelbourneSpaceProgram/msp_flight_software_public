@@ -1,9 +1,9 @@
 #include <MSP_EXP432P401R.h>
 #include <external/etl/exception.h>
 #include <src/i2c/i2c.h>
+#include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
-#include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Mailbox.h>
 #include <xdc/runtime/Log.h>
 
@@ -32,7 +32,6 @@ void I2c::InitBusses() {
                 // bus exists.
                 Log_error1("Failed to sense pull-up resistors for I2C bus %d",
                            i);
-
                 continue;
             }
 
@@ -45,7 +44,7 @@ void I2c::InitBusses() {
             if (I2c_busses.at(i) == NULL) {
                 throw etl::exception(
                     "Failed to open I2C bus, possibly already in-use.",
-                    "__FILE__", __LINE__);
+                    __FILE__, __LINE__);
             }
         }
     }
@@ -96,7 +95,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     // Wait for callback to post the status of the I2C or timeout
     bool transfer_outcome = false;
     Mailbox_pend(i2c_mailbox, &transfer_outcome,
-                 kTimeoutMilliSeconds * 1000 / Clock_tickPeriod);
+                 TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
 
     Mailbox_delete(&i2c_mailbox);
 
