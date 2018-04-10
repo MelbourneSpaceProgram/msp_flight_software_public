@@ -9,6 +9,7 @@ void b_dot_estimator_tests_runner();
 void kalman_filter_tests_runner();
 void location_estimator_tests_runner();
 void sgp4_tests_runner();
+void wmm_tests_runner();
 void database_tests_runner();
 void runnable_data_dashboard_tests_runner();
 void debug_interface_tests_runner();
