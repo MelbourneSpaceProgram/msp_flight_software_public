@@ -13,11 +13,11 @@ void TestMemoryLeak() {
     int *test = new int[100];
 
     bool memory_leak_true = memory_test->MemoryLeakTest();
-    delete test;
+    delete[] test;
     bool memory_leak_false = memory_test->MemoryLeakTest();
 
     TEST_ASSERT(memory_leak_true);
     TEST_ASSERT(!memory_leak_false);
 
-    memory_test->~MemoryTroubleshooter();
+    delete memory_test;
 }
