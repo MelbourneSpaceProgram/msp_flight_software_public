@@ -5,6 +5,7 @@
 #include <test_runners/kalman_filter_tests.h>
 #include <test_runners/location_estimator_tests.h>
 #include <test_runners/sgp4_tests.h>
+#include <test_runners/wmm_tests.h>
 #include <test_runners/database_tests.h>
 #include <test_runners/runnable_data_dashboard_tests.h>
 #include <test_runners/debug_interface_tests.h>
@@ -46,6 +47,7 @@ void master_tests_thread() {
     kalman_filter_tests_runner();
     location_estimator_tests_runner();
     sgp4_tests_runner();
+    wmm_tests_runner();
     database_tests_runner();
     runnable_data_dashboard_tests_runner();
     debug_interface_tests_runner();
