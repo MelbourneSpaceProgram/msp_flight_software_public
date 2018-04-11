@@ -19,6 +19,19 @@ bool LithiumUtils::IsValidHeader(const byte* received) {
     return true;
 }
 
+bool LithiumUtils::IsAck(const byte* received) {
+    if (received[4] == 0x0a && received[5] == 0x0a) {
+        // Ack
+        return true;
+    } else if (received[4] == 0xff && received[5] == 0xff) {
+        // Nack
+        return false;
+    } else {
+        throw etl::exception("Received Lithium response not Ack or Nack",
+                             __FILE__, __LINE__);
+    }
+}
+
 uint16_t LithiumUtils::GetPayloadSize(const byte* header) {
     // Ack (See Lithium Radio Interface Manual)
     if (header[4] == 0x0a && header[5] == 0x0a) {
