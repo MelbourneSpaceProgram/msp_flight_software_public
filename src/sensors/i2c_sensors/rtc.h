@@ -17,7 +17,7 @@ class Rtc : public I2cSensor {
     RTime GetTime();
     void SetSensorData(RTime reading);
     byte GetUnitTime(byte write_buffer, byte read_buffer[]);
-    bool ValidTime(RTime time);
+    static bool ValidTime(RTime time);
     byte BCDToBinary(byte output);
 
    private:

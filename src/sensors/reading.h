@@ -7,7 +7,6 @@ template <typename T>
 class Reading {
    public:
     T GetReading() const { return reading; }
-    RTime GetTimestamp() const {return timestamp};
 
    protected:
     // TODO(dingbenjamin) Remove default constructor after derived classes

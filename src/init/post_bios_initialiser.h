@@ -12,7 +12,7 @@ class PostBiosInitialiser : public Runnable {
    private:
     // TODO(dingbenjamin): Suppress unused function warning
     static void PostBiosInit();
-    static void InitSingletons(I2c* antenna_bus);
+    static void InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c, I2c* bus_d);
     static void InitRadioListener();
     static void InitStateManagement();
     static void InitDataDashboard();
