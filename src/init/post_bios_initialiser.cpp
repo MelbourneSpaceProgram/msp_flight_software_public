@@ -6,6 +6,7 @@
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
+#include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
 #include <src/system/tasks/runnable_state_management.h>
 #include <src/tasks/task_holder.h>
@@ -23,10 +24,13 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
     return &PostBiosInitialiser::PostBiosInit;
 }
 
-void PostBiosInitialiser::InitSingletons(I2c* antenna_bus) {
+void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
+                                         I2c* bus_d) {
     DebugStream::GetInstance();
-    Antenna::GetAntenna()->InitAntenna(antenna_bus);
+    Antenna::GetAntenna()->InitAntenna(bus_d);
     Lithium::GetInstance();
+    StateManager::GetStateManager()->CreateStateMachines();
+    I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
 }
 
 void PostBiosInitialiser::InitRadioListener() {
@@ -74,12 +78,15 @@ void PostBiosInitialiser::PostBiosInit() {
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();
-        // TODO(dingbenjamin): Initialise buses A-C and remove initialisation
-        // from inside other classes
+
+        I2c* bus_a = new I2c(I2C_BUS_A);
+        I2c* bus_b = new I2c(I2C_BUS_B);
+        I2c* bus_c = new I2c(I2C_BUS_C);
         I2c* bus_d = new I2c(I2C_BUS_D);
 
-        InitSingletons(bus_d);
+        InitSingletons(bus_a, bus_b, bus_c, bus_d);
         InitRadioListener();
+
         RunUnitTests();
 
         StateManager* state_manager = StateManager::GetStateManager();
