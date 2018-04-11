@@ -32,6 +32,27 @@ All feature documentation and code samples can be found on [Jama](https://melbou
 
 # Contributing code
 
+## Logging
+
+Log types supported are: 
+- `Log_printX()`
+- `Log_infoX()`
+- `Log_warningX()`
+- `Log_errorX()`
+, where X is a number from 0 to 5. This number specifies the number of values that need to be entered into the string. For example:
+
+```
+Log_info0("No parameters");
+Log_info1("One parameter %d", 123);
+Log_error2("The value of system %d was %f", system, value);
+```
+
+Make sure to include the logging library.
+`#include <xdc/runtime/log.h>`
+
+The logger function automatically places a newline (`\n`) at the end of each message, so there is no need to add one in the log message.
+Log messages are capped at 161 characters in length, including any values that are entered into the message.
+
 ## Review process
 Please ensure all code is created under a separate branch to satellite, to make testing and review easier. Squash non-meaningful commits (if unsure, don't worry about it, will be caught in review). Ensure the code builds locally, and also on the Jenkins build server. All automated tests must pass. When ready, please submit a pull request from the new branch onto satellite. The code will then be reviewed and merged when ready.
 
