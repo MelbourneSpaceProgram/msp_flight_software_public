@@ -1,6 +1,6 @@
+#include <external/etl/exception.h>
 #include <src/observers/observer.h>
 #include <src/sensors/measurable.h>
-#include <external/etl/exception.h>
 
 Measurable::Measurable() : new_reading(false) {}
 
@@ -9,10 +9,8 @@ bool Measurable::AddObserver(Observer* observer) {
         observers.push_back(observer);
         return true;
     } else {
-        etl::exception e("No capacity to add observer", __FILE__,
-                         __LINE__);
+        etl::exception e("No capacity to add observer", __FILE__, __LINE__);
         throw e;
-        return false;
     }
 }
 
