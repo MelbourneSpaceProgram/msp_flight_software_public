@@ -5,6 +5,7 @@
 #include <ti/drivers/I2C.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Mailbox.h>
+#include <xdc/runtime/Log.h>
 
 etl::array<I2C_Handle, 4> I2c::I2c_busses = {NULL, NULL, NULL, NULL};
 etl::array<I2C_Params, 4> I2c::I2c_params = {
@@ -21,7 +22,6 @@ void I2c::InitBusses() {
 
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
         if (I2c_busses.at(i) == NULL) {
-            // TODO(akremor): Sense for a valid bus
             int scl_pulled_up = GPIO_read(scl.at(i));
             int sda_pulled_up = GPIO_read(sda.at(i));
 
@@ -30,14 +30,10 @@ void I2c::InitBusses() {
                 // Attempting to use the I2C bus will result in the CPU locking
                 // up as the transaction timeout functionality only works if the
                 // bus exists.
+                Log_error1("Failed to sense pull-up resistors for I2C bus %d",
+                           i);
 
                 continue;
-
-                // TODO(akremor): Determine if we silently continue, log error
-                // (how?), or throw an exception
-                throw etl::exception(
-                    "SDA/SCL sensing low voltage. Pull-up resistors missing?",
-                    "__FILE__", __LINE__);
             }
 
             I2C_Params_init(&I2c_params.at(i));
@@ -47,8 +43,6 @@ void I2c::InitBusses() {
 
             I2c_busses.insert_at(i, I2C_open(i, &I2c_params.at(i)));
             if (I2c_busses.at(i) == NULL) {
-                // TODO(akremor): Is this the desired behaviour? Perhaps log
-                // error and move on
                 throw etl::exception(
                     "Failed to open I2C bus, possibly already in-use.",
                     "__FILE__", __LINE__);
@@ -63,8 +57,7 @@ void I2c::Open() {
     handle = I2c_busses.at(index);
     i2c_params = I2c_params.at(index);
     if (handle == NULL) {
-        throw etl::exception("Failed to open I2C bus, possibly already in-use.",
-                             __FILE__, __LINE__);
+        Log_error0("Attempting to use an uninitialised I2C bus");
     }
 }
 
@@ -73,14 +66,19 @@ I2C_Params I2c::GetI2cParams() const { return i2c_params; }
 I2C_Handle I2c::GetHandle() const { return handle; }
 
 bool I2c::PerformTransaction(byte address, byte* read_buffer,
-                         uint16_t read_buffer_length, byte* write_buffer,
-                         uint16_t write_buffer_length) const {
+                             uint16_t read_buffer_length, byte* write_buffer,
+                             uint16_t write_buffer_length) const {
+    if (handle == NULL) {
+        Log_error0("Attempting to use uninitialised I2C bus");
+        return false;
+    }
+
     I2C_Transaction i2c_transaction;
 
     Mailbox_Params mailbox_params;
     Mailbox_Params_init(&mailbox_params);
-    Mailbox_Handle i2c_mailbox = Mailbox_create(sizeof(bool), 1,
-                                                &mailbox_params, NULL);
+    Mailbox_Handle i2c_mailbox =
+        Mailbox_create(sizeof(bool), 1, &mailbox_params, NULL);
     if (i2c_mailbox == NULL) {
         throw etl::exception("Failed to create I2C bus timeout mailbox.",
                              __FILE__, __LINE__);
@@ -98,7 +96,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     // Wait for callback to post the status of the I2C or timeout
     bool transfer_outcome = false;
     Mailbox_pend(i2c_mailbox, &transfer_outcome,
-                 kTimeoutMilliSeconds*1000/Clock_tickPeriod);
+                 kTimeoutMilliSeconds * 1000 / Clock_tickPeriod);
 
     Mailbox_delete(&i2c_mailbox);
 
@@ -111,24 +109,24 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 }
 
 bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
-                                   uint16_t write_buffer_length) const {
+                                  uint16_t write_buffer_length) const {
     return I2c::PerformTransaction(address, NULL, 0, write_buffer,
                                    write_buffer_length);
 }
 
 bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
-                                  uint16_t read_buffer_length) const {
+                                 uint16_t read_buffer_length) const {
     return I2c::PerformTransaction(address, read_buffer, read_buffer_length,
                                    NULL, 0);
 }
 
-void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction *i2c_transaction,
-                          bool success) {
+void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
+                           bool success) {
     // Check to see whether the I2C_Transaction struct has been given a
     // mailbox handle. If it has put the outcome of the transfer in the mail.
     if (i2c_transaction->arg != NULL) {
         Mailbox_Handle mailbox_handle =
-                static_cast<Mailbox_Handle>(i2c_transaction->arg);
+            static_cast<Mailbox_Handle>(i2c_transaction->arg);
         bool transfer_outcome = success;
         Mailbox_post(mailbox_handle, &transfer_outcome, 0);
     }
