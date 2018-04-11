@@ -1,9 +1,9 @@
+#include <external/etl/exception.h>
 #include <src/config/board_definitions.h>
 #include <src/messages/serialised_message.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
-#include <external/etl/exception.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Task.h>
 
@@ -20,8 +20,8 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
     command_response_mailbox_handle = Mailbox_create(
         kLithiumHeaderSize, 1, &command_response_mailbox_params, NULL);
     if (command_response_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium command response mailbox", __FILE__,
-                         __LINE__);
+        etl::exception e("Unable to create Lithium command response mailbox",
+                         __FILE__, __LINE__);
         throw e;
     }
 
@@ -29,8 +29,8 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
     message_mailbox_handle = Mailbox_create(
         kMaxReceivedSize, kMaxNumberOfPayloads, &message_mailbox_params, NULL);
     if (message_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium message response mailbox", __FILE__,
-                         __LINE__);
+        etl::exception e("Unable to create Lithium message response mailbox",
+                         __FILE__, __LINE__);
         throw e;
     }
 }
@@ -54,7 +54,8 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
     // TODO(dingbenjamin): Figure out why this is needed
     Task_sleep(kInterCommandTimeMilli * 1000 / Clock_tickPeriod);
     if (LithiumUtils::IsValidHeader(ack_buffer) &&
-        LithiumUtils::GetCommandCode(ack_buffer) == command->GetCommandCode()) {
+        LithiumUtils::GetCommandCode(ack_buffer) == command->GetCommandCode() &&
+        LithiumUtils::IsAck(ack_buffer)) {
         return true;
     } else {
         return false;
