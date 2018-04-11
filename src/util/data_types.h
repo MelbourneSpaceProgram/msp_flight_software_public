@@ -6,6 +6,7 @@
 
 typedef uint8_t byte;
 
+// TODO(dingbenjamin): Create Time class with difference function
 typedef struct time {
     byte sec;
     byte min;

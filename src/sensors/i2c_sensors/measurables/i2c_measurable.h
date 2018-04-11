@@ -30,6 +30,9 @@ class I2cMeasurable : public Reading<R>, public Measurable {
     }
     virtual R TakeI2cReading() = 0;
 
+    RTime GetTimestamp() const { return Reading<R>::timestamp; }
+    void SetTimestamp(RTime timestamp) { Reading<R>::timestamp = timestamp; }
+
    protected:
     I2cSensor* sensor;
 };
