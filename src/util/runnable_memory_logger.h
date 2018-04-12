@@ -2,7 +2,10 @@
 #define SRC_UTIL_RUNNABLE_MEMORY_LOGGER_H_
 
 #include <ti/sysbios/heaps/HeapMem.h>
+#include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Memory.h>
+#include <xdc/runtime/System.h>
+#include <xdc/std.h>
 
 class RunnableMemoryLogger : public Runnable {
    public:
@@ -11,6 +14,7 @@ class RunnableMemoryLogger : public Runnable {
 
    private:
     static void LogMemoryStats();
+    static void PrintTaskInfo(Task_Handle task);
 };
 
 #endif  // SRC_UTIL_RUNNABLE_MEMORY_LOGGER_H_
