@@ -76,7 +76,7 @@ int sgp4_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/adcs/tests/sgp4_tests.cpp");
-  RUN_TEST(TestSimplifiedGeneralPerturbationModel, 19);
+  RUN_TEST(TestSimplifiedGeneralPerturbationModel, 17);
 
   return suite_teardown(UnityEnd(), mem_test);
 }

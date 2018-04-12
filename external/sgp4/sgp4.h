@@ -1,5 +1,5 @@
-#ifndef _h_
-#define _h_
+#ifndef EXTERNAL_SGP4_SGP4_H_
+#define EXTERNAL_SGP4_SGP4_H_
 /*     ----------------------------------------------------------------
  *
  *                                 SGP4.h
@@ -39,10 +39,7 @@
  * edition baseline 80  norad original baseline
  *       ---------------------------------------------------------------- */
 
-#include <math.h>
-#include "ast_time.h"
-
-typedef enum { wgs72old, wgs72, wgs84 } gravconsttype;
+#include <external/sgp4/sgp4_utils.h>
 
 typedef struct elsetrec {
     long int satnum;
@@ -80,64 +77,27 @@ typedef struct elsetrec {
 
 } elsetrec;
 
-namespace SGP4Funcs {
-void    days2mdhms
-    (
-    int year, double days,
-    int& mon, int& day, int& hr, int& minute, double& sec
-    );
-void    jday
-    (
-    int year, int mon, int day, int hr, int minute, double sec,
-    double& jd, double& jdFrac
-    );
+class Sgp4 {
+   public:
+    static void InitialisePropagator(gravconsttype whichconst, char opsmode,
+                                     const int satn, const double epoch,
+                                     const double xbstar, const double xndot,
+                                     const double xnddot, const double xecco,
+                                     const double xargpo, const double xinclo,
+                                     const double xmo, const double xno,
+                                     const double xnodeo, elsetrec& satrec);
 
+    static void Propagate(elsetrec& satrec, double tsince, double position[3],
+                          double velocity[3]);
 
-bool sgp4init(gravconsttype whichconst, char opsmode, const int satn,
-              const double epoch, const double xbstar, const double xndot,
-              const double xnddot, const double xecco, const double xargpo,
-              const double xinclo, const double xmo, const double xno,
-              const double xnodeo, elsetrec& satrec);
-
-bool sgp4(
-    // no longer need gravconsttype whichconst, all data contained in satrec
-    elsetrec& satrec, double tsince, double r[3], double v[3]);
-
-void getgravconst(gravconsttype whichconst, double& tumin, double& mu,
-                  double& radiusearthkm, double& xke, double& j2, double& j3,
-                  double& j4, double& j3oj2);
-
-// older sgp4io methods
-void twoline2rv(char longstr1[130], char longstr2[130], char typerun,
-                char typeinput, char opsmode, gravconsttype whichconst,
-                double& startmfe, double& stopmfe, double& deltamin,
-                elsetrec& satrec);
-
-// older sgp4ext methods
-double sgn(double x);
-
-double mag(double x[3]);
-
-void cross(double vec1[3], double vec2[3], double outvec[3]);
-
-double dot(double x[3], double y[3]);
-
-double angle(double vec1[3], double vec2[3]);
-
-void newtonnu(double ecc, double nu, double& e0, double& m);
-
-double asinh(double xval);
-
-void rv2coe(double r[3], double v[3], const double mu, double& p, double& a,
-            double& ecc, double& incl, double& omega, double& argp, double& nu,
-            double& m, double& arglat, double& truelon, double& lonper);
-
-void jday(int year, int mon, int day, int hr, int minute, double sec,
-          double& jd, double& jdFrac);
-void twoline2rv
-        (char longstr1[130], char longstr2[130], char opsmode, gravconsttype whichconst,
-        elsetrec& satrec);
-
+   private:
+    static void InitialiseSgp4(double xke, double j2, double ecco, double epoch,
+                               double inclo, double no_kozai, char opsmode,
+                               char& method, double& ainv, double& ao,
+                               double& con41, double& con42, double& cosio,
+                               double& cosio2, double& eccsq, double& omeosq,
+                               double& posq, double& rp, double& rteosq,
+                               double& sinio, double& no_unkozai);
 };
 
-#endif
+#endif  // EXTERNAL_SGP4_SGP4_H_
