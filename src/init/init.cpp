@@ -15,6 +15,6 @@ void PreBiosInit() {
     UART_init();
 
     TaskHolder *post_bios_initialiser_task =
-        new TaskHolder(1024, "Initialiser", 10, new PostBiosInitialiser());
+        new TaskHolder(1536, "Initialiser", 10, new PostBiosInitialiser());
     post_bios_initialiser_task->Init();
 }
