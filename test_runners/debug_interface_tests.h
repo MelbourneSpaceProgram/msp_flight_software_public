@@ -12,8 +12,6 @@
 #include <src/messages/SensorReading.pb.h>
 #include <src/util/message_codes.h>
 #include <test_runners/debug_interface_tests.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
 #include <src/util/memory_troubleshooter.h>
 
 void TestRequestMessageFromSimulator(void);

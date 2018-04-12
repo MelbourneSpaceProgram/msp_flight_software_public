@@ -1,3 +1,4 @@
+#include <external/etl/array.h>
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/temperature_message.h>
 #include <src/messages/test_container_message.h>
@@ -110,6 +111,32 @@ void TestPadWithZero(void) {
     for (uint8_t i = 2; i < 10; i++) {
         TEST_ASSERT_EQUAL_UINT8(0x00, serial_message.GetBuffer()[i]);
     }
+}
+
+void TestSerialiseEtlArray() {
+    etl::array<uint8_t, 3> test_array = {1, 2, 3};
+    byte buffer[3];
+    SerialisedMessageBuilder builder(buffer, 3);
+
+    builder.AddEtlArray<uint8_t, 3>(test_array);
+    SerialisedMessage serial_message = builder.Build();
+
+    TEST_ASSERT_EQUAL_INT(1, serial_message.GetBuffer()[0]);
+    TEST_ASSERT_EQUAL_INT8(2, serial_message.GetBuffer()[1]);
+    TEST_ASSERT_EQUAL_INT8(3, serial_message.GetBuffer()[2]);
+}
+
+void TestSerialiseArray() {
+    uint8_t test_array[3] = {1, 2, 3};
+    byte buffer[3];
+    SerialisedMessageBuilder builder(buffer, 3);
+
+    builder.AddArray<uint8_t>(test_array, 3);
+    SerialisedMessage serial_message = builder.Build();
+
+    TEST_ASSERT_EQUAL_INT(1, serial_message.GetBuffer()[0]);
+    TEST_ASSERT_EQUAL_INT8(2, serial_message.GetBuffer()[1]);
+    TEST_ASSERT_EQUAL_INT8(3, serial_message.GetBuffer()[2]);
 }
 
 void TestRebuildableMessageFieldIterator(void) {
