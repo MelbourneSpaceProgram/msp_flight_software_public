@@ -4,6 +4,7 @@
 #define TEST_RUNNERS_MESSAGE_TESTS_H_
 
 #include "unity.h"
+#include <external/etl/array.h>
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/temperature_message.h>
 #include <src/messages/test_container_message.h>
@@ -18,6 +19,8 @@ void TestTempMessageSerialise(void);
 void TestContainerMessageSerialise(void);
 void TestSerialisedMessageBuilder(void);
 void TestPadWithZero(void);
+void TestSerialiseEtlArray(void);
+void TestSerialiseArray(void);
 void TestRebuildableMessageFieldIterator(void);
 
 #endif  // TEST_RUNNERS_MESSAGE_TESTS_H_

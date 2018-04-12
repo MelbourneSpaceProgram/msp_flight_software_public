@@ -13,9 +13,6 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 #include <test_runners/runnable_data_dashboard_tests.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
-#include <src/config/unit_tests.h>
 #include <src/util/memory_troubleshooter.h>
 
 void TestTransmitMessage(void);

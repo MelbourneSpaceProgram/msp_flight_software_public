@@ -37,6 +37,8 @@ extern void TestTempMessageSerialise(void);
 extern void TestContainerMessageSerialise(void);
 extern void TestSerialisedMessageBuilder(void);
 extern void TestPadWithZero(void);
+extern void TestSerialiseEtlArray();
+extern void TestSerialiseArray();
 extern void TestRebuildableMessageFieldIterator(void);
 
 
@@ -81,12 +83,14 @@ int message_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/messages/tests/message_tests.cpp");
-  RUN_TEST(TestTestMessageSerialise, 12);
-  RUN_TEST(TestTempMessageSerialise, 26);
-  RUN_TEST(TestContainerMessageSerialise, 45);
-  RUN_TEST(TestSerialisedMessageBuilder, 66);
-  RUN_TEST(TestPadWithZero, 91);
-  RUN_TEST(TestRebuildableMessageFieldIterator, 115);
+  RUN_TEST(TestTestMessageSerialise, 13);
+  RUN_TEST(TestTempMessageSerialise, 27);
+  RUN_TEST(TestContainerMessageSerialise, 46);
+  RUN_TEST(TestSerialisedMessageBuilder, 67);
+  RUN_TEST(TestPadWithZero, 92);
+  RUN_TEST(TestSerialiseEtlArray, 116);
+  RUN_TEST(TestSerialiseArray, 129);
+  RUN_TEST(TestRebuildableMessageFieldIterator, 142);
 
   return suite_teardown(UnityEnd(), mem_test);
 }

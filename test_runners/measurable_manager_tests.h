@@ -7,6 +7,7 @@
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/measurable_id.h>
 #include <test_runners/measurable_manager_tests.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestManagerRead(void);
 
