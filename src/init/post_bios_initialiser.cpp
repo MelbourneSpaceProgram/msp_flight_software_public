@@ -14,6 +14,7 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/runnable_memory_logger.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/System.h>
@@ -81,6 +82,10 @@ void PostBiosInitialiser::InitOrientationControl() {
 void PostBiosInitialiser::InitHardware() { I2c::InitBusses(); }
 
 void PostBiosInitialiser::PostBiosInit() {
+    TaskHolder* memory_logger_task =
+        new TaskHolder(1024, "MemoryLogger", 13, new RunnableMemoryLogger());
+    memory_logger_task->Init();
+
     try {
         // TODO(dingbenjamin): Init var length array pool
 
