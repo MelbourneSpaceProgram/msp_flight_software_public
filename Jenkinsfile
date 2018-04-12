@@ -11,6 +11,7 @@ pipeline {
 		script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1",
 		returnStdout: true,
 		).trim()
+	docker_name = "${GIT_COMMIT}_${BUILD_ID}_${container_uuid}"
     }
     
     stages {
@@ -56,23 +57,20 @@ pipeline {
             steps {
                 sh '''
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    buildid=${BUILD_ID}
-		    gitcommit=${GIT_COMMIT}
-	            docker_name=$gitcommit"_"$buildid"_"${container_uuid}
-                    docker run -td --name $docker_name ccs7_final_image_v1
+                    docker run -td --name ${docker_name} ccs7_final_image_v1
                     docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
                     docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
                     docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
-                    '''
+		    docker cp $docker_name:"/tmp/code/TIRTOS Build/MSP.out" ${WORKSPACE}/MSP.out 
+		    '''
+		    stash includes: 'MSP.out', name: 'flight_software_binary'
     		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
     	    }
             post {
                 always {
+			
                     sh '''
-		      buildid=${BUILD_ID}
-                      gitcommit=${GIT_COMMIT}
-                      docker_name=$gitcommit"_"$buildid"_"${container_uuid}
-                      docker rm -f $docker_name
+                      docker rm -f ${docker_name}
                     '''
                 }
             }
@@ -83,25 +81,22 @@ pipeline {
                 label 'flatsat'
             }
             steps {
-                sh '''
-                    tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    buildid=${BUILD_ID}
-                    gitcommit=${GIT_COMMIT}
-                    docker_name=$gitcommit"_"$buildid"_"${container_uuid}"_unittest"
-                    docker run -td --name $docker_name --privileged -v /dev/bus/usb:/dev/bus/usb jigglemein/ccs7_final_image_v3
-                    docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
-                    docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
-                    docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
-                    docker exec -t $docker_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/code/targetConfigs/runner.js unittest
+		unstash 'flight_software_binary'
+		sh '''
+			tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
+			container_name=${docker_name}"_unittest"
+			docker run -td --name $container_name --privileged -v /dev/bus/usb:/dev/bus/usb jigglemein/ccs7_final_image_v3
+			docker cp ${WORKSPACE}/CDH_software.tar.gz $container_name:/tmp/code
+                        docker exec -t $container_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
+			docker cp ${WORKSPACE}/MSP.out $container_name:"/tmp/code/TIRTOS Build/MSP.out"
+			docker exec -t $container_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/code/targetConfigs/runner.js unittest
                     '''
             }
             post {
                 always {
                     sh '''
-                        buildid=${BUILD_ID}
-                        gitcommit=${GIT_COMMIT}
-                        docker_name=$gitcommit"_"$buildid"_"${container_uuid}"_unittest"
-                        docker rm -f $docker_name
+			container_name=${docker_name}"_unittest"
+                        docker rm -f $container_name
                     '''
                 }
             }
@@ -113,25 +108,22 @@ pipeline {
             }
             when { branch "ditl/*" }
             steps {
+		unstash 'flight_software_binary'
                 sh '''
-                    tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    buildid=${BUILD_ID}
-                    gitcommit=${GIT_COMMIT}
-                    docker_name=$gitcommit"_"$buildid"_"${container_uuid}"_ditl"
-                    docker run -td --name $docker_name --privileged -v /dev/bus/usb:/dev/bus/usb jigglemein/ccs7_final_image_v3
-                    docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
-                    docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
-                    docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
-                    docker exec -t $docker_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/code/targetConfigs/runner.js ditl
+		    tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
+                    container_name=${docker_name}"_ditl"
+                    docker run -td --name $container_name --privileged -v /dev/bus/usb:/dev/bus/usb jigglemein/ccs7_final_image_v3
+                    docker cp ${WORKSPACE}/CDH_software.tar.gz $container_name:/tmp/code
+                    docker exec -t $container_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
+		    docker cp ${WORKSPACE}/MSP.out $container_name:"/tmp/code/TIRTOS Build/MSP.out"
+                    docker exec -t $container_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/code/targetConfigs/runner.js ditl
                     '''
             }
             post {
                 always {
                     sh '''
-                        buildid=${BUILD_ID}
-                        gitcommit=${GIT_COMMIT}
-                        docker_name=$gitcommit"_"$buildid"_"${container_uuid}"_ditl"
-                        docker rm -f $docker_name
+                        container_name=${docker_name}"_ditl"
+                        docker rm -f $container_name
                     '''
                 }
             }
