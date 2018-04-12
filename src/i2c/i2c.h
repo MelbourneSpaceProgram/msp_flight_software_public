@@ -55,7 +55,7 @@ class I2c {
       mode and which provides timeout functionality. The timeout is set by
       kTimeoutMilliSeconds.
 
-      @param address The address of the I2C device on the bus.
+      @param address The address of the I2C device on the bus (in 7-bit format).
       @param read_buffer The buffer to which the I2C device will write.
       @param read_buffer_length The length of the read buffer.
       @param write_buffer The buffer which will be used to perform the initial
@@ -70,7 +70,7 @@ class I2c {
     /**
       Function that performs an I2C write operation with timeout.
 
-      @param address The address of the I2C device on the bus.
+      @param address The address of the I2C device on the bus (in 7-bit format).
       @param write_buffer The buffer which will be used to perform the initial
       write to the I2C device.
       @param write_buffer_length The length of the write buffer.
@@ -82,7 +82,7 @@ class I2c {
     /**
       Function that performs an I2C read operation with timeout.
 
-      @param address The address of the I2C device on the bus.
+      @param address The address of the I2C device on the bus (in 7-bit format).
       @param read_buffer The buffer to which the I2c device will read.
       @param read_buffer_length The length of the read buffer.
       @return The outcome of the transfer with success returning true.
