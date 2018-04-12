@@ -17,6 +17,7 @@ class PostBiosInitialiser : public Runnable {
     static void InitStateManagement();
     static void InitDataDashboard();
     static void InitOrientationControl();
+    static void InitBeacon();
     static void RunUnitTests();
     static void InitHardware();
 };
