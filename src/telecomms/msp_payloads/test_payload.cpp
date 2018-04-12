@@ -20,4 +20,4 @@ SerialisedMessage TestPayload::SerialiseTo(byte *serial_buffer) const {
 
 uint16_t TestPayload::GetSerialisedSize() const { return kTestMessageSize; }
 
-uint8_t TestPayload::GetPayloadCode() const { return kTestPayloadCode; }
+uint8_t TestPayload::GetPayloadCode() const { return kMspTestPayloadCode; }

@@ -8,6 +8,7 @@
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_configuration.h>
+#include <src/telecomms/msp_payloads/beacon_payload.h>
 #include <src/telecomms/msp_payloads/test_payload.h>
 #include <src/telecomms/msp_payloads/transmit_packet.h>
 #include <src/telecomms/msp_payloads/transmit_payload.h>

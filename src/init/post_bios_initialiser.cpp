@@ -12,6 +12,7 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -57,6 +58,12 @@ void PostBiosInitialiser::InitStateManagement() {
     state_management_task->Init();
 }
 
+void PostBiosInitialiser::InitBeacon() {
+    TaskHolder* beacon_task =
+        new TaskHolder(2048, "Beacon", 12, new RunnableBeacon());
+    beacon_task->Init();
+}
+
 void PostBiosInitialiser::InitDataDashboard() {
     // TODO(rskew) review priority
     TaskHolder* data_dashboard_task =
@@ -92,6 +99,7 @@ void PostBiosInitialiser::PostBiosInit() {
         StateManager* state_manager = StateManager::GetStateManager();
         state_manager->CreateStateMachines();
 
+        InitBeacon();
         InitOrientationControl();
 
         if (hil_enabled) {
