@@ -62,7 +62,7 @@ void PostBiosInitialiser::InitStateManagement() {
 
 void PostBiosInitialiser::InitBeacon() {
     TaskHolder* beacon_task =
-        new TaskHolder(2048, "Beacon", 12, new RunnableBeacon());
+        new TaskHolder(1536, "Beacon", 12, new RunnableBeacon());
     beacon_task->Init();
 }
 
