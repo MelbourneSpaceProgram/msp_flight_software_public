@@ -5,7 +5,7 @@
 const int MCP9808::TEMP_REGISTER = 0x05;
 
 MCP9808::MCP9808(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
-                 I2cMultiplexer::MuxChannels channel)
+                 I2cMultiplexer::MuxChannel channel)
     : I2cSensor(bus, address, multiplexer, channel) {}
 
 double MCP9808::TakeI2cReading() {

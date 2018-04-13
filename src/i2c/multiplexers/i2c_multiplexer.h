@@ -5,15 +5,7 @@
 
 class I2cMultiplexer {
    public:
-    I2cMultiplexer(const I2c* bus, byte address);
-    const I2c* GetBus() const;
-    byte GetAddress() const;
-    void OpenChannel(uint8_t channel) const;
-    void CloseChannel(uint8_t channel) const;
-    void CloseAllChannels() const;
-    byte GetChannelStates() const;
-    // TODO(dingbenjamin): Have mux logic handle kMuxNoChannel
-    enum MuxChannels {
+    enum MuxChannel {
         kMuxChannel0 = 0x00,
         kMuxChannel1 = 0x01,
         kMuxChannel2 = 0x02,
@@ -24,6 +16,14 @@ class I2cMultiplexer {
         kMuxChannel7 = 0x40,
         kMuxNoChannel = 0xFF
     };
+
+    I2cMultiplexer(const I2c* bus, byte address);
+    const I2c* GetBus() const;
+    byte GetAddress() const;
+    void OpenChannel(MuxChannel channel) const;
+    void CloseChannel(MuxChannel channel) const;
+    void CloseAllChannels() const;
+    byte GetChannelStates() const;
 
    private:
     const I2c* bus;

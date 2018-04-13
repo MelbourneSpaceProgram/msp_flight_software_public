@@ -5,7 +5,7 @@ const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage1v024, kAdcVoltage0v512, kAdcVoltage0v256};
 
 Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
-         I2cMultiplexer::MuxChannels channel)
+         I2cMultiplexer::MuxChannel channel)
     : I2cSensor(bus, address, multiplexer, channel),
       operational_status(kAdcDefaultOperationalStatus),
       mux_mode(kAdcDefaultMuxMode),
