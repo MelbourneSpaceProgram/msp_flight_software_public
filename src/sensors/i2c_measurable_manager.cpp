@@ -1,5 +1,6 @@
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/adc.h>
+#include <src/sensors/i2c_sensors/measurables/rtime_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
 #include <src/sensors/measurable_id.h>
@@ -124,6 +125,10 @@ void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
 
     Adc *cdh_adc_1 = new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel0);
     Adc *cdh_adc_2 = new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel0);
+
+    Rtc *rtc = new Rtc(bus_a, 0x69, mux_a, I2cMultiplexer::kMuxChannel0);
+    RTimeMeasurable *rtime_measurable = new RTimeMeasurable(rtc);
+    measurables[kCdhRtc] = rtime_measurable;
 
     MCP9808 *cdh_temp_1 =
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
