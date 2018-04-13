@@ -3,8 +3,8 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
-#include <xdc/runtime/log.h>
 #include <xdc/std.h>
 
 RunnableMemoryLogger::RunnableMemoryLogger() {}
