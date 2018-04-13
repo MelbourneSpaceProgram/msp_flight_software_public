@@ -12,7 +12,7 @@ typedef etl::map<byte, byte, 6, std::less<uint8_t> > RTCMaskMap;
 class Rtc : public I2cSensor {
    public:
     Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
-        I2cMultiplexer::MuxChannels channel = I2cMultiplexer::kMuxNoChannel);
+        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
     RTime GetTime();
     void SetSensorData(RTime reading);

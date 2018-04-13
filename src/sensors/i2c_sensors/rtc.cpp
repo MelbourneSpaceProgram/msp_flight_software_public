@@ -1,7 +1,7 @@
 #include <src/sensors/i2c_sensors/rtc.h>
 
 Rtc::Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
-         I2cMultiplexer::MuxChannels channel)
+         I2cMultiplexer::MuxChannel channel)
     : I2cSensor(bus, address, multiplexer, channel) {
     Rtc::bit_mask_map[kTimeRegisterSec] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterMin] = kLowest7BitMask;

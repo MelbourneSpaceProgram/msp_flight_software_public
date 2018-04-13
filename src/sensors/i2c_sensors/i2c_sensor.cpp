@@ -2,7 +2,7 @@
 
 I2cSensor::I2cSensor(const I2c* bus, uint8_t address,
                      const I2cMultiplexer* multiplexer,
-                     I2cMultiplexer::MuxChannels channel)
+                     I2cMultiplexer::MuxChannel channel)
     : bus(bus), address(address), multiplexer(multiplexer), channel(channel) {}
 
 void I2cSensor::MuxSelect() const {
