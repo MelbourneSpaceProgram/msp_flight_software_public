@@ -24,6 +24,7 @@ enum MeasurableId {
     kCdhAdc1,
     kCdhAdc2,
     kCdhTemp1,
+    kCdhRtc,
     kSolarAdc1,
     kSolarTemp1,
     kSolarTemp2
