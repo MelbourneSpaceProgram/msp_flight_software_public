@@ -20,7 +20,7 @@ class MCP9808 : public I2cSensor {
     */
     MCP9808(
         const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
-        I2cMultiplexer::MuxChannels channel = I2cMultiplexer::kMuxNoChannel);
+        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
     /**
       Method that causes the MCP9808 to take a reading. The value is then

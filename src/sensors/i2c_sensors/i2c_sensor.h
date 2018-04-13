@@ -9,7 +9,7 @@ class I2cSensor {
     I2cSensor(
         const I2c* bus, uint8_t address,
         const I2cMultiplexer* multiplexer = NULL,
-        I2cMultiplexer::MuxChannels channel = I2cMultiplexer::kMuxNoChannel);
+        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
     void MuxSelect() const;
     void MuxDeselect() const;
@@ -20,7 +20,7 @@ class I2cSensor {
 
    private:
     const I2cMultiplexer* multiplexer;
-    I2cMultiplexer::MuxChannels channel;
+    I2cMultiplexer::MuxChannel channel;
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_I2C_SENSOR_H_
