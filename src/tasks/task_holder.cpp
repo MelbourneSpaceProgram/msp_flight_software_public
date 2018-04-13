@@ -11,9 +11,12 @@ TaskHolder::TaskHolder(uint16_t stack_size, char* name, int priority,
       handle(NULL) {}
 
 TaskHolder::~TaskHolder() {
-    // TODO(dingbenjamin): Implement safe stopping of contained runnable and
-    // task - ensure task is deleted and the task stack is freed.
-    // The runnable should be in charge of deciding how it safely stops
+    Task_delete(&handle);
+    if (runnable != NULL) {
+        // Runnable should always be heap allocated or there
+        // will be double deletion!
+        delete runnable;
+    }
 }
 
 void TaskHolder::Init() {
