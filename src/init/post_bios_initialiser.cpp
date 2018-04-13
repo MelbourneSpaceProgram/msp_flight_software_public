@@ -17,6 +17,7 @@
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/task_utils.h>
+#include <src/util/runnable_time_source.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -156,6 +157,11 @@ void PostBiosInitialiser::PostBiosInit() {
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();
+
+        // Relies on I2C so needs to be post InitHardware()
+        TaskHolder* time_source_task =
+        new TaskHolder(1024, "TimeSource", 13, new RunnableTimeSource());
+        time_source_task->Init();
 
         I2c* bus_a = new I2c(I2C_BUS_A);
         I2c* bus_b = new I2c(I2C_BUS_B);
