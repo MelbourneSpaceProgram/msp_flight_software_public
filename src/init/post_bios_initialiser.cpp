@@ -15,8 +15,10 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
+#include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
 #include <xdc/std.h>
 
@@ -55,8 +57,11 @@ void PostBiosInitialiser::RunUnitTests() {
 
 void PostBiosInitialiser::InitStateManagement() {
     // TODO(rskew) review priority
+    StateManager* state_manager = StateManager::GetStateManager();
+    state_manager->CreateStateMachines();
+
     TaskHolder* state_management_task = new TaskHolder(
-        1024, "StateManagement", 8, new RunnableStateManagement());
+        1024, "StateManagement", 11, new RunnableStateManagement());
     state_management_task->Init();
 }
 
@@ -80,7 +85,30 @@ void PostBiosInitialiser::InitOrientationControl() {
     orientation_control_task->Init();
 }
 
+void PostBiosInitialiser::DeployAntenna() {
+    Antenna* antenna = Antenna::GetAntenna();
+    if (!antenna->IsDoorsOpen()) antenna->SafeDeploy();
+    if (!antenna->IsDoorsOpen()) antenna->ForceDeploy();
+    if (!antenna->IsDoorsOpen()) {
+        Log_error0("Antenna failed to deploy");
+    }
+}
+
 void PostBiosInitialiser::InitHardware() { I2c::InitBusses(); }
+
+void PostBiosInitialiser::DeploymentWait() {
+    I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
+    RTime time = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
+
+    // TODO(dingbenjamin): Make a function for this time check
+    while (time.min < 30 && time.hour < 1 && time.date < 2 && time.month < 2) {
+        RTime reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
+        if (Rtc::ValidTime(reading)) {
+            time = reading;
+        }
+        TaskUtils::SleepMilli(kDelayCheckInterval);
+    }
+}
 
 void PostBiosInitialiser::PostBiosInit() {
     TaskHolder* memory_logger_task =
@@ -98,19 +126,19 @@ void PostBiosInitialiser::PostBiosInit() {
         I2c* bus_d = new I2c(I2C_BUS_D);
 
         InitSingletons(bus_a, bus_b, bus_c, bus_d);
-        InitRadioListener();
 
         RunUnitTests();
+        InitStateManagement();
+        if (hil_enabled) InitDataDashboard();
 
-        StateManager* state_manager = StateManager::GetStateManager();
-        state_manager->CreateStateMachines();
+        DeploymentWait();
 
+        // TODO(dingbenjamin): Deploy antenna conditional on power usage
+        InitRadioListener();
+        DeployAntenna();
         InitBeacon();
         InitOrientationControl();
 
-        if (hil_enabled) {
-            InitDataDashboard();
-        }
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");
         System_printf("File: %s, line %d\n", e.file_name(), e.line_number());

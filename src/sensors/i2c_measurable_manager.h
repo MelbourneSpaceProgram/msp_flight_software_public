@@ -47,8 +47,8 @@ class I2cMeasurableManager {
         } catch (etl::exception e) {
             // TODO(dingbenjamin): Handle the exception
             // Possible exceptions are bad cast or nonexistent sensor
+            throw e;
         }
-        return NULL;
     }
 
    private:
