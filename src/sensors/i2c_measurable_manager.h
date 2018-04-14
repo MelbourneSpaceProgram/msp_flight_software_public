@@ -26,7 +26,7 @@ class I2cMeasurableManager {
                 dynamic_cast<I2cMeasurable<T> *>(measurable);
             if (i2c_measurable == NULL) {
                 etl::exception e("Cannot cast to specified measurable type",
-                                 "__FILE__", __LINE__);
+                                 __FILE__, __LINE__);
                 throw e;
             }
 
