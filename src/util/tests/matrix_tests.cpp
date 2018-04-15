@@ -4,7 +4,7 @@
 #include <src/util/matrix.h>
 #include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
-/*
+
 void TestCopyConstructor() {
     double m22_A_data[2][2] = {{1, 2}, {3, 4}};
     Matrix m22_A(m22_A_data);
@@ -18,7 +18,7 @@ void TestCopyConstructor() {
     try {
         double m32_data[3][2];
         Matrix m32(m22_A, m32_data);
-    } catch (etl::exception& e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -42,7 +42,7 @@ void TestSlice() {
     bool failed = false;
     try {
         m22_slice.Get(2, 2);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -84,7 +84,7 @@ void TestGet() {
     bool failed = false;
     try {
         m22.Get(255, 111);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -107,7 +107,7 @@ void TestSet() {
     bool failed = false;
     try {
         m22.Set(255, 111, 0);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -124,7 +124,7 @@ void TestDoubleIsEqual() {
     bool failed = false;
     try {
         Matrix::DoubleIsEqual(NAN, 0);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -146,7 +146,7 @@ void TestIsEqual() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.IsEqual(m22);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -203,7 +203,7 @@ void TestTranspose() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.Transpose(m22);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -220,7 +220,7 @@ void TestVectorNorm() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         Matrix::VectorNorm(m33);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -245,7 +245,7 @@ void TestAdd() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.Add(m22, m22_2);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -270,7 +270,7 @@ void TestSubtract() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.Subtract(m22, m22_2);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -296,7 +296,7 @@ void TestMultiply() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.Multiply(m32, m32);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -319,7 +319,7 @@ void TestMultiplyScalar() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.MultiplyScalar(m22, 0);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -344,7 +344,7 @@ void TestCrossProduct() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.CrossProduct(m31_A, m31_B);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -381,7 +381,7 @@ void TestCopyInto() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.CopyInto(0, 212, m44);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -391,7 +391,7 @@ void TestCopyInto() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.CopyInto(0, 1, m44);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -412,7 +412,7 @@ void TestIdentity() {
         double m34_identity_data[3][4];
         Matrix m34_identity(m34_identity_data);
         m34_identity.Identity();
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -436,7 +436,7 @@ void TestQuaternionNormalise() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         m33.QuaternionNormalise(q);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -446,7 +446,7 @@ void TestQuaternionNormalise() {
         double m33_data[3][3];
         Matrix m33(m33_data);
         q.QuaternionNormalise(m33);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -477,7 +477,7 @@ void TestRotationMatrixFromQuaternion() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m34.RotationMatrixFromQuaternion(q);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -487,7 +487,7 @@ void TestRotationMatrixFromQuaternion() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         rotation_matrix.RotationMatrixFromQuaternion(m34);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -522,7 +522,7 @@ void TestSkewSymmetricFill() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m34.SkewSymmetricFill(m31_input1);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -532,7 +532,7 @@ void TestSkewSymmetricFill() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m33_skew_symmetric.SkewSymmetricFill(m34);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -557,7 +557,7 @@ void TestConcatenateHorizontally() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m34.ConcatenateHorizontally(m22, m23);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -567,7 +567,7 @@ void TestConcatenateHorizontally() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m25.ConcatenateHorizontally(m23, m34);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -592,7 +592,7 @@ void TestConcatenateVertically() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m34.ConcatenateVertically(m32, m52);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -602,7 +602,7 @@ void TestConcatenateVertically() {
         double m34_data[3][4];
         Matrix m34(m34_data);
         m52.ConcatenateVertically(m34, m32);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -623,7 +623,7 @@ void TestAddRows() {
     bool failed = false;
     try {
         m22.AddRows(2, 100, 0);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -631,7 +631,7 @@ void TestAddRows() {
     failed = false;
     try {
         m22.AddRows(255, 0, 0);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -651,7 +651,7 @@ void TestMultiplyRow() {
     bool failed = false;
     try {
         m22.MultiplyRow(100, 0);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -671,7 +671,7 @@ void TestSwitchRows() {
     bool failed = false;
     try {
         m22.SwitchRows(2, 100);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -679,7 +679,7 @@ void TestSwitchRows() {
     failed = false;
     try {
         m22.SwitchRows(255, 1);
-    } catch (etl::exception e) {
+    } catch (const etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
@@ -696,5 +696,3 @@ void TestRowReduce() {
 
     TEST_ASSERT_TRUE(m34.IsEqual(m34_expected));
 }
-
-*/
