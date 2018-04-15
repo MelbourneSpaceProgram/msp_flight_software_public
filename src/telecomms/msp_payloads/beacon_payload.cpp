@@ -19,6 +19,7 @@ BeaconPayload::BeaconPayload()
       fs_flags(0),
       fs_nadir_1(0),
       fs_nadir_2(0),
+      fs_nadir_3(0),
       fs_ir(0),
       fs_control_1(0),
       fs_control_2(0),
@@ -135,6 +136,7 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddEtlArray<float, kFsLocationFloatCount>(fs_location)
         .AddData<float>(fs_nadir_1)
         .AddData<float>(fs_nadir_2)
+        .AddData<float>(fs_nadir_3)
         .AddData<uint8_t>(fs_ir)
         .AddData<uint8_t>(fs_control_1)
         .AddData<uint8_t>(fs_control_2)
@@ -491,6 +493,11 @@ BeaconPayload* BeaconPayload::SetFsNadir1(float fsNadir1) {
 
 BeaconPayload* BeaconPayload::SetFsNadir2(float fsNadir2) {
     this->fs_nadir_2 = fsNadir2;
+    return this;
+}
+
+BeaconPayload* BeaconPayload::SetFsNadir3(float fsNadir3) {
+    this->fs_nadir_3 = fsNadir3;
     return this;
 }
 
