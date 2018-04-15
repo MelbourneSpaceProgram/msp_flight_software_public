@@ -69,6 +69,7 @@ class BeaconPayload : public TransmitPayload {
         etl::array<byte, kFsHealthFlagByteCount> fs_health_flags);
     BeaconPayload* SetFsNadir1(float fsNadir1);
     BeaconPayload* SetFsNadir2(float fsNadir2);
+    BeaconPayload* SetFsNadir3(float fsNadir3);
     BeaconPayload* SetFsTorquerCurrent1(float fsTorquerCurrent1);
     BeaconPayload* SetFsTorquerCurrent2(float fsTorquerCurrent2);
     BeaconPayload* SetFsTorquerCurrent3(float fsTorquerCurrent3);
@@ -151,6 +152,7 @@ class BeaconPayload : public TransmitPayload {
     etl::array<float, kFsLocationFloatCount> fs_location;
     float fs_nadir_1;
     float fs_nadir_2;
+    float fs_nadir_3;
     uint8_t fs_ir;
     uint8_t fs_control_1;
     uint8_t fs_control_2;
