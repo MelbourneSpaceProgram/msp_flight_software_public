@@ -1,5 +1,5 @@
-#ifndef SRC_TELECOMMS_FUNCTION_CONFIG_H_
-#define SRC_TELECOMMS_FUNCTION_CONFIG_H_
+#ifndef SRC_TELECOMMS_LITHIUM_FUNCTION_CONFIG_H_
+#define SRC_TELECOMMS_LITHIUM_FUNCTION_CONFIG_H_
 
 #include <src/messages/rebuildable_message.h>
 
@@ -100,4 +100,4 @@ class LithiumFunctionConfig : public RebuildableMessage {
     bool auto_frequency_control_enable;
 };
 
-#endif  // SRC_TELECOMMS_FUNCTION_CONFIG_H_
+#endif  // SRC_TELECOMMS_LITHIUM_FUNCTION_CONFIG_H_

@@ -202,7 +202,6 @@ void KalmanFilter::ComputeK(Matrix &K_out, const Matrix &H) {
     HPH_transpose_plus_R_inv.Slice(0, 5, 6, 11, augmented);
 
     K_out.Multiply(PH_transpose, HPH_transpose_plus_R_inv);
-
 }
 
 /* Compute the state update */
