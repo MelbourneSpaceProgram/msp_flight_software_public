@@ -397,3 +397,39 @@ void Matrix::RowReduce() {
         }
     }
 }
+void Matrix::QuaternionConjugate()
+{
+
+    Set(1,0,-1 * Get(1,0));
+    Set(2,0,-1 * Get(2,0));
+    Set(3,0,-1 * Get(3,0));
+    return;
+}
+
+
+void Matrix::QuaternionProductCross(Matrix &a, Matrix &b)
+{
+    double x  = a.Get(0,0)*b.Get(0,0) - a.Get(1,0)*b.Get(1,0) - a.Get(2,0)*b.Get(2,0) - a.Get(3,0)*b.Get(3,0);
+    double y = a.Get(0,0)*b.Get(1,0) + a.Get(1,0)*b.Get(0,0) - a.Get(2,0)*b.Get(3,0) + a.Get(3,0)*b.Get(2,0);
+    double z = a.Get(0,0)*b.Get(2,0) + a.Get(2,0)*b.Get(0,0) + a.Get(1,0)*b.Get(3,0) - a.Get(3,0)*b.Get(1,0);
+    double w = a.Get(0,0)*b.Get(3,0) - a.Get(1,0)*b.Get(2,0) + a.Get(2,0)*b.Get(1,0) + a.Get(3,0)*b.Get(0,0);
+    Set(0,0,x);
+    Set(1,0,y);
+    Set(2,0,z);
+    Set(3,0,w);
+
+ }
+void Matrix::QuaternionProductDot(Matrix &a, Matrix&b)
+{
+    QuaternionProductCross(b,a);
+}
+double DotProduct(const Matrix &A, const Matrix &B) //TODO(jmcrobbie) Write unit tests for these.
+{
+    double dot = 0;
+
+    for(uint8_t i = 0 ; i < 3; i++)
+    {
+        dot += A.Get(0,i) * B.Get(0,i);
+    }
+    return dot;
+}

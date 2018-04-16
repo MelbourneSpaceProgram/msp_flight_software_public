@@ -60,12 +60,12 @@ class Matrix {
     void Multiply(const Matrix &A, const Matrix &B);
     void MultiplyScalar(const Matrix &A, double scale);
     void CrossProduct(const Matrix &A, const Matrix &B);
+    double DotProduct(const Matrix &A, const Matrix &B);
 
     void Fill(double value);
     void CopyInto(uint8_t row_start, uint8_t column_start, const Matrix &A);
     void Identity();
-    void QuaternionNormalise(const Matrix &q);
-    void RotationMatrixFromQuaternion(const Matrix &q);
+
     void SkewSymmetricFill(const Matrix &V);
 
     void ConcatenateHorizontally(const Matrix &A, const Matrix &B);
@@ -74,8 +74,13 @@ class Matrix {
     void AddRows(uint8_t row_to, uint8_t row_from, double scale);
     void MultiplyRow(uint8_t row, double scale);
     void SwitchRows(uint8_t row_a, uint8_t row_b);
-
     void RowReduce();
+
+    void QuaternionNormalise(const Matrix &q);
+    void RotationMatrixFromQuaternion(const Matrix &q);
+    void QuaternionConjugate();
+    void QuaternionProductCross(Matrix &a, Matrix &b);
+    void QuaternionProductDot(Matrix &a, Matrix&b);
 
    private:
     double *data;
