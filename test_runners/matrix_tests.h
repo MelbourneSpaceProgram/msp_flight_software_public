@@ -11,6 +11,9 @@
 #include <test_runners/matrix_tests.h>
 #include <src/util/memory_troubleshooter.h>
 
+void TestQuaternionConjugate(void);
+void TestQuaternionDotProduct(void);
+void TestQuaternionCrossProduct(void);
 void TestCopyConstructor(void);
 void TestSlice(void);
 void TestGetNRows(void);
