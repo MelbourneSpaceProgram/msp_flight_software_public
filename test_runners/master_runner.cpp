@@ -16,6 +16,7 @@
 #include <test_runners/i2c_tests.h>
 #include <test_runners/integration_i2c_tests.h>
 #include <test_runners/bms_tests.h>
+#include <test_runners/io_expander_tests.h>
 #include <test_runners/multiplexer_tests.h>
 #include <test_runners/message_tests.h>
 #include <test_runners/payload_processor_tests.h>
@@ -66,6 +67,7 @@ void master_tests_thread() {
     i2c_tests_runner();
     integration_i2c_tests_runner();
     bms_tests_runner();
+    io_expander_tests_runner();
     multiplexer_tests_runner();
     message_tests_runner();
     payload_processor_tests_runner();
