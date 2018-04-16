@@ -20,6 +20,7 @@ int debug_interface_tests_runner();
 int i2c_tests_runner();
 int integration_i2c_tests_runner();
 int bms_tests_runner();
+int io_expander_tests_runner();
 int multiplexer_tests_runner();
 int message_tests_runner();
 int payload_processor_tests_runner();

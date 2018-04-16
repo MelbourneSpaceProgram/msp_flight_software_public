@@ -48,6 +48,7 @@ extern bool adc_test_enabled;
 extern bool imu_test_enabled;
 extern bool hil_enabled;
 extern bool memory_troubleshooter_test_enabled;
+extern bool io_expander_test_enabled;
 extern bool i2c_enumeration_enabled;
 extern bool measurable_test_enabled;
 
