@@ -4,9 +4,9 @@
 #include <src/messages/message.h>
 #include <src/messages/rebuildable_message.h>
 #include <src/messages/rebuildable_message_field_iterator.h>
+#include <src/telecomms/lithium_function_config.h>
 #include <src/util/data_types.h>
 #include <string>
-#include "lithium_function_config.h"
 
 class LithiumConfiguration : public RebuildableMessage {
    public:
