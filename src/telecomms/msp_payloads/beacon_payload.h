@@ -1,5 +1,5 @@
-#ifndef SRC_TELECOMMS_MSP_PAYLOADS_MVP_BEACON_PAYLOAD_H_
-#define SRC_TELECOMMS_MSP_PAYLOADS_MVP_BEACON_PAYLOAD_H_
+#ifndef SRC_TELECOMMS_MSP_PAYLOADS_BEACON_PAYLOAD_H_
+#define SRC_TELECOMMS_MSP_PAYLOADS_BEACON_PAYLOAD_H_
 
 #include <external/etl/array.h>
 #include <src/messages/message.h>
@@ -8,9 +8,9 @@
 
 class BeaconPayload : public TransmitPayload {
    public:
-    const static uint8_t kFsHealthFlagByteCount = 20;
-    const static uint8_t kFsFsAttitudeFlagByteCount = 2;
-    const static uint8_t kFsLocationFloatCount = 2;
+    static const uint8_t kFsHealthFlagByteCount = 20;
+    static const uint8_t kFsFsAttitudeFlagByteCount = 2;
+    static const uint8_t kFsLocationFloatCount = 2;
 
     BeaconPayload();
     SerialisedMessage SerialiseTo(byte* serial_buffer) const;
@@ -131,7 +131,7 @@ class BeaconPayload : public TransmitPayload {
     BeaconPayload* SetFsIr(uint8_t fsIr);
 
    private:
-    const static uint8_t kOutreachMessageSize = 27;
+    static const uint8_t kOutreachMessageSize = 27;
 
     // TODO(dingbenjamin): Create custom data types for certain readings
     float fs_attitude_quaternion_1;
@@ -245,4 +245,4 @@ class BeaconPayload : public TransmitPayload {
     uint16_t power_soc_2;
 };
 
-#endif  // SRC_TELECOMMS_MSP_PAYLOADS_MVP_BEACON_PAYLOAD_H_
+#endif  // SRC_TELECOMMS_MSP_PAYLOADS_BEACON_PAYLOAD_H_

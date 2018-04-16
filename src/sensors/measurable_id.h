@@ -1,5 +1,5 @@
-#ifndef SRC_SENSORS_SENSOR_ID_H_
-#define SRC_SENSORS_SENSOR_ID_H_
+#ifndef SRC_SENSORS_MEASURABLE_ID_H_
+#define SRC_SENSORS_MEASURABLE_ID_H_
 
 enum MeasurableId {
     kCommsAdc1,
@@ -30,4 +30,4 @@ enum MeasurableId {
     kSolarTemp2
 };
 
-#endif  // SRC_SENSORS_SENSOR_ID_H_
+#endif  // SRC_SENSORS_MEASURABLE_ID_H_

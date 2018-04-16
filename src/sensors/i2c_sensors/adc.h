@@ -1,5 +1,5 @@
-#ifndef SRC_I2C_ADC_ADC_H
-#define SRC_I2C_ADC_ADC_H
+#ifndef SRC_SENSORS_I2C_SENSORS_ADC_H_
+#define SRC_SENSORS_I2C_SENSORS_ADC_H_
 
 #include <external/etl/array.h>
 #include <src/i2c/i2c.h>
@@ -164,4 +164,4 @@ class Adc : public I2cSensor {
     double ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer);
 };
 
-#endif  // SRC_I2C_ADC_ADC_H
+#endif  // SRC_SENSORS_I2C_SENSORS_ADC_H_

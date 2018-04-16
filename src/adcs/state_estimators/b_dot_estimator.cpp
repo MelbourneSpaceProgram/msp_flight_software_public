@@ -9,7 +9,7 @@ BDotEstimator::BDotEstimator(uint16_t sample_period_millis,
       smoother_z(time_constant_millis, sample_period_millis),
       differentiator_x(sample_period_millis),
       differentiator_y(sample_period_millis),
-      differentiator_z(sample_period_millis){};
+      differentiator_z(sample_period_millis) {}
 
 void BDotEstimator::Estimate(const Matrix &magnetometer_reading,
                              Matrix &estimate_output) {

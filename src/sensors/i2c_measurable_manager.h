@@ -1,5 +1,5 @@
-#ifndef SRC_SENSORS_SENSOR_MANAGER_H_
-#define SRC_SENSORS_SENSOR_MANAGER_H_
+#ifndef SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
+#define SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
 
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/sensors/i2c_sensors/adc.h>
@@ -76,4 +76,4 @@ class I2cMeasurableManager {
     etl::array<Measurable *, kMaxMeasurables> measurables;
 };
 
-#endif  // SRC_SENSORS_SENSOR_MANAGER_H_
+#endif  // SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_

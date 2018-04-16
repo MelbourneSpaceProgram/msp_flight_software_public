@@ -1,5 +1,5 @@
-#ifndef SRC_TELECOMMS_RUNNABLE_LITHIUM_RECEIVER_H_
-#define SRC_TELECOMMS_RUNNABLE_LITHIUM_RECEIVER_H_
+#ifndef SRC_TELECOMMS_RUNNABLE_LITHIUM_LISTENER_H_
+#define SRC_TELECOMMS_RUNNABLE_LITHIUM_LISTENER_H_
 
 class RunnableLithiumListener : public Runnable {
    public:
@@ -10,4 +10,4 @@ class RunnableLithiumListener : public Runnable {
     static void Receive();
 };
 
-#endif  // SRC_TELECOMMS_RUNNABLE_LITHIUM_RECEIVER_H_
+#endif  // SRC_TELECOMMS_RUNNABLE_LITHIUM_LISTENER_H_

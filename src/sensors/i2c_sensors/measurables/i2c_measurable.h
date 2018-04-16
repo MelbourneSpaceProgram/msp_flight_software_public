@@ -1,5 +1,5 @@
-#ifndef SRC_SENSORS_I2C_SENSORS_I2C_MEASURABLE_H_
-#define SRC_SENSORS_I2C_SENSORS_I2C_MEASURABLE_H_
+#ifndef SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
+#define SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
 
 #include <external/etl/exception.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
@@ -37,4 +37,4 @@ class I2cMeasurable : public Reading<R>, public Measurable {
     I2cSensor* sensor;
 };
 
-#endif  // SRC_SENSORS_I2C_SENSORS_I2C_MEASURABLE_H_
+#endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_

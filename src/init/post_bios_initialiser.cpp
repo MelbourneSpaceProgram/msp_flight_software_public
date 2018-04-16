@@ -21,6 +21,7 @@
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
 #include <xdc/std.h>
+#include <string>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -138,7 +139,6 @@ void PostBiosInitialiser::PostBiosInit() {
         DeployAntenna();
         InitBeacon();
         InitOrientationControl();
-
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");
         System_printf("File: %s, line %d\n", e.file_name(), e.line_number());
