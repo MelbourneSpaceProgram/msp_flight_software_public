@@ -16,10 +16,16 @@
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 
+Semaphore_Handle RunnableOrientationControl::timer_semaphore;
+
 RunnableOrientationControl::RunnableOrientationControl() {}
 
 fnptr RunnableOrientationControl::GetRunnablePointer() {
     return &RunnableOrientationControl::ControlOrientation;
+}
+
+void RunnableOrientationControl::SetTimerSemaphore(Semaphore_Handle semaphore) {
+    timer_semaphore = semaphore;
 }
 
 void RunnableOrientationControl::ControlOrientation() {
@@ -32,9 +38,7 @@ void RunnableOrientationControl::ControlOrientation() {
     double tsince_millis = 0;
 
     while (1) {
-        // TODO (rskew) use a hard real time timer to run ControlOrientation
-        // instead of sleep
-        Task_sleep(50);
+        Semaphore_pend(timer_semaphore, BIOS_WAIT_FOREVER);
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
