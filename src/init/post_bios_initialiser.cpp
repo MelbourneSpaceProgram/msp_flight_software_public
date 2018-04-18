@@ -7,6 +7,7 @@
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
+#include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
 #include <src/system/tasks/runnable_state_management.h>
@@ -74,6 +75,12 @@ void PostBiosInitialiser::InitBeacon() {
     TaskHolder* beacon_task =
         new TaskHolder(1536, "Beacon", 12, new RunnableBeacon());
     beacon_task->Init();
+}
+
+void PostBiosInitialiser::InitPayloadProcessor() {
+    TaskHolder* payload_processor_task = new TaskHolder(
+        1536, "PayloadProcessor", 12, new RunnablePayloadProcessor());
+    payload_processor_task->Init();
 }
 
 void PostBiosInitialiser::InitDataDashboard() {
@@ -185,6 +192,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitRadioListener();
         DeployAntenna();
         InitBeacon();
+        InitPayloadProcessor();
         InitOrientationControl();
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");

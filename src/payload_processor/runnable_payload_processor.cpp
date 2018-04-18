@@ -1,9 +1,9 @@
+#include <src/payload_processor/payload_processor.h>
+#include <src/payload_processor/runnable_payload_processor.h>
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium.h>
-#include <ti/sysbios/knl/Mailbox.h>
 #include <ti/sysbios/BIOS.h>
-#include <src/payload_processor/runnable_payload_processor.h>
-#include <src/payload_processor/payload_processor.h>
+#include <ti/sysbios/knl/Mailbox.h>
 
 RunnablePayloadProcessor::RunnablePayloadProcessor() {}
 
@@ -13,12 +13,22 @@ fnptr RunnablePayloadProcessor::GetRunnablePointer() {
 
 void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
     PayloadProcessor payload_processor;
-    byte payload[Lithium::kMaxReceivedSize];
+    byte lithium_payload[Lithium::kMaxReceivedSize];
     Mailbox_Handle payload_mailbox_handle =
         Lithium::GetInstance()->GetMessageMailbox();
 
     while (1) {
-        Mailbox_pend(payload_mailbox_handle, &payload, BIOS_WAIT_FOREVER);
-        payload_processor.ParseAndExecuteCommands(payload);
+        Mailbox_pend(payload_mailbox_handle, &lithium_payload,
+                     BIOS_WAIT_FOREVER);
+
+        // TODO(dingbenjamin): Parse 4 byte MSP header
+        // TODO(dingbenjamin): Check sequence number/security
+
+        // TODO(): Determine why the 24 is required to index out of the header
+        // Suspect the Lithium is forwarding the AX.25 header along as we are
+        // seeing the callsign come in
+        byte *msp_payload =
+            lithium_payload + kMspHeaderBytes + kSequenceSecurityBytes + 24;
+        payload_processor.ParseAndExecuteCommands(msp_payload);
     }
 }
