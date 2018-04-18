@@ -6,10 +6,12 @@
 #include <src/util/data_types.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/Log.h>
 
 Lithium* Lithium::instance = NULL;
 
-Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
+Lithium::Lithium()
+    : lithium_config(), uart(UART_CMS_CDH), lithium_transmit_enabled(true) {
     uart.SetBaudRate(Uart::kBaud9600)
         ->SetReadMode(UART_MODE_BLOCKING)
         ->SetWriteMode(UART_MODE_BLOCKING)
@@ -36,6 +38,11 @@ Lithium::Lithium() : lithium_config(), uart(UART_CMS_CDH) {
 }
 
 bool Lithium::DoCommand(LithiumCommand* command) const {
+    if (!lithium_transmit_enabled) {
+        Log_info0("Attempted to transmit, but transmit disabled");
+        return false;
+    }
+
     uint16_t serialised_size = command->GetSerialisedSize();
     if (serialised_size >= kMaxCommandSize) {
         return false;
@@ -86,3 +93,9 @@ Mailbox_Handle Lithium::GetMessageMailbox() const {
 Mailbox_Handle Lithium::GetCommandResponseMailbox() const {
     return command_response_mailbox_handle;
 }
+
+void Lithium::SetTransmitEnabled(bool lithium_enabled) {
+    lithium_transmit_enabled = lithium_enabled;
+}
+
+bool Lithium::IsTransmitEnabled() { return lithium_transmit_enabled; }

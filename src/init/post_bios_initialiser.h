@@ -14,6 +14,7 @@ class PostBiosInitialiser : public Runnable {
     static void PostBiosInit();
     static void InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c, I2c* bus_d);
     static void InitRadioListener();
+    static void InitPayloadProcessor();
     static void InitStateManagement();
     static void InitDataDashboard();
     static void OrientationControlTimerISR(UArg timer_semaphore);

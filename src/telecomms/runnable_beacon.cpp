@@ -13,15 +13,23 @@ void RunnableBeacon::Beacon() {
     Lithium *lithium = Lithium::GetInstance();
     I2cMeasurableManager *manager = I2cMeasurableManager::GetInstance();
     uint8_t tx_count = 0;
+
     while (1) {
         BeaconPayload beacon;
+
+        // TODO(dingbenjamin): Implement remaining beacon fields
         // Cast the double reading to a 8 bit unsigned int
         beacon.SetCdhRegTemp1(static_cast<byte>(
             manager->ReadI2cMeasurable<double>(kCdhTemp1, 0)));
 
-        TransmitCommand transmit_command(&beacon, tx_count++, 0, 0);
-        if (!lithium->DoCommand(&transmit_command)) {
-            Log_error0("Beacon transmission failed");
+        // Avoid building the packet if transmit is disabled
+        if (lithium->IsTransmitEnabled()) {
+            TransmitCommand transmit_command(&beacon, tx_count++, 0, 0);
+            if (!lithium->DoCommand(&transmit_command)) {
+                Log_error0("Beacon transmission failed");
+            }
+        } else {
+            Log_info0("Beacon is disabled, did not transmit");
         }
         TaskUtils::SleepMilli(10000);
     }
