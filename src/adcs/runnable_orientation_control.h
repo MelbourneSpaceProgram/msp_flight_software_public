@@ -12,6 +12,8 @@ class RunnableOrientationControl : public Runnable {
     RunnableOrientationControl();
     void SetTimerSemaphore(Semaphore_Handle semaphore);
 
+    static const uint32_t kControlLoopPeriodMicros = 100000;
+
    private:
     static void ControlOrientation();
     static Semaphore_Handle timer_semaphore;
