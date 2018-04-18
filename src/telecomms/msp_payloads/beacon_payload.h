@@ -35,6 +35,8 @@ class BeaconPayload : public TransmitPayload {
     BeaconPayload* SetCdhRegVoltage2(byte cdhRegVoltage2);
     BeaconPayload* SetCdhRegVoltage3(byte cdhRegVoltage3);
     BeaconPayload* SetCdhRtcStatus(byte cdhRtcStatus);
+    BeaconPayload* SetCdhMcu1(uint16_t cdhMcu1);
+    BeaconPayload* SetCdhMcu2(uint16_t cdhMcu2);
     BeaconPayload* SetCdhTime(const RTime& cdhTime);
     BeaconPayload* SetCommsAntennaFlags(byte commsAntennaFlags);
     BeaconPayload* SetCommsBytesReceived(uint32_t commsBytesReceived);
@@ -160,6 +162,8 @@ class BeaconPayload : public TransmitPayload {
     float fs_torquer_current_1;
     float fs_torquer_current_2;
     float fs_torquer_current_3;
+    uint16_t cdh_mcu_1;
+    uint16_t cdh_mcu_2;
     RTime cdh_time;
     uint8_t mcu_reset_count_1;
     uint8_t mcu_reset_count_2;
@@ -191,7 +195,7 @@ class BeaconPayload : public TransmitPayload {
     uint16_t comms_lithium_op_count;
     uint16_t comms_lithium_temp;
     byte comms_lithium_time;
-    uint16_t comms_lithium_rssi;
+    uint8_t comms_lithium_rssi;
     uint32_t comms_bytes_received;
     uint32_t comms_bytes_transmitted;
     byte comms_antenna_flags;
