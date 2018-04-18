@@ -4,9 +4,16 @@
 #define TEST_RUNNERS_DATABASE_TESTS_H_
 
 #include "unity.h"
+#include <external/etl/exception.h>
+#include <src/config/unit_tests.h>
 #include <src/database/HammingCoder.h>
+#include <src/database/eeprom.h>
+#include <src/util/data_types.h>
+#include <test_runners/database_tests.h>
 #include <src/util/memory_troubleshooter.h>
 
 void TestHamming(void);
+void TestEepromReadWriteStatus(void);
+void TestEepromReadWriteData(void);
 
 #endif  // TEST_RUNNERS_DATABASE_TESTS_H_

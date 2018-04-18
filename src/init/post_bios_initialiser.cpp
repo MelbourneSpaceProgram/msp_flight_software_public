@@ -2,6 +2,7 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
+#include <src/database/eeprom.h>
 #include <src/debug_interface/debug_stream.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
@@ -97,7 +98,10 @@ void PostBiosInitialiser::DeployAntenna() {
     }
 }
 
-void PostBiosInitialiser::InitHardware() { I2c::InitBusses(); }
+void PostBiosInitialiser::InitHardware() {
+    I2c::InitBusses();
+    Eeprom::Init();
+}
 
 void PostBiosInitialiser::DeploymentWait() {
     I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();

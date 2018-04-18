@@ -24,7 +24,7 @@ void HammingCoder::EncodeByteArray(byte *output, uint32_t output_length,
                          "__FILE__", __LINE__);
         throw e;
     }
-    for (int i = 0; i < input_length; i++) {
+    for (uint32_t i = 0; i < input_length; i++) {
         HammingEncodedByte output_byte = Encode(input[i]);
         output[i * 2] = output_byte.codewords[0];
         output[i * 2 + 1] = output_byte.codewords[1];
@@ -83,7 +83,7 @@ void HammingCoder::DecodeByteArray(byte *output, uint32_t output_length,
                          "__FILE__", __LINE__);
         throw e;
     }
-    for (int i = 0; i < output_length; i++) {
+    for (uint32_t i = 0; i < output_length; i++) {
         HammingEncodedByte input_byte;
         input_byte.codewords[0] = input[i * 2];
         input_byte.codewords[1] = input[i * 2 + 1];
@@ -129,7 +129,7 @@ bool HammingCoder::ValidateCodeword(byte &codeword) {
 
     // calculate the number of ones in `codeword`.
     byte temp = codeword;
-    int num_ones = 0;
+    uint32_t num_ones = 0;
     while (temp) {
         num_ones += temp % 2;
         temp = temp >> 1;
