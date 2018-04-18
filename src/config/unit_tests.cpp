@@ -3,6 +3,7 @@
 //bool satellite_configuration = SATELLITE_CONFIG;
 
 bool spi_test_enabled = false;
+bool eeprom_test_enabled = false;
 bool i2c_test_enabled = false;
 bool antenna_test_enabled = false;
 bool lithium_flash_test_enabled = false;
