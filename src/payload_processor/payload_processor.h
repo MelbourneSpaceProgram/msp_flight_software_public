@@ -9,9 +9,9 @@ class PayloadProcessor {
 
    private:
     bool ParseNextCommandAndExecute(byte& index, byte* payload);
-    enum Commands { kNoCommand, kEchoCommand, kCommandsLength };
-    static const byte kCommandLength = 1;
-    static const uint8_t kEndTerminator = 0;
+    enum Commands { kNoCommand = 0x01, kEchoCommand, kLithiumEnableCommand };
+    static const uint8_t kCommandCodeLength = 2;
+    static const byte kEndTerminator = 0x00;
 };
 
 #endif  //  SRC_PAYLOAD_PROCESSOR_PAYLOAD_PROCESSOR_H_

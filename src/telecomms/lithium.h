@@ -15,8 +15,11 @@
 #include <src/uart/uart.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
+class LithiumEnableCommand;
+
 class Lithium {
     friend class RunnableLithiumListener;
+    friend class LithiumEnableCommand;
 
    public:
     static const uint16_t kMaxCommandSize = 300;
@@ -39,13 +42,14 @@ class Lithium {
     Mailbox_Handle GetCommandResponseMailbox() const;
     const LithiumConfiguration& GetLithiumConfig() const;
     void SetLithiumConfig(const LithiumConfiguration& lithium_config);
-
+    bool IsTransmitEnabled();
     bool DoCommand(LithiumCommand* command) const;
 
    private:
     static Lithium* instance;
     static const uint32_t kUartWriteTimeoutMilli = 500;
     static const uint32_t kWaitForAckMilli = 2000;
+    bool lithium_transmit_enabled;
 
     Mailbox_Params message_mailbox_params;
     Mailbox_Handle message_mailbox_handle;
@@ -62,6 +66,7 @@ class Lithium {
 
     Lithium();
     Uart* GetUart();
+    void SetTransmitEnabled(bool lithium_enabled);
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_H_
