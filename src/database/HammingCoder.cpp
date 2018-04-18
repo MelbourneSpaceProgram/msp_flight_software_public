@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/database/HammingCoder.h>
 
 HammingEncodedByte HammingCoder::Encode(byte data) {
@@ -14,6 +15,20 @@ HammingEncodedByte HammingCoder::Encode(byte data) {
     hamming_encoded_byte.codewords[1] = HammingCoder::EncodeNibble(nibble1);
 
     return hamming_encoded_byte;
+}
+
+void HammingCoder::EncodeByteArray(byte *output, uint32_t output_length,
+                                   byte *input, uint32_t input_length) {
+    if (output_length != input_length * 2) {
+        etl::exception e("HammingCoder::EncodeByteArray invalid arguments",
+                         "__FILE__", __LINE__);
+        throw e;
+    }
+    for (int i = 0; i < input_length; i++) {
+        HammingEncodedByte output_byte = Encode(input[i]);
+        output[i * 2] = output_byte.codewords[0];
+        output[i * 2 + 1] = output_byte.codewords[1];
+    }
 }
 
 byte HammingCoder::EncodeNibble(byte nibble) {
@@ -58,6 +73,26 @@ HammingDecodedByte HammingCoder::Decode(
     return hamming_decoded_byte;
 }
 
+void HammingCoder::DecodeByteArray(byte *output, uint32_t output_length,
+                                   bool *valid_output,
+                                   uint32_t valid_output_length, byte *input,
+                                   uint32_t input_length) {
+    if ((output_length * 2 != input_length) ||
+        (output_length != valid_output_length)) {
+        etl::exception e("HammingCoder::DecodeByteArray invalid arguments",
+                         "__FILE__", __LINE__);
+        throw e;
+    }
+    for (int i = 0; i < output_length; i++) {
+        HammingEncodedByte input_byte;
+        input_byte.codewords[0] = input[i * 2];
+        input_byte.codewords[1] = input[i * 2 + 1];
+        HammingDecodedByte output_byte = Decode(input_byte);
+        output[i] = output_byte.data;
+        valid_output[i] = output_byte.valid;
+    }
+}
+
 byte HammingCoder::ExtractAndJoinData(byte c0, byte c1) {
     byte d1, d2, d3, d4;
     byte joined_data = 0;
@@ -78,7 +113,7 @@ byte HammingCoder::ExtractAndJoinData(byte c0, byte c1) {
     return joined_data;
 }
 
-bool HammingCoder::ValidateCodeword(byte& codeword) {
+bool HammingCoder::ValidateCodeword(byte &codeword) {
     byte d1, d2, d3, d4;
     d1 = (codeword & 0b00100000) >> 5;
     d2 = (codeword & 0b00001000) >> 3;
