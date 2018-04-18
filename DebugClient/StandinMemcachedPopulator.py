@@ -36,10 +36,16 @@ if __name__ == "__main__":
         #    struct.pack('>d',3))
 
         if mc.get("Simulation_Magnetometer_X"):
-            print("Magnetometer data being fed in:")
+            print("Magnetometer data from simulation:")
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_X"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0])
+
+        if mc.get("Simulation_Gyrometer_X"):
+            print("Gyro output from simulation:")
+            print(struct.unpack('>d', mc.get("Simulation_Gyrometer_X"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_Gyrometer_Y"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_Gyrometer_Z"))[0])
 
         if mc.get("Simulation_Torque_X"):
             print("Torque output from flight computer:")
@@ -47,32 +53,32 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Simulation_Torque_Y"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Torque_Z"))[0])
 
-        if mc.get("Simulation_IR_X_Pos"):
-            print("Infrared output from simulation:")
-            print(struct.unpack('>d', mc.get("Simulation_IR_X_Pos"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_IR_X_Neg"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_IR_Y_Pos"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_IR_Y_Neg"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_IR_Z_Pos"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_IR_Z_Neg"))[0])
+        #if mc.get("Simulation_IR_X_Pos"):
+        #    print("Infrared output from simulation:")
+        #    print(struct.unpack('>d', mc.get("Simulation_IR_X_Pos"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_IR_X_Neg"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_IR_Y_Pos"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_IR_Y_Neg"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_IR_Z_Pos"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_IR_Z_Neg"))[0])
 
-        if mc.get("Simulation_TLE_Mean_Anomaly"):
-            print("TLE output from simulation:")
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Anomaly"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion_First_Deriv"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion_Second_Deriv"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Argument_Perigee"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Eccentricity_1e7"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Inclination"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Bstar"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Epoch"))[0])
-            print(struct.unpack('>d', mc.get("Simulation_TLE_Raan"))[0])
+        #if mc.get("Simulation_TLE_Mean_Anomaly"):
+        #    print("TLE output from simulation:")
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Anomaly"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion_First_Deriv"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion_Second_Deriv"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Argument_Perigee"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Eccentricity_1e7"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Inclination"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Bstar"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Epoch"))[0])
+        #    print(struct.unpack('>d', mc.get("Simulation_TLE_Raan"))[0])
 
-        if mc.get("Location_Lattitude_Geodetic_Degrees"):
-            print("Location output from flight computer:")
-            print(struct.unpack('>d', mc.get("Location_Lattitude_Geodetic_Degrees"))[0])
-            print(struct.unpack('>d', mc.get("Location_Longitude_Degrees"))[0])
-            print(struct.unpack('>d', mc.get("Location_Altitude_Above_Ellipsoid_Km"))[0])
+        #if mc.get("Location_Lattitude_Geodetic_Degrees"):
+        #    print("Location output from flight computer:")
+        #    print(struct.unpack('>d', mc.get("Location_Lattitude_Geodetic_Degrees"))[0])
+        #    print(struct.unpack('>d', mc.get("Location_Longitude_Degrees"))[0])
+        #    print(struct.unpack('>d', mc.get("Location_Altitude_Above_Ellipsoid_Km"))[0])
 
         time.sleep(0.05)

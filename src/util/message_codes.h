@@ -28,7 +28,8 @@ enum DebugMessageType {
     kTestSensorReadingRequestCode = 0x0A,
     kTestRequestCode = 0x0B,
     kTleRequestCode = 0x0C,
-    kLocationReadingCode = 0x0D
+    kLocationReadingCode = 0x0D,
+    kGyrometerReadingRequestCode = 0x0E
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient

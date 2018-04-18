@@ -5,8 +5,13 @@
 
 #include "unity.h"
 #include <src/database/circular_buffer_nanopb.h>
+<<<<<<< HEAD
 #include <src/messages/MagnetometerReading.pb.h>
 #include <test_runners/circular_buffer_nanopb_tests.h>
+=======
+#include <test_runners/circular_buffer_nanopb_tests.h>
+#include <src/messages/MagnetometerReading.pb.h>
+>>>>>>> Detumbling branch to get detumbling working until it works
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 

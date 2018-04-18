@@ -3,6 +3,7 @@
 #include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/SensorReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <test_runners/mpu9250_motion_tracker_tests.h>
 #include <test_runners/unity.h>
@@ -24,13 +25,13 @@ void TestGyroRead(void) {
 
     MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
 
-    GyroscopeReading gyroscope_reading;
-    test_imu.TakeGyroscopeReading(gyroscope_reading);
+    GyrometerReading gyrometer_reading;
+    test_imu.TakeGyrometerReading(gyrometer_reading);
     multiplexer.CloseAllChannels();
 
-    TEST_ASSERT_TRUE(gyroscope_reading.x != 0.0);
-    TEST_ASSERT_TRUE(gyroscope_reading.y != 0.0);
-    TEST_ASSERT_TRUE(gyroscope_reading.z != 0.0);
+    TEST_ASSERT_TRUE(gyrometer_reading.x != 0.0);
+    TEST_ASSERT_TRUE(gyrometer_reading.y != 0.0);
+    TEST_ASSERT_TRUE(gyrometer_reading.z != 0.0);
 }
 
 void TestMagnoRead(void) {
@@ -64,12 +65,12 @@ void TestTempRead(void) {
 
     MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
 
-    TemperatureReading temperature_reading;
+    SensorReading temperature_reading;
     test_imu.TakeTemperatureReading(temperature_reading);
 
     multiplexer.CloseAllChannels();
     TEST_ASSERT_DOUBLE_WITHIN(temp_tolerance, avg_room_temperature,
-                              temperature_reading.temp);
+                              temperature_reading.value);
 }
 
 void TestAccelRead(void) {

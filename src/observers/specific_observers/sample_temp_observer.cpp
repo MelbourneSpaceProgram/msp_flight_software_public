@@ -4,8 +4,7 @@
 #include <ti/drivers/GPIO.h>
 
 void SampleTempObserver::Update() {
-    double reading = 0;
     if (GetSensorWithReading() != NULL) {
-        reading = GetSensorWithReading()->GetReading();
+        GetSensorWithReading()->GetReading();
     }
 }

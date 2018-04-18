@@ -6,6 +6,7 @@ import sys
 import datetime
 import serial.tools.list_ports
 import MagnetometerReading_pb2
+import GyrometerReading_pb2
 import SensorReading_pb2
 import StateMachineStateReading_pb2
 import TorqueOutputReading_pb2
@@ -300,15 +301,15 @@ def testLoop(debug_serial_port, logger, mc):
                         struct.unpack('>d',
                                       mc.get("Simulation_TLE_Argument_Perigee"))[0]
                 else:
-                    # TODO (rskew) use better default values
-                    tle.mean_motion = 0
-                    tle.mean_anomaly = 0
-                    tle.inclination = 0
-                    tle.raan = 0
-                    tle.bstar_drag = 0
-                    tle.epoch = 0
-                    tle.eccentricity_1e7 = 0
-                    tle.argument_of_perigee = 0
+                    # Default values are the same as the SGP4 test data
+                    tle.epoch = 00179.78495062;
+                    tle.mean_motion = 10.824191574;
+                    tle.eccentricity_1e7 = 1859667;
+                    tle.inclination = 34.2682;
+                    tle.raan = 348.7242;
+                    tle.argument_of_perigee = 331.7664;
+                    tle.mean_anomaly = 19.3264;
+                    tle.bstar_drag = 0.000028098;
 
                 logger.info("Sending message: " + str(tle))
                 serialised_message = tle.SerializeToString()
@@ -332,8 +333,33 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
 
 
+            if message_code == 0x0E:
+                # Gyrometer reading has been requested
+                gyrometer_reading = \
+                    GyrometerReading_pb2.GyrometerReading()
+                if mc.get("Simulation_Gyrometer_X") != None:
+                    gyrometer_reading.x = \
+                        struct.unpack('>d', mc.get("Simulation_Gyrometer_X"))[0]
+                    gyrometer_reading.y = \
+                        struct.unpack('>d', mc.get("Simulation_Gyrometer_Y"))[0]
+                    gyrometer_reading.z = \
+                        struct.unpack('>d', mc.get("Simulation_Gyrometer_Z"))[0]
+                    gyrometer_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+                else:
+                    gyrometer_reading.x = 0
+                    gyrometer_reading.y = 0
+                    gyrometer_reading.z = 0
+                    gyrometer_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+
+                logger.info("Sending message: " + str(gyrometer_reading))
+                serialised_message = gyrometer_reading.SerializeToString()
+                send_message(debug_serial_port, 0x0E, serialised_message)
+
+
             else:
-                logger.info("Received unhandled message with ID ".format(message_code))
+                logger.info("Received unhandled message with ID {}".format(message_code))
 
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")

@@ -1,3 +1,5 @@
+#include <Board.h>
+#include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
 #include <src/adcs/controllers/b_dot_controller.h>
@@ -13,6 +15,23 @@
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
+const char Magnetometer::kCalibrationReadingsBufferAFileName[] = "magcal_a.bin";
+const char Magnetometer::kCalibrationReadingsBufferBFileName[] = "magcal_b.bin";
+
+Magnetometer::Magnetometer()
+    : calibration_readings_buffer_a(kCalibrationReadingsBufferSize,
+                                    kCalibrationReadingsBufferAFileName),
+      calibration_readings_buffer_b(kCalibrationReadingsBufferSize,
+                                    kCalibrationReadingsBufferBFileName),
+      // Direct bus access to be replaced with I2cMeasureableManager
+      imu_a(new I2c(I2C_BUS_A), kImuAddress, "imu_a"),
+      imu_b(new I2c(I2C_BUS_B), kImuAddress, "imu_b") {
+    imu_a.SetMagnetometerOperationMode(kMagnoSingleMeasurement);
+    imu_b.SetMagnetometerOperationMode(kMagnoSingleMeasurement);
+    imu_a.SetMagnetometerOutputBitSetting(k16BitOutput);
+    imu_b.SetMagnetometerOutputBitSetting(k16BitOutput);
+};
+
 // Get readings from the hardware magnetometer and the simulation.
 // Use the simulation readings for the controller, but echo the hardware
 // readings to the DebugClient to show that it's working.
@@ -21,22 +40,52 @@
 // for calibration.
 // For HIL tests, store the simulation readings for calibration.
 bool Magnetometer::TakeReading() {
-    // TODO(rskew): Implement the I2C read
-
+    MagnetometerReading imu_a_reading;
+    MagnetometerReading imu_b_reading;
+    try {
+        imu_a.TakeMagnetometerReading(imu_a_reading);
+    } catch (etl::exception e) {
+        imu_a_reading.x = 0;
+        imu_a_reading.y = 0;
+        imu_a_reading.z = 0;
+    }
+    try {
+        imu_b.TakeMagnetometerReading(imu_b_reading);
+    } catch (etl::exception e) {
+        imu_b_reading.x = 0;
+        imu_b_reading.y = 0;
+        imu_b_reading.z = 0;
+    }
     if (hil_enabled) {
         // Echo reading to data dashboard
         RunnableDataDashboard::TransmitMessage(
             kMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &reading);
+            MagnetometerReading_fields, &imu_a_reading);
+        RunnableDataDashboard::TransmitMessage(
+            kMagnetometerReadingCode, MagnetometerReading_size,
+            MagnetometerReading_fields, &imu_b_reading);
     }
 
-    // try {
-    //     calibration_readings_buffer.WriteMessage(reading);
-    // } catch (etl::exception e) {
-    //     catch exceptions for pb encode error, sdcard write error,
-    // }
+    try {
+    
+        calibration_readings_buffer_b.WriteMessage(imu_b_reading);
+    } catch (etl::exception e) {
+        // TODO (rskew) catch exceptions for pb encode error, sdcard write
+        // error,
+        throw e;
+    }
+
+    // TODO (rskew) apply calibration to readings
+
+    // Average readings from IMUs
+    reading.x = (imu_a_reading.x + imu_b_reading.x) / 2;
+    reading.y = (imu_a_reading.y + imu_b_reading.y) / 2;
+    reading.z = (imu_a_reading.z + imu_b_reading.z) / 2;
 
     // TODO (rskew) combine noise from hardware readings with simulated readings
+
+    // HIL reading is returned for hardware tests so that controller can
+    // activate magnetorquers in response to simulated tumbling
     bool success;
     if (hil_enabled) {
         success = TakeReadingHil();

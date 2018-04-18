@@ -5,25 +5,19 @@
 #include <external/etl/exception.h>
 #include <src/i2c/i2c.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/GyrometerReading.pb.h>
+#include <src/messages/SensorReading.pb.h>
 #include <string>
 
-typedef struct _GyroscopeReading {
-    double x;
-    double y;
-    double z;
-} GyroscopeReading;
-
+// Accelerometer readings are implemented for device driver completeness,
+// but have no use for the ACRUX1 mission.
 typedef struct _AccelerometerReading {
     double x;
     double y;
     double z;
 } AccelerometerReading;
 
-typedef struct _TemperatureReading {
-    double temp;
-} TemperatureReading;
-
-// data types for the gyroscope/accelerometer chip
+// data types for the gyrometer/accelerometer chip
 enum GyroFullScaleValue {
     kGyro250dps = 0x00,
     kGyro500dps = 0x01,
@@ -56,9 +50,9 @@ enum MagnetometerOutputBitSetting { k14BitOutput = 0, k16BitOutput = 1 };
 class MPU9250MotionTracker {
    public:
     MPU9250MotionTracker(I2c *bus, byte address, std::string id);
-    void TakeGyroscopeReading(GyroscopeReading &gyroscope_reading);
+    void TakeGyrometerReading(GyrometerReading &gyrometer_reading);
     void TakeAccelerometerReading(AccelerometerReading &accelerometer_reading);
-    void TakeTemperatureReading(TemperatureReading &temperature_reading);
+    void TakeTemperatureReading(SensorReading &temperature_reading);
     void TakeMagnetometerReading(MagnetometerReading &magnetometer_reading);
 
     void SetGyroFullScaleSetting(GyroFullScaleValue gyro_full_scale_value);
@@ -69,13 +63,13 @@ class MPU9250MotionTracker {
         MagnetometerOutputBitSetting magnetometer_output_bit_setting);
 
    private:
-    // gyroscope configuration
+    // gyrometer configuration
     void SetGyroConfiguration();
     byte gyro_full_scale_setting;
     uint16_t gyro_full_scale_range;
     float gyro_sensitivity_scale_factor;
-    static const uint16_t kGyroscopeFullScaleRanges[4];
-    static const float kGyroscopeSensitivityScaleFactors[4];
+    static const uint16_t kGyrometerFullScaleRanges[4];
+    static const float kGyrometerSensitivityScaleFactors[4];
 
     // accelerometer configuration
     void SetAccelConfiguration();
@@ -133,7 +127,7 @@ class MPU9250MotionTracker {
 
     static const byte kInternalMagnetometerAddress = 12;
 
-    // register locations of the gyroscope and accelerometer configuration
+    // register locations of the gyrometer and accelerometer configuration
     static const byte kGyroConfigRegister = 0x1b;
     static const byte kAccelConfigRegister1 = 0x1c;
     static const byte kAccelConfigRegister2 = 0x1d;
@@ -153,7 +147,7 @@ class MPU9250MotionTracker {
     static const uint8_t kTempOutHigh = 0x41;
     static const uint8_t kTempOutLow = 0x42;
 
-    // register locations of gyroscope x, y, z readings
+    // register locations of gyrometer x, y, z readings
     static const uint8_t kGyroXOutHigh = 0x43;
     static const uint8_t kGyroXOutLow = 0x44;
     static const uint8_t kGyroYOutHigh = 0x45;

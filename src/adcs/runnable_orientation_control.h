@@ -4,6 +4,7 @@
 #include <external/nanopb/pb.h>
 #include <src/tasks/runnable.h>
 #include <src/util/data_types.h>
+#include <src/util/matrix.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
@@ -15,7 +16,9 @@ class RunnableOrientationControl : public Runnable {
     static void OrientationControlTimerISR(
         UArg orientation_control_timer_semaphore);
 
-    static const uint32_t kControlLoopPeriodMicros = 1000000;
+    static const uint32_t kControlLoopPeriodMicros = 100000;
+    static double acrux1_inertia_matrix_data[3][3];
+    static const Matrix acrux1_inertia_matrix;
 
    private:
     static void ControlOrientation();

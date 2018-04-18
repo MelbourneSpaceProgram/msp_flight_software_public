@@ -1,25 +1,41 @@
 #include <Board.h>
+#include <src/util/satellite_time_source.h>
 #include <external/nanopb/pb_decode.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
+#include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/debug_interface/debug_stream.h>
 #include <src/init/init.h>
+#include <src/messages/GyrometerReading.pb.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/Tle.pb.h>
+#include <src/messages/Time.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
+#include <src/sensors/specific_sensors/gyrometer.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
+#include <src/util/satellite_time_source.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
+
+/* TODO(rskew) update inertia matrix. */
+double RunnableOrientationControl::acrux1_inertia_matrix_data[3][3] =
+    /* kg.m^2 */
+    {{1191.648 * 1.3e-6, 0, 0},
+     {0, 1169.506 * 1.3e-6, 0},
+     {0, 0, 1203.969 * 1.3e-6}};
+
+const Matrix RunnableOrientationControl::acrux1_inertia_matrix(
+    RunnableOrientationControl::acrux1_inertia_matrix_data);
 
 RunnableOrientationControl::RunnableOrientationControl() {}
 
@@ -54,17 +70,20 @@ void RunnableOrientationControl::SetupControlLoopTimer() {
 
 void RunnableOrientationControl::OrientationControlTimerISR(
     UArg orientation_control_timer_semaphore) {
-    Semaphore_post((Semaphore_Handle)orientation_control_timer_semaphore);
+    Semaphore_post(control_loop_timer_semaphore);
 }
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
     Magnetometer magnetometer;
+    Gyrometer gyrometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
-    // TODO (rskew) replace this with actual rtc time
-    double tsince_millis = 0;
+    Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
+                   kill_task_on_orientation_control_begin_semaphore);
+
+    // TODO (rskew) Run calibration routine
 
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
@@ -73,6 +92,10 @@ void RunnableOrientationControl::ControlOrientation() {
 
         MagnetorquerControl::Degauss();
 
+        ////////////////
+        // State Observer section
+        ////////////////
+
         // Read Magnetometer
         // TODO(rskew) handle false return value
         bool success = magnetometer.TakeReading();
@@ -80,13 +103,6 @@ void RunnableOrientationControl::ControlOrientation() {
             continue;
         }
         MagnetometerReading magnetometer_reading = magnetometer.GetReading();
-
-        if (hil_enabled) {
-            // Echo reading to data dashboard
-            RunnableDataDashboard::TransmitMessage(
-                kMagnetometerReadingCode, MagnetometerReading_size,
-                MagnetometerReading_fields, &magnetometer_reading);
-        }
 
         // Run estimator
         double geomag_data[3][1] = {{magnetometer_reading.x},
@@ -97,30 +113,30 @@ void RunnableOrientationControl::ControlOrientation() {
         Matrix b_dot_estimate(b_dot_estimate_data);
         b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
-        // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
+        // Read Gyrometer
+        // TODO(rskew) handle false return value
+        success = gyrometer.TakeReading();
+        if (!success) {
+            continue;
+        }
+        GyrometerReading gyrometer_reading = gyrometer.GetReading();
 
-        // Run controller
-        double torque_output_data[3][1];
-        Matrix torque_output(torque_output_data);
-        BDotController::Control(geomag, b_dot_estimate, torque_output);
+        // Calculate angular momentum for debugging (and momentum dumping detumbling?)
+        double angular_velocity_data[3][1];
+        Matrix angular_velocity(angular_velocity_data);
+        angular_velocity.Set(0, 0, gyrometer_reading.x);
+        angular_velocity.Set(1, 0, gyrometer_reading.y);
+        angular_velocity.Set(2, 0, gyrometer_reading.z);
+        double angular_momentum_data[3][1];
+        Matrix angular_momentum(angular_momentum_data);
+        angular_momentum.Multiply(
+            RunnableOrientationControl::acrux1_inertia_matrix,
+            angular_velocity);
 
-        // Use magnetorquer driver to set magnetorquer power.
-        // Driver input power range should be [-1, 1]
-
-        //
-        // TODO(crozone):
-        //
-        // Verify that torque_boost here is correct for driver input range.
-        float torque_boost = 100.0f;
-
-        MagnetorquerControl::SetMagnetorquersPowerFraction(
-            torque_output.Get(0, 0) * torque_boost,
-            torque_output.Get(1, 0) * torque_boost,
-            torque_output.Get(2, 0) * torque_boost);
+        // TODO(rskew) tell DetumbledStateMachine about Bdot
 
         if (hil_enabled) {
-            // TODO (rskew) move this code to a command handler, allowing the
-            // TLE update to be driven by the ground station.
+            // This all gets updated in the tle-uplink branch
 
             DebugStream* debug_stream = DebugStream::GetInstance();
             uint8_t buffer[Tle_size];
@@ -138,10 +154,13 @@ void RunnableOrientationControl::ControlOrientation() {
                 location_estimator.StoreTle(tle);
 
                 // Calculate position
-                // TODO (rskew) calculate absolute time in millis since tle
-                // epoch
-                tsince_millis += 50 * 100;
-                location_estimator.UpdateLocation(tsince_millis);
+                // TODO (rskew) calculate absolute time in millis since tle epoch
+                Time satellite_time = SatelliteTimeSource::GetTime();
+                if (!satellite_time.is_valid) {
+                  // TODO (rskew) update TleStateMachine
+                  continue;
+                }
+                location_estimator.UpdateLocation(satellite_time.timestamp_millis_unix_epoch);
 
                 // Write calculated position to data dashboard
                 LocationReading location_reading = LocationReading_init_zero;
@@ -158,5 +177,20 @@ void RunnableOrientationControl::ControlOrientation() {
                     LocationReading_fields, &location_reading);
             }
         }
+
+        ////////////////
+        // Controller section
+        ////////////////
+
+        // Detumbling controller
+        // TODO (rskew) controller output PWM
+        double torque_output_data[3][1];
+        Matrix torque_output(torque_output_data);
+        BDotController::Control(geomag, b_dot_estimate, torque_output);
+        float torque_boost = 10.0f;
+        MagnetorquerControl::SetMagnetorquersPowerFraction(
+            torque_output.Get(0, 0) * torque_boost,
+            torque_output.Get(1, 0) * torque_boost,
+            torque_output.Get(2, 0) * torque_boost);
     }
 }

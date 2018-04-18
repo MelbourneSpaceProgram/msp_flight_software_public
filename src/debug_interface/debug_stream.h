@@ -21,7 +21,7 @@ class DebugStream {
     DebugStream();
     static DebugStream *instance;
 
-    static const uint32_t kTimeoutMillis = 1000;
+    static const uint32_t kTimeoutMillis = 2000;
 };
 
 #endif  // SRC_DEBUG_INTERFACE_DEBUG_STREAM_H_

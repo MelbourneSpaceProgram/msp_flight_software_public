@@ -14,7 +14,7 @@
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
-#include <src/system/tasks/runnable_state_management.h>s
+#include <src/system/tasks/runnable_state_management.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
@@ -91,7 +91,7 @@ void PostBiosInitialiser::InitDataDashboard() {
     data_dashboard_task->Init();
 }
 
-void PostBiosInitialiser::InitOrientationControl() {
+void InitOrientationControl() {
     // Set up timer for orientation control loop
     RunnableOrientationControl::SetupControlLoopTimer();
 
@@ -193,7 +193,8 @@ void PostBiosInitialiser::PostBiosInit() {
         RunUnitTests();
 #elif defined ORBIT_CONFIGURATION
         InitStateManagement();
-        if (hil_enabled) InitDataDashboard();
+        InitDataDashboard();
+
         TaskHolder* pre_deployment_magnetometer_poller_task =
             InitPreDeploymentMagnetometerPoller();
 
@@ -209,8 +210,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
-        // TODO(rskew): Debug what needs to be passed in to Task_delete
-        //Task_delete(pre_deployment_magnetometer_poller_task);
+        Task_delete(pre_deployment_magnetometer_poller_task);
 #else
         System_printf("No configuration defined. Not doing anything");
 #endif

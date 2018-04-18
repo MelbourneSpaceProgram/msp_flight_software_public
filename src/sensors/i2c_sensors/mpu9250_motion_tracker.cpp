@@ -1,10 +1,10 @@
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
 
-const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
+const uint16_t MPU9250MotionTracker::kGyrometerFullScaleRanges[4] = {
     250, 500, 1000, 2000};
 
-const float MPU9250MotionTracker::kGyroscopeSensitivityScaleFactors[4] = {
+const float MPU9250MotionTracker::kGyrometerSensitivityScaleFactors[4] = {
     131, 65.5, 32.8, 16.4};
 
 const byte MPU9250MotionTracker::kAccelerometerFullScaleRanges[4] = {2, 4, 8,
@@ -16,7 +16,7 @@ const uint16_t MPU9250MotionTracker::kAccelerometerSensitivityScaleFactors[4] =
 MPU9250MotionTracker::MPU9250MotionTracker(I2c *bus, byte address,
                                            std::string id)
     : bus(bus), address(address), id(id) {
-    // default settings for the gyroscope/accelerometer
+    // default settings for the gyrometer/accelerometer
     SetGyroFullScaleSetting(kGyro250dps);
     SetAccelFullScaleSetting(kAccel2g);
 
@@ -29,8 +29,8 @@ MPU9250MotionTracker::MPU9250MotionTracker(I2c *bus, byte address,
     SetBypassMode(kBypassModeDisable);
 }
 
-void MPU9250MotionTracker::TakeGyroscopeReading(
-    GyroscopeReading &gyroscope_reading) {
+void MPU9250MotionTracker::TakeGyrometerReading(
+    GyrometerReading &gyrometer_reading) {
     SelectRegister(kGyroXOutHigh);
 
     etl::array<byte, 6> gyro_reading_bytes = ReadSixBytesFromCurrentRegister();
@@ -43,9 +43,9 @@ void MPU9250MotionTracker::TakeGyroscopeReading(
     gyro_z_reading_bytes[0] = gyro_reading_bytes[4];
     gyro_z_reading_bytes[1] = gyro_reading_bytes[5];
 
-    gyroscope_reading.x = DecodeGyroReadingToSI(gyro_x_reading_bytes);
-    gyroscope_reading.y = DecodeGyroReadingToSI(gyro_y_reading_bytes);
-    gyroscope_reading.z = DecodeGyroReadingToSI(gyro_z_reading_bytes);
+    gyrometer_reading.x = DecodeGyroReadingToSI(gyro_x_reading_bytes);
+    gyrometer_reading.y = DecodeGyroReadingToSI(gyro_y_reading_bytes);
+    gyrometer_reading.z = DecodeGyroReadingToSI(gyro_z_reading_bytes);
 }
 
 void MPU9250MotionTracker::TakeAccelerometerReading(
@@ -68,10 +68,10 @@ void MPU9250MotionTracker::TakeAccelerometerReading(
 }
 
 void MPU9250MotionTracker::TakeTemperatureReading(
-    TemperatureReading &temperature_reading) {
+    SensorReading &temperature_reading) {
     SelectRegister(kTempOutHigh);
     etl::array<byte, 2> temp_reading_bytes = ReadTwoBytesFromCurrentRegister();
-    temperature_reading.temp = DecodeTempReadingToSI(temp_reading_bytes);
+    temperature_reading.value = DecodeTempReadingToSI(temp_reading_bytes);
 }
 
 void MPU9250MotionTracker::TakeMagnetometerReading(
@@ -251,9 +251,9 @@ void MPU9250MotionTracker::SetGyroFullScaleSetting(
     GyroFullScaleValue gyro_full_scale_setting) {
     this->gyro_full_scale_setting = gyro_full_scale_setting;
     this->gyro_full_scale_range = MPU9250MotionTracker::
-        kGyroscopeFullScaleRanges[gyro_full_scale_setting];
+        kGyrometerFullScaleRanges[gyro_full_scale_setting];
     this->gyro_sensitivity_scale_factor = MPU9250MotionTracker::
-        kGyroscopeSensitivityScaleFactors[gyro_full_scale_setting];
+        kGyrometerSensitivityScaleFactors[gyro_full_scale_setting];
     SetGyroConfiguration();
 }
 
