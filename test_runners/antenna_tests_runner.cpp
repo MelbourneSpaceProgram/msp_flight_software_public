@@ -33,7 +33,6 @@
 extern void SetUp(void);
 extern void TearDown(void);
 extern void TestSafeDeploy(void);
-extern void TestForceDeploy(void);
 
 
 /*=======Suite Setup=====*/
@@ -78,7 +77,6 @@ int antenna_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/telecomms/tests/antenna_tests.cpp");
   RUN_TEST(TestSafeDeploy, 13);
-  RUN_TEST(TestForceDeploy, 45);
 
   return suite_teardown(UnityEnd(), mem_test);
 }

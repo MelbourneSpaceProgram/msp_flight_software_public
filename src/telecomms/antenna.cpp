@@ -1,4 +1,6 @@
 #include <src/telecomms/antenna.h>
+#include <src/util/task_utils.h>
+#include <ti/drivers/GPIO.h>
 #include <ti/sysbios/knl/Clock.h>
 
 Antenna *Antenna::instance = NULL;
@@ -16,63 +18,39 @@ Antenna::Antenna() {
     bus = NULL;
 }
 
-// Algorithm 1 from "Antenna Deployment tester.pdf" of CS1-DD-544
-void Antenna::SafeDeploy() const {
-    if (!initialised) {
-        return;
+bool Antenna::SafeDeploy() const {
+    if (TryAlgorithm(Antenna::kCommandAllDoorsAlgorithm1)) {
+        return true;
     }
-
-    if (IsDoorsOpen()) {
-        return;
-    }
-
-    if (TryHeater(Antenna::kCommandModeAutoHeat, Antenna::kWaitTimeShort)) {
-        return;
-    }
-
-    if (TryHeater(Antenna::kCommandModeAutoBackupHeat,
-                  Antenna::kWaitTimeShort)) {
-        return;
-    }
-
-    if (TryHeater(Antenna::kCommandModeAutoCombinedHeat,
-                  Antenna::kWaitTimeShort)) {
-        return;
-    }
-
-    // TODO(dingbenjamin): Find a better way to get around passing const
-    // commands as args without an explicit copy
-    byte copy_command_mode_off = Antenna::kCommandModeAllOff;
-
-    bus->PerformWriteTransaction(Antenna::kAddress, &copy_command_mode_off, 1);
-}
-
-// Algorithm 2 from "Antenna Deployment tester.pdf" of CS1-DD-544
-void Antenna::ForceDeploy() const {
-    if (initialised) {
-        TryHeater(Antenna::kCommandModeHeaterOneTwoOnDefTime,
-                  Antenna::kWaitTimeLong);
-    }
-}
-
-bool Antenna::TryHeater(const byte heat_command, uint32_t wait_time) const {
-    // TODO(dingbenjamin): Find a better way to get around passing const
-    // commands as args without an explicit copy
-    byte copy_heat_command = heat_command;
-    byte copy_command_mode_off = Antenna::kCommandModeAllOff;
-
-    if (initialised) {
-        bus->PerformWriteTransaction(Antenna::kAddress, &copy_heat_command, 1);
-        Task_sleep(wait_time * 1000 / Clock_tickPeriod);
-        if (IsDoorsOpen()) {
-            bus->PerformWriteTransaction(Antenna::kAddress,
-                                         &copy_command_mode_off, 1);
-            // TODO(wschuetz): Remove Task_sleep on overflow bug fix
-            Task_sleep(100);
-            return true;
-        }
+    if (TryAlgorithm(Antenna::kCommandAllDoorsAlgorithm2)) {
+        return true;
     }
     return false;
+}
+
+bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
+    WriteCommand(command);
+    TaskUtils::SleepMilli(kWaitTime);
+
+    uint8_t iterations = 0;
+
+    while (IsHeatersOn() && (iterations < kMaxNumberOfIterations)) {
+        TaskUtils::SleepMilli(kWaitTime);
+        iterations++;
+    }
+
+    WriteCommand(kCommandModeAllOff);
+
+    return IsDoorsOpen();
+}
+
+bool Antenna::ForceDeploy() const {
+    // TODO(wschuetz): Add force deploy when IO expander driver written
+}
+
+bool Antenna::WriteCommand(Antenna::AntennaCommand command) const {
+    byte write_buffer = static_cast<unsigned char>(command);
+    return bus->PerformWriteTransaction(Antenna::kAddress, &write_buffer, 1);
 }
 
 void Antenna::InitAntenna(I2c *bus) {
@@ -80,8 +58,7 @@ void Antenna::InitAntenna(I2c *bus) {
         return;
     }
     this->bus = bus;
-    if (bus->PerformWriteTransaction(Antenna::kAddress,
-                                     Antenna::kCommandModeAllOff, 1)) {
+    if (WriteCommand(kCommandModeAllOff)) {
         initialised = true;
     } else {
         initialised = false;
@@ -89,16 +66,16 @@ void Antenna::InitAntenna(I2c *bus) {
 }
 
 AntennaMessage Antenna::GetStatus() const {
-    uint8_t read_buffer;
-    bus->PerformReadTransaction(kAddress, &read_buffer, 1);
-    // Bit at the zero mask should ALWAYS be 0 as specified by data sheet
+    uint8_t read_buffer[3];
+    bus->PerformReadTransaction(kAddress, read_buffer, 3);
     // Bits at the door masks should be 1 when doors opened, 0 otherwise
+    // Byte 2 shows active heaters, if 0 then all heaters off
     AntennaMessage status(
-        (kZeroMask ^ read_buffer) & kZeroMask, kDoorOneMask & read_buffer,
-        kDoorTwoMask & read_buffer, kDoorThreeMask & read_buffer,
-        kDoorFourMask & read_buffer, kStateMask & read_buffer);
-    // TODO(wschuetz): Remove Task_sleep on overflow bug fix
-    Task_sleep(100);
+        kDoorOneMask & read_buffer[0], kDoorTwoMask & read_buffer[0],
+        kDoorThreeMask & read_buffer[0], kDoorFourMask & read_buffer[0],
+        read_buffer[1] > 0, kStateMask & read_buffer[0], read_buffer[1],
+        read_buffer[2]);
+
     return status;
 }
 
@@ -106,6 +83,11 @@ bool Antenna::IsDoorsOpen() const {
     AntennaMessage status = GetStatus();
     return (status.IsDoorOneOpen() && status.IsDoorTwoOpen() &&
             status.IsDoorThreeOpen() && status.IsDoorFourOpen());
+}
+
+bool Antenna::IsHeatersOn() const {
+    AntennaMessage status = GetStatus();
+    return status.IsHeatersOn();
 }
 
 bool Antenna::IsInitialised() const { return initialised; }
