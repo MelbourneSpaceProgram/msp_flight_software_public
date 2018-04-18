@@ -7,28 +7,32 @@
 
 class AntennaMessage : public Message {
    public:
-    AntennaMessage(bool valid_status, bool door_one_open, bool door_two_open,
-                   bool door_three_open, bool door_four_open,
-                   byte antenna_state);
+    AntennaMessage(bool door_one_open, bool door_two_open, bool door_three_open,
+                   bool door_four_open, bool heaters_on, byte antenna_state,
+                   byte active_heaters, byte seconds_elapsed);
     SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
     byte GetAntennaState() const;
+    byte GetActiveHeaters() const;
+    byte GetAlgorithmElaspedTime() const;
     bool IsDoorOneOpen() const;
     bool IsDoorTwoOpen() const;
     bool IsDoorThreeOpen() const;
     bool IsDoorFourOpen() const;
-    bool IsValidStatus() const;
+    bool IsHeatersOn() const;
 
    private:
     static const uint16_t kSerialisedSize = 8;
 
-    bool valid_status;
     bool door_one_open;
     bool door_two_open;
     bool door_three_open;
     bool door_four_open;
+    bool heaters_on;
     byte antenna_state;
+    byte active_heaters;
+    byte seconds_elapsed;
 };
 
 #endif  // SRC_MESSAGES_ANTENNA_MESSAGE_H_
