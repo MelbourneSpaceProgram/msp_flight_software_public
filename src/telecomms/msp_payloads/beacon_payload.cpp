@@ -27,6 +27,8 @@ BeaconPayload::BeaconPayload()
       fs_torquer_current_1(0),
       fs_torquer_current_2(0),
       fs_torquer_current_3(0),
+      cdh_mcu_1(0),
+      cdh_mcu_2(0),
       cdh_time(),
       mcu_reset_count_1(0),
       mcu_reset_count_2(0),
@@ -47,7 +49,7 @@ BeaconPayload::BeaconPayload()
       cdh_last_reboot(),
       cdh_rtc_status(0),
       cdh_heartbeat(0),
-      comms_outreach("Hello from Melbourne"),
+      comms_outreach("Hello from Melbourne       "),
       comms_temp_1(0),
       comms_temp_2(0),
       comms_current_1(0),
@@ -144,6 +146,8 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<float>(fs_torquer_current_1)
         .AddData<float>(fs_torquer_current_2)
         .AddData<float>(fs_torquer_current_3)
+        .AddData<uint16_t>(cdh_mcu_1)
+        .AddData<uint16_t>(cdh_mcu_2)
         .AddData<RTime>(cdh_time)
         .AddData<uint8_t>(mcu_reset_count_1)
         .AddData<uint8_t>(mcu_reset_count_2)
@@ -179,7 +183,7 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<uint16_t>(comms_lithium_op_count)
         .AddData<uint16_t>(comms_lithium_temp)
         .AddData<byte>(comms_lithium_time)
-        .AddData<uint16_t>(comms_lithium_rssi)
+        .AddData<uint8_t>(comms_lithium_rssi)
         .AddData<uint32_t>(comms_bytes_received)
         .AddData<uint32_t>(comms_bytes_transmitted)
         .AddData<byte>(comms_antenna_flags)
@@ -323,6 +327,16 @@ BeaconPayload* BeaconPayload::SetCdhRegVoltage3(byte cdhRegVoltage3) {
 
 BeaconPayload* BeaconPayload::SetCdhRtcStatus(byte cdhRtcStatus) {
     this->cdh_rtc_status = cdhRtcStatus;
+    return this;
+}
+
+BeaconPayload* BeaconPayload::SetCdhMcu1(uint16_t cdhMcu1) {
+    this->cdh_mcu_1 = cdhMcu1;
+    return this;
+}
+
+BeaconPayload* BeaconPayload::SetCdhMcu2(uint16_t cdhMcu2) {
+    this->cdh_mcu_2 = cdhMcu2;
     return this;
 }
 
