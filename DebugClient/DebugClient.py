@@ -48,7 +48,6 @@ def send_message(debug_serial_port, messageCode, serialisedMessage):
 
     logger.info("Sent message with ID {}".format(messageCode))
 
-
 def wait_for_message(debug_serial_port):
 
     try:
@@ -69,13 +68,60 @@ def wait_for_message(debug_serial_port):
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")
 
+def detect_serial_port():
+    ports = list(serial.tools.list_ports.comports())
+    suggested_port = None
+    for p in ports:
+        if "XDS110 Class Application/User UART" in str(p):
+            # Expected string is formatted like "COMX XDS110 Class Application/User UART (COMX)"
+            # Only works on Windows systems but the fallback (user entry) is no worse than the previous version
+            suggested_port = str(p).split(' ')[0]  # Grabs the first COMX instance
+    return suggested_port
 
-def testLoop(debug_serial_port):
+def main():
+    suggested_port = detect_serial_port()
+    print("Enter port ({}):".format(suggested_port))
+    userPort = sys.stdin.readline().strip() or suggested_port
+    print("Enter baud rate (115200):")
+    userBaud = sys.stdin.readline().strip() or 115200
+    print("Use Memcached as part of ADCS simulation? y/n (n)")
+    useMemcached_yn = sys.stdin.readline().strip() or 'n'
+    useMemcached_yn = 'y'
+    if useMemcached_yn == 'y':
+        useMemcached = True
+    else:
+        useMemcached = False
+    logger.info("Using Memcached: " + str(useMemcached))
 
+    serial_arguments = {"port": userPort,
+                        "baudrate": userBaud,
+                        "bytesize": serial.EIGHTBITS,
+                        "parity": serial.PARITY_NONE,
+                        "stopbits": serial.STOPBITS_ONE,
+                        "timeout": None,  # TODO: Check if should have a timeout
+                        "xonxoff": False,  # disable software flow control
+                        "rtscts": False,  # disable hardware (RTS/CTS) flow control
+                        "dsrdtr": False,  # disable hardware (DSR/DTR) flow control
+                        "writeTimeout": 2  # timeout for write
+                        }
+
+
+    # Connect to memcached process
+    # Run Memcached on another terminal with:
+    #     memcached -vv
+    if useMemcached:
+        mc = mcClient(('localhost',11211))
+        mc.set('hello',
+               'you should see this on the Memcached stdout when run with -vv')
+
+    with serial.Serial(**serial_arguments) as debug_serial_port:
+        logger.info("Port " + debug_serial_port.portstr + " opened.")
+        testLoop(debug_serial_port, logger, mc)
+
+def testLoop(debug_serial_port, logger, mc):
     # Persistent var for flight-computer-side unit test
     test_message_value = 0
     test_message_timestamp = 0
-
     try:
         while True:
             message_code, message_size, payload = wait_for_message(debug_serial_port)
@@ -87,7 +133,7 @@ def testLoop(debug_serial_port):
                 message_codes["magnetometer_reading_request_code"]:
                 magnetometer_reading = \
                     MagnetometerReading_pb2.MagnetometerReading()
-                if useMemcached and mc.get("Simulation_Magnetometer_X") != None:
+                if mc.get("Simulation_Magnetometer_X") != None:
                     magnetometer_reading.x = \
                         struct.unpack('>d', mc.get("Simulation_Magnetometer_X"))[0]
                     magnetometer_reading.y = \
@@ -114,9 +160,8 @@ def testLoop(debug_serial_port):
                 bms1_input_current_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
                             str(bms1_input_current_reading.value))
-                if useMemcached:
-                     mc.set("BMS1_Input_Current",
-                            struct.pack('>d',
+                mc.set("BMS1_Input_Current",
+                    struct.pack('>d',
                                 bms1_input_current_reading.value))
 
 
@@ -126,10 +171,9 @@ def testLoop(debug_serial_port):
                 bms1_input_voltage_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
                             str(bms1_input_voltage_reading.value))
-                if useMemcached:
-                    mc.set("BMS1_Input_Voltage",
-                           struct.pack('>d',
-                               bms1_input_voltage_reading.value))
+                mc.set("BMS1_Input_Voltage",
+                    struct.pack('>d',
+                                bms1_input_voltage_reading.value))
 
 
             elif message_code == \
@@ -138,11 +182,10 @@ def testLoop(debug_serial_port):
                     SensorReading_pb2.SensorReading()
                 primary_mcu_regulator_current_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
-                            str(primary_mcu_regulator_current_reading.value))
-                if useMemcached:
-                       mc.set("Primary_MCU_Regulator_Current",
-                              struct.pack('>d',
-                                  primary_mcu_regulator_current_reading.value))
+                    str(primary_mcu_regulator_current_reading.value))
+                mc.set("Primary_MCU_Regulator_Current",
+                    struct.pack('>d',
+                        primary_mcu_regulator_current_reading.value))
 
 
             elif message_code == \
@@ -152,9 +195,8 @@ def testLoop(debug_serial_port):
                 magnetorquer_x_current_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
                             str(magnetorquer_x_current_reading.value))
-                if useMemcached:
-                    mc.set("Magnetorquer_X_Current",
-                           struct.pack('>d',magnetorquer_x_current_reading.value))
+                mc.set("Magnetorquer_X_Current",
+                    struct.pack('>d',magnetorquer_x_current_reading.value))
 
 
             elif message_code == \
@@ -164,9 +206,8 @@ def testLoop(debug_serial_port):
                 adcs_system_state_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
                             str(adcs_system_state_reading.state))
-                if useMemcached:
-                    mc.set("ADCS_System_State",
-                           struct.pack('>i',adcs_system_state_reading.state))
+                mc.set("ADCS_System_State",
+                       struct.pack('>i',adcs_system_state_reading.state))
 
 
             elif message_code == \
@@ -175,13 +216,12 @@ def testLoop(debug_serial_port):
                 torque_output_reading = TorqueOutputReading_pb2.TorqueOutputReading()
                 torque_output_reading.ParseFromString(payload)
                 logger.info("Received message data: " + str(torque_output_reading))
-                if useMemcached:
-                    mc.set("Simulation_Torque_X",
-                           struct.pack('>d',torque_output_reading.x))
-                    mc.set("Simulation_Torque_Y",
-                           struct.pack('>d',torque_output_reading.y))
-                    mc.set("Simulation_Torque_Z",
-                           struct.pack('>d',torque_output_reading.z))
+                mc.set("Simulation_Torque_X",
+                       struct.pack('>d',torque_output_reading.x))
+                mc.set("Simulation_Torque_Y",
+                       struct.pack('>d',torque_output_reading.y))
+                mc.set("Simulation_Torque_Z",
+                       struct.pack('>d',torque_output_reading.z))
 
 
             elif message_code == \
@@ -191,9 +231,8 @@ def testLoop(debug_serial_port):
                 magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
                 magnetometer_reading_echo.ParseFromString(payload)
                 logger.info("Message data: " + str(magnetometer_reading_echo))
-                if useMemcached:
-                    mc.set("Magnetometer_X",
-                           struct.pack('>d',magnetometer_reading_echo.x))
+                mc.set("Magnetometer_X",
+                       struct.pack('>d',magnetometer_reading_echo.x))
 
 
             elif message_code == \
@@ -235,7 +274,7 @@ def testLoop(debug_serial_port):
                 message_codes["tle_request_code"]:
 
                 tle = Tle_pb2.Tle()
-                if useMemcached and mc.get("Simulation_TLE_Mean_Motion") != None:
+                if mc.get("Simulation_TLE_Mean_Motion") != None:
                     tle.mean_motion = \
                         struct.unpack('>d',
                                       mc.get("Simulation_TLE_Mean_Motion"))[0]
@@ -282,16 +321,16 @@ def testLoop(debug_serial_port):
                 location_reading = LocationReading_pb2.LocationReading()
                 location_reading.ParseFromString(payload)
                 logger.info("Received location reading: " + str(location_reading))
-                if useMemcached:
-                    mc.set("Location_Lattitude_Geodetic_Degrees",
-                           struct.pack('>d',location_reading.lattitude_geodetic_degrees))
-                    mc.set("Location_Longitude_Degrees",
-                           struct.pack('>d',location_reading.longitude_degrees))
-                    mc.set("Location_Altitude_Above_Ellipsoid_Km",
-                           struct.pack('>d',
-                                       location_reading.altitude_above_ellipsoid_km))
-                    mc.set("Location_Timestamp_Millis_Unix_Epoch",
-                           struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
+                mc.set("Location_Lattitude_Geodetic_Degrees",
+                       struct.pack('>d',location_reading.lattitude_geodetic_degrees))
+                mc.set("Location_Longitude_Degrees",
+                       struct.pack('>d',location_reading.longitude_degrees))
+                mc.set("Location_Altitude_Above_Ellipsoid_Km",
+                       struct.pack('>d',
+                                   location_reading.altitude_above_ellipsoid_km))
+                mc.set("Location_Timestamp_Millis_Unix_Epoch",
+                       struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
+
 
             else:
                 logger.info("Received unhandled message with ID ".format(message_code))
@@ -299,58 +338,5 @@ def testLoop(debug_serial_port):
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")
 
-
-def detect_serial_port():
-    ports = list(serial.tools.list_ports.comports())
-    suggested_port = None
-    for p in ports:
-        if "XDS110 Class Application/User UART" in str(p):
-            # Expected string is formatted like "COMX XDS110 Class Application/User UART (COMX)"
-            # Only works on Windows systems but the fallback (user entry) is no worse than the previous version
-            suggested_port = str(p).split(' ')[0]  # Grabs the first COMX instance
-    return suggested_port
-
-
 if __name__ == "__main__":
-    suggested_port = detect_serial_port()
-    print("Enter port ({}):".format(suggested_port))
-    userPort = sys.stdin.readline().strip() or suggested_port
-    print("Enter baud rate (115200):")
-    userBaud = sys.stdin.readline().strip() or 115200
-    print("Use Memcached as part of ADCS simulation? y/n (n)")
-    useMemcached_yn = sys.stdin.readline().strip() or 'n'
-    if useMemcached_yn == 'y':
-        useMemcached = True
-    else:
-        useMemcached = False
-    logger.info("Using Memcached: " + str(useMemcached))
-
-    serial_arguments = {"port": userPort,
-                        "baudrate": userBaud,
-                        "bytesize": serial.EIGHTBITS,
-                        "parity": serial.PARITY_NONE,
-                        "stopbits": serial.STOPBITS_ONE,
-                        #"timeout": 0.01,  # seconds
-                        "timeout": None,  # seconds
-                        "xonxoff": False,  # disable software flow control
-                        "rtscts": False,  # disable hardware (RTS/CTS) flow control
-                        "dsrdtr": False,  # disable hardware (DSR/DTR) flow control
-                        "writeTimeout": 2  # timeout for write
-                        }
-
-
-    # Connect to memcached process
-    # Run Memcached on another terminal with:
-    #     memcached -vv
-    # and to generate magnetometer values,
-    # in another terminal run:
-    #     python StandinMemcachedPopulator.py
-    if useMemcached:
-        mc = mcClient(('localhost',11211))
-        mc.set('hello',
-               'you should see this on the Memcached stdout when run with -vv')
-
-    with serial.Serial(**serial_arguments) as debug_serial_port:
-        logger.info("Port " + debug_serial_port.portstr + " opened.")
-        debug_serial_port.flushInput()  # flush input buffer, discarding all its contents
-        testLoop(debug_serial_port)
+    main()
