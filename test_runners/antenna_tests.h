@@ -12,6 +12,5 @@
 #include <src/util/memory_troubleshooter.h>
 
 void TestSafeDeploy(void);
-void TestForceDeploy(void);
 
 #endif  // TEST_RUNNERS_ANTENNA_TESTS_H_

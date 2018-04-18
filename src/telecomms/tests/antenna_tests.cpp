@@ -14,50 +14,27 @@ void TestSafeDeploy(void) {
     if (!antenna_test_enabled) {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
-    Task_sleep(500);
-    byte test_code = 0xF1;
-    uint8_t test_count = 4;
+    static uint8_t test_count = 2;
     byte initial_state = 0x00;
-    byte expected_final_state = 0x07;
-    byte reset = 0xFF;
+    byte expected_final_state = 0xFF;
+    byte test_number[2] = {0xF0, 0xF1};
+    byte reset = 0xff;
 
     Antenna *antenna = Antenna::GetAntenna();
     AntennaMessage initial_status(antenna->GetStatus());
     TEST_ASSERT_EQUAL_UINT8(initial_state, initial_status.GetAntennaState());
 
-    // TODO(wschuetz): Start from 0 when how to test not initialised is decided
+    // Tests both algorithm 1 and 2
     for (uint8_t i = 0; i < test_count; i++) {
         // Set test on antenna deployment simulator
         antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr,
-                                                   &test_code, 1);
-        test_code++;
-        antenna->SafeDeploy();
-        AntennaMessage current_status(antenna->GetStatus());
-        TEST_ASSERT_EQUAL_UINT8(expected_final_state,
-                                current_status.GetAntennaState());
+                                                   &test_number[i], 1);
 
-        // Set test on antenna deployment simulator
+        antenna->SafeDeploy();
+        TEST_ASSERT(antenna->IsDoorsOpen());
+
+        // Reset antenna deployment simulator
         antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr, &reset,
                                                    1);
     }
-}
-
-void TestForceDeploy(void) {
-    if (!antenna_test_enabled) {
-        TEST_IGNORE_MESSAGE("Hardware test ignored");
-    }
-    byte initial_state = 0x00;
-    byte expected_final_state = 0x07;
-    byte test_code = 0xF6;
-
-    Antenna *antenna = Antenna::GetAntenna();
-    AntennaMessage initial_status(antenna->GetStatus());
-    TEST_ASSERT_EQUAL_UINT8(initial_state, initial_status.GetAntennaState());
-
-    antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr, &test_code,
-                                               1);
-    antenna->ForceDeploy();
-    AntennaMessage current_status(antenna->GetStatus());
-    TEST_ASSERT_EQUAL_UINT8(expected_final_state,
-                            current_status.GetAntennaState());
 }

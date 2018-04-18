@@ -1,43 +1,32 @@
 #ifndef SRC_TELECOMMS_ANTENNA_H_
 #define SRC_TELECOMMS_ANTENNA_H_
 
-#include <src/debug_interface/debug_stream.h>
 #include <src/i2c/i2c.h>
 #include <src/messages/antenna_message.h>
 #include <src/util/data_types.h>
-#include <ti/sysbios/knl/Task.h>
 
-// TODO(dingbenjamin): Change all i2c transactions to use timeout
 class Antenna {
    public:
+    enum AntennaCommand {
+        kCommandModeAllOff = 0x00,
+        kCommandAllDoorsAlgorithm1 = 0x1F,
+        kCommandAllDoorsAlgorithm2 = 0x2F
+    };
     static Antenna* GetAntenna();
     void InitAntenna(I2c* bus);  // Initial call is not thread safe
     // TODO(dingbenjamin): Use/investigate state machine framework
-    void ForceDeploy() const;
-    // TODO(dingbenjamin): Use/investigate state machine framework
-    void SafeDeploy() const;
+    bool SafeDeploy() const;
+    bool TryAlgorithm(AntennaCommand command) const;
+    bool ForceDeploy() const;
     AntennaMessage GetStatus() const;
     bool IsDoorsOpen() const;
+    bool IsHeatersOn() const;
     bool IsInitialised() const;
     I2c* GetBus() const;
 
    private:
     // I2C Address
     static const byte kAddress = 0x33;
-    // Clear all recent commands
-    static const byte kCommandModeAllOff = 0x00;
-    // Auto Heating (Normal)
-    static const byte kCommandModeAutoHeat = 0x01;
-    // Auto Heating (Back up)
-    static const byte kCommandModeAutoBackupHeat = 0x02;
-    // Auto Heating (Combined)
-    static const byte kCommandModeAutoCombinedHeat = 0x03;
-    // Turn ON Heater 1 for 40 seconds
-    static const byte kCommandModeHeaterOneOnDefTime = 0x04;
-    // Turn ON Heater 2 for 40 seconds
-    static const byte kCommandModeHeaterTwoOnDefTime = 0x05;
-    // Turn ON Heater 1 + 2 for 40 seconds
-    static const byte kCommandModeHeaterOneTwoOnDefTime = 0x06;
     // Door 1 bit mask in status packet
     static const byte kDoorOneMask = 0b10000000;
     // Door 2 bit mask in status packet
@@ -47,16 +36,19 @@ class Antenna {
     // Door 4 bit mask in status packet
     static const byte kDoorFourMask = 0b00010000;
     // State bit mask in status packet
-    static const byte kStateMask = 0b00000111;
-    // Zero bit mask in status packet (Useful for endianess check)
-    static const byte kZeroMask = 0b00001000;
-    // Time to wait (in milliseconds) after trying a heater
-    static const uint32_t kWaitTimeShort = 10000;
-    // Time to wait (in milliseconds) after trying a heater
-    static const uint32_t kWaitTimeLong = 20000;
+    static const byte kStateMask = 0b00000011;
+    // Time to wait (in milliseconds) after trying deployment algorithms
+    static const uint32_t kWaitTime = 20000;
+    // Time to wait (in milliseconds) when manually overriding deployment
+    static const uint32_t kWaitTimeManualOverride = 10000;
+    // TODO(wschuetz): Confirm with EnduroSat how long override should be held
+    // high for
+    static const uint8_t kPrimaryOverridePin = 0x01;
+    static const uint8_t kBackupOverridePin = 0x02;
+    static const uint8_t kMaxNumberOfIterations = 0x03;
 
+    bool WriteCommand(AntennaCommand command) const;
     Antenna();
-    bool TryHeater(const byte heat_command, uint32_t wait_time) const;
 
     bool initialised;
     static Antenna* instance;
