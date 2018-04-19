@@ -38,6 +38,7 @@ extern bool satellite_configuration;
 extern bool spi_test_enabled;
 extern bool eeprom_test_enabled;
 extern bool i2c_test_enabled;
+extern bool bms_test_enabled;
 extern bool antenna_test_enabled;
 extern bool lithium_test_enabled;
 extern bool lithium_flash_test_enabled;
