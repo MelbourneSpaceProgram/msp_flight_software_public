@@ -9,6 +9,7 @@ void generic_sensor_tests_runner();
 void rtc_tests_runner();
 void measurable_manager_tests_runner();
 void i2c_sensor_tests_runner();
+void mpu9250_motion_tracker_tests_runner();
 void magnetometer_tests_runner();
 void message_tests_runner();
 void matrix_tests_runner();
