@@ -3,13 +3,13 @@
 #ifndef TEST_RUNNERS_MPU9250_MOTION_TRACKER_TESTS_H_
 #define TEST_RUNNERS_MPU9250_MOTION_TRACKER_TESTS_H_
 
+#include "unity.h"
 #include <Board.h>
 #include <src/i2c/i2c.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
-#include <src/util/memory_troubleshooter.h>
 #include <test_runners/mpu9250_motion_tracker_tests.h>
-#include "unity.h"
+#include <src/util/memory_troubleshooter.h>
 
 void TestGyroRead(void);
 void TestMagnoRead(void);

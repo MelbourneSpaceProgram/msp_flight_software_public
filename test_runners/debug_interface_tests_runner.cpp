@@ -78,7 +78,7 @@ int debug_interface_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
   RUN_TEST(TestRequestMessageFromSimulator, 11);
-  RUN_TEST(TestPostMessageToDebugClient, 35);
+  RUN_TEST(TestPostMessageToDebugClient, 34);
 
   return suite_teardown(UnityEnd(), mem_test);
 }
