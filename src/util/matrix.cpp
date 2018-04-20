@@ -423,13 +423,15 @@ void Matrix::QuaternionProductDot(Matrix &a, Matrix&b)
 {
     QuaternionProductCross(b,a);
 }
-double DotProduct(const Matrix &A, const Matrix &B) //TODO(jmcrobbie) Write unit tests for these.
-{
-    double dot = 0;
+double Matrix::DotProduct(const Matrix &A, const Matrix &B) 
 
-    for(uint8_t i = 0 ; i < 3; i++)
-    {
-        dot += A.Get(0,i) * B.Get(0,i);
-    }
+{   
+        double dot = 0;
+
+        for(uint8_t i = 0 ; i < 3; i++)
+        {
+            dot += A.Get(i,0) * B.Get(i,0);
+        }
+
     return dot;
 }

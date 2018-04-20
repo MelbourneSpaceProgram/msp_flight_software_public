@@ -5,6 +5,18 @@
 #include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
 
+void TestDotProduct()
+{
+    // Tests Column vector input 
+    double aData[3][1] = {{2}, {3}, {4}};
+    double bData[3][1] = {{2}, {3}, {4}};
+    Matrix a(aData), b(bData); 
+    double c = Matrix::DotProduct(a,b); 
+    TEST_ASSERT_EQUAL_DOUBLE(c, 29); 
+    // tests row vector input
+
+}
+
 void TestQuaternionConjugate(){
     double q_data[4][1] = {{1.0},{2},{3},{4}};
     Matrix q(q_data);
@@ -15,7 +27,6 @@ void TestQuaternionConjugate(){
     TEST_ASSERT_EQUAL_DOUBLE(-4.0, q.Get(3,0));
 
 }
-
 void TestQuaternionDotProduct()
 {
     double q1[4][1] = {{0.060346},{0.8606},{0.23381},{0.37978}};

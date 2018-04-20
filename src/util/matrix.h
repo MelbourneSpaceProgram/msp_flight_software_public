@@ -60,7 +60,7 @@ class Matrix {
     void Multiply(const Matrix &A, const Matrix &B);
     void MultiplyScalar(const Matrix &A, double scale);
     void CrossProduct(const Matrix &A, const Matrix &B);
-    double DotProduct(const Matrix &A, const Matrix &B);
+    static double DotProduct(const Matrix &A, const Matrix &B);
 
     void Fill(double value);
     void CopyInto(uint8_t row_start, uint8_t column_start, const Matrix &A);
