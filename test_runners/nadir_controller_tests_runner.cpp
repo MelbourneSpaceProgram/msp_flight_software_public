@@ -27,12 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "wmm_tests.h"
+#include "nadir_controller_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestWorldMagneticModel();
+extern void TestNadirControl();
 
 
 /*=======Suite Setup=====*/
@@ -62,8 +62,8 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_wmm_tests_runner(void);
-void resetTest_wmm_tests_runner(void)
+void resetTest_nadir_controller_tests_runner(void);
+void resetTest_nadir_controller_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -71,12 +71,12 @@ void resetTest_wmm_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int wmm_tests_runner(void);
-int wmm_tests_runner(void)
+ int nadir_controller_tests_runner(void);
+int nadir_controller_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
-  UnityBegin("src/adcs/tests/wmm_tests.cpp");
-  RUN_TEST(TestWorldMagneticModel, 8);
+  UnityBegin("src/adcs/tests/nadir_controller_tests.cpp");
+  RUN_TEST(TestNadirControl, 7);
 
   return suite_teardown(UnityEnd(), mem_test);
 }

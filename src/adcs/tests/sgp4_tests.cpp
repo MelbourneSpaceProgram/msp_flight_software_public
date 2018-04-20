@@ -6,15 +6,7 @@
 #include <test_runners/sgp4_tests.h>
 #include <test_runners/unity.h>
 
-bool approx_equal(double var1, double var2) {
-    double err = fabs((var1 - var2) / var2 * 100);
 
-    if (err < 0.1) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 void TestSimplifiedGeneralPerturbationModel() {
     /* TLE IN USE:
@@ -43,10 +35,11 @@ void TestSimplifiedGeneralPerturbationModel() {
     // -3536.19412294  4.741887409 -4.151817765 -2.093935425
     // TIME: 0.00000000   WE EXPECT:   7022.46529266   -1400.08296755 0.03995155
     // 1.893841015  6.405893759  4.534807250
-    TEST_ASSERT(approx_equal(-7154.03120202, position[0]));
-    TEST_ASSERT(approx_equal(-3783.17682504, position[1]));
-    TEST_ASSERT(approx_equal(-3536.19412294, position[2]));
-    TEST_ASSERT(approx_equal(4.741887409, velocity[0]));
-    TEST_ASSERT(approx_equal(-4.151817765, velocity[1]));
-    TEST_ASSERT(approx_equal(-2.093935425, velocity[2]));
+
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -7154.03120202, position[0] );
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -3783.17682504, position[1] );
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -3536.19412294, position[2]);
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, 4.741887409, velocity[0] );
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -4.151817765, velocity[1] );
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -2.093935425, velocity[2] );
 }
