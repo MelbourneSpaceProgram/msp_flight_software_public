@@ -54,7 +54,7 @@ def write_master_runner_header(definitions, location="./test_runners/master_runn
         f.write("void master_tests_thread();\n")
 
         for test_runner_definition in definitions:
-            f.write("void {}();\n".format(test_runner_definition['main_name']))
+            f.write("int {}();\n".format(test_runner_definition['main_name']))
 
         f.write("void SetUp();\n")
         f.write("void TearDown();\n\n")
