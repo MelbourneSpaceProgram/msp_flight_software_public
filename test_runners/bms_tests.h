@@ -4,7 +4,14 @@
 #define TEST_RUNNERS_BMS_TESTS_H_
 
 #include "unity.h"
+#include <Board.h>
+#include <external/etl/array.h>
+#include <src/config/unit_tests.h>
+#include <src/i2c/bms/bms.h>
+#include <src/i2c/i2c.h>
 #include <test_runners/bms_tests.h>
+#include <ti/sysbios/knl/Task.h>
+#include <src/util/memory_troubleshooter.h>
 
 void TestBms(void);
 
