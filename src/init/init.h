@@ -10,11 +10,6 @@
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
 
-// TODO(dingbenjamin): Remove, along with applications reliant on this define
-#define TASKSTACKSIZE 8096
-Task_Struct allocatorTaskStruct;
-Char allocatorTaskStack[TASKSTACKSIZE];
-
 void PreBiosInit();
 void PostBiosInit();
 void TestInit();

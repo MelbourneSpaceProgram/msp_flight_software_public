@@ -79,10 +79,10 @@ int mpu9250_motion_tracker_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   UnityBegin("src/sensors/i2c_sensors/tests/mpu9250_motion_tracker_tests.cpp");
-  RUN_TEST(TestGyroRead, 14);
-  RUN_TEST(TestMagnoRead, 26);
-  RUN_TEST(TestTempRead, 38);
-  RUN_TEST(TestAccelRead, 49);
+  RUN_TEST(TestGyroRead, 16);
+  RUN_TEST(TestMagnoRead, 32);
+  RUN_TEST(TestTempRead, 49);
+  RUN_TEST(TestAccelRead, 65);
 
   return suite_teardown(UnityEnd(), mem_test);
 }
