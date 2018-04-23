@@ -7,6 +7,7 @@
 #include <src/util/finite_difference_symmetric.h>
 #include <test_runners/finite_difference_symmetric_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestProcessSampleDifferentiator(void);
 

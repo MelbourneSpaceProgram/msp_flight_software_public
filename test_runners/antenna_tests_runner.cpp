@@ -75,8 +75,12 @@ void resetTest_antenna_tests_runner(void)
 int antenna_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/telecomms/tests/antenna_tests.cpp");
-  RUN_TEST(TestSafeDeploy, 13);
+    RUN_TEST(TestSafeDeploy, 13);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

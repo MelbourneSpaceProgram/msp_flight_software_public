@@ -12,6 +12,7 @@
 #include <test_runners/bms_tests.h>
 #include <ti/sysbios/knl/Task.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestBms(void);
 

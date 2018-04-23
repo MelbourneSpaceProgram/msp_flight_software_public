@@ -7,6 +7,7 @@
 #include <math.h>
 #include <src/adcs/controllers/nadir_controller.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestNadirControl(void);
 

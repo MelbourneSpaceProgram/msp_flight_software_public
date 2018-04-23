@@ -75,8 +75,12 @@ void resetTest_bms_tests_runner(void)
 int bms_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
-  RUN_TEST(TestBms, 14);
+    RUN_TEST(TestBms, 14);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

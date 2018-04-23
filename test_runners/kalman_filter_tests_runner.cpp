@@ -75,8 +75,12 @@ void resetTest_kalman_filter_tests_runner(void)
 int kalman_filter_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/adcs/tests/kalman_filter_tests.cpp");
-  RUN_TEST(TestKalmanPredictAndUpdate, 6);
+    RUN_TEST(TestKalmanPredictAndUpdate, 6);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

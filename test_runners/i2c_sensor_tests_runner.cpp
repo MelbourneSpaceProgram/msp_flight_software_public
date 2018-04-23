@@ -75,8 +75,12 @@ void resetTest_i2c_sensor_tests_runner(void)
 int i2c_sensor_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/i2c_sensors/tests/i2c_sensor_tests.cpp");
-  RUN_TEST(TestADC, 14);
+    RUN_TEST(TestADC, 14);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

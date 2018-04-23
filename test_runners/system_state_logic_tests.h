@@ -12,6 +12,7 @@
 #include <src/system/system_state_machines/power_state_machine.h>
 #include <src/system/system_state_machines/telecoms_state_machine.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestPowerStateLogic(void);
 void TestTelecomsStateLogic(void);

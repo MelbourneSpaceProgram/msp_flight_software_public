@@ -7,6 +7,7 @@
 #include <math.h>
 #include <src/adcs/state_estimators/nadir_error_generator.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestErrorQuaternionGenerator(void);
 

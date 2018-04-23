@@ -80,13 +80,17 @@ void resetTest_lithium_ack_tests_runner(void)
 int lithium_ack_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/telecomms/tests/lithium_ack_tests.cpp");
-  RUN_TEST(TestNoOpAck, 7);
-  RUN_TEST(TestGetConfigAck, 12);
-  RUN_TEST(TestResetSystemAck, 25);
-  RUN_TEST(TestTransmitAck, 30);
-  RUN_TEST(TestFailNoOpAck, 35);
-  RUN_TEST(TestFailGetConfigAck, 50);
+    RUN_TEST(TestNoOpAck, 7);
+    RUN_TEST(TestGetConfigAck, 12);
+    RUN_TEST(TestResetSystemAck, 25);
+    RUN_TEST(TestTransmitAck, 30);
+    RUN_TEST(TestFailNoOpAck, 35);
+    RUN_TEST(TestFailGetConfigAck, 50);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

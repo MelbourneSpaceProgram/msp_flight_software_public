@@ -75,8 +75,12 @@ void resetTest_runnable_data_dashboard_tests_runner(void)
 int runnable_data_dashboard_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/data_dashboard/tests/runnable_data_dashboard_tests.cpp");
-  RUN_TEST(TestTransmitMessage, 12);
+    RUN_TEST(TestTransmitMessage, 12);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

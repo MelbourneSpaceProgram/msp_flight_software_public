@@ -13,6 +13,7 @@
 #include <test_runners/i2c_tests.h>
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestMultiplexer(void);
 

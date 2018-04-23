@@ -109,42 +109,46 @@ void resetTest_matrix_tests_runner(void)
 int matrix_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/util/tests/matrix_tests.cpp");
-  RUN_TEST(TestDotProduct, 8);
-  RUN_TEST(TestQuaternionConjugate, 20);
-  RUN_TEST(TestQuaternionDotProduct, 30);
-  RUN_TEST(TestQuaternionCrossProduct, 43);
-  RUN_TEST(TestCopyConstructor, 56);
-  RUN_TEST(TestSlice, 75);
-  RUN_TEST(TestGetNRows, 99);
-  RUN_TEST(TestGetNColumns, 106);
-  RUN_TEST(TestIsSquare, 113);
-  RUN_TEST(TestGet, 123);
-  RUN_TEST(TestSet, 141);
-  RUN_TEST(TestDoubleIsEqual, 164);
-  RUN_TEST(TestIsEqual, 181);
-  RUN_TEST(TestSameSize, 203);
-  RUN_TEST(TestSameNRows, 215);
-  RUN_TEST(TestSameNColumns, 227);
-  RUN_TEST(TestTranspose, 239);
-  RUN_TEST(TestVectorNorm, 260);
-  RUN_TEST(TestAdd, 277);
-  RUN_TEST(TestSubtract, 302);
-  RUN_TEST(TestMultiply, 327);
-  RUN_TEST(TestMultiplyScalar, 353);
-  RUN_TEST(TestCrossProduct, 376);
-  RUN_TEST(TestFill, 401);
-  RUN_TEST(TestCopyInto, 412);
-  RUN_TEST(TestIdentity, 448);
-  RUN_TEST(TestQuaternionNormalise, 469);
-  RUN_TEST(TestRotationMatrixFromQuaternion, 503);
-  RUN_TEST(TestSkewSymmetricFill, 544);
-  RUN_TEST(TestConcatenateHorizontally, 589);
-  RUN_TEST(TestConcatenateVertically, 624);
-  RUN_TEST(TestAddRows, 659);
-  RUN_TEST(TestMultiplyRow, 688);
-  RUN_TEST(TestSwitchRows, 708);
-  RUN_TEST(TestRowReduce, 736);
+    RUN_TEST(TestDotProduct, 8);
+    RUN_TEST(TestQuaternionConjugate, 20);
+    RUN_TEST(TestQuaternionDotProduct, 30);
+    RUN_TEST(TestQuaternionCrossProduct, 43);
+    RUN_TEST(TestCopyConstructor, 56);
+    RUN_TEST(TestSlice, 75);
+    RUN_TEST(TestGetNRows, 99);
+    RUN_TEST(TestGetNColumns, 106);
+    RUN_TEST(TestIsSquare, 113);
+    RUN_TEST(TestGet, 123);
+    RUN_TEST(TestSet, 141);
+    RUN_TEST(TestDoubleIsEqual, 164);
+    RUN_TEST(TestIsEqual, 181);
+    RUN_TEST(TestSameSize, 203);
+    RUN_TEST(TestSameNRows, 215);
+    RUN_TEST(TestSameNColumns, 227);
+    RUN_TEST(TestTranspose, 239);
+    RUN_TEST(TestVectorNorm, 260);
+    RUN_TEST(TestAdd, 277);
+    RUN_TEST(TestSubtract, 302);
+    RUN_TEST(TestMultiply, 327);
+    RUN_TEST(TestMultiplyScalar, 353);
+    RUN_TEST(TestCrossProduct, 376);
+    RUN_TEST(TestFill, 401);
+    RUN_TEST(TestCopyInto, 412);
+    RUN_TEST(TestIdentity, 448);
+    RUN_TEST(TestQuaternionNormalise, 469);
+    RUN_TEST(TestRotationMatrixFromQuaternion, 503);
+    RUN_TEST(TestSkewSymmetricFill, 544);
+    RUN_TEST(TestConcatenateHorizontally, 589);
+    RUN_TEST(TestConcatenateVertically, 624);
+    RUN_TEST(TestAddRows, 659);
+    RUN_TEST(TestMultiplyRow, 688);
+    RUN_TEST(TestSwitchRows, 708);
+    RUN_TEST(TestRowReduce, 736);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

@@ -75,8 +75,12 @@ void resetTest_multiplexer_tests_runner(void)
 int multiplexer_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/i2c/multiplexers/tests/multiplexer_tests.cpp");
-  RUN_TEST(TestMultiplexer, 18);
+    RUN_TEST(TestMultiplexer, 18);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

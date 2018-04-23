@@ -8,6 +8,7 @@
 #include <src/util/memory_troubleshooter.h>
 #include <test_runners/memory_troubleshooter_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestMemoryLeak(void);
 

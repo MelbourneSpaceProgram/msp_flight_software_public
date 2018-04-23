@@ -12,6 +12,7 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <test_runners/i2c_sensor_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestADC(void);
 
