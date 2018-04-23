@@ -17,17 +17,19 @@ void SatelliteTimeSource::SetTime(RTime time) {
     if (epoch_seconds != (time_t)-1) {
         satellite_time.timestamp_millis_unix_epoch =
             (uint64_t)epoch_seconds * 1000;
+        satellite_time.is_valid = true;
         // TODO(akremor): Pull this from the RTC clock interrupt (once
         // configured)
     } else {
         Log_error0("Unable to convert from RTime -> tm");
         satellite_time.timestamp_millis_unix_epoch = NULL;
+        satellite_time.is_valid = false;
     }
 }
 
 Time SatelliteTimeSource::GetTime() {
-    if (!satellite_time.timestamp_millis_unix_epoch) {
-        Log_error0("Satellite time has not been set");
+    if (!satellite_time.is_valid) {
+        Log_error0("Satellite time is not valid");
     }
 
     return satellite_time;
