@@ -12,6 +12,6 @@ bool lithium_test_enabled = false;
 bool rtc_test_enabled = false;
 bool multiplexer_test_enabled = false;
 bool adc_test_enabled = false;
-bool magnetometer_test_enabled = false;
+bool imu_test_enabled = false;
 bool hil_enabled = true;
 bool memory_troubleshooter_test_enabled = true;

@@ -1,4 +1,5 @@
 #include <Board.h>
+#include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/messages/MagnetometerReading.pb.h>
@@ -14,6 +15,9 @@ static const double avg_room_temperature = 25.00;
 static const double temp_tolerance = 15.00;
 
 void TestGyroRead(void) {
+    if (!imu_test_enabled) {
+        TEST_IGNORE_MESSAGE("IMU test ignored");
+    }
     I2c test_i2c_bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
@@ -30,6 +34,9 @@ void TestGyroRead(void) {
 }
 
 void TestMagnoRead(void) {
+    if (!imu_test_enabled) {
+        TEST_IGNORE_MESSAGE("IMU test ignored");
+    }
     I2c test_i2c_bus(I2C_BUS_A);
 
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
@@ -47,6 +54,9 @@ void TestMagnoRead(void) {
 }
 
 void TestTempRead(void) {
+    if (!imu_test_enabled) {
+        TEST_IGNORE_MESSAGE("IMU test ignored");
+    }
     I2c test_i2c_bus(I2C_BUS_A);
 
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
@@ -63,6 +73,9 @@ void TestTempRead(void) {
 }
 
 void TestAccelRead(void) {
+    if (!imu_test_enabled) {
+        TEST_IGNORE_MESSAGE("IMU test ignored");
+    }
     I2c test_i2c_bus(I2C_BUS_A);
 
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
