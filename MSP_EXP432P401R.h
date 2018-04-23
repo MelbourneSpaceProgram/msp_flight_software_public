@@ -84,7 +84,8 @@ typedef enum Board_GPIOName {
     INT_MCU_MCU_1 = 15,
     INT_MCU_MCU_2 = 16,
     BUS_SWITCH_ENABLE = 17,
-    // Used for the purposes of I2C bus sensing. Should not be used except in the I2c driver.
+    // Used for the purposes of I2C bus sensing. Should not be used except in
+    // the I2c driver.
     I2C_BUS_A_SCL = 18,
     I2C_BUS_A_SDA = 19,
     I2C_BUS_B_SCL = 20,
@@ -112,13 +113,13 @@ typedef enum Board_I2CName {
  *  @def    MSP_EXP432P401R_PWMName
  *  @brief  Enum of PWM names on the MSP_EXP432P401R dev board
  */
-typedef enum MSP_EXP432P401R_PWMName {
-    MSP_EXP432P401R_PWM_TA1_1 = 0,
-    MSP_EXP432P401R_PWM_TA1_2,
-    MSP_EXP432P401R_PWM_TA1_3,
+typedef enum Board_PWMName {
+    Mag_STR_CDH_FS_Out1 = 0,
+    Mag_STR_CDH_FS_Out2 = 1,
+    Mag_STR_CDH_FS_Out3 = 2,
 
-    MSP_EXP432P401R_PWMCOUNT
-} MSP_EXP432P401R_PWMName;
+    Board_PWMCOUNT
+} Board_PWMName;
 
 /*!
  *  @def    MSP_EXP432P401R_SPIName
@@ -145,10 +146,10 @@ typedef enum MSP_EXP432P401R_TimerName {
  *  @brief  Enum of UART names on the MSP_EXP432P401R dev board
  */
 typedef enum Board_UARTName {
-      UART_MCU_MCU = 0,
-      UART_CDH_UMB = 1,
-      UART_CMS_CDH = 2,
-      Board_UARTCOUNT
+    UART_MCU_MCU = 0,
+    UART_CDH_UMB = 1,
+    UART_CMS_CDH = 2,
+    Board_UARTCOUNT
 } Board_UARTName;
 
 /*!

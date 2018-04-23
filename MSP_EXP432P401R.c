@@ -141,7 +141,6 @@ const UDMAMSP432_HWAttrs udmaMSP432HWAttrs = {
 const UDMAMSP432_Config UDMAMSP432_config = {.object = &udmaMSP432Object,
                                              .hwAttrs = &udmaMSP432HWAttrs};
 
-
 /*
  *  ======== MSP_EXP432P401R_initGeneral ========
  */
@@ -169,9 +168,9 @@ GPIO_PinConfig gpioPinConfigs[] = {
     GPIOMSP432_P1_5 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P2_0 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P10_4 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P4_7 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P5_0 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P5_1 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
+    GPIOMSP432_P4_7 | GPIO_CFG_OUTPUT | GPIO_CFG_IN_INT_NONE,
+    GPIOMSP432_P5_0 | GPIO_CFG_OUTPUT | GPIO_CFG_IN_INT_NONE,
+    GPIOMSP432_P5_1 | GPIO_CFG_OUTPUT | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P1_0 | GPIO_CFG_OUTPUT | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P2_7 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P6_0 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
@@ -181,7 +180,8 @@ GPIO_PinConfig gpioPinConfigs[] = {
     GPIOMSP432_P6_7 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P10_1 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
 
-    // Used for the purposes of I2C bus sensing. Should not be used except in the I2c driver.
+    // Used for the purposes of I2C bus sensing. Should not be used except in
+    // the I2c driver.
     GPIOMSP432_P1_7 | GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P1_6 | GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P6_5 | GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_NONE,
@@ -285,32 +285,36 @@ const PowerMSP432_ConfigV1 PowerMSP432_config = {
 #include <ti/drivers/PWM.h>
 #include <ti/drivers/pwm/PWMTimerMSP432.h>
 
-PWMTimerMSP432_Object pwmTimerMSP432Objects[MSP_EXP432P401R_PWMCOUNT];
+PWMTimerMSP432_Object pwmTimerMSP432Objects[Board_PWMCOUNT];
 
-const PWMTimerMSP432_HWAttrsV2 pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWMCOUNT] =
-    {{
-         .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
-         .pwmPin = PWMTimerMSP432_P2_1_TA1CCR1A  // use
-                                                 // PWMTimerMSP432_P5_6_TA2CCR1A
-                                                 // for pin 5.6 ta2.1
-     },
-     {.clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
-      .pwmPin = PWMTimerMSP432_P2_5_TA1CCR2A},
-     {.clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
-      .pwmPin = PWMTimerMSP432_P2_6_TA1CCR3A}};
+const PWMTimerMSP432_HWAttrsV2 pwmTimerMSP432HWAttrs[Board_PWMCOUNT] = {
+    {
+        .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
+        .pwmPin = PWMTimerMSP432_P2_4_TA1CCR1A,
+    },
+    {
+        .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
+        .pwmPin = PWMTimerMSP432_P2_5_TA1CCR2A,
+    },
+    {
+        .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
+        .pwmPin = PWMTimerMSP432_P2_6_TA1CCR3A,
+    },
+};
 
-const PWM_Config PWM_config[MSP_EXP432P401R_PWMCOUNT] = {
+const PWM_Config PWM_config[Board_PWMCOUNT] = {
     {.fxnTablePtr = &PWMTimerMSP432_fxnTable,
-     .object = &pwmTimerMSP432Objects[MSP_EXP432P401R_PWM_TA1_1],
-     .hwAttrs = &pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWM_TA1_1]},
+     .object = &pwmTimerMSP432Objects[Mag_STR_CDH_FS_Out1],
+     .hwAttrs = &pwmTimerMSP432HWAttrs[Mag_STR_CDH_FS_Out1]},
     {.fxnTablePtr = &PWMTimerMSP432_fxnTable,
-     .object = &pwmTimerMSP432Objects[MSP_EXP432P401R_PWM_TA1_2],
-     .hwAttrs = &pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWM_TA1_2]},
+     .object = &pwmTimerMSP432Objects[Mag_STR_CDH_FS_Out2],
+     .hwAttrs = &pwmTimerMSP432HWAttrs[Mag_STR_CDH_FS_Out2]},
     {.fxnTablePtr = &PWMTimerMSP432_fxnTable,
-     .object = &pwmTimerMSP432Objects[MSP_EXP432P401R_PWM_TA1_3],
-     .hwAttrs = &pwmTimerMSP432HWAttrs[MSP_EXP432P401R_PWM_TA1_3]}};
+     .object = &pwmTimerMSP432Objects[Mag_STR_CDH_FS_Out3],
+     .hwAttrs = &pwmTimerMSP432HWAttrs[Mag_STR_CDH_FS_Out3]},
+};
 
-const uint_least8_t PWM_count = MSP_EXP432P401R_PWMCOUNT;
+const uint_least8_t PWM_count = Board_PWMCOUNT;
 
 /*
  *  =============================== SPI ===============================
