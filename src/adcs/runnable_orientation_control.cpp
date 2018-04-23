@@ -1,6 +1,7 @@
 #include <external/nanopb/pb_decode.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
+#include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
@@ -71,30 +72,21 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run controller
         double torque_output_data[3][1];
         Matrix torque_output(torque_output_data);
-         BDotController::Control(geomag, b_dot_estimate,
-                                torque_output);
+        BDotController::Control(geomag, b_dot_estimate, torque_output);
 
-        // TODO (rskew) create magnetorquer abstraction that wraps the following
-        // ---------- To be wrapped by magnetorquer abstraction ----------
-        // TODO (rskew) set magnetorquer PWM width based on control output
+        // Use magnetorquer driver to set magnetorquer power.
+        // Driver input power range should be [-1, 1]
 
-        if (hil_enabled) {
-            // Send torque output to simulation
-            TorqueOutputReading torque_output_reading =
-                TorqueOutputReading_init_zero;
-            // torque_output_reading.x = torque_output.Get(0, 0);
-            // torque_output_reading.y = torque_output.Get(1, 0);
-            // torque_output_reading.z = torque_output.Get(2, 0);
-            // Torque boost woohoo
-            double torque_boost = 100;
-            torque_output_reading.x = torque_boost * torque_output.Get(0, 0);
-            torque_output_reading.y = torque_boost * torque_output.Get(1, 0);
-            torque_output_reading.z = torque_boost * torque_output.Get(2, 0);
-            RunnableDataDashboard::TransmitMessage(
-                kTorqueOutputReadingCode, TorqueOutputReading_size,
-                TorqueOutputReading_fields, &torque_output_reading);
-        }
-        // ---------- end section to be wrapped ----------
+        //
+        // TODO(crozone):
+        //
+        // Verify that torque_boost here is correct for driver input range.
+        float torque_boost = 100.0f;
+
+        MagnetorquerControl::SetMagnetorquersPowerFraction(
+            torque_output.Get(0, 0) * torque_boost,
+            torque_output.Get(1, 0) * torque_boost,
+            torque_output.Get(2, 0) * torque_boost);
 
         if (hil_enabled) {
             // TODO (rskew) move this code to a command handler, allowing the

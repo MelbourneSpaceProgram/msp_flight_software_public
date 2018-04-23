@@ -56,8 +56,9 @@ extern "C" {
 
 #define Board_I2C_TMP               I2C_BUS_A
 
-#define Board_PWM0                  MSP_EXP432P401R_PWM_TA1_1
-#define Board_PWM1                  MSP_EXP432P401R_PWM_TA1_2
+#define Board_PWM0                  Mag_STR_CDH_FS_Out1
+#define Board_PWM1                  Mag_STR_CDH_FS_Out2
+#define Board_PWM2                  Mag_STR_CDH_FS_Out3
 
 #define Board_TIMER0                MSP_EXP432P401R_TIMER_T32_0
 #define Board_TIMER1                MSP_EXP432P401R_TIMER_T32_1

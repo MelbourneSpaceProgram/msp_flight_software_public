@@ -1,4 +1,5 @@
 #include <Board.h>
+#include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
@@ -138,6 +139,7 @@ void PostBiosInitialiser::DeployAntenna() {
 void PostBiosInitialiser::InitHardware() {
     I2c::InitBusses();
     Eeprom::Init();
+    MagnetorquerControl::Initialize();
 }
 
 void PostBiosInitialiser::DeploymentWait() {
