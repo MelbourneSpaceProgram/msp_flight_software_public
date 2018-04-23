@@ -21,7 +21,10 @@ class I2cMultiplexer {
     const I2c* GetBus() const;
     byte GetAddress() const;
     void OpenChannel(MuxChannel channel) const;
+    void OpenChannel(uint8_t channel) const;
     void CloseChannel(MuxChannel channel) const;
+    void CloseChannel(uint8_t channel) const;
+    static MuxChannel ChannelIndexToMuxChannel(uint8_t channel_index);
     void CloseAllChannels() const;
     byte GetChannelStates() const;
 
