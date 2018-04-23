@@ -22,15 +22,26 @@ void RunnableTimeSource::UpdateSatelliteTime() {
     I2cMultiplexer multiplexer(&bus, 0x76);
     Rtc rtc(&bus, 0x69);
     while (1) {
+        // The task sleep lives here so we can use `continue` to handle the
+        // exception below If task sleep is at the bottom then the exception
+        // path will cause it to be skipped Effectively placing this code into
+        // an infinite loop
+
+        TaskUtils::SleepMilli(5000);
         multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
 
-        RTime time = rtc.GetTime();
+        RTime time;
+        try {
+            time = rtc.GetTime();
+        } catch (etl::exception e) {
+            Log_error0("Unable to retrieve time from RTC");
+            continue;
+        }
 
         // TODO(akremor): Thread safety issue here
         multiplexer.CloseAllChannels();
         if (rtc.ValidTime(time)) {
             SatelliteTimeSource::SetTime(time);
         }
-        TaskUtils::SleepMilli(500);
     }
 }

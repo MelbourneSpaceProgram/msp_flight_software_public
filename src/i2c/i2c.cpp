@@ -109,18 +109,30 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
 bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
                                   uint16_t write_buffer_length) const {
+    if (handle == NULL) {
+        Log_error0("Attempting to use uninitialised I2C bus");
+        return false;
+    }
     return I2c::PerformTransaction(address, NULL, 0, write_buffer,
                                    write_buffer_length);
 }
 
 bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
                                  uint16_t read_buffer_length) const {
+    if (handle == NULL) {
+        Log_error0("Attempting to use uninitialised I2C bus");
+        return false;
+    }
     return I2c::PerformTransaction(address, read_buffer, read_buffer_length,
                                    NULL, 0);
 }
 
 void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
                            bool success) {
+    if (i2c_transaction == NULL) {
+        Log_error0("I2c transaction is NULL");
+        return;
+    }
     // Check to see whether the I2C_Transaction struct has been given a
     // mailbox handle. If it has put the outcome of the transfer in the mail.
     if (i2c_transaction->arg != NULL) {
