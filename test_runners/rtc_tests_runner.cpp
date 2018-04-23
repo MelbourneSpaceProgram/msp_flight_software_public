@@ -75,8 +75,12 @@ void resetTest_rtc_tests_runner(void)
 int rtc_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/tests/rtc_tests.cpp");
-  RUN_TEST(TestRtcReadTransaction, 12);
+    RUN_TEST(TestRtcReadTransaction, 12);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

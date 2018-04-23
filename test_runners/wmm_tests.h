@@ -7,6 +7,7 @@
 #include <external/wmm/worldMagneticModel.h>
 #include <test_runners/wmm_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestWorldMagneticModel(void);
 

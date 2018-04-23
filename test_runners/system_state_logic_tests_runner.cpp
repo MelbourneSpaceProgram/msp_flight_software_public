@@ -77,10 +77,14 @@ void resetTest_system_state_logic_tests_runner(void)
 int system_state_logic_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/system/tests/system_state_logic_tests.cpp");
-  RUN_TEST(TestPowerStateLogic, 34);
-  RUN_TEST(TestTelecomsStateLogic, 82);
-  RUN_TEST(TestAdcsStateLogic, 123);
+    RUN_TEST(TestPowerStateLogic, 34);
+    RUN_TEST(TestTelecomsStateLogic, 82);
+    RUN_TEST(TestAdcsStateLogic, 123);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

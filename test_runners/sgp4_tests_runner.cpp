@@ -75,8 +75,12 @@ void resetTest_sgp4_tests_runner(void)
 int sgp4_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/adcs/tests/sgp4_tests.cpp");
-  RUN_TEST(TestSimplifiedGeneralPerturbationModel, 11);
+    RUN_TEST(TestSimplifiedGeneralPerturbationModel, 11);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

@@ -77,10 +77,14 @@ void resetTest_sensor_state_logic_tests_runner(void)
 int sensor_state_logic_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/system/tests/sensor_state_logic_tests.cpp");
-  RUN_TEST(TestBatteryChargeStateFlow, 84);
-  RUN_TEST(TestBatteryTempStateFlow, 118);
-  RUN_TEST(TestTelecomsTempStateFlow, 152);
+    RUN_TEST(TestBatteryChargeStateFlow, 84);
+    RUN_TEST(TestBatteryTempStateFlow, 118);
+    RUN_TEST(TestTelecomsTempStateFlow, 152);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

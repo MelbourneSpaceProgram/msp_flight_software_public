@@ -75,8 +75,12 @@ void resetTest_finite_difference_symmetric_tests_runner(void)
 int finite_difference_symmetric_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/util/tests/finite_difference_symmetric_tests.cpp");
-  RUN_TEST(TestProcessSampleDifferentiator, 5);
+    RUN_TEST(TestProcessSampleDifferentiator, 5);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

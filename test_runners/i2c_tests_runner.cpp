@@ -76,9 +76,13 @@ void resetTest_i2c_tests_runner(void)
 int i2c_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/i2c/tests/i2c_tests.cpp");
-  RUN_TEST(TestI2cWriteTransaction, 10);
-  RUN_TEST(TestI2cReadTransaction, 23);
+    RUN_TEST(TestI2cWriteTransaction, 10);
+    RUN_TEST(TestI2cReadTransaction, 23);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

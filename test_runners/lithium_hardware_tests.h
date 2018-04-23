@@ -11,6 +11,7 @@
 #include <src/util/data_types.h>
 #include <test_runners/lithium_hardware_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestNoOpHardware(void);
 void TestGetConfigHardware(void);

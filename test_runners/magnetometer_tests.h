@@ -9,6 +9,7 @@
 #include <test_runners/magnetometer_tests.h>
 #include <src/config/unit_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestMagnetometer(void);
 

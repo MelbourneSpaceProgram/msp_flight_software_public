@@ -7,6 +7,7 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <test_runners/location_estimator_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestUpdateLocation(void);
 

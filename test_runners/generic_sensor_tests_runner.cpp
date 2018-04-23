@@ -75,8 +75,12 @@ void resetTest_generic_sensor_tests_runner(void)
 int generic_sensor_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/tests/generic_sensor_tests.cpp");
-  RUN_TEST(TestGenericSensor, 6);
+    RUN_TEST(TestGenericSensor, 6);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

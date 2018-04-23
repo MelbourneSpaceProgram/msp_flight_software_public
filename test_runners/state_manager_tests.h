@@ -13,6 +13,7 @@
 #include <test_runners/sensor_state_logic_tests.h>
 #include <string>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestStateManager(void);
 

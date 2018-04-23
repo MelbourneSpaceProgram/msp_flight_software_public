@@ -9,6 +9,7 @@
 #include <src/sensors/measurable_id.h>
 #include <test_runners/measurable_manager_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestManagerRead(void);
 

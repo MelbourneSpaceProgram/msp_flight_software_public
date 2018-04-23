@@ -8,6 +8,7 @@
 #include <src/sensors/test_sensors/test_int_sensor.h>
 #include <test_runners/generic_sensor_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestGenericSensor(void);
 

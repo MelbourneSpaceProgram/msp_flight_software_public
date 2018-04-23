@@ -77,10 +77,14 @@ void resetTest_database_tests_runner(void)
 int database_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/database/tests/database_tests.cpp");
-  RUN_TEST(TestHamming, 9);
-  RUN_TEST(TestEepromReadWriteStatus, 79);
-  RUN_TEST(TestEepromReadWriteData, 90);
+    RUN_TEST(TestHamming, 9);
+    RUN_TEST(TestEepromReadWriteStatus, 79);
+    RUN_TEST(TestEepromReadWriteData, 90);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

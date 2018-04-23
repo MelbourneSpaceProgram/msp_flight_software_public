@@ -75,8 +75,12 @@ void resetTest_measurable_manager_tests_runner(void)
 int measurable_manager_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/tests/measurable_manager_tests.cpp");
-  RUN_TEST(TestManagerRead, 10);
+    RUN_TEST(TestManagerRead, 10);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

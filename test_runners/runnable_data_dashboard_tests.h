@@ -14,6 +14,7 @@
 #include <src/util/message_codes.h>
 #include <test_runners/runnable_data_dashboard_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestTransmitMessage(void);
 

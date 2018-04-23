@@ -78,11 +78,15 @@ void resetTest_lithium_hardware_tests_runner(void)
 int lithium_hardware_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/telecomms/tests/lithium_hardware_tests.cpp");
-  RUN_TEST(TestNoOpHardware, 10);
-  RUN_TEST(TestGetConfigHardware, 18);
-  RUN_TEST(TestTransmitAckHardware, 26);
-  RUN_TEST(TestWriteFlashHardware, 35);
+    RUN_TEST(TestNoOpHardware, 10);
+    RUN_TEST(TestGetConfigHardware, 18);
+    RUN_TEST(TestTransmitAckHardware, 26);
+    RUN_TEST(TestWriteFlashHardware, 35);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

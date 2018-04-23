@@ -75,8 +75,12 @@ void resetTest_first_order_iir_lowpass_tests_runner(void)
 int first_order_iir_lowpass_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/util/tests/first_order_iir_lowpass_tests.cpp");
-  RUN_TEST(TestProcessSampleFilter, 6);
+    RUN_TEST(TestProcessSampleFilter, 6);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

@@ -75,8 +75,12 @@ void resetTest_state_manager_tests_runner(void)
 int state_manager_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/system/tests/state_manager_tests.cpp");
-  RUN_TEST(TestStateManager, 11);
+    RUN_TEST(TestStateManager, 11);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

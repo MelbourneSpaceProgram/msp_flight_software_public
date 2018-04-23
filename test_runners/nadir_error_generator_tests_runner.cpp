@@ -75,8 +75,12 @@ void resetTest_nadir_error_generator_tests_runner(void)
 int nadir_error_generator_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/adcs/tests/nadir_error_generator_tests.cpp");
-  RUN_TEST(TestErrorQuaternionGenerator, 6);
+    RUN_TEST(TestErrorQuaternionGenerator, 6);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }
