@@ -1,8 +1,8 @@
 #include <src/util/satellite_time_source.h>
 #include <time.h>
-#include <xdc/runtime/log.h>
+#include <xdc/runtime/Log.h>
 
-SatelliteTime SatelliteTimeSource::satellite_time;
+Time SatelliteTimeSource::satellite_time;
 
 void SatelliteTimeSource::SetTime(RTime time) {
     tm converted_time;
@@ -13,25 +13,21 @@ void SatelliteTimeSource::SetTime(RTime time) {
     converted_time.tm_min = time.min;
     converted_time.tm_sec = time.sec;
 
-    time_t epoch_seconds;
-    if ((epoch_seconds = std::mktime(&converted_time)) != (time_t)-1) {
-        satellite_time.epoch_seconds = epoch_seconds;
+    time_t epoch_seconds = std::mktime(&converted_time);
+    if (epoch_seconds != (time_t)-1) {
+        satellite_time.timestamp_millis_unix_epoch =
+            (uint64_t)epoch_seconds * 1000;
         // TODO(akremor): Pull this from the RTC clock interrupt (once
         // configured)
-        satellite_time.milliseconds = 0;
-        satellite_time.valid = true;
-        Log_info1("Satellite time set to %lld", satellite_time.epoch_seconds);
     } else {
         Log_error0("Unable to convert from RTime -> tm");
-        satellite_time.epoch_seconds = 0;
-        satellite_time.milliseconds = 0;
-        satellite_time.valid = false;
+        satellite_time.timestamp_millis_unix_epoch = NULL;
     }
 }
 
-SatelliteTime SatelliteTimeSource::GetTime() {
-    if (!satellite_time.valid) {
-        Log_error0("Satellite time has not been initialised");
+Time SatelliteTimeSource::GetTime() {
+    if (!satellite_time.timestamp_millis_unix_epoch) {
+        Log_error0("Satellite time has not been set");
     }
 
     return satellite_time;

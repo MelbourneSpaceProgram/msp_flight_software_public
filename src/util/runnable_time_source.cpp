@@ -8,8 +8,8 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
-#include <xdc/runtime/log.h>
 #include <xdc/std.h>
 
 fnptr RunnableTimeSource::GetRunnablePointer() {
@@ -31,6 +31,6 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         if (rtc.ValidTime(time)) {
             SatelliteTimeSource::SetTime(time);
         }
-        Task_sleep(TaskUtils::MilliToCycles(500));
+        TaskUtils::SleepMilli(500);
     }
 }
