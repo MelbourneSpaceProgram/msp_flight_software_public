@@ -7,47 +7,41 @@
 #include <src/messages/MagnetometerReading.pb.h>
 #include <string>
 
-typedef struct _GyroscopeReading
-{
+typedef struct _GyroscopeReading {
     double x;
     double y;
     double z;
 } GyroscopeReading;
 
-typedef struct _AccelerometerReading
-{
+typedef struct _AccelerometerReading {
     double x;
     double y;
     double z;
 } AccelerometerReading;
 
-typedef struct _TemperatureReading
-{
+typedef struct _TemperatureReading {
     double temp;
 } TemperatureReading;
 
 // data types for the gyroscope/accelerometer chip
-enum GyroFullScaleValue
-{
+enum GyroFullScaleValue {
     kGyro250dps = 0x00,
     kGyro500dps = 0x01,
     kGyro1000dps = 0x02,
     kGyro2000dps = 0x03
 };
 
-enum AccelFullScaleValue
-{
-    kAccel2g = 0x00, kAccel4g = 0x01, kAccel8g = 0x02, kAccel16g = 0x03
+enum AccelFullScaleValue {
+    kAccel2g = 0x00,
+    kAccel4g = 0x01,
+    kAccel8g = 0x02,
+    kAccel16g = 0x03
 };
 
-enum BypassMode
-{
-    kBypassModeDisable = 0, kBypassModeEnable = 1
-};
+enum BypassMode { kBypassModeDisable = 0, kBypassModeEnable = 1 };
 
 // data types for the magnetometer chip
-enum MagnetometerOperationMode
-{
+enum MagnetometerOperationMode {
     kMagnoPowerDown = 0x00,
     kMagnoSingleMeasurement = 0x01,
     kMagnoContinuousMeasurement1 = 0x02,
@@ -57,14 +51,10 @@ enum MagnetometerOperationMode
     kMagnoFuseRomAccess = 0x0F
 };
 
-enum MagnetometerOutputBitSetting
-{
-    k14BitOutput = 0, k16BitOutput = 1
-};
+enum MagnetometerOutputBitSetting { k14BitOutput = 0, k16BitOutput = 1 };
 
-class MPU9250MotionTracker
-{
-public:
+class MPU9250MotionTracker {
+   public:
     MPU9250MotionTracker(I2c *bus, byte address, std::string id);
     void TakeGyroscopeReading(GyroscopeReading &gyroscope_reading);
     void TakeAccelerometerReading(AccelerometerReading &accelerometer_reading);
@@ -74,11 +64,11 @@ public:
     void SetGyroFullScaleSetting(GyroFullScaleValue gyro_full_scale_value);
     void SetAccelFullScaleSetting(AccelFullScaleValue accel_full_scale_value);
     void SetMagnetometerOperationMode(
-            MagnetometerOperationMode magnetometer_operation_mode);
+        MagnetometerOperationMode magnetometer_operation_mode);
     void SetMagnetometerOutputBitSetting(
-            MagnetometerOutputBitSetting magnetometer_output_bit_setting);
+        MagnetometerOutputBitSetting magnetometer_output_bit_setting);
 
-private:
+   private:
     // gyroscope configuration
     void SetGyroConfiguration();
     byte gyro_full_scale_setting;
@@ -124,7 +114,7 @@ private:
     double DecodeMagnoReadingToSI(etl::array<byte, 2> two_byte_magno_reading,
                                   byte magno_adjust_value);
     int16_t ConvertTwoByteReadingToBinaryReading(
-            etl::array<byte, 2> two_byte_array);
+        etl::array<byte, 2> two_byte_array);
     double ConvertBinaryGyroReadingToSI(int16_t binary_reading);
     double ConvertBinaryAccelReadingToSI(int16_t binary_reading);
     double ConvertBinaryTempReadingToSI(int16_t binary_reading);
@@ -138,7 +128,7 @@ private:
     // temperature sensor constants from data sheet
     static const int16_t kMaxOperatingTemp = 85;
     static const int16_t kMinOperatingTemp = -40;
-    static const double kTempSensitivity = 333.87; // LSBs per degree Celsius
+    static const double kTempSensitivity = 333.87;  // LSBs per degree Celsius
     static const byte kRoomTempOffset = 21;
 
     static const byte kInternalMagnetometerAddress = 12;
