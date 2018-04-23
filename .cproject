@@ -103,6 +103,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R_TIRTOS.cmd|hello.cfg|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/messages/flight_software"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/adcs"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/data_dashboard"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/i2c"/>
@@ -118,7 +120,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/test_framework"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
 						<entry excluding="runnable_beacon.h|runnable_beacon.cpp|lithium_commands|tests|msp_payloads" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms"/>
-						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R_TIRTOS.cmd|hello.cfg|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -237,6 +238,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R_TIRTOS.cmd|hello.cfg|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/messages/flight_software"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/Power"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/adcs"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/allocator/New folder"/>
@@ -255,7 +258,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/test_framework"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
 						<entry excluding="runnable_beacon.h|runnable_beacon.cpp|lithium_commands|tests|msp_payloads" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms"/>
-						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R_TIRTOS.cmd|hello.cfg|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -642,6 +644,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R.cmd|MSP_EXP432P401R_TIRTOS.cmd|hello.cfg|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/messages/flight_software"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/FS/SGP4"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/FS/SGP4cppUpdatedTest"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/FS/obj"/>
@@ -666,7 +670,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms/msp_payloads"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms/tests"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
-						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R.cmd|MSP_EXP432P401R_TIRTOS.cmd|hello.cfg|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -792,6 +795,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R_TIRTOS.cmd|src/diagnostics|hello.cfg|src|submodules" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/messages/flight_software"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/FS/SGP4"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/FS/SGP4cppUpdatedTest"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/FS/obj"/>
@@ -816,7 +821,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms/msp_payloads"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms/tests"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
-						<entry excluding="CPPLINT.cfg|MSP_EXP432P401R_TIRTOS.cmd|src/diagnostics|hello.cfg|src|submodules" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
