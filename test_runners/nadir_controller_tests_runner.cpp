@@ -75,8 +75,12 @@ void resetTest_nadir_controller_tests_runner(void)
 int nadir_controller_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/adcs/tests/nadir_controller_tests.cpp");
-  RUN_TEST(TestNadirControl, 7);
+    RUN_TEST(TestNadirControl, 7);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

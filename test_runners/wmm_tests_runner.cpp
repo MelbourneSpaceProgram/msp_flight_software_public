@@ -75,8 +75,12 @@ void resetTest_wmm_tests_runner(void)
 int wmm_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/adcs/tests/wmm_tests.cpp");
-  RUN_TEST(TestWorldMagneticModel, 8);
+    RUN_TEST(TestWorldMagneticModel, 8);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

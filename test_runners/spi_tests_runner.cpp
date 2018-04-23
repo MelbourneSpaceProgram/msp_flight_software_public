@@ -76,9 +76,13 @@ void resetTest_spi_tests_runner(void)
 int spi_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/spi/tests/spi_tests.cpp");
-  RUN_TEST(TestSpiWriteTransaction, 8);
-  RUN_TEST(TestSpiReadTransaction, 20);
+    RUN_TEST(TestSpiWriteTransaction, 8);
+    RUN_TEST(TestSpiReadTransaction, 20);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

@@ -75,8 +75,12 @@ void resetTest_magnetometer_tests_runner(void)
 int magnetometer_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/specific_sensors/tests/magnetometer_tests.cpp");
-  RUN_TEST(TestMagnetometer, 7);
+    RUN_TEST(TestMagnetometer, 7);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

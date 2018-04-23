@@ -75,8 +75,12 @@ void resetTest_payload_processor_tests_runner(void)
 int payload_processor_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/payload_processor/tests/payload_processor_tests.cpp");
-  RUN_TEST(TestPayloadProcessor, 7);
+    RUN_TEST(TestPayloadProcessor, 7);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

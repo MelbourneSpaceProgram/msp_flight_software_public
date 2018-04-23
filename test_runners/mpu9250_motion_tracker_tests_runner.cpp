@@ -78,11 +78,15 @@ void resetTest_mpu9250_motion_tracker_tests_runner(void)
 int mpu9250_motion_tracker_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/i2c_sensors/tests/mpu9250_motion_tracker_tests.cpp");
-  RUN_TEST(TestGyroRead, 16);
-  RUN_TEST(TestMagnoRead, 32);
-  RUN_TEST(TestTempRead, 49);
-  RUN_TEST(TestAccelRead, 65);
+    RUN_TEST(TestGyroRead, 17);
+    RUN_TEST(TestMagnoRead, 36);
+    RUN_TEST(TestTempRead, 56);
+    RUN_TEST(TestAccelRead, 75);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

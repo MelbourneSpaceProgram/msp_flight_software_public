@@ -11,6 +11,7 @@
 #include <src/util/physical_constants.h>
 #include <test_runners/sgp4_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestSimplifiedGeneralPerturbationModel(void);
 

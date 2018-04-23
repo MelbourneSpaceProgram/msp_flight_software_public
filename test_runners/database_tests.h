@@ -11,6 +11,7 @@
 #include <src/util/data_types.h>
 #include <test_runners/database_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestHamming(void);
 void TestEepromReadWriteStatus(void);

@@ -79,12 +79,16 @@ void resetTest_lithium_command_serialise_tests_runner(void)
 int lithium_command_serialise_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/telecomms/tests/lithium_command_serialise_tests.cpp");
-  RUN_TEST(TestNoOpSerialisation, 7);
-  RUN_TEST(TestResetSystemSerialisation, 27);
-  RUN_TEST(TestGetConfigurationSerialisation, 48);
-  RUN_TEST(TestTransmitTestPayloadSerialisation, 69);
-  RUN_TEST(TestWriteFlashSerialisation, 115);
+    RUN_TEST(TestNoOpSerialisation, 7);
+    RUN_TEST(TestResetSystemSerialisation, 27);
+    RUN_TEST(TestGetConfigurationSerialisation, 48);
+    RUN_TEST(TestTransmitTestPayloadSerialisation, 69);
+    RUN_TEST(TestWriteFlashSerialisation, 115);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

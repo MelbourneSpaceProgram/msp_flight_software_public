@@ -9,6 +9,7 @@
 #include <test_runners/payload_processor_tests.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestPayloadProcessor(void);
 

@@ -11,6 +11,7 @@
 #include <test_runners/rtc_tests.h>
 #include <time.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestRtcReadTransaction(void);
 

@@ -13,6 +13,7 @@
 #include <src/util/message_codes.h>
 #include <test_runners/message_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestTestMessageSerialise(void);
 void TestTempMessageSerialise(void);

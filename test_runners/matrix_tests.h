@@ -10,6 +10,7 @@
 #include <src/util/matrix.h>
 #include <test_runners/matrix_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestDotProduct(void);
 void TestQuaternionConjugate(void);
