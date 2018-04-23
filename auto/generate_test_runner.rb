@@ -370,18 +370,22 @@ class UnityTestRunnerGenerator
       output.puts('{')
     end
     output.puts('  MemoryTroubleshooter *mem_test = suite_setup();')
+    output.puts('  try {')
     output.puts("  UnityBegin(\"#{filename.gsub(/\\/, '\\\\\\')}\");")
     if @options[:use_param_tests]
       tests.each do |test|
         if test[:args].nil? || test[:args].empty?
-          output.puts("  RUN_TEST(#{test[:test]}, #{test[:line_number]}, RUN_TEST_NO_ARGS);")
+          output.puts("    RUN_TEST(#{test[:test]}, #{test[:line_number]}, RUN_TEST_NO_ARGS);")
         else
-          test[:args].each { |args| output.puts("  RUN_TEST(#{test[:test]}, #{test[:line_number]}, #{args});") }
+          test[:args].each { |args| output.puts("    RUN_TEST(#{test[:test]}, #{test[:line_number]}, #{args});") }
         end
       end
     else
-      tests.each { |test| output.puts("  RUN_TEST(#{test[:test]}, #{test[:line_number]});") }
+      tests.each { |test| output.puts("    RUN_TEST(#{test[:test]}, #{test[:line_number]});") }
     end
+    output.puts('  } catch (etl::exception e) {')
+    output.puts('    TEST_FAIL_MESSAGE("Uncaught exception in test");')
+    output.puts('  }')
     output.puts
     output.puts('  CMock_Guts_MemFreeFinal();') unless used_mocks.empty?
     output.puts('  return suite_teardown(UnityEnd(), mem_test);')
@@ -402,6 +406,7 @@ class UnityTestRunnerGenerator
       output.puts("#include #{inc.include?('<') ? inc : "\"#{inc.gsub('.h', '')}.h\""}")
     end
     output.puts('#include <src/util/memory_troubleshooter.h>')
+    output.puts('#include <external/etl/exception.h>')
     output.puts "\n"
     tests.each do |test|
       if test[:params].nil? || test[:params].empty?
