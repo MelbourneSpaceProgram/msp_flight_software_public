@@ -45,7 +45,7 @@ extern bool lithium_flash_test_enabled;
 extern bool rtc_test_enabled;
 extern bool multiplexer_test_enabled;
 extern bool adc_test_enabled;
-extern bool magnetometer_test_enabled;
+extern bool imu_test_enabled;
 extern bool hil_enabled;
 extern bool memory_troubleshooter_test_enabled;
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
