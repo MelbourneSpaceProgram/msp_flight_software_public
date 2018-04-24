@@ -1,16 +1,20 @@
+#include <Board.h>
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/util/message_codes.h>
+#include <ti/sysbios/BIOS.h>
 #include <xdc/runtime/Log.h>
+
+Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
 PWM_Handle MagnetorquerControl::pwm_handle_axis_x = NULL;
 PWM_Handle MagnetorquerControl::pwm_handle_axis_y = NULL;
 PWM_Handle MagnetorquerControl::pwm_handle_axis_z = NULL;
 
-void MagnetorquerControl::Initialize() { MagnetorquerControl::InitializePwm(); }
+void MagnetorquerControl::Initialize() { InitializePwm(); }
 
 void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
                                                         float z) {
@@ -88,8 +92,7 @@ void MagnetorquerControl::PushDebugMessage(float x, float y, float z) {
         TorqueOutputReading_fields, &torque_output_reading);
 }
 
-void MagnetorquerControl::SetPolarity(
-    MagnetorquerControl::MagnetorquerAxis axis, bool positive) {
+void MagnetorquerControl::SetPolarity(MagnetorquerAxis axis, bool positive) {
     uint8_t polarity = (positive) ? 1 : 0;
 
     if (axis == kMagnetorquerAxisX) {
@@ -103,13 +106,12 @@ void MagnetorquerControl::SetPolarity(
     }
 }
 
-void MagnetorquerControl::SetMagnitude(
-    MagnetorquerControl::MagnetorquerAxis axis, float magnitude) {
+void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
     // Clamp absolute power between [0, kMagnetorquerPowerMax]
     if (magnitude < 0) {
         magnitude = 0;
-    } else if (magnitude > MagnetorquerControl::kMagnetorquerPowerMax) {
-        magnitude = MagnetorquerControl::kMagnetorquerPowerMax;
+    } else if (magnitude > kMagnetorquerPowerMax) {
+        magnitude = kMagnetorquerPowerMax;
     }
 
     // Get the PWM handle for the axis specified
@@ -130,4 +132,47 @@ void MagnetorquerControl::SetMagnitude(
         round(PWM_DUTY_FRACTION_MAX *
               static_cast<double>(magnitude / kMagnetorquerPowerMax)));
     PWM_setDuty(pwm_handle, duty);
+}
+
+void MagnetorquerControl::Degauss() {
+    float power = 1;
+    for (uint8_t i = 0; i < kNDegaussPulses; i++) {
+        // Positive power
+        SetMagnetorquersPowerFraction(power, power, power);
+        // Wait for timer
+        Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
+        // Negative power
+        SetMagnetorquersPowerFraction(-power, -power, -power);
+        // Update power and wait for timer
+        power = power * kDegaussingDecayMultiplier;
+        Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
+    }
+}
+
+void MagnetorquerControl::DegaussingTimerISR(UArg degaussing_timer_semaphore) {
+    Semaphore_post((Semaphore_Handle)degaussing_timer_semaphore);
+}
+
+void MagnetorquerControl::SetupDegaussingPolaritySwitchTimer() {
+    Timer_Handle degaussing_timer;
+    // Potential issues with this object going out of scope:
+    //   If the timer has parameters changed at runtime and
+    //   this object is referred to internally, crashes might happen.
+    Timer_Params degaussing_timer_params;
+    Semaphore_Params degaussing_timer_semaphore_params;
+    Semaphore_Params_init(&degaussing_timer_semaphore_params);
+    degaussing_timer_semaphore_params.mode = Semaphore_Mode_BINARY;
+    MagnetorquerControl::degaussing_timer_semaphore =
+        Semaphore_create(0, &degaussing_timer_semaphore_params, NULL);
+    Timer_Params_init(&degaussing_timer_params);
+    degaussing_timer_params.period =
+        MagnetorquerControl::kDegaussingSwitchPeriodMicros;
+    degaussing_timer_params.arg = (UArg)degaussing_timer_semaphore;
+    degaussing_timer =
+        Timer_create(Board_TIMER3, MagnetorquerControl::DegaussingTimerISR,
+                     &degaussing_timer_params, NULL);
+    if (degaussing_timer == NULL) {
+        etl::exception e("Timer create failed", __FILE__, __LINE__);
+        throw e;
+    }
 }

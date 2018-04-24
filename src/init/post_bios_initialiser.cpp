@@ -1,6 +1,7 @@
 #include <Board.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
+#include <src/config/board_definitions.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
@@ -21,7 +22,6 @@
 #include <src/util/runnable_time_source.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/hal/Timer.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Error.h>
 #include <xdc/runtime/Log.h>
@@ -91,39 +91,16 @@ void PostBiosInitialiser::InitDataDashboard() {
     data_dashboard_task->Init();
 }
 
-void PostBiosInitialiser::OrientationControlTimerISR(UArg timer_semaphore) {
-    Semaphore_post((Semaphore_Handle)timer_semaphore);
-}
-
 void PostBiosInitialiser::InitOrientationControl() {
-    Timer_Handle orientation_control_timer;
-    Timer_Params timerParams;
-    Semaphore_Params orientation_control_timer_semaphore_params;
-    Semaphore_Handle orientation_control_timer_semaphore;
-    Semaphore_Params_init(&orientation_control_timer_semaphore_params);
-    orientation_control_timer_semaphore =
-        Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
-    Timer_Params_init(&timerParams);
-    Error_init(NULL);
-    timerParams.period = RunnableOrientationControl::kControlLoopPeriodMicros;
-    timerParams.arg = (UArg)orientation_control_timer_semaphore;
-    // TODO (rskew) use a specific timer
-    orientation_control_timer =
-        Timer_create(Timer_ANY, PostBiosInitialiser::OrientationControlTimerISR,
-                     &timerParams, NULL);
-    if (orientation_control_timer == NULL) {
-        etl::exception e("Timer create failed", __FILE__, __LINE__);
-        throw e;
-    }
+    // Set up timer for orientation control loop
+    RunnableOrientationControl::SetupControlLoopTimer();
 
-    RunnableOrientationControl* runnable_orientation_control =
-        new RunnableOrientationControl();
-    runnable_orientation_control->SetTimerSemaphore(
-        orientation_control_timer_semaphore);
+    // Set up timer for degaussing routine
+    MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
 
     // TODO(rskew) review priority
     TaskHolder* orientation_control_task = new TaskHolder(
-        4096, "OrientationControl", 7, runnable_orientation_control);
+        4096, "OrientationControl", 7, new RunnableOrientationControl());
     orientation_control_task->Init();
 }
 
