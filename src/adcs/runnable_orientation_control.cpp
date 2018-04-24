@@ -1,3 +1,4 @@
+#include <Board.h>
 #include <external/nanopb/pb_decode.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
@@ -16,8 +17,9 @@
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/hal/Timer.h>
 
-Semaphore_Handle RunnableOrientationControl::timer_semaphore;
+Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
 RunnableOrientationControl::RunnableOrientationControl() {}
 
@@ -25,8 +27,34 @@ fnptr RunnableOrientationControl::GetRunnablePointer() {
     return &RunnableOrientationControl::ControlOrientation;
 }
 
-void RunnableOrientationControl::SetTimerSemaphore(Semaphore_Handle semaphore) {
-    timer_semaphore = semaphore;
+void RunnableOrientationControl::SetupControlLoopTimer() {
+    Timer_Handle orientation_control_timer;
+    // Potential issues with this object going out of scope:
+    //   If the timer has parameters changed at runtime and
+    //   this object is referred to internally, crashes might happen.
+    Timer_Params orientation_control_timer_params;
+    Semaphore_Params orientation_control_timer_semaphore_params;
+    Semaphore_Params_init(&orientation_control_timer_semaphore_params);
+    orientation_control_timer_semaphore_params.mode = Semaphore_Mode_BINARY;
+    RunnableOrientationControl::control_loop_timer_semaphore =
+        Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
+    Timer_Params_init(&orientation_control_timer_params);
+    orientation_control_timer_params.period =
+        RunnableOrientationControl::kControlLoopPeriodMicros;
+    orientation_control_timer_params.arg =
+        (UArg)RunnableOrientationControl::control_loop_timer_semaphore;
+    orientation_control_timer = Timer_create(
+        Board_TIMER2, RunnableOrientationControl::OrientationControlTimerISR,
+        &orientation_control_timer_params, NULL);
+    if (orientation_control_timer == NULL) {
+        etl::exception e("Timer create failed", __FILE__, __LINE__);
+        throw e;
+    }
+}
+
+void RunnableOrientationControl::OrientationControlTimerISR(
+    UArg orientation_control_timer_semaphore) {
+    Semaphore_post((Semaphore_Handle)orientation_control_timer_semaphore);
 }
 
 void RunnableOrientationControl::ControlOrientation() {
@@ -39,9 +67,11 @@ void RunnableOrientationControl::ControlOrientation() {
     double tsince_millis = 0;
 
     while (1) {
-        Semaphore_pend(timer_semaphore, BIOS_WAIT_FOREVER);
+        Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
+
+        MagnetorquerControl::Degauss();
 
         // Read Magnetometer
         // TODO(rskew) handle false return value

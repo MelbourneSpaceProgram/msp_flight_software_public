@@ -17,7 +17,6 @@ class PostBiosInitialiser : public Runnable {
     static void InitPayloadProcessor();
     static void InitStateManagement();
     static void InitDataDashboard();
-    static void OrientationControlTimerISR(UArg timer_semaphore);
     static void InitOrientationControl();
     static void InitBeacon();
     static void RunUnitTests();
