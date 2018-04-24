@@ -15,4 +15,4 @@ bool adc_test_enabled = true;
 bool imu_test_enabled = true;
 bool hil_enabled = true;
 bool memory_troubleshooter_test_enabled = true;
-bool i2c_enumeration_enabled = true;
+bool i2c_enumeration_enabled = false;
