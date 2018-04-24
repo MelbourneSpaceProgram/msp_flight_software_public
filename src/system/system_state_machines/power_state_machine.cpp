@@ -17,22 +17,28 @@ void PowerStateMachine::CheckUpstreamStates() {
     StateId battery_charge = battery_charge_state_machine->GetCurrentState();
     StateId battery_temp = battery_temp_state_machine->GetCurrentState();
 
-    if (battery_temp == kBatteryTempCriticalLow ||
-        battery_temp == kBatteryTempCriticalHigh ||
+    if (battery_temp == kBatteryTempCriticalHigh ||
         battery_charge == kBatteryChargeCriticalLow) {
         SetState(kPowerEverythingOff);
+        DisableFunction(kOrientationControlEnable);
 
     } else if (battery_temp == kBatteryTempNominal &&
                battery_charge == kBatteryChargeLow) {
         SetState(kPowerLimited);
+        DisableFunction(kOrientationControlEnable);
 
     } else if (battery_temp == kBatteryTempNominal &&
                battery_charge == kBatteryChargeNominal) {
         SetState(kPowerNominal);
+        EnableFunction(kOrientationControlEnable);
 
     } else {
         // This state should cause all unit tests to fail
         SetState(kPowerNoState);
         // TODO(rskew) log major error
+        DisableFunction(kOrientationControlEnable);
+        etl::exception e("State machine entered an invalid state.", __FILE__,
+                         __LINE__);
+        throw e;
     }
 }

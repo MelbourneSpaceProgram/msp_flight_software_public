@@ -16,9 +16,8 @@ class BatteryTempStateMachine
    private:
     void UpdateState(double temp);
 
-    static const uint8_t kTempBatteryOperationalLow = 5;
-    static const uint8_t kTempBatteryOperationalHigh = 40;
-    static const uint8_t kHysteresis = 1;
+    static const uint8_t kTempBatteryOperationalHigh = 60;
+    static const uint8_t kHysteresis = 5;
 };
 
 #endif  //  SRC_SYSTEM_SENSOR_STATE_MACHINES_BATTERY_TEMP_STATE_MACHINE_H_

@@ -43,26 +43,26 @@ StateId BatteryChargeStateCheck(double soc, StateId current_state) {
 }
 
 StateId BatteryTempStateCheck(double temp, StateId current_state) {
-    switch (current_state) {
-        case kBatteryTempCriticalLow:
-            if (temp > kTempBatteryOperationalLow + kHysteresisTemp) {
-                return (kBatteryTempNominal);
-            }
-            break;
-        case kBatteryTempNominal:
-            if (temp < kTempBatteryOperationalLow) {
-                return (kBatteryTempCriticalLow);
-            } else if (temp > kTempBatteryOperationalHigh + kHysteresisTemp) {
-                return (kBatteryTempCriticalHigh);
-            }
-            break;
-        case kBatteryTempCriticalHigh:
-            if (temp < kTempBatteryOperationalHigh) {
-                return (kBatteryTempNominal);
-            }
-            break;
-    }
-    return current_state;
+//    switch (current_state) {
+//        case kBatteryTempCriticalLow:
+//            if (temp > kTempBatteryOperationalLow + kHysteresisTemp) {
+//                return (kBatteryTempNominal);
+//            }
+//            break;
+//        case kBatteryTempNominal:
+//            if (temp < kTempBatteryOperationalLow) {
+//                return (kBatteryTempCriticalLow);
+//            } else if (temp > kTempBatteryOperationalHigh + kHysteresisTemp) {
+//                return (kBatteryTempCriticalHigh);
+//            }
+//            break;
+//        case kBatteryTempCriticalHigh:
+//            if (temp < kTempBatteryOperationalHigh) {
+//                return (kBatteryTempNominal);
+//            }
+//            break;
+//    }
+//    return current_state;
 }
 
 StateId TelecomsTempStateCheck(double temp, StateId current_state) {

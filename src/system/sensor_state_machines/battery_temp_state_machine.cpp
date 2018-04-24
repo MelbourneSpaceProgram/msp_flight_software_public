@@ -13,20 +13,12 @@ void BatteryTempStateMachine::Update() {
 
 void BatteryTempStateMachine::UpdateState(double temp) {
     switch (GetCurrentState()) {
-        case kBatteryTempCriticalLow:
-            if (temp > kTempBatteryOperationalLow + kHysteresis) {
-                SetStateAndNotify(kBatteryTempNominal);
-            }
-            break;
         case kBatteryTempNominal:
-            if (temp < kTempBatteryOperationalLow) {
-                SetStateAndNotify(kBatteryTempCriticalLow);
-            } else if (temp > kTempBatteryOperationalHigh + kHysteresis) {
+            if (temp < kTempBatteryOperationalHigh) {
                 SetStateAndNotify(kBatteryTempCriticalHigh);
             }
-            break;
         case kBatteryTempCriticalHigh:
-            if (temp < kTempBatteryOperationalHigh) {
+            if (temp < kTempBatteryOperationalHigh - kHysteresis) {
                 SetStateAndNotify(kBatteryTempNominal);
             }
             break;
