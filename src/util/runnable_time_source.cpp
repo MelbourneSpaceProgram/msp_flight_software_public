@@ -27,7 +27,6 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         // path will cause it to be skipped Effectively placing this code into
         // an infinite loop
 
-        TaskUtils::SleepMilli(5000);
         multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
 
         RTime time;
@@ -35,6 +34,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
             time = rtc.GetTime();
         } catch (etl::exception e) {
             Log_error0("Unable to retrieve time from RTC");
+            TaskUtils::SleepMilli(5000);
             continue;
         }
 
@@ -43,5 +43,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         if (rtc.ValidTime(time)) {
             SatelliteTimeSource::SetTime(time);
         }
+
+        TaskUtils::SleepMilli(5000);
     }
 }

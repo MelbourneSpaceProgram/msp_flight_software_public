@@ -49,4 +49,5 @@ extern bool imu_test_enabled;
 extern bool hil_enabled;
 extern bool memory_troubleshooter_test_enabled;
 extern bool i2c_enumeration_enabled;
+extern bool measurable_test_enabled;
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_

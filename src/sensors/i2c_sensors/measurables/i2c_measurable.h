@@ -5,6 +5,8 @@
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/sensors/measurable.h>
 #include <src/sensors/reading.h>
+#include <src/util/satellite_time_source.h>
+#include <xdc/runtime/Log.h>
 
 template <typename R>
 class I2cMeasurable : public Reading<R>, public Measurable {
@@ -17,21 +19,17 @@ class I2cMeasurable : public Reading<R>, public Measurable {
             if (sensor != NULL) sensor->MuxSelect();
             this->reading = TakeI2cReading();  // Throws exception on failure
             if (sensor != NULL) sensor->MuxDeselect();
-            // TODO(dingbenjamin): Get time from timekeeper
-            RTime current_time = {0, 0, 0, 0, 0, 0};
-            this->timestamp = current_time;
+            this->timestamp = SatelliteTimeSource::GetTime();
             this->NotifyObservers();
             return true;
         } catch (etl::exception e) {
-            // TODO(dingbenjamin): Log sensor failure and remedy
             if (sensor != NULL) sensor->MuxDeselect();
+            // TODO(dingbenjamin): Change log to output bus and address
+            Log_error0("Failed to read from sensor");
             return false;
         }
     }
     virtual R TakeI2cReading() = 0;
-
-    RTime GetTimestamp() const { return Reading<R>::timestamp; }
-    void SetTimestamp(RTime timestamp) { Reading<R>::timestamp = timestamp; }
 
    protected:
     I2cSensor* sensor;

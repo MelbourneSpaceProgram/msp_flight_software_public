@@ -6,6 +6,7 @@
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <src/sensors/measurable_id.h>
+#include <src/util/satellite_time_source.h>
 
 class I2c;
 class Measurable;
@@ -19,7 +20,19 @@ class I2cMeasurableManager {
               const I2c *bus_d);
 
     template <class T>
-    T ReadI2cMeasurable(uint16_t id, uint64_t max_cache_time_seconds) {
+    I2cMeasurable<T> *GetMeasurable(uint16_t id) {
+        I2cMeasurable<T> *i2c_measurable =
+            dynamic_cast<I2cMeasurable<T> *>(measurables.at(id));
+        if (i2c_measurable == NULL) {
+            etl::exception e("Cannot cast to specified measurable type",
+                             __FILE__, __LINE__);
+            throw e;
+        }
+        return i2c_measurable;
+    }
+
+    template <class T>
+    T ReadI2cMeasurable(uint16_t id, uint64_t max_cache_time_milliseconds) {
         try {
             Measurable *measurable = measurables.at(id);
             I2cMeasurable<T> *i2c_measurable =
@@ -30,17 +43,17 @@ class I2cMeasurableManager {
                 throw e;
             }
 
-            // TODO(dingbejamin): Implement time difference function and remove
-            // temporary condition
-            RTime now = {1, 2, 3, 4, 5, 6};
+            Time timestamp = i2c_measurable->GetTimestamp();
+            Time earliest_acceptable_time = SatelliteTimeSource::GetTime();
+            earliest_acceptable_time.timestamp_millis_unix_epoch -=
+                max_cache_time_milliseconds;
 
-            if (max_cache_time_seconds == 0 ||
-                i2c_measurable->GetTimestamp().min != now.min ||
-                !Rtc::ValidTime(i2c_measurable->GetTimestamp())) {
+            if (max_cache_time_milliseconds == 0 || !timestamp.is_valid ||
+                SatelliteTimeSource::TimeDifferenceMilli(
+                    timestamp, earliest_acceptable_time) > 0) {
                 // TODO(dingbenjamin): Lock the relevant bus/sensor with a
                 // semaphore
                 i2c_measurable->TakeReading();
-                i2c_measurable->SetTimestamp(now);
             }
 
             return i2c_measurable->GetReading();
