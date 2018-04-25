@@ -34,3 +34,7 @@ Time SatelliteTimeSource::GetTime() {
 
     return satellite_time;
 }
+
+uint64_t SatelliteTimeSource::TimeDifferenceMilli(Time start, Time end) {
+    return end.timestamp_millis_unix_epoch - start.timestamp_millis_unix_epoch;
+}

@@ -23,6 +23,8 @@ class PostBiosInitialiser : public Runnable {
     static void InitHardware();
     static void DeploymentWait();
     static void DeployAntenna();
+    static void InitMemoryLogger();
+    static void InitTimeSource();
 
     static const uint16_t kDelayCheckInterval = 60000;
 };

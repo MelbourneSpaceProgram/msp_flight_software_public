@@ -16,8 +16,8 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
-#include <src/util/task_utils.h>
 #include <src/util/runnable_time_source.h>
+#include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -97,8 +97,7 @@ void PostBiosInitialiser::InitOrientationControl() {
         Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
     Timer_Params_init(&timerParams);
     Error_init(NULL);
-    timerParams.period =
-        RunnableOrientationControl::kControlLoopPeriodMicros;
+    timerParams.period = RunnableOrientationControl::kControlLoopPeriodMicros;
     timerParams.arg = (UArg)orientation_control_timer_semaphore;
     // TODO (rskew) use a specific timer
     orientation_control_timer =
@@ -148,20 +147,26 @@ void PostBiosInitialiser::DeploymentWait() {
     }
 }
 
-void PostBiosInitialiser::PostBiosInit() {
+void PostBiosInitialiser::InitMemoryLogger() {
     TaskHolder* memory_logger_task =
         new TaskHolder(1024, "MemoryLogger", 13, new RunnableMemoryLogger());
     memory_logger_task->Init();
+}
+
+void PostBiosInitialiser::InitTimeSource() {
+    TaskHolder* time_source_task =
+        new TaskHolder(1024, "TimeSource", 13, new RunnableTimeSource());
+    time_source_task->Init();
+}
+
+void PostBiosInitialiser::PostBiosInit() {
+    InitMemoryLogger();
 
     try {
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();
-
-        // Relies on I2C so needs to be post InitHardware()
-        TaskHolder* time_source_task =
-        new TaskHolder(1024, "TimeSource", 13, new RunnableTimeSource());
-        time_source_task->Init();
+        InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
 
         I2c* bus_a = new I2c(I2C_BUS_A);
         I2c* bus_b = new I2c(I2C_BUS_B);

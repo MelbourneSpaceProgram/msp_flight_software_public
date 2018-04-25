@@ -8,6 +8,7 @@ class SatelliteTimeSource {
    public:
     static void SetTime(RTime time);
     static Time GetTime();
+    static uint64_t TimeDifferenceMilli(Time start, Time end);
 
    private:
     static Time satellite_time;
