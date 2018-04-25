@@ -148,7 +148,7 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<float>(fs_torquer_current_3)
         .AddData<uint16_t>(cdh_mcu_1)
         .AddData<uint16_t>(cdh_mcu_2)
-        .AddData<RTime>(cdh_time)
+        .AddData<uint64_t>(cdh_time.timestamp_millis_unix_epoch)
         .AddData<uint8_t>(mcu_reset_count_1)
         .AddData<uint8_t>(mcu_reset_count_2)
         .AddData<uint16_t>(cdh_memory)
@@ -165,7 +165,7 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<byte>(cdh_reg_current_3)
         .AddData<byte>(cdh_reg_temp_3)
         .AddData<uint16_t>(cdh_bus_fault)
-        .AddData<RTime>(cdh_last_reboot)
+        .AddData<uint64_t>(cdh_last_reboot.timestamp_millis_unix_epoch)
         .AddData<byte>(cdh_rtc_status)
         .AddData<uint16_t>(cdh_heartbeat);
 
@@ -254,7 +254,7 @@ BeaconPayload* BeaconPayload::SetCdhHeartbeat(uint16_t cdhHeartbeat) {
     return this;
 }
 
-BeaconPayload* BeaconPayload::SetCdhLastReboot(const RTime& cdhLastReboot) {
+BeaconPayload* BeaconPayload::SetCdhLastReboot(const Time& cdhLastReboot) {
     this->cdh_last_reboot = cdhLastReboot;
     return this;
 }
@@ -340,7 +340,7 @@ BeaconPayload* BeaconPayload::SetCdhMcu2(uint16_t cdhMcu2) {
     return this;
 }
 
-BeaconPayload* BeaconPayload::SetCdhTime(const RTime& cdhTime) {
+BeaconPayload* BeaconPayload::SetCdhTime(const Time& cdhTime) {
     this->cdh_time = cdhTime;
     return this;
 }

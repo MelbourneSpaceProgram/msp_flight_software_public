@@ -2,6 +2,7 @@
 #define SRC_TELECOMMS_MSP_PAYLOADS_BEACON_PAYLOAD_H_
 
 #include <external/etl/array.h>
+#include <src/messages/Time.pb.h>
 #include <src/messages/message.h>
 #include <src/telecomms/msp_payloads/transmit_payload.h>
 #include <src/util/data_types.h>
@@ -20,7 +21,7 @@ class BeaconPayload : public TransmitPayload {
     // TODO(dingbenjamin): Change autogenned args to snake case
     BeaconPayload* SetCdhBusFault(uint16_t cdhBusFault);
     BeaconPayload* SetCdhHeartbeat(uint16_t cdhHeartbeat);
-    BeaconPayload* SetCdhLastReboot(const RTime& cdhLastReboot);
+    BeaconPayload* SetCdhLastReboot(const Time& cdhLastReboot);
     BeaconPayload* SetCdhMcuTemp1(byte cdhMcuTemp1);
     BeaconPayload* SetCdhMcuTemp2(byte cdhMcuTemp2);
     BeaconPayload* SetCdhMemory(uint16_t cdhMemory);
@@ -37,7 +38,7 @@ class BeaconPayload : public TransmitPayload {
     BeaconPayload* SetCdhRtcStatus(byte cdhRtcStatus);
     BeaconPayload* SetCdhMcu1(uint16_t cdhMcu1);
     BeaconPayload* SetCdhMcu2(uint16_t cdhMcu2);
-    BeaconPayload* SetCdhTime(const RTime& cdhTime);
+    BeaconPayload* SetCdhTime(const Time& cdhTime);
     BeaconPayload* SetCommsAntennaFlags(byte commsAntennaFlags);
     BeaconPayload* SetCommsBytesReceived(uint32_t commsBytesReceived);
     BeaconPayload* SetCommsBytesTransmitted(uint32_t commsBytesTransmitted);
@@ -164,7 +165,7 @@ class BeaconPayload : public TransmitPayload {
     float fs_torquer_current_3;
     uint16_t cdh_mcu_1;
     uint16_t cdh_mcu_2;
-    RTime cdh_time;
+    Time cdh_time;
     uint8_t mcu_reset_count_1;
     uint8_t mcu_reset_count_2;
     uint16_t cdh_memory;
@@ -181,7 +182,7 @@ class BeaconPayload : public TransmitPayload {
     byte cdh_reg_current_3;
     byte cdh_reg_temp_3;
     uint16_t cdh_bus_fault;
-    RTime cdh_last_reboot;
+    Time cdh_last_reboot;
     byte cdh_rtc_status;
     uint16_t cdh_heartbeat;
     char* comms_outreach;  // 27 bytes
