@@ -53,7 +53,7 @@ class Lithium {
     Mailbox_Handle command_response_mailbox_handle;
     // TODO(wschuetz): Review the number of the payloads that can be stored in
     // the mailbox at any one time.
-    static const uint8_t kMaxNumberOfPayloads = 10;
+    static const uint8_t kMaxNumberOfPayloads = 2;
     uint8_t tx_counter;
     uint8_t total_rx_counter;
     uint8_t valid_rx_counter;
