@@ -33,6 +33,7 @@
 extern void SetUp(void);
 extern void TearDown(void);
 extern void TestBms();
+extern void TestBmsTemperatureRead();
 
 
 /*=======Suite Setup=====*/
@@ -77,7 +78,8 @@ int bms_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
-    RUN_TEST(TestBms, 14);
+    RUN_TEST(TestBms, 15);
+    RUN_TEST(TestBmsTemperatureRead, 45);
   } catch (etl::exception e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
