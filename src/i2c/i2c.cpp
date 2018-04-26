@@ -1,5 +1,6 @@
 #include <MSP_EXP432P401R.h>
 #include <external/etl/exception.h>
+#include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
@@ -20,6 +21,9 @@ void I2c::InitBusses() {
     etl::array<uint8_t, 4> sda = {I2C_BUS_A_SDA, I2C_BUS_B_SDA, I2C_BUS_C_SDA,
                                   I2C_BUS_D_SDA};
 
+    if (!i2c_enabled) {
+        return;
+    }
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
         if (I2c_busses.at(i) == NULL) {
             int scl_pulled_up = GPIO_read(scl.at(i));
@@ -27,9 +31,9 @@ void I2c::InitBusses() {
 
             if (!(scl_pulled_up && sda_pulled_up)) {
                 // Missing bus pull up resistors or bus is disconnected.
-                // Attempting to use the I2C bus will result in the CPU locking
-                // up as the transaction timeout functionality only works if the
-                // bus exists.
+                // Attempting to use the I2C bus will result in the CPU
+                // locking up as the transaction timeout functionality only
+                // works if the bus exists.
                 Log_error1("Failed to sense pull-up resistors for I2C bus %d",
                            i);
                 continue;
@@ -129,6 +133,10 @@ bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
 
 void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
                            bool success) {
+    if (handle == NULL) {
+        Log_error0("Attempting to use uninitialised I2C bus");
+        return;
+    }
     if (i2c_transaction == NULL) {
         Log_error0("I2c transaction is NULL");
         return;

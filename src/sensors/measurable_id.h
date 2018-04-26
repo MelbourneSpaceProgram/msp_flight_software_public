@@ -12,6 +12,8 @@ enum MeasurableId {
     kPowerAdc3,
     kPowerTemp1,
     kPowerTemp2,
+    kPowerBmsTemp1,
+    kPowerBmsTemp2,
     kFsAdc1,
     kFsAdc2,
     kFsAdc3,

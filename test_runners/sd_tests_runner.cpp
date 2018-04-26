@@ -77,7 +77,7 @@ int sd_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/database/tests/sd_tests.cpp");
-    RUN_TEST(TestFatFsReadWrite, 26);
+    RUN_TEST(TestFatFsReadWrite, 28);
   } catch (etl::exception e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

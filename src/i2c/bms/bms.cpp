@@ -1,8 +1,8 @@
 #include <src/i2c/bms/bms.h>
 
-Bms::Bms(I2c* bus, int address) :
-        bus(bus), address(address)
-{
+Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
+         I2cMultiplexer::MuxChannel channel)
+    : I2cSensor(bus, address, multiplexer, channel) {
     SetConfiguration();
 }
 
@@ -59,6 +59,18 @@ void Bms::SetConfiguration()
     package[1] = Bms::kPrescaleFactorRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
     bus->PerformWriteTransaction(address, package, 3);
+}
+
+//Read NTC ratio
+
+uint16_t Bms::GetNTCRatio(byte register_location,
+                               etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(register_location);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t rtc_binary_reading = ((static_cast<uint16_t>(read_buffer.at(1)))
+            << 8) | static_cast<uint16_t>(read_buffer.at(0));
+    return rtc_binary_reading;
 }
 
 //Read 2-byte from BMS Registers
@@ -149,4 +161,19 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer)
         else
             return kOther;
     }
+}
+
+double Bms::TakeI2cTempReading() {
+    etl::array<byte, 2> read_buffer;
+    SelectRegister(kBatteryTempRegister);
+    ReadFromCurrentRegister(read_buffer);
+    return ConvertToTemperature(read_buffer);
+}
+
+double Bms::ConvertToTemperature(etl::array<byte, 2> read_buffer) {
+    uint16_t register_value =
+        (read_buffer[1] << 8) | read_buffer[0];
+    double temp_in_celcius =
+        (register_value - kBatteryTempOffset) / kBatteryTempConversionFactor;
+    return temp_in_celcius;
 }
