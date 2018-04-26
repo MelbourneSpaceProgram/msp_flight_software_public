@@ -4,10 +4,10 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 
-class VoltageMeasurable : public I2cMeasurable<double> {
+class VoltageMeasurable : public I2cMeasurable<float> {
    public:
     VoltageMeasurable(Adc *adc, AdcMuxMode adc_line);
-    double TakeI2cReading();
+    float TakeI2cReading();
 
    private:
     AdcMuxMode adc_line;

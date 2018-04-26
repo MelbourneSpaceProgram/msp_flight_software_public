@@ -8,7 +8,7 @@ MCP9808::MCP9808(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
                  I2cMultiplexer::MuxChannel channel)
     : I2cSensor(bus, address, multiplexer, channel) {}
 
-double MCP9808::TakeI2cReading() {
+float MCP9808::TakeI2cReading() {
     uint8_t read_buffer[2];
     uint8_t write_buffer[1];
 
@@ -20,7 +20,7 @@ double MCP9808::TakeI2cReading() {
         bus->PerformTransaction(address, read_buffer, 2, write_buffer, 1);
 
     // Perform the necessary bit-shifting on the read buffer.
-    double temperature = ((read_buffer[0] & ~(7 << 5)) << 8) | (read_buffer[1]);
+    float temperature = ((read_buffer[0] & ~(7 << 5)) << 8) | (read_buffer[1]);
 
     temperature /= 16.0;
 

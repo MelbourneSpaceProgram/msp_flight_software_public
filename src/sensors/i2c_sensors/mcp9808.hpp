@@ -18,9 +18,9 @@ class MCP9808 : public I2cSensor {
       @param address The address of the sensor.
       @return The MCP9808 object.
     */
-    MCP9808(
-        const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
-        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
+    MCP9808(const I2c* bus, int address,
+            const I2cMultiplexer* multiplexer = NULL,
+            I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
     /**
       Method that causes the MCP9808 to take a reading. The value is then
@@ -29,7 +29,7 @@ class MCP9808 : public I2cSensor {
 
       @return The sensor reading.
     */
-    double TakeI2cReading();
+    float TakeI2cReading();
 
    private:
     /**
@@ -42,7 +42,7 @@ class MCP9808 : public I2cSensor {
 
       @return The sensor voltage.
     */
-    double get_temperature(void);
+    float get_temperature(void);
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_

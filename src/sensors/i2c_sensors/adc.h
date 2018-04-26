@@ -72,7 +72,7 @@ class Adc : public I2cSensor {
     bool ReadLoThreshRegister(etl::array<byte, 2>& read_buffer);
     bool ReadHiThreshRegister(etl::array<byte, 2>& read_buffer);
 
-    double TakeI2cReading();
+    float TakeI2cReading();
 
     // Getter and setter methods.
     AdcOperationalStatus GetOperationalStatus() const;
@@ -95,7 +95,7 @@ class Adc : public I2cSensor {
     AdcComparatorQueueMode GetComparatorQueue() const;
     void SetComparatorQueue(AdcComparatorQueueMode comparator_queue);
 
-    double GetAdcGainAmplifierFullScaleRange() const;
+    float GetAdcGainAmplifierFullScaleRange() const;
     void SetAdcGainAmplifierFullScaleRange();
 
    private:
@@ -131,14 +131,14 @@ class Adc : public I2cSensor {
     static const uint8_t kAdcComparatorQueueBitShift = 0;
 
     // Full scale voltage ranges of the gain amplifier
-    static const double kAdcVoltage6v144 = 6.144;
-    static const double kAdcVoltage4v096 = 4.096;
-    static const double kAdcVoltage2v048 = 2.048;
-    static const double kAdcVoltage1v024 = 1.024;
-    static const double kAdcVoltage0v512 = 0.512;
-    static const double kAdcVoltage0v256 = 0.256;
+    static const float kAdcVoltage6v144 = 6.144;
+    static const float kAdcVoltage4v096 = 4.096;
+    static const float kAdcVoltage2v048 = 2.048;
+    static const float kAdcVoltage1v024 = 1.024;
+    static const float kAdcVoltage0v512 = 0.512;
+    static const float kAdcVoltage0v256 = 0.256;
 
-    static const double AdcGainAmplifierFullScaleRangeVoltages[6];
+    static const float AdcGainAmplifierFullScaleRangeVoltages[6];
 
     // Locations of internal ADC registers
     static const byte kAdcConversionRegisterLocation = 0x00;
@@ -157,11 +157,11 @@ class Adc : public I2cSensor {
     AdcLatchingComparatorMode latching_comparator;
     AdcComparatorQueueMode comparator_queue;
 
-    double gain_amplifier_full_scale_range;
+    float gain_amplifier_full_scale_range;
 
     bool ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
     void SelectRegister(byte register_address_pointer);
-    double ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer);
+    float ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer);
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_ADC_H_

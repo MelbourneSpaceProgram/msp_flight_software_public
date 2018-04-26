@@ -1,6 +1,6 @@
 #include <src/sensors/i2c_sensors/adc.h>
 
-const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
+const float Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage6v144, kAdcVoltage4v096, kAdcVoltage2v048,
     kAdcVoltage1v024, kAdcVoltage0v512, kAdcVoltage0v256};
 
@@ -66,7 +66,7 @@ void Adc::SelectRegister(byte register_address) {
     bus->PerformWriteTransaction(address, &register_address, 1);
 }
 
-double Adc::TakeI2cReading(void) {
+float Adc::TakeI2cReading(void) {
     etl::array<byte, 2> read_buffer;
     bool reading_successful = ReadConversionRegister(read_buffer);
     if (reading_successful) {
@@ -77,7 +77,7 @@ double Adc::TakeI2cReading(void) {
     }
 }
 
-double Adc::ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer) {
+float Adc::ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer) {
     // extract full 16-bit reading from the read_buffer
     uint16_t binary_reading;
     binary_reading = ((static_cast<uint16_t>(read_buffer.at(0))) << 8) |
@@ -177,7 +177,7 @@ void Adc::SetComparatorQueue(AdcComparatorQueueMode comparator_queue) {
     SetConfiguration();
 }
 
-double Adc::GetAdcGainAmplifierFullScaleRange() const {
+float Adc::GetAdcGainAmplifierFullScaleRange() const {
     return gain_amplifier_full_scale_range;
 }
 
