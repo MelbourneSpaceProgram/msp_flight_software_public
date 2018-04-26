@@ -11,9 +11,11 @@
 #include <src/i2c/i2c.h>
 #include <test_runners/bms_tests.h>
 #include <ti/sysbios/knl/Task.h>
+#include <src/sensors/i2c_measurable_manager.h>
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 
 void TestBms(void);
+void TestBmsTemperatureRead(void);
 
 #endif  // TEST_RUNNERS_BMS_TESTS_H_

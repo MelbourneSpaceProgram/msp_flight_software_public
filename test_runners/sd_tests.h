@@ -7,7 +7,9 @@
 #include <external/etl/exception.h>
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
+#include <string.h>
 #include <test_runners/sd_tests.h>
+#include <xdc/runtime/Log.h>
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 
