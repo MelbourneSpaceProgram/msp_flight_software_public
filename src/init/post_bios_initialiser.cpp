@@ -56,7 +56,7 @@ void PostBiosInitialiser::RunUnitTests() {
     Semaphore_Handle test_complete = Semaphore_create(0, &sem_params, NULL);
     TestInitialiser::GetInstance()->InitSemaphore(test_complete);
     TaskHolder* test_task =
-        new TaskHolder(4096, "Unit Tests", 7, TestInitialiser::GetInstance());
+        new TaskHolder(16384, "Unit Tests", 7, TestInitialiser::GetInstance());
     test_task->Init();
     Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
     delete test_task;
