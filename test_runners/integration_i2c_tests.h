@@ -11,6 +11,11 @@
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <test_runners/integration_i2c_tests.h>
 #include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/Log.h>
+#include <xdc/runtime/System.h>
+#include <xdc/std.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestEnumerateAllI2cDevices(void);
 
