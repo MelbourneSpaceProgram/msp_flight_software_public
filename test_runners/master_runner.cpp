@@ -20,6 +20,7 @@
 #include <test_runners/message_tests.h>
 #include <test_runners/payload_processor_tests.h>
 #include <test_runners/generic_sensor_tests.h>
+#include <test_runners/magnetometer_calibration_tests.h>
 #include <test_runners/measurable_manager_tests.h>
 #include <test_runners/rtc_tests.h>
 #include <test_runners/i2c_sensor_tests.h>
