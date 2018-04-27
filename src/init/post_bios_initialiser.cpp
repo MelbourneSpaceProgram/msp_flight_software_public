@@ -184,7 +184,9 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitSingletons(bus_a, bus_b, bus_c, bus_d);
 
+#if defined TEST_CONFIGURATION
         RunUnitTests();
+#elif defined ORBIT_CONFIGURATION
         InitStateManagement();
         if (hil_enabled) InitDataDashboard();
 
@@ -196,6 +198,9 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
+#else
+        System_printf("No configuration defined. Not doing anything");
+#endif
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");
         System_printf("File: %s, line %d\n", e.file_name(), e.line_number());
