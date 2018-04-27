@@ -52,6 +52,7 @@ src/sysbios/sysbios.aem4f
 # Build files
 WinBuild/
 TIRTOS Build/
+Orbit/
 
 # Documentation should be auto-generated?
 doc/
