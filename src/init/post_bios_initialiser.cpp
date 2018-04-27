@@ -163,8 +163,10 @@ void PostBiosInitialiser::InitMemoryLogger() {
 }
 
 void PostBiosInitialiser::InitTimeSource() {
+    // Observed stack peak was 1200, so +300 for future changes and any
+    // pre-emption that may occur
     TaskHolder* time_source_task =
-        new TaskHolder(1024, "TimeSource", 13, new RunnableTimeSource());
+        new TaskHolder(1500, "TimeSource", 13, new RunnableTimeSource());
     time_source_task->Init();
 }
 
