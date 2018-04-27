@@ -4,25 +4,25 @@
 #include <math.h>
 
 struct r_vector {
-    double x;
-    double y;
-    double z;
-    double h;
-    double ti;
+    float x;
+    float y;
+    float z;
+    float h;
+    float ti;
 };
-static void E0000(int IENTRY, int *maxdeg, double alt, double glat, double glon,
-                  double time, double *dec, double *dip, double *ti,
-                  double *gv);
+static void E0000(int IENTRY, int *maxdeg, float alt, float glat, float glon,
+                  float time, float *dec, float *dip, float *ti,
+                  float *gv);
 
 void geomag(int *maxdeg);
 
-void geomg1(double alt, double glat, double glon, double time, double *dec,
-            double *dip, double *ti, double *gv);
+void geomg1(float alt, float glat, float glon, float time, float *dec,
+            float *dip, float *ti, float *gv);
 
-char geomag_introduction(double epochlowlim);
+char geomag_introduction(float epochlowlim);
 
-r_vector MagModel(double date, double altitude, double lat, double longitude);
+r_vector MagModel(float date, float altitude, float lat, float longitude);
 
-extern const double wmmdata[90][6];
+extern const float wmmdata[90][6];
 
 #endif /* EXTERNAL_WORLDMAGNETICMODEL_WORLDMAGNETICMODEL_H_ */
