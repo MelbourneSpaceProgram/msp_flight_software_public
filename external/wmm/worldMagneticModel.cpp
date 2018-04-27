@@ -1,12 +1,12 @@
 #include <external/wmm/worldMagneticModel.h>
 #include <src/util/data_types.h>
-int my_isnan(double d) {
+int my_isnan(float d) {
     return (d != d); /* IEEE: only NaN is not equal to itself */
 }
 
 #define NaN log(-1.0)
 
-const double wmmdata[90][6] = {
+const float wmmdata[90][6] = {
     {1, 0, -29438.5, 0.0, 10.7, 0.0},   {1, 1, -1501.1, 4796.2, 17.9, -26.8},
     {2, 0, -2445.3, 0.0, -8.6, 0.0},    {2, 1, 3012.5, -2845.6, -3.3, -27.1},
     {2, 2, 1676.6, -642.0, 2.4, -13.3}, {3, 0, 1351.1, 0.0, 3.1, 0.0},
@@ -53,10 +53,10 @@ const double wmmdata[90][6] = {
     {12, 9, -0.4, 0.2, 0.0, 0.0},       {12, 10, 0.2, -0.9, 0.0, 0.0},
     {12, 11, -0.9, -0.2, 0.0, 0.0},     {12, 12, 0.0, 0.7, 0.0, 0.0}};
 
-r_vector MagModel(double date, double alt, double lat, double longitude) {
+r_vector MagModel(float date, float alt, float lat, float longitude) {
     static int maxdeg;
-    double dec, dip, ti, gv;
-    double rTd = 0.017453292;
+    float dec, dip, ti, gv;
+    float rTd = 0.017453292;
     r_vector r_vector_data;
 
     /* INITIALIZE GEOMAG ROUTINE */
@@ -77,22 +77,22 @@ r_vector MagModel(double date, double alt, double lat, double longitude) {
     return r_vector_data;
 }
 
-static void schmidt_norm_to_unnorm(double snorm[169], double fm[13], int maxord,
-                                   int j, int D1, int D2, double k[13][13],
-                                   double flnmj, double c[13][13],
-                                   double cd[13][13], double fn[13], int &m,
-                                   double &otime, double &oalt, double &olat,
-                                   double &olon) {
+static void schmidt_norm_to_unnorm(float snorm[169], float fm[13], int maxord,
+                                   int j, int D1, int D2, float k[13][13],
+                                   float flnmj, float c[13][13],
+                                   float cd[13][13], float fn[13], int &m,
+                                   float &otime, float &oalt, float &olat,
+                                   float &olon) {
     snorm[0] = 1.0;
     fm[0] = 0.0;
     for (int n = 1; n <= maxord; n++) {
-        snorm[n] = snorm[n - 1] * (double)((2 * n - 1)) / (double)(n);
+        snorm[n] = snorm[n - 1] * (float)((2 * n - 1)) / (float)(n);
         j = 2;
         for (m = 0, D1 = 1, D2 = (n - m + D1) / D1; D2 > 0; D2--, m += D1) {
-            k[m][n] = (double)((((n - 1) * (n - 1)) - (m * m))) /
-                      (double)(((2 * n - 1) * (2 * n - 3)));
+            k[m][n] = (float)((((n - 1) * (n - 1)) - (m * m))) /
+                      (float)(((2 * n - 1) * (2 * n - 3)));
             if (m > 0) {
-                flnmj = (double)(((n - m + 1) * j)) / (double)((n + m));
+                flnmj = (float)(((n - m + 1) * j)) / (float)((n + m));
                 snorm[n + 13 * m] = snorm[n + 13 * (m - 1)] * sqrt(flnmj);
                 j = 1;
                 c[n][m - 1] = snorm[n + 13 * m] * c[n][m - 1];
@@ -101,17 +101,17 @@ static void schmidt_norm_to_unnorm(double snorm[169], double fm[13], int maxord,
             c[m][n] = snorm[n + m * 13] * c[m][n];
             cd[m][n] = snorm[n + m * 13] * cd[m][n];
         }
-        fn[n] = (double)((n + 1));
-        fm[n] = (double)(n);
+        fn[n] = (float)((n + 1));
+        fm[n] = (float)(n);
     }
     k[1][1] = 0.0;
     otime = oalt = olat = olon = -1000.0;
     return;
 }
 
-void time_adjust_gauss_coeff(double time, double otime, double tc[13][13],
-                             int m, int n, double c[13][13], double dt,
-                             double cd[13][13]) {
+void time_adjust_gauss_coeff(float time, float otime, float tc[13][13],
+                             int m, int n, float c[13][13], float dt,
+                             float cd[13][13]) {
     /*
      TIME ADJUST THE GAUSS COEFFICIENTS
      */
@@ -121,16 +121,16 @@ void time_adjust_gauss_coeff(double time, double otime, double tc[13][13],
     }
 }
 
-double accumulate_spherical_harmonic_expansions(
-    double par, double ar, int n, int m, double tc[13][13], double cp[13],
-    double sp[13], double dp[13][13], double fm[13], double fn[13], double *p,
-    double &bt, double &bp, double &br) {
+float accumulate_spherical_harmonic_expansions(
+    float par, float ar, int n, int m, float tc[13][13], float cp[13],
+    float sp[13], float dp[13][13], float fm[13], float fn[13], float *p,
+    float &bt, float &bp, float &br) {
     /*
      ACCUMULATE TERMS OF THE SPHERICAL HARMONIC EXPANSIONS
      */
     par = ar * *(p + n + m * 13);
-    double temp1;
-    double temp2;
+    float temp1;
+    float temp2;
 
     if (m == 0) {
         temp1 = tc[m][n] * cp[m];
@@ -145,11 +145,11 @@ double accumulate_spherical_harmonic_expansions(
     return par;
 }
 
-double geodetic_to_spherical_coords(
-    double alt, double oalt, double glat, double olat, double q, double a2,
-    double c2, double srlat2, double q1, double q2, double b2, double ct,
-    double srlat, double crlat2, double r2, double a4, double c4, double d,
-    double crlat, double &st, double &r, double &ca, double &sa) {
+float geodetic_to_spherical_coords(
+    float alt, float oalt, float glat, float olat, float q, float a2,
+    float c2, float srlat2, float q1, float q2, float b2, float ct,
+    float srlat, float crlat2, float r2, float a4, float c4, float d,
+    float crlat, float &st, float &r, float &ca, float &sa) {
     /* CONVERT FROM GEODETIC COORDS. TO SPHERICAL COORDS. */
     if (alt != oalt || glat != olat) {
         q = sqrt(a2 - c2 * srlat2);
@@ -166,18 +166,18 @@ double geodetic_to_spherical_coords(
     return ct;
 }
 
-static void E0000(int IENTRY, int *maxdeg, double alt, double glat, double glon,
-                  double time, double *dec, double *dip, double *ti,
-                  double *gv) {
+static void E0000(int IENTRY, int *maxdeg, float alt, float glat, float glon,
+                  float time, float *dec, float *dip, float *ti,
+                  float *gv) {
     static int maxord, n, m, j, D1, D2, D3, D4;
-    static double c[13][13], cd[13][13], tc[13][13], dp[13][13], snorm[169],
+    static float c[13][13], cd[13][13], tc[13][13], dp[13][13], snorm[169],
         sp[13], cp[13], fn[13], fm[13], pp[13], k[13][13], pi, dtr, a, b, re,
         a2, b2, c2, a4, b4, c4, gnm, hnm, dgnm, dhnm, flnmj, otime, oalt, olat,
         olon, dt, rlon, rlat, srlat, crlat, srlat2, crlat2, q, q1, q2, ct, st,
         r2, r, d, ca, sa, aor, ar, br, bt, bp, bpp, par, temp1, temp2, parp, bx,
         by, bz, bh;
-    double epoch = 2015.0;
-    static double *p = snorm;
+    float epoch = 2015.0;
+    static float *p = snorm;
 
     switch (IENTRY) {
         case 0:
@@ -367,7 +367,7 @@ void geomag(int *maxdeg) {
 
 /*************************************************************************/
 
-void geomg1(double alt, double glat, double glon, double time, double *dec,
-            double *dip, double *ti, double *gv) {
+void geomg1(float alt, float glat, float glon, float time, float *dec,
+            float *dip, float *ti, float *gv) {
     E0000(1, NULL, alt, glat, glon, time, dec, dip, ti, gv);
 }

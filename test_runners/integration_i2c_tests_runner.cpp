@@ -36,16 +36,24 @@ extern void TestEnumerateAllI2cDevices(void);
 
 
 /*=======Suite Setup=====*/
-static void suite_setup(void)
+static MemoryTroubleshooter *suite_setup(void)
 {
+  MemoryTroubleshooter *mem_test = new MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   suiteSetUp();
 #endif
+  return mem_test;
 }
 
 /*=======Suite Teardown=====*/
-static int suite_teardown(int num_failures)
+static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 {
+    if(mem_test->MemoryLeakTest()){
+        UNITY_PRINT_EOL();
+        UnityPrint(memoryLeakMessage);
+        UNITY_PRINT_EOL();
+    }
+    mem_test->~MemoryTroubleshooter();
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -66,9 +74,13 @@ void resetTest_integration_i2c_tests_runner(void)
  int integration_i2c_tests_runner(void);
 int integration_i2c_tests_runner(void)
 {
-  suite_setup();
+  MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/i2c/tests/integration_i2c_tests.cpp");
-  RUN_TEST(TestEnumerateAllI2cDevices, 10);
+    RUN_TEST(TestEnumerateAllI2cDevices, 13);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
-  return suite_teardown(UnityEnd());
+  return suite_teardown(UnityEnd(), mem_test);
 }
