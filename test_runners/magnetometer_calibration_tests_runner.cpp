@@ -80,7 +80,7 @@ int magnetometer_calibration_tests_runner(void)
   UnityBegin("src/sensors/tests/magnetometer_calibration_tests.cpp");
     RUN_TEST(TestComputeAggregatedReadings, 66);
     RUN_TEST(TestMagnetometerCalibration, 84);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

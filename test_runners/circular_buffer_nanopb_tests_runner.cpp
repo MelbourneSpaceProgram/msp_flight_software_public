@@ -27,14 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "bms_tests.h"
+#include "circular_buffer_nanopb_tests.h"
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestBms();
-extern void TestBmsDieTemperatureRead();
-extern void TestBmsBatteryTemperatureRead();
+extern void TestWriteAndRead();
 
 
 /*=======Suite Setup=====*/
@@ -64,8 +62,8 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
 }
 
 /*=======Test Reset Option=====*/
-void resetTest_bms_tests_runner(void);
-void resetTest_bms_tests_runner(void)
+void resetTest_circular_buffer_nanopb_tests_runner(void);
+void resetTest_circular_buffer_nanopb_tests_runner(void)
 {
   TearDown();
   SetUp();
@@ -73,15 +71,13 @@ void resetTest_bms_tests_runner(void)
 
 
 /*=======MAIN=====*/
- int bms_tests_runner(void);
-int bms_tests_runner(void)
+ int circular_buffer_nanopb_tests_runner(void);
+int circular_buffer_nanopb_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
-  UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
-    RUN_TEST(TestBms, 15);
-    RUN_TEST(TestBmsDieTemperatureRead, 42);
-    RUN_TEST(TestBmsBatteryTemperatureRead, 55);
+  UnityBegin("src/database/tests/circular_buffer_nanopb_tests.cpp");
+    RUN_TEST(TestWriteAndRead, 6);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
