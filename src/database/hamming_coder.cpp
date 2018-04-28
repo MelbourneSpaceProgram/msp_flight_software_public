@@ -21,7 +21,7 @@ void HammingCoder::EncodeByteArray(byte *output, uint32_t output_length,
                                    byte *input, uint32_t input_length) {
     if (output_length != input_length * 2) {
         etl::exception e("HammingCoder::EncodeByteArray invalid arguments",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     for (uint32_t i = 0; i < input_length; i++) {
@@ -74,13 +74,11 @@ HammingDecodedByte HammingCoder::Decode(
 }
 
 void HammingCoder::DecodeByteArray(byte *output, uint32_t output_length,
-                                   bool *valid_output,
-                                   uint32_t valid_output_length, byte *input,
+                                   bool *valid_output, byte *input,
                                    uint32_t input_length) {
-    if ((output_length * 2 != input_length) ||
-        (output_length != valid_output_length)) {
+    if ((output_length * 2 != input_length)) {
         etl::exception e("HammingCoder::DecodeByteArray invalid arguments",
-                         "__FILE__", __LINE__);
+                         __FILE__, __LINE__);
         throw e;
     }
     for (uint32_t i = 0; i < output_length; i++) {

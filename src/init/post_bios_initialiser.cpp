@@ -14,7 +14,7 @@
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
-#include <src/system/tasks/runnable_state_management.h>s
+#include <src/system/tasks/runnable_state_management.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
@@ -129,6 +129,7 @@ void PostBiosInitialiser::InitHardware() {
     I2c::InitBusses();
     Eeprom::Init();
     MagnetorquerControl::Initialize();
+    SdCard::SdOpen();
 }
 
 void PostBiosInitialiser::DeploymentWait(uint16_t delay) {
@@ -210,7 +211,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitPayloadProcessor();
         InitOrientationControl();
         // TODO(rskew): Debug what needs to be passed in to Task_delete
-        //Task_delete(pre_deployment_magnetometer_poller_task);
+        // Task_delete(pre_deployment_magnetometer_poller_task);
 #else
         System_printf("No configuration defined. Not doing anything");
 #endif

@@ -12,6 +12,7 @@ int nadir_controller_tests_runner();
 int nadir_error_generator_tests_runner();
 int sgp4_tests_runner();
 int wmm_tests_runner();
+int circular_buffer_nanopb_tests_runner();
 int database_tests_runner();
 int sd_tests_runner();
 int runnable_data_dashboard_tests_runner();
