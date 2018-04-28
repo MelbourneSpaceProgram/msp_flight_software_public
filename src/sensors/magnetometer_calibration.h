@@ -10,26 +10,26 @@ class MagnetometerCalibration {
     void ComputeMatrixS(Matrix<float> &magData);
     Matrix<float> GetBiases();
     Matrix<float> GetScaleFactors();
-    Matrix<float> GetS();
+    Matrix<double> GetS();
 
     static const uint8_t data_size = 40;
 
    private:
-    void ComputeMatrixSS(Matrix<float> &SS, Matrix<float> &S,
-                         Matrix<float> &S22a);
-    void InitialiseMatrixC(Matrix<float> &C);
-    void CalculateEigenVector1(Matrix<float> &v1, Matrix<float> &SS,
-                               Matrix<float> &C);
-    void CalculateEigenVector2(Matrix<float> &v2, Matrix<float> &v1,
-                               Matrix<float> &S22a);
-    void InitialiseEigenVector(Matrix<float> &v, Matrix<float> &SS,
-                               Matrix<float> &S22a);
+    void ComputeMatrixSS(Matrix<double> &SS, Matrix<double> &S,
+                         Matrix<double> &S22a);
+    void InitialiseMatrixC(Matrix<double> &C);
+    void CalculateEigenVector1(Matrix<double> &v1, Matrix<double> &SS,
+                               Matrix<double> &C);
+    void CalculateEigenVector2(Matrix<double> &v2, Matrix<double> &v1,
+                               Matrix<double> &S22a);
+    void InitialiseEigenVector(Matrix<double> &v, Matrix<double> &SS,
+                               Matrix<double> &S22a);
     void GenerateMatrixB(Matrix<float> &v, Matrix<float> &Q);
     float CalculateHMB(Matrix<float> &Q, Matrix<float> &v);
     void GenerateMatrixD(float *eigen_real3, float hmb, Matrix<float> &SSSS);
-    static void Invert44Matrix(Matrix<float> &A, Matrix<float> &B);
+    static void Invert44Matrix(Matrix<double> &A, Matrix<double> &B);
     static void Invert33Matrix(Matrix<float> &A, Matrix<float> &B);
-    static int Hessenberg_Form_Elementary(float *, float *, int);
+    static int Hessenberg_Form_Elementary(double *, double *, int);
     static void Hessenberg_Elementary_Transform(float *, float *, int[], int);
     static void Copy_Vector(float *, float *, int);
     static int QR_Hessenberg_Matrix(float *, float *, float[], float[], int,
@@ -59,12 +59,12 @@ class MagnetometerCalibration {
     static void Identity_Matrix(float *, int);
     static void Interchange_Columns(float *, int, int, int, int);
 
-    float S_data[10][10];
+    double S_data[10][10];
     float B_est_data[3][1];
     float D_est_data[3][3];
     Matrix<float> B_est;
     Matrix<float> D_est;
-    Matrix<float> S;
+    Matrix<double> S;
 };
 
 #endif /* MAGNETOMETER_CALIBRATION_H_ */
