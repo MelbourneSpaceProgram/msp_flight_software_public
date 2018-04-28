@@ -70,6 +70,7 @@ void master_tests_thread() {
     message_tests_runner();
     payload_processor_tests_runner();
     generic_sensor_tests_runner();
+    magnetometer_calibration_tests_runner();
     measurable_manager_tests_runner();
     rtc_tests_runner();
     i2c_sensor_tests_runner();

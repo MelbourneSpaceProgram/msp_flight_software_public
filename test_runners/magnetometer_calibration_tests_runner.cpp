@@ -32,8 +32,8 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestMagnetometerCalibration(void);
 extern void TestComputeS(void);
+extern void TestMagnetometerCalibration(void);
 
 
 /*=======Suite Setup=====*/
@@ -76,9 +76,13 @@ void resetTest_magnetometer_calibration_tests_runner(void)
 int magnetometer_calibration_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/tests/magnetometer_calibration_tests.cpp");
-  RUN_TEST(TestMagnetometerCalibration, 5);
-  RUN_TEST(TestComputeS, 80);
+    RUN_TEST(TestComputeS, 107);
+    RUN_TEST(TestMagnetometerCalibration, 126);
+  } catch (etl::exception &e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

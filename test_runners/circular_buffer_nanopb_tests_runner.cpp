@@ -78,7 +78,7 @@ int circular_buffer_nanopb_tests_runner(void)
   try {
   UnityBegin("src/database/tests/circular_buffer_nanopb_tests.cpp");
     RUN_TEST(TestWriteAndRead, 6);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 
