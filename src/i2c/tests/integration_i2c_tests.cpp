@@ -30,36 +30,36 @@ void TestEnumerateAllI2cDevices(void) {
     for (uint8_t channel = 0; channel < 4; channel++) {
         bus_a_multiplexer.CloseAllChannels();
         bus_a_multiplexer.OpenChannel(channel);
-        Log_info1("Operating on Bus A channel %d\n", channel);
+        System_printf("Operating on Bus A channel %d\n", channel);
         for (uint8_t addr = 8; addr < 120; addr++) {
             if (bus_a.PerformWriteTransaction(addr, data, 1)) {
-                Log_info1("Found device at 0x%02x\n", addr);
+                System_printf("Found device at 0x%02x\n", addr);
             }
         }
     }
 
-    Log_info0("Operating on Bus B\n");
+    System_printf("Operating on Bus B\n");
     for (uint8_t addr = 8; addr < 120; addr++) {
         if (bus_b.PerformWriteTransaction(addr, data, 1)) {
-            Log_info1("Found device at 0x%02x\n", addr);
+            System_printf("Found device at 0x%02x\n", addr);
         }
     }
 
     for (uint8_t channel = 0; channel < 8; channel++) {
         bus_c_multiplexer.CloseAllChannels();
         bus_c_multiplexer.OpenChannel(channel);
-        Log_info1("Operating on Bus C channel %d\n", channel);
+        System_printf("Operating on Bus C channel %d\n", channel);
         for (uint8_t addr = 8; addr < 120; addr++) {
             if (bus_a.PerformWriteTransaction(addr, data, 1)) {
-                Log_info1("Found device at 0x%02x\n", addr);
+                System_printf("Found device at 0x%02x\n", addr);
             }
         }
     }
 
-    Log_info0("Operating on Bus D\n");
+    System_printf("Operating on Bus D\n");
     for (uint8_t addr = 8; addr < 120; addr++) {
         if (bus_d.PerformWriteTransaction(addr, data, 1)) {
-            Log_info1("Found device at 0x%02x\n", addr);
+            System_printf("Found device at 0x%02x\n", addr);
         }
     }
 }
