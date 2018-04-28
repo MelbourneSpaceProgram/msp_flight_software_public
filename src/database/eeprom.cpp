@@ -13,7 +13,7 @@ void Eeprom::Init() {
     Semaphore_Params_init(&semaphore_params);
     eeprom_in_use = Semaphore_create(1, &semaphore_params, NULL);
     if (eeprom_in_use == NULL) {
-        etl::exception e("Failed to create Semaphore", "__FILE__", __LINE__);
+        etl::exception e("Failed to create Semaphore", __FILE__, __LINE__);
         throw e;
     }
 }
@@ -60,7 +60,7 @@ bool Eeprom::ReadData(uint16_t address, byte *read_buffer, uint16_t read_buffer_
 
     uint16_t real_address = address * 2, real_read_buffer_length = read_buffer_length * 2;
     if (((uint16_t)(real_address + real_read_buffer_length) < real_address) || (real_address < address) || (real_read_buffer_length < read_buffer_length) || (read_buffer_length != valid_buffer_length)) {
-        etl::exception e("Buffer overflow. Bad address", "__FILE__", __LINE__);
+        etl::exception e("Buffer overflow. Bad address", __FILE__, __LINE__);
         Semaphore_post(eeprom_in_use);
         throw e;
     }
@@ -99,7 +99,7 @@ bool Eeprom::WriteData(uint16_t address, byte *write_buffer, uint16_t write_buff
 
     uint16_t real_address = address * 2, real_write_buffer_length = write_buffer_length * 2;
     if (((uint16_t)(real_address + real_write_buffer_length) < real_address) || (real_address < address) || (real_write_buffer_length < write_buffer_length)) {
-        etl::exception e("Buffer overflow. Bad address", "__FILE__", __LINE__);
+        etl::exception e("Buffer overflow. Bad address", __FILE__, __LINE__);
         Semaphore_post(eeprom_in_use);
         throw e;
     }

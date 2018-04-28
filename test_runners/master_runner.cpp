@@ -8,6 +8,7 @@
 #include <test_runners/nadir_error_generator_tests.h>
 #include <test_runners/sgp4_tests.h>
 #include <test_runners/wmm_tests.h>
+#include <test_runners/circular_buffer_nanopb_tests.h>
 #include <test_runners/database_tests.h>
 #include <test_runners/sd_tests.h>
 #include <test_runners/runnable_data_dashboard_tests.h>
@@ -56,6 +57,7 @@ void master_tests_thread() {
     nadir_error_generator_tests_runner();
     sgp4_tests_runner();
     wmm_tests_runner();
+    circular_buffer_nanopb_tests_runner();
     database_tests_runner();
     sd_tests_runner();
     runnable_data_dashboard_tests_runner();
