@@ -175,7 +175,7 @@ void PostBiosInitialiser::PostBiosInit() {
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();
-        InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
+        //InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
 
         I2c* bus_a = new I2c(I2C_BUS_A);
         I2c* bus_b = new I2c(I2C_BUS_B);

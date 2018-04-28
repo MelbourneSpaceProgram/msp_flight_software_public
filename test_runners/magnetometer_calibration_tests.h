@@ -7,6 +7,7 @@
 #include <src/sensors/magnetometer_calibration.h>
 #include <test_runners/magnetometer_calibration_tests.h>
 #include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 void TestMagnetometerCalibration(void);
 void TestComputeS(void);

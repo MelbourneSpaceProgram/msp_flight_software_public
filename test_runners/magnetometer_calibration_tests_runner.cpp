@@ -76,9 +76,13 @@ void resetTest_magnetometer_calibration_tests_runner(void)
 int magnetometer_calibration_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
+  try {
   UnityBegin("src/sensors/tests/magnetometer_calibration_tests.cpp");
-  RUN_TEST(TestMagnetometerCalibration, 5);
-  RUN_TEST(TestComputeS, 80);
+    RUN_TEST(TestMagnetometerCalibration, 5);
+    RUN_TEST(TestComputeS, 80);
+  } catch (etl::exception e) {
+    TEST_FAIL_MESSAGE("Uncaught exception in test");
+  }
 
   return suite_teardown(UnityEnd(), mem_test);
 }

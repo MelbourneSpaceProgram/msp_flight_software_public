@@ -2,10 +2,10 @@
 #include <math.h>
 #include <src/sensors/magnetometer_calibration.h>
 
-void MagnetometerCalibration::ComputeMatrixS(Matrix magData)
+void MagnetometerCalibration::ComputeMatrixS(Matrix &magData)
 {
-    double x, y, z;
-    double D_data[10][data_size];
+    float x, y, z;
+    float D_data[10][data_size];
     Matrix D(D_data);
     for (uint8_t i = 0; i < data_size; i++)
     {
@@ -23,19 +23,19 @@ void MagnetometerCalibration::ComputeMatrixS(Matrix magData)
         D.Set(8, i, 2.0 * z);
         D.Set(9, i, 1.0);
     }
-    double Dt_data[data_size][10];
+    float Dt_data[data_size][10];
     Matrix Dt(Dt_data);
     Dt.Transpose(D);
     S.Multiply(D, Dt);
 }
 
-void MagnetometerCalibration::Invert44Matrix(Matrix &A, Matrix B)
+void MagnetometerCalibration::Invert44Matrix(Matrix &A, Matrix &B)
 {
-    double augmented_data[4][8];
+    float augmented_data[4][8];
     Matrix augmented(augmented_data);
     augmented.CopyInto(0, 0, B);
 
-    double identity_data[4][4];
+    float identity_data[4][4];
     Matrix identity(identity_data);
     identity.Identity();
     augmented.CopyInto(0, 4, identity);
@@ -45,13 +45,13 @@ void MagnetometerCalibration::Invert44Matrix(Matrix &A, Matrix B)
     A.Slice(0, 3, 4, 7, augmented);
 }
 
-void MagnetometerCalibration::Invert33Matrix(Matrix &A, Matrix B)
+void MagnetometerCalibration::Invert33Matrix(Matrix &A, Matrix &B)
 {
-    double augmented_data[3][6];
+    float augmented_data[3][6];
     Matrix augmented(augmented_data);
     augmented.CopyInto(0, 0, B);
 
-    double identity_data[3][3];
+    float identity_data[3][3];
     Matrix identity(identity_data);
     identity.Identity();
     augmented.CopyInto(0, 3, identity);
@@ -75,22 +75,22 @@ void MagnetometerCalibration::InitialiseMatrixC(Matrix &C)
     C.Set(5, 5, -0.25);
 }
 
-void MagnetometerCalibration::ComputeMatrixSS(Matrix S, Matrix &S22a)
+void MagnetometerCalibration::ComputeMatrixSS(Matrix &SS, Matrix &S, Matrix &S22a)
 {
-    double S11_data[6][6];
+    float S11_data[6][6];
     Matrix S11(S11_data);
     S11.Slice(0, 5, 0, 5, S);
-    double S12_data[6][4];
+    float S12_data[6][4];
     Matrix S12(S12_data);
     S12.Slice(0, 5, 6, 9, S);
-    double S12t_data[4][6];
+    float S12t_data[4][6];
     Matrix S12t(S12t_data);
     S12t.Slice(6, 9, 0, 5, S);
-    double S22_data[4][4];
+    float S22_data[4][4];
     Matrix S22(S22_data);
     S22.Slice(6, 9, 6, 9, S);
 
-    double S22_1_data[4][4];
+    float S22_1_data[4][4];
     Matrix S22_1(S22_1_data);
     Invert44Matrix(S22_1, S22);
 
@@ -98,25 +98,25 @@ void MagnetometerCalibration::ComputeMatrixSS(Matrix S, Matrix &S22a)
     S22a.Multiply(S22_1, S12t);
 
     // Then calculate S22b = S12 * S22a      ( 6x6 = 6x4 * 4x6)
-    double S22b_data[6][6];
+    float S22b_data[6][6];
     Matrix S22b(S22b_data);
     S22b.Multiply(S12, S22a);
 
-    double ans = S11.Get(0, 0) - S22b.Get(0, 0);
+    float ans = S11.Get(0, 0) - S22b.Get(0, 0);
     // Calculate SS = S11 - S22b
     SS.Subtract(S11, S22b);
 }
 
-void MagnetometerCalibration::CalculateEigenVector1(Matrix &v1, Matrix C)
+void MagnetometerCalibration::CalculateEigenVector1(Matrix &v1, Matrix &SS, Matrix &C)
 {
     uint8_t i, j, index;
-    double maxVal, norm;
-    double E_data[6][6];
+    float maxVal, norm;
+    float E_data[6][6];
     Matrix E(E_data);
 
     E.Multiply(C, SS);
 
-    double E_array[36];
+    float E_array[36];
     for (i = 0; i < 6; i++)
     {
         for (j = 0; j < 6; j++)
@@ -124,11 +124,11 @@ void MagnetometerCalibration::CalculateEigenVector1(Matrix &v1, Matrix C)
             E_array[i * 6 + j] = E.Get(i, j);
         }
     }
-    double SSS[36];
+    float SSS[36];
     Hessenberg_Form_Elementary(E_array, SSS, 6);
 
-    double eigen_real[6];
-    double eigen_imag[6];
+    float eigen_real[6];
+    float eigen_imag[6];
 
     QR_Hessenberg_Matrix(E_array, SSS, eigen_real, eigen_imag, 6, 100);
 
@@ -162,18 +162,18 @@ void MagnetometerCalibration::CalculateEigenVector1(Matrix &v1, Matrix C)
     }
 }
 
-void MagnetometerCalibration::InitialiseEigenVector(Matrix &v, Matrix S22a)
+void MagnetometerCalibration::InitialiseEigenVector(Matrix &v, Matrix &SS, Matrix &S22a)
 {
-    double C_data[6][6];
-    double v1_data[6][1];
-    double v2_data[4][1];
+    float C_data[6][6];
+    float v1_data[6][1];
+    float v2_data[4][1];
     Matrix v1(v1_data);
     Matrix v2(v2_data);
     Matrix C(C_data);
 
     // Create pre-inverted constraint matrix C
     InitialiseMatrixC(C);
-    CalculateEigenVector1(v1, C);
+    CalculateEigenVector1(v1, SS, C);
     // Calculate v2 = S22a * v1      ( 4x1 = 4x6 * 6x1)
     CalculateEigenVector2(v2, v1, S22a);
 
@@ -189,16 +189,16 @@ void MagnetometerCalibration::InitialiseEigenVector(Matrix &v, Matrix S22a)
     v.Set(9, 0, -v2.Get(3, 0));
 }
 
-void MagnetometerCalibration::GenerateMatrixB(Matrix v, Matrix Q)
+void MagnetometerCalibration::GenerateMatrixB(Matrix &v, Matrix &Q)
 {
-    double U_data[3][1];
+    float U_data[3][1];
     Matrix U(U_data);
 
     U.Set(0, 0, v.Get(6, 0));
     U.Set(1, 0, v.Get(7, 0));
     U.Set(2, 0, v.Get(8, 0));
 
-    double Q_data[3][3];
+    float Q_data[3][3];
     Matrix Q_1(Q_data);
     Invert33Matrix(Q_1, Q);
 
@@ -209,48 +209,48 @@ void MagnetometerCalibration::GenerateMatrixB(Matrix v, Matrix Q)
     B_est.Set(2, 0, -B_est.Get(2, 0));
 }
 
-double MagnetometerCalibration::CalculateHMB(Matrix Q, Matrix v)
+float MagnetometerCalibration::CalculateHMB(Matrix &Q, Matrix &v)
 {
-    double Bt_data[1][3];
+    float Bt_data[1][3];
     Matrix Bt(Bt_data);
     Bt.Transpose(B_est);
 
     // First calculate QB = Q * B   ( 3x1 = 3x3 * 3x1)
-    double QB_data[3][1];
+    float QB_data[3][1];
     Matrix QB(QB_data);
     QB.Multiply(Q, B_est);
 
     // Then calculate btqb = BT * QB    ( 1x1 = 1x3 * 3x1)
-    double btqb_data[1][1];
+    float btqb_data[1][1];
     Matrix btqb(btqb_data);
     btqb.Multiply(Bt, QB);
 
     // Calculate hmb = sqrt(btqb - J).
-    double J = v.Get(9, 0);
+    float J = v.Get(9, 0);
     return sqrt(btqb.Get(0, 0) - J);
 }
 
-void MagnetometerCalibration::GenerateMatrixD(double *eigen_real3, double hmb,
-                                              Matrix SSSS)
+void MagnetometerCalibration::GenerateMatrixD(float *eigen_real3, float hmb,
+                                              Matrix &SSSS)
 {
     uint8_t i, j;
-    double hm;
-    double Dz_data[3][3];
+    float hm;
+    float Dz_data[3][3];
     Matrix Dz(Dz_data);
     Dz.Fill(0);
     Dz.Set(0, 0, sqrt(eigen_real3[0]));
     Dz.Set(1, 1, sqrt(eigen_real3[1]));
     Dz.Set(2, 2, sqrt(eigen_real3[2]));
 
-    double vdz_data[3][3];
+    float vdz_data[3][3];
     Matrix vdz(vdz_data);
     vdz.Multiply(SSSS, Dz);
 
-    double SSSS_transpose_data[3][3];
+    float SSSS_transpose_data[3][3];
     Matrix SSSS_transpose(SSSS_transpose_data);
     SSSS_transpose.Transpose(SSSS);
 
-    double SQ_data[3][3];
+    float SQ_data[3][3];
     Matrix SQ(SQ_data);
     SQ.Multiply(vdz, SSSS_transpose);
 
@@ -264,33 +264,35 @@ void MagnetometerCalibration::GenerateMatrixD(double *eigen_real3, double hmb,
     }
 }
 
-void MagnetometerCalibration::CalculateEigenVector2(Matrix &v2, Matrix v1,
-                                                    Matrix S22a)
+void MagnetometerCalibration::CalculateEigenVector2(Matrix &v2, Matrix &v1,
+                                                    Matrix &S22a)
 {
     v2.Multiply(S22a, v1);
 }
 
 MagnetometerCalibration::MagnetometerCalibration() :
-        B_est(B_est_data), D_est(D_est_data), S(S_data), SS(SS_data)
+        B_est(B_est_data), D_est(D_est_data), S(S_data)
 {
 }
 
 void MagnetometerCalibration::ComputeCalibrationParameters()
 {
     uint8_t i, j;
-    double hmb, norm1, norm2, norm3;
-    double S22a_data[4][6];
-    double v_data[10][1];
-    double Q_data[3][3];
-    double SSSS_data[3][3];
+    float hmb, norm1, norm2, norm3;
+    float S22a_data[4][6];
+    float v_data[10][1];
+    float Q_data[3][3];
+    float SS_data[6][6];
+    float SSSS_data[3][3];
     Matrix S22a(S22a_data);
     Matrix v(v_data);
     Matrix Q(Q_data);
+    Matrix SS(SS_data);
     Matrix SSSS(SSSS_data);
 
-    ComputeMatrixSS(S, S22a);
+    ComputeMatrixSS(SS, S, S22a);
 
-    InitialiseEigenVector(v, S22a);
+    InitialiseEigenVector(v, SS, S22a);
 
     Q.Set(0, 0, v.Get(0, 0));
     Q.Set(0, 1, v.Get(5, 0));
@@ -302,7 +304,7 @@ void MagnetometerCalibration::ComputeCalibrationParameters()
     Q.Set(2, 1, v.Get(3, 0));
     Q.Set(2, 2, v.Get(2, 0));
 
-    double Q_array[9];
+    float Q_array[9];
     for (i = 0; i < 3; i++)
     {
         for (j = 0; j < 3; j++)
@@ -316,11 +318,11 @@ void MagnetometerCalibration::ComputeCalibrationParameters()
     hmb = CalculateHMB(Q, v);
 
     // Calculate SQ, the square root of matrix Q
-    double SSSS_array[9];
+    float SSSS_array[9];
     Hessenberg_Form_Elementary(Q_array, SSSS_array, 3);
 
-    double eigen_real3[3];
-    double eigen_imag3[3];
+    float eigen_real3[3];
+    float eigen_imag3[3];
     QR_Hessenberg_Matrix(Q_array, SSSS_array, eigen_real3, eigen_imag3, 3, 100);
 
     for (i = 0; i < 3; i++)
@@ -365,50 +367,13 @@ Matrix MagnetometerCalibration::GetS()
     return S;
 }
 
-Matrix MagnetometerCalibration::GetSS()
-{
-    return SS;
-}
-
-int MagnetometerCalibration::Lower_Triangular_Inverse(double *L, int n)
-{
-    int i, j, k;
-    double *p_i, *p_j, *p_k;
-    double sum;
-
-    //         Invert the diagonal elements of the lower triangular matrix L.
-
-    for (k = 0, p_k = L; k < n; p_k += (n + 1), k++)
-    {
-        if (*p_k == 0.0)
-            return -1;
-        else
-            *p_k = 1.0 / *p_k;
-    }
-
-    //         Invert the remaining lower triangular matrix L row by row.
-
-    for (i = 1, p_i = L + n; i < n; i++, p_i += n)
-    {
-        for (j = 0, p_j = L; j < i; p_j += n, j++)
-        {
-            sum = 0.0;
-            for (k = j, p_k = p_j; k < i; k++, p_k += n)
-                sum += *(p_i + k) * *(p_k + j);
-            *(p_i + j) = -*(p_i + i) * sum;
-        }
-    }
-
-    return 0;
-}
-
-void MagnetometerCalibration::Hessenberg_Elementary_Transform(double *H,
-                                                              double *S,
+void MagnetometerCalibration::Hessenberg_Elementary_Transform(float *H,
+                                                              float *S,
                                                               int perm[], int n)
 {
     int i, j;
-    double *pS, *pH;
-    //   double x;
+    float *pS, *pH;
+    //   float x;
 
     Identity_Matrix(S, n);
     for (i = n - 2; i >= 1; i--)
@@ -434,16 +399,16 @@ void MagnetometerCalibration::Hessenberg_Elementary_Transform(double *H,
     }
 }
 
-int MagnetometerCalibration::Hessenberg_Form_Elementary(double *A, double *S,
+int MagnetometerCalibration::Hessenberg_Form_Elementary(float *A, float *S,
                                                         int n)
 {
     int i, j, col, row;
     // int k;
     int *perm;
-    double *p_row, *pS_row;
-    double max;
-    double s;
-    double *pA, *pB, *pC, *pS;
+    float *p_row, *pS_row;
+    float max;
+    float s;
+    float *pA, *pB, *pC, *pS;
 
     // n x n matrices for which n <= 2 are already in Hessenberg form
 
@@ -522,12 +487,12 @@ int MagnetometerCalibration::Hessenberg_Form_Elementary(double *A, double *S,
     return 0;
 }
 
-void MagnetometerCalibration::Interchange_Rows(double *A, int row1, int row2,
+void MagnetometerCalibration::Interchange_Rows(float *A, int row1, int row2,
                                                int ncols)
 {
     int i;
-    double *pA1, *pA2;
-    double temp;
+    float *pA1, *pA2;
+    float temp;
 
     pA1 = A + row1 * ncols;
     pA2 = A + row2 * ncols;
@@ -539,12 +504,12 @@ void MagnetometerCalibration::Interchange_Rows(double *A, int row1, int row2,
     }
 }
 
-void MagnetometerCalibration::Interchange_Columns(double *A, int col1, int col2,
+void MagnetometerCalibration::Interchange_Columns(float *A, int col1, int col2,
                                                   int nrows, int ncols)
 {
     int i;
-    double *pA1, *pA2;
-    double temp;
+    float *pA1, *pA2;
+    float temp;
 
     pA1 = A + col1;
     pA2 = A + col2;
@@ -556,26 +521,26 @@ void MagnetometerCalibration::Interchange_Columns(double *A, int col1, int col2,
     }
 }
 
-void MagnetometerCalibration::Copy_Vector(double *d, double *s, int n)
+void MagnetometerCalibration::Copy_Vector(float *d, float *s, int n)
 {
-    // memcpy(d, s, sizeof(double) * n);
+    // memcpy(d, s, sizeof(float) * n);
     for (uint8_t i = 0; i < n; i++)
     {
         d[i] = s[i];
     }
 }
 
-int MagnetometerCalibration::QR_Hessenberg_Matrix(double *H, double *S,
-                                                  double eigen_real[],
-                                                  double eigen_imag[], int n,
+int MagnetometerCalibration::QR_Hessenberg_Matrix(float *H, float *S,
+                                                  float eigen_real[],
+                                                  float eigen_imag[], int n,
                                                   int max_iteration_count)
 {
     int i;
     int row;
     int iteration;
     int found_eigenvalue;
-    double shift = 0.0;
-    double *pH;
+    float shift = 0.0;
+    float *pH;
 
     for (row = n - 1; row >= 0; row--)
     {
@@ -593,7 +558,7 @@ int MagnetometerCalibration::QR_Hessenberg_Matrix(double *H, double *S,
             // that row element is an eigenvalue.  If the subdiagonal
             // element on row "row-1" is small, then the eigenvalues
             // of the 2x2 diagonal block consisting rows "row-1" and
-            // "row" are eigenvalues.  Otherwise perform a double QR
+            // "row" are eigenvalues.  Otherwise perform a float QR
             // iteration.
 
             switch (row - i)
@@ -608,7 +573,7 @@ int MagnetometerCalibration::QR_Hessenberg_Matrix(double *H, double *S,
                 found_eigenvalue = 1;
                 break;
             default:
-                Double_QR_Iteration(H, S, i, row, n, &shift, iteration);
+                float_QR_Iteration(H, S, i, row, n, &shift, iteration);
             }
             if (found_eigenvalue)
                 break;
@@ -623,25 +588,25 @@ int MagnetometerCalibration::QR_Hessenberg_Matrix(double *H, double *S,
     return 0;
 }
 
-void MagnetometerCalibration::One_Real_Eigenvalue(double Hrow[],
-                                                  double eigen_real[],
-                                                  double eigen_imag[], int row,
-                                                  double shift)
+void MagnetometerCalibration::One_Real_Eigenvalue(float Hrow[],
+                                                  float eigen_real[],
+                                                  float eigen_imag[], int row,
+                                                  float shift)
 {
     Hrow[row] += shift;
     eigen_real[row] = Hrow[row];
     eigen_imag[row] = 0.0;
 }
 
-void MagnetometerCalibration::Two_Eigenvalues(double *H, double *S,
-                                              double eigen_real[],
-                                              double eigen_imag[], int n,
-                                              int row, double shift)
+void MagnetometerCalibration::Two_Eigenvalues(float *H, float *S,
+                                              float eigen_real[],
+                                              float eigen_imag[], int n,
+                                              int row, float shift)
 {
-    double p, q, x, discriminant, r;
-    double cos, sin;
-    double *Hrow = H + n * row;
-    double *Hnextrow = Hrow + n;
+    float p, q, x, discriminant, r;
+    float cos, sin;
+    float *Hrow = H + n * row;
+    float *Hnextrow = Hrow + n;
     int nextrow = row + 1;
 
     p = 0.5 * (Hrow[row] - Hnextrow[nextrow]);
@@ -675,10 +640,10 @@ void MagnetometerCalibration::Two_Eigenvalues(double *H, double *S,
     }
 }
 
-void MagnetometerCalibration::Update_Row(double *Hrow, double cos, double sin, int n, int row)
+void MagnetometerCalibration::Update_Row(float *Hrow, float cos, float sin, int n, int row)
 {
-    double x;
-    double *Hnextrow = Hrow + n;
+    float x;
+    float *Hnextrow = Hrow + n;
     int i;
 
     for (i = row; i < n; i++)
@@ -689,10 +654,10 @@ void MagnetometerCalibration::Update_Row(double *Hrow, double cos, double sin, i
     }
 }
 
-void MagnetometerCalibration::Update_Column(double *H, double cos, double sin,
+void MagnetometerCalibration::Update_Column(float *H, float cos, float sin,
                                             int n, int col)
 {
-    double x;
+    float x;
     int i;
     int next_col = col + 1;
 
@@ -704,10 +669,10 @@ void MagnetometerCalibration::Update_Column(double *H, double cos, double sin,
     }
 }
 
-void MagnetometerCalibration::Update_Transformation(double *S, double cos,
-                                                    double sin, int n, int k)
+void MagnetometerCalibration::Update_Transformation(float *S, float cos,
+                                                    float sin, int n, int k)
 {
-    double x;
+    float x;
     int i;
     int k1 = k + 1;
 
@@ -719,28 +684,28 @@ void MagnetometerCalibration::Update_Transformation(double *S, double cos,
     }
 }
 
-void MagnetometerCalibration::Double_QR_Iteration(double *H, double *S,
+void MagnetometerCalibration::float_QR_Iteration(float *H, float *S,
                                                   int min_row, int max_row,
-                                                  int n, double *shift,
+                                                  int n, float *shift,
                                                   int iteration)
 {
     int k;
-    double trace, det;
+    float trace, det;
 
     Product_and_Sum_of_Shifts(H, n, max_row, shift, &trace, &det, iteration);
     k = Two_Consecutive_Small_Subdiagonal(H, min_row, max_row, n, trace, det);
-    Double_QR_Step(H, min_row, max_row, k, trace, det, S, n);
+    float_QR_Step(H, min_row, max_row, k, trace, det, S, n);
 }
 
-void MagnetometerCalibration::Product_and_Sum_of_Shifts(double *H, int n,
+void MagnetometerCalibration::Product_and_Sum_of_Shifts(float *H, int n,
                                                         int max_row,
-                                                        double *shift,
-                                                        double *trace,
-                                                        double *det,
+                                                        float *shift,
+                                                        float *trace,
+                                                        float *det,
                                                         int iteration)
 {
-    double *pH = H + max_row * n;
-    double *p_aux;
+    float *pH = H + max_row * n;
+    float *p_aux;
     int i;
     int min_col = max_row - 1;
 
@@ -762,15 +727,15 @@ void MagnetometerCalibration::Product_and_Sum_of_Shifts(double *H, int n,
     }
 }
 
-int MagnetometerCalibration::Two_Consecutive_Small_Subdiagonal(double *H,
+int MagnetometerCalibration::Two_Consecutive_Small_Subdiagonal(float *H,
                                                                int min_row,
                                                                int max_row,
                                                                int n,
-                                                               double trace,
-                                                               double det)
+                                                               float trace,
+                                                               float det)
 {
-    double x, y, z, s;
-    double *pH;
+    float x, y, z, s;
+    float *pH;
     int i, k;
 
     for (k = max_row - 2, pH = H + k * n; k >= min_row; pH -= n, k--)
@@ -798,16 +763,16 @@ int MagnetometerCalibration::Two_Consecutive_Small_Subdiagonal(double *H,
     return k;
 }
 
-void MagnetometerCalibration::Double_QR_Step(double *H, int min_row,
+void MagnetometerCalibration::float_QR_Step(float *H, int min_row,
                                              int max_row, int min_col,
-                                             double trace, double det,
-                                             double *S, int n)
+                                             float trace, float det,
+                                             float *S, int n)
 {
-    double s, x, y, z;
-    double a, b, c;
-    double *pH;
-    double *tH;
-    double *pS;
+    float s, x, y, z;
+    float a, b, c;
+    float *pH;
+    float *tH;
+    float *pS;
     int i, j, k;
     int last_test_row_col = max_row - 1;
 
@@ -893,11 +858,11 @@ void MagnetometerCalibration::Double_QR_Step(double *H, int min_row,
     };
 }
 
-void MagnetometerCalibration::BackSubstitution(double *H, double eigen_real[],
-                                               double eigen_imag[], int n)
+void MagnetometerCalibration::BackSubstitution(float *H, float eigen_real[],
+                                               float eigen_imag[], int n)
 {
-    double zero_tolerance;
-    double *pH;
+    float zero_tolerance;
+    float *pH;
     int i, j, row;
 
     // Calculate the zero tolerance
@@ -922,18 +887,18 @@ void MagnetometerCalibration::BackSubstitution(double *H, double eigen_real[],
     }
 }
 
-void MagnetometerCalibration::BackSubstitute_Real_Vector(double *H,
-                                                         double eigen_real[],
-                                                         double eigen_imag[],
+void MagnetometerCalibration::BackSubstitute_Real_Vector(float *H,
+                                                         float eigen_real[],
+                                                         float eigen_imag[],
                                                          int row,
-                                                         double zero_tolerance,
+                                                         float zero_tolerance,
                                                          int n)
 {
-    double *pH;
-    double *pV;
-    double x;
-    double u[4];
-    double v[2];
+    float *pH;
+    float *pV;
+    float x;
+    float u[4];
+    float v[2];
     int i, j, k;
 
     k = row;
@@ -979,15 +944,15 @@ void MagnetometerCalibration::BackSubstitute_Real_Vector(double *H,
 }
 
 void MagnetometerCalibration::BackSubstitute_Complex_Vector(
-        double *H, double eigen_real[], double eigen_imag[], int row,
-        double zero_tolerance, int n)
+        float *H, float eigen_real[], float eigen_imag[], int row,
+        float zero_tolerance, int n)
 {
-    double *pH;
-    double *pV;
-    double x, y;
-    double u[4];
-    double v[2];
-    double w[2];
+    float *pH;
+    float *pV;
+    float x, y;
+    float u[4];
+    float v[2];
+    float w[2];
     int i, j, k;
 
     k = row - 1;
@@ -1062,13 +1027,13 @@ void MagnetometerCalibration::BackSubstitute_Complex_Vector(
     }
 }
 
-void MagnetometerCalibration::Calculate_Eigenvectors(double *H, double *S,
-                                                     double eigen_real[],
-                                                     double eigen_imag[], int n)
+void MagnetometerCalibration::Calculate_Eigenvectors(float *H, float *S,
+                                                     float eigen_real[],
+                                                     float eigen_imag[], int n)
 {
-    double *pH;
-    double *pS;
-    double x, y;
+    float *pH;
+    float *pS;
+    float x, y;
     int i, j, k;
 
     for (k = n - 1; k >= 0; k--)
@@ -1101,7 +1066,7 @@ void MagnetometerCalibration::Calculate_Eigenvectors(double *H, double *S,
     }
 }
 
-void MagnetometerCalibration::Identity_Matrix(double *A, int n)
+void MagnetometerCalibration::Identity_Matrix(float *A, int n)
 {
     int i, j;
 
@@ -1114,10 +1079,10 @@ void MagnetometerCalibration::Identity_Matrix(double *A, int n)
     *A = 1.0;
 }
 
-void MagnetometerCalibration::Complex_Division(double x, double y, double u,
-                                               double v, double *a, double *b)
+void MagnetometerCalibration::Complex_Division(float x, float y, float u,
+                                               float v, float *a, float *b)
 {
-    double q = u * u + v * v;
+    float q = u * u + v * v;
 
     *a = (x * u + y * v) / q;
     *b = (y * u - x * v) / q;

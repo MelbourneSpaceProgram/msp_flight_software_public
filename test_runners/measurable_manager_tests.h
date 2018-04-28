@@ -6,7 +6,9 @@
 #include "unity.h"
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
+#include <src/util/satellite_time_source.h>
 #include <test_runners/measurable_manager_tests.h>
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
