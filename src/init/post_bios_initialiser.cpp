@@ -91,41 +91,41 @@ void PostBiosInitialiser::InitDataDashboard() {
     data_dashboard_task->Init();
 }
 
-void PostBiosInitialiser::OrientationControlTimerISR(UArg timer_semaphore) {
-    Semaphore_post((Semaphore_Handle)timer_semaphore);
-}
+//void PostBiosInitialiser::OrientationControlTimerISR(UArg timer_semaphore) {
+//    Semaphore_post((Semaphore_Handle)timer_semaphore);
+//}
 
-void PostBiosInitialiser::InitOrientationControl() {
-    Timer_Handle orientation_control_timer;
-    Timer_Params timerParams;
-    Semaphore_Params orientation_control_timer_semaphore_params;
-    Semaphore_Handle orientation_control_timer_semaphore;
-    Semaphore_Params_init(&orientation_control_timer_semaphore_params);
-    orientation_control_timer_semaphore =
-        Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
-    Timer_Params_init(&timerParams);
-    Error_init(NULL);
-    timerParams.period = RunnableOrientationControl::kControlLoopPeriodMicros;
-    timerParams.arg = (UArg)orientation_control_timer_semaphore;
-    // TODO (rskew) use a specific timer
-    orientation_control_timer =
-        Timer_create(Timer_ANY, PostBiosInitialiser::OrientationControlTimerISR,
-                     &timerParams, NULL);
-    if (orientation_control_timer == NULL) {
-        etl::exception e("Timer create failed", __FILE__, __LINE__);
-        throw e;
-    }
-
-    RunnableOrientationControl* runnable_orientation_control =
-        new RunnableOrientationControl();
-    runnable_orientation_control->SetTimerSemaphore(
-        orientation_control_timer_semaphore);
-
-    // TODO(rskew) review priority
-    TaskHolder* orientation_control_task = new TaskHolder(
-        4096, "OrientationControl", 7, runnable_orientation_control);
-    orientation_control_task->Init();
-}
+//void PostBiosInitialiser::InitOrientationControl() {
+//    Timer_Handle orientation_control_timer;
+//    Timer_Params timerParams;
+//    Semaphore_Params orientation_control_timer_semaphore_params;
+//    Semaphore_Handle orientation_control_timer_semaphore;
+//    Semaphore_Params_init(&orientation_control_timer_semaphore_params);
+//    orientation_control_timer_semaphore =
+//        Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
+//    Timer_Params_init(&timerParams);
+//    Error_init(NULL);
+//    timerParams.period = RunnableOrientationControl::kControlLoopPeriodMicros;
+//    timerParams.arg = (UArg)orientation_control_timer_semaphore;
+//    // TODO (rskew) use a specific timer
+//    orientation_control_timer =
+//        Timer_create(Timer_ANY, PostBiosInitialiser::OrientationControlTimerISR,
+//                     &timerParams, NULL);
+//    if (orientation_control_timer == NULL) {
+//        etl::exception e("Timer create failed", __FILE__, __LINE__);
+//        throw e;
+//    }
+//
+//    RunnableOrientationControl* runnable_orientation_control =
+//        new RunnableOrientationControl();
+//    runnable_orientation_control->SetTimerSemaphore(
+//        orientation_control_timer_semaphore);
+//
+//    // TODO(rskew) review priority
+//    TaskHolder* orientation_control_task = new TaskHolder(
+//        4096, "OrientationControl", 7, runnable_orientation_control);
+//    orientation_control_task->Init();
+//}
 
 void PostBiosInitialiser::DeployAntenna() {
     Antenna* antenna = Antenna::GetAntenna();
@@ -195,7 +195,7 @@ void PostBiosInitialiser::PostBiosInit() {
         DeployAntenna();
         InitBeacon();
         InitPayloadProcessor();
-        InitOrientationControl();
+//        InitOrientationControl();
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");
         System_printf("File: %s, line %d\n", e.file_name(), e.line_number());

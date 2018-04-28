@@ -4,11 +4,8 @@
 #define TEST_RUNNERS_NADIR_CONTROLLER_TESTS_H_
 
 #include "unity.h"
-#include <math.h>
-#include <src/adcs/controllers/nadir_controller.h>
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 
-void TestNadirControl(void);
 
 #endif  // TEST_RUNNERS_NADIR_CONTROLLER_TESTS_H_

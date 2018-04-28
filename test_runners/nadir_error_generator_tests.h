@@ -4,11 +4,8 @@
 #define TEST_RUNNERS_NADIR_ERROR_GENERATOR_TESTS_H_
 
 #include "unity.h"
-#include <math.h>
-#include <src/adcs/state_estimators/nadir_error_generator.h>
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 
-void TestErrorQuaternionGenerator(void);
 
 #endif  // TEST_RUNNERS_NADIR_ERROR_GENERATOR_TESTS_H_

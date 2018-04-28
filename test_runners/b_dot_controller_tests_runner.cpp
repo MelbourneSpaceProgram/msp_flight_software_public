@@ -32,7 +32,6 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestControl();
 
 
 /*=======Suite Setup=====*/
@@ -77,7 +76,6 @@ int b_dot_controller_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/adcs/tests/b_dot_controller_tests.cpp");
-    RUN_TEST(TestControl, 5);
   } catch (etl::exception e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

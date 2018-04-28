@@ -13,18 +13,13 @@ class Matrix {
 
     // TODO(rskew) implement copy constructor in matrix.cpp
     template <uint8_t rows, uint8_t columns>
-    Matrix(const Matrix &A, double (&init_data)[rows][columns] = NULL) {
+    Matrix(const Matrix &A, T (&init_data)[rows][columns] = NULL) {
         if (init_data == NULL) {
-            etl::exception e(
-                "Matrix::Matrix(const Matrix &A ...) must pass in data matrix",
-                __FILE__, __LINE__);
+            etl::exception e("Must pass in data matrix", __FILE__, __LINE__);
             throw e;
         }
         if (rows != A.GetNRows() || columns != A.GetNColumns()) {
-            etl::exception e(
-                "Matrix::Matrix(const Matrix &A ...) arguments sizes don't "
-                "match",
-                __FILE__, __LINE__);
+            etl::exception e("Arguments sizes don't match", __FILE__, __LINE__);
             throw e;
         }
         nrows = A.GetNRows();
@@ -37,8 +32,6 @@ class Matrix {
         }
     }
 
-
-
     void Slice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
                uint8_t column_end, const Matrix &A);
 
@@ -46,26 +39,26 @@ class Matrix {
     uint8_t GetNColumns() const;
     bool IsSquare() const;
 
-    double Get(uint8_t row, uint8_t column) const;
-    void Set(uint8_t row, uint8_t column, double value);
+    T Get(uint8_t row, uint8_t column) const;
+    void Set(uint8_t row, uint8_t column, T value);
 
-    static bool DoubleIsEqual(double a, double b);
+    static bool TemplateTypeValueIsEqual(T a, T b);
     bool IsEqual(const Matrix &A) const;
     bool SameSize(const Matrix &A) const;
     bool SameNRows(const Matrix &A) const;
     bool SameNColumns(const Matrix &A) const;
 
     void Transpose(const Matrix &A);
-    static double VectorNorm(const Matrix &A);
+    static T VectorNorm(const Matrix &A);
 
     void Add(const Matrix &A, const Matrix &B);
     void Subtract(const Matrix &A, const Matrix &B);
     void Multiply(const Matrix &A, const Matrix &B);
-    void MultiplyScalar(const Matrix &A, double scale);
+    void MultiplyScalar(const Matrix &A, T scale);
     void CrossProduct(const Matrix &A, const Matrix &B);
-    static double DotProduct(const Matrix &A, const Matrix &B);
+    static T DotProduct(const Matrix &A, const Matrix &B);
 
-    void Fill(double value);
+    void Fill(T value);
     void CopyInto(uint8_t row_start, uint8_t column_start, const Matrix &A);
     void Identity();
 
@@ -74,8 +67,8 @@ class Matrix {
     void ConcatenateHorizontally(const Matrix &A, const Matrix &B);
     void ConcatenateVertically(const Matrix &A, const Matrix &B);
 
-    void AddRows(uint8_t row_to, uint8_t row_from, double scale);
-    void MultiplyRow(uint8_t row, double scale);
+    void AddRows(uint8_t row_to, uint8_t row_from, T scale);
+    void MultiplyRow(uint8_t row, T scale);
     void SwitchRows(uint8_t row_a, uint8_t row_b);
     void RowReduce();
 
@@ -83,16 +76,15 @@ class Matrix {
     void RotationMatrixFromQuaternion(const Matrix &q);
     void QuaternionConjugate();
     void QuaternionProductCross(Matrix &a, Matrix &b);
-    void QuaternionProductDot(Matrix &a, Matrix&b);
+    void QuaternionProductDot(Matrix &a, Matrix &b);
 
    private:
     T *data;
     uint8_t nrows;
     uint8_t ncolumns;
-    static const double EPSILON_MULT = 1E-6;  //  Comparison ratio
-    static const double EPSILON_ADD = 1E-4;   //  Comparison ratio
+    static const T EPSILON_MULT = 1E-6;  //  Comparison ratio
+    static const T EPSILON_ADD = 1E-4;   //  Comparison ratio
 };
-
 
 //////////////////////////////////////////////////////////
 // Moved all from cpp so they can be templated
@@ -103,14 +95,13 @@ class Matrix {
 
 template <typename T>
 void Matrix<T>::Slice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
-                   uint8_t column_end, const Matrix &A) {
+                      uint8_t column_end, const Matrix &A) {
     if (row_start >= A.GetNRows() || row_end >= A.GetNRows() ||
         row_end < row_start || column_start >= A.GetNColumns() ||
         column_end >= A.GetNColumns() || column_end < column_start ||
         nrows != row_end - row_start + 1 ||
         ncolumns != column_end - column_start + 1) {
-        etl::exception e("Matrix::Slice arguments outside bounds", __FILE__,
-                         __LINE__);
+        etl::exception e("Arguments outside bounds", __FILE__, __LINE__);
         throw e;
     }
     nrows = row_end - row_start + 1;
@@ -123,25 +114,31 @@ void Matrix<T>::Slice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
 }
 
 template <typename T>
-uint8_t Matrix<T>::GetNRows() const { return nrows; }
+uint8_t Matrix<T>::GetNRows() const {
+    return nrows;
+}
 
+template <typename T>
 uint8_t Matrix<T>::GetNColumns() const { return ncolumns; }
 
-bool Matrix::IsSquare() const { return nrows == ncolumns; }
+template <typename T>
+bool Matrix<T>::IsSquare() const {
+    return nrows == ncolumns;
+}
 
-double Matrix::Get(uint8_t row, uint8_t column) const {
+template <typename T>
+T Matrix<T>::Get(uint8_t row, uint8_t column) const {
     if (row >= nrows || column >= ncolumns) {  // uint8_t always > 0
-        etl::exception e("Matrix::Get indices out of bounds", __FILE__,
-                         __LINE__);
+        etl::exception e("Indices out of bounds", __FILE__, __LINE__);
         throw e;
     }
     return data[(row * ncolumns) + column];
 }
 
-void Matrix::Set(uint8_t row, uint8_t column, double value) {
+template <typename T>
+void Matrix<T>::Set(uint8_t row, uint8_t column, T value) {
     if (row >= nrows || column >= ncolumns) {  // uint8_t always > 0
-        etl::exception e("Matrix::Set indices out of bounds", __FILE__,
-                         __LINE__);
+        etl::exception e("Indices out of bounds", __FILE__, __LINE__);
         throw e;
     }
     data[(row * ncolumns) + column] = value;
@@ -149,15 +146,14 @@ void Matrix::Set(uint8_t row, uint8_t column, double value) {
 
 //  Test equality using relative difference. Additive tolerance allows
 //  comparison with zero, but it's set arbitrarily.
-bool Matrix::DoubleIsEqual(double a, double b) {
+template <typename T>
+bool Matrix<T>::TemplateTypeValueIsEqual(T a, T b) {
     if (isinf(a) || isinf(b)) {
-        etl::exception e("Matrix::DoubleIsEqual argument isinf", __FILE__,
-                         __LINE__);
+        etl::exception e("Argument isinf", __FILE__, __LINE__);
         throw e;
     }
     if (isnan(a) || isnan(b)) {
-        etl::exception e("Matrix::DoubleIsEqual argument is nan", __FILE__,
-                         __LINE__);
+        etl::exception e("Argument is nan", __FILE__, __LINE__);
         throw e;
     }
     if (a > b) {
@@ -166,15 +162,15 @@ bool Matrix::DoubleIsEqual(double a, double b) {
     return std::fabs(a - b) <= std::fabs(b * EPSILON_MULT + EPSILON_ADD);
 }
 
-bool Matrix::IsEqual(const Matrix &A) const {
+template <typename T>
+bool Matrix<T>::IsEqual(const Matrix &A) const {
     if (!SameSize(A)) {
-        etl::exception e("Matrix::IsEqual arguments' sizes don't match",
-                         __FILE__, __LINE__);
+        etl::exception e("Arguments' sizes don't match", __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
-            if (!DoubleIsEqual(Get(i, j), A.Get(i, j))) {
+            if (!TemplateTypeValueIsEqual(Get(i, j), A.Get(i, j))) {
                 return false;
             }
         }
@@ -182,20 +178,25 @@ bool Matrix::IsEqual(const Matrix &A) const {
     return true;
 }
 
-bool Matrix::SameSize(const Matrix &A) const {
+template <typename T>
+bool Matrix<T>::SameSize(const Matrix &A) const {
     return SameNRows(A) && SameNColumns(A);
 }
 
-bool Matrix::SameNRows(const Matrix &A) const { return nrows == A.GetNRows(); }
+template <typename T>
+bool Matrix<T>::SameNRows(const Matrix &A) const {
+    return nrows == A.GetNRows();
+}
 
-bool Matrix::SameNColumns(const Matrix &A) const {
+template <typename T>
+bool Matrix<T>::SameNColumns(const Matrix &A) const {
     return ncolumns == A.GetNColumns();
 }
 
-void Matrix::Transpose(const Matrix &A) {
+template <typename T>
+void Matrix<T>::Transpose(const Matrix &A) {
     if (nrows != A.GetNColumns() || ncolumns != A.GetNRows()) {
-        etl::exception e("Matrix::Transpose arguments' sizes don't match",
-                         __FILE__, __LINE__);
+        etl::exception e("Arguments' sizes don't match", __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -205,23 +206,23 @@ void Matrix::Transpose(const Matrix &A) {
     }
 }
 
-double Matrix::VectorNorm(const Matrix &A) {
+template <typename T>
+T Matrix<T>::VectorNorm(const Matrix &A) {
     if (A.GetNColumns() != 1) {
-        etl::exception e("Matrix::VectorNorm must be a column vector",
-                         __FILE__, __LINE__);
+        etl::exception e("Must be a column vector", __FILE__, __LINE__);
         throw e;
     }
-    double sum_of_squares = 0;
+    T sum_of_squares = 0;
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
         sum_of_squares += A.Get(i, 0) * A.Get(i, 0);
     }
     return sqrt(sum_of_squares);
 }
 
-void Matrix::Add(const Matrix &A, const Matrix &B) {
+template <typename T>
+void Matrix<T>::Add(const Matrix &A, const Matrix &B) {
     if (!SameSize(A) || !SameSize(B)) {
-        etl::exception e("Matrix::Add arguments' sizes don't match", __FILE__,
-                         __LINE__);
+        etl::exception e("Arguments' sizes don't match", __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -231,10 +232,10 @@ void Matrix::Add(const Matrix &A, const Matrix &B) {
     }
 }
 
-void Matrix::Subtract(const Matrix &A, const Matrix &B) {
+template <typename T>
+void Matrix<T>::Subtract(const Matrix &A, const Matrix &B) {
     if (!SameSize(A) || !SameSize(B)) {
-        etl::exception e("Matrix::Subtract arguments' sizes don't match",
-                         __FILE__, __LINE__);
+        etl::exception e("Arguments' sizes don't match", __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -244,15 +245,15 @@ void Matrix::Subtract(const Matrix &A, const Matrix &B) {
     }
 }
 
-void Matrix::Multiply(const Matrix &A, const Matrix &B) {
+template <typename T>
+void Matrix<T>::Multiply(const Matrix &A, const Matrix &B) {
     if (A.GetNColumns() != B.GetNRows() || !SameNRows(A) || !SameNColumns(B)) {
-        etl::exception e("Matrix::Multiply dimensions don't match", __FILE__,
-                         __LINE__);
+        etl::exception e("Dimensions don't match", __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
-            double n = 0;
+            T n = 0;
             for (uint8_t k = 0; k < A.GetNColumns(); k++) {
                 n += A.Get(i, k) * B.Get(k, j);
             }
@@ -261,10 +262,10 @@ void Matrix::Multiply(const Matrix &A, const Matrix &B) {
     }
 }
 
-void Matrix::MultiplyScalar(const Matrix &A, double scale) {
+template <typename T>
+void Matrix<T>::MultiplyScalar(const Matrix &A, T scale) {
     if (!SameSize(A)) {
-        etl::exception e("Matrix::MultiplyScalar arguments' sizes don't match",
-                         __FILE__, __LINE__);
+        etl::exception e("Arguments' sizes don't match", __FILE__, __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < nrows; i++) {
@@ -275,12 +276,12 @@ void Matrix::MultiplyScalar(const Matrix &A, double scale) {
 }
 
 // Only valid for vectors represented as 3x1 matrices
-void Matrix::CrossProduct(const Matrix &A, const Matrix &B) {
+template <typename T>
+void Matrix<T>::CrossProduct(const Matrix &A, const Matrix &B) {
     if (A.GetNRows() != 3 || A.GetNColumns() != 1 || !B.SameSize(A) ||
         !SameSize(A)) {
-        etl::exception e(
-            "Matrix::CrossProduct arguments or 'this' aren't column vectors",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments or 'this' aren't column vectors", __FILE__,
+                         __LINE__);
         throw e;
     }
     Set(0, 0, A.Get(1, 0) * B.Get(2, 0) - A.Get(2, 0) * B.Get(1, 0));
@@ -288,7 +289,8 @@ void Matrix::CrossProduct(const Matrix &A, const Matrix &B) {
     Set(2, 0, A.Get(0, 0) * B.Get(1, 0) - A.Get(1, 0) * B.Get(0, 0));
 }
 
-void Matrix::Fill(double value) {
+template <typename T>
+void Matrix<T>::Fill(T value) {
     for (uint8_t i = 0; i < nrows; i++) {
         for (uint8_t j = 0; j < ncolumns; j++) {
             Set(i, j, value);
@@ -296,13 +298,13 @@ void Matrix::Fill(double value) {
     }
 }
 
-void Matrix::CopyInto(uint8_t row_start, uint8_t column_start,
-                      const Matrix &A) {
+template <typename T>
+void Matrix<T>::CopyInto(uint8_t row_start, uint8_t column_start,
+                         const Matrix &A) {
     if (nrows < A.GetNRows() + row_start ||
         ncolumns < A.GetNColumns() + column_start) {
-        etl::exception e(
-            "Matrix::CopyInto arguments exceed the bounds of 'this'",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments exceed the bounds of 'this'", __FILE__,
+                         __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
@@ -312,10 +314,10 @@ void Matrix::CopyInto(uint8_t row_start, uint8_t column_start,
     }
 }
 
-void Matrix::Identity() {
+template <typename T>
+void Matrix<T>::Identity() {
     if (!IsSquare()) {
-        etl::exception e("Matrix::Identity argument not square", __FILE__,
-                         __LINE__);
+        etl::exception e("Argument not square", __FILE__, __LINE__);
         throw e;
     }
     Fill(0);
@@ -326,34 +328,33 @@ void Matrix::Identity() {
 }
 
 // Only valid for quaternions represented as 4x1 matrices
-void Matrix::QuaternionNormalise(const Matrix &q) {
+template <typename T>
+void Matrix<T>::QuaternionNormalise(const Matrix &q) {
     // TODO(rskew) break this out into a standalone quaternion library
     if (nrows != 4 || ncolumns != 1 || q.GetNRows() != 4 ||
         q.GetNColumns() != 1) {
-        etl::exception e("Matrix::QuaternionNormalise not a 4x1 matrix",
-                         __FILE__, __LINE__);
+        etl::exception e("Not a 4x1 matrix", __FILE__, __LINE__);
         throw e;
     }
     MultiplyScalar(q, 1 / VectorNorm(q));
 }
 
 // Only valid for quaternions represented as 4x1 matrices
-void Matrix::RotationMatrixFromQuaternion(const Matrix &q) {
+template <typename T>
+void Matrix<T>::RotationMatrixFromQuaternion(const Matrix &q) {
     if (nrows != 3 || ncolumns != 3 || q.nrows != 4 || q.ncolumns != 1) {
-        etl::exception e(
-            "Matrix::RotationMatrixFromQuaternion incorrect dimensions",
-            __FILE__, __LINE__);
+        etl::exception e("Incorrect dimensions", __FILE__, __LINE__);
         throw e;
     }
-    double q_normed_data[4][1];
+    T q_normed_data[4][1];
     Matrix q_normed(q_normed_data);
 
     q_normed.QuaternionNormalise(q);
 
-    double qx = q_normed.Get(0, 0);
-    double qy = q_normed.Get(1, 0);
-    double qz = q_normed.Get(2, 0);
-    double qw = q_normed.Get(3, 0);
+    T qx = q_normed.Get(0, 0);
+    T qy = q_normed.Get(1, 0);
+    T qz = q_normed.Get(2, 0);
+    T qw = q_normed.Get(3, 0);
 
     Set(0, 0, 1 - 2 * qy * qy - 2 * qz * qz);
     Set(0, 1, 2 * qx * qy - 2 * qz * qw);
@@ -367,11 +368,11 @@ void Matrix::RotationMatrixFromQuaternion(const Matrix &q) {
 }
 
 // Only valid for vectors represented as 3x1 matrices
-void Matrix::SkewSymmetricFill(const Matrix &A) {
+template <typename T>
+void Matrix<T>::SkewSymmetricFill(const Matrix &A) {
     if (A.GetNColumns() != 1 || A.GetNRows() != 3 || nrows != 3 ||
         ncolumns != 3) {
-        etl::exception e("Matrix::SkewSymmetricFill incorrect dimensions",
-                         __FILE__, __LINE__);
+        etl::exception e("Incorrect dimensions", __FILE__, __LINE__);
         throw e;
     }
     Set(0, 0, 0);
@@ -385,12 +386,12 @@ void Matrix::SkewSymmetricFill(const Matrix &A) {
     Set(2, 2, 0);
 }
 
-void Matrix::ConcatenateHorizontally(const Matrix &A, const Matrix &B) {
+template <typename T>
+void Matrix<T>::ConcatenateHorizontally(const Matrix &A, const Matrix &B) {
     if (!SameNRows(A) || !SameNRows(B) ||
         ncolumns != A.GetNColumns() + B.GetNColumns()) {
-        etl::exception e(
-            "Matrix::ConcatenateHorizontally arguments' dimensions don't match",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments' dimensions don't match", __FILE__,
+                         __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
@@ -405,12 +406,12 @@ void Matrix::ConcatenateHorizontally(const Matrix &A, const Matrix &B) {
     }
 }
 
-void Matrix::ConcatenateVertically(const Matrix &A, const Matrix &B) {
+template <typename T>
+void Matrix<T>::ConcatenateVertically(const Matrix &A, const Matrix &B) {
     if (!SameNColumns(A) || !SameNColumns(B) ||
         nrows != A.GetNRows() + B.GetNRows()) {
-        etl::exception e(
-            "Matrix::ConcatenateVertically arguments' dimensions don't match",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments' dimensions don't match", __FILE__,
+                         __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < A.GetNRows(); i++) {
@@ -425,11 +426,11 @@ void Matrix::ConcatenateVertically(const Matrix &A, const Matrix &B) {
     }
 }
 
-void Matrix::AddRows(uint8_t row_to, uint8_t row_from, double scale) {
+template <typename T>
+void Matrix<T>::AddRows(uint8_t row_to, uint8_t row_from, T scale) {
     if (row_to >= nrows || row_from >= nrows) {
-        etl::exception e(
-            "Matrix::AddRows arguments are outside matrix dimensions",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments are outside matrix dimensions", __FILE__,
+                         __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < ncolumns; i++) {
@@ -437,11 +438,11 @@ void Matrix::AddRows(uint8_t row_to, uint8_t row_from, double scale) {
     }
 }
 
-void Matrix::MultiplyRow(uint8_t row, double scale) {
+template <typename T>
+void Matrix<T>::MultiplyRow(uint8_t row, T scale) {
     if (row >= nrows) {
-        etl::exception e(
-            "Matrix::MultiplyRow arguments are outside matrix dimensions",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments are outside matrix dimensions", __FILE__,
+                         __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < ncolumns; i++) {
@@ -449,21 +450,22 @@ void Matrix::MultiplyRow(uint8_t row, double scale) {
     }
 }
 
-void Matrix::SwitchRows(uint8_t row_a, uint8_t row_b) {
+template <typename T>
+void Matrix<T>::SwitchRows(uint8_t row_a, uint8_t row_b) {
     if (row_a >= nrows || row_b >= nrows) {
-        etl::exception e(
-            "Matrix::SwitchRows arguments are outside matrix dimensions",
-            __FILE__, __LINE__);
+        etl::exception e("Arguments are outside matrix dimensions", __FILE__,
+                         __LINE__);
         throw e;
     }
     for (uint8_t i = 0; i < ncolumns; i++) {
-        double temp = Get(row_a, i);
+        T temp = Get(row_a, i);
         Set(row_a, i, Get(row_b, i));
         Set(row_b, i, temp);
     }
 }
 
-void Matrix::RowReduce() {
+template <typename T>
+void Matrix<T>::RowReduce() {
     uint8_t square;
 
     if (nrows < ncolumns) {
@@ -474,16 +476,16 @@ void Matrix::RowReduce() {
 
     for (uint8_t i = 0; i < square; i++) {
         uint8_t max_row = i;
-        double max_element = std::fabs(Get(i, i));
+        T max_element = std::fabs(Get(i, i));
         for (uint8_t j = i + 1; j < nrows; j++) {
             if (std::fabs(Get(j, i)) > max_element) {
                 max_element = std::fabs(Get(j, i));
                 max_row = j;
             }
         }
-        if (DoubleIsEqual(max_element, 0)) {
-            etl::exception e("Matrix::RowReduce linear system has no solution",
-                             __FILE__, __LINE__);
+        if (TemplateTypeValueIsEqual(max_element, 0)) {
+            etl::exception e("Linear system has no solution", __FILE__,
+                             __LINE__);
             throw e;
         }
 
@@ -498,44 +500,44 @@ void Matrix::RowReduce() {
         }
     }
 }
-void Matrix::QuaternionConjugate()
-{
-
-    Set(1,0,-1 * Get(1,0));
-    Set(2,0,-1 * Get(2,0));
-    Set(3,0,-1 * Get(3,0));
+template <typename T>
+void Matrix<T>::QuaternionConjugate() {
+    Set(1, 0, -1 * Get(1, 0));
+    Set(2, 0, -1 * Get(2, 0));
+    Set(3, 0, -1 * Get(3, 0));
     return;
 }
 
-
-void Matrix::QuaternionProductCross(Matrix &a, Matrix &b)
-{
-    double x  = a.Get(0,0)*b.Get(0,0) - a.Get(1,0)*b.Get(1,0) - a.Get(2,0)*b.Get(2,0) - a.Get(3,0)*b.Get(3,0);
-    double y = a.Get(0,0)*b.Get(1,0) + a.Get(1,0)*b.Get(0,0) - a.Get(2,0)*b.Get(3,0) + a.Get(3,0)*b.Get(2,0);
-    double z = a.Get(0,0)*b.Get(2,0) + a.Get(2,0)*b.Get(0,0) + a.Get(1,0)*b.Get(3,0) - a.Get(3,0)*b.Get(1,0);
-    double w = a.Get(0,0)*b.Get(3,0) - a.Get(1,0)*b.Get(2,0) + a.Get(2,0)*b.Get(1,0) + a.Get(3,0)*b.Get(0,0);
-    Set(0,0,x);
-    Set(1,0,y);
-    Set(2,0,z);
-    Set(3,0,w);
-
- }
-void Matrix::QuaternionProductDot(Matrix &a, Matrix&b)
-{
-    QuaternionProductCross(b,a);
+template <typename T>
+void Matrix<T>::QuaternionProductCross(Matrix &a, Matrix &b) {
+    T x = a.Get(0, 0) * b.Get(0, 0) - a.Get(1, 0) * b.Get(1, 0) -
+               a.Get(2, 0) * b.Get(2, 0) - a.Get(3, 0) * b.Get(3, 0);
+    T y = a.Get(0, 0) * b.Get(1, 0) + a.Get(1, 0) * b.Get(0, 0) -
+               a.Get(2, 0) * b.Get(3, 0) + a.Get(3, 0) * b.Get(2, 0);
+    T z = a.Get(0, 0) * b.Get(2, 0) + a.Get(2, 0) * b.Get(0, 0) +
+               a.Get(1, 0) * b.Get(3, 0) - a.Get(3, 0) * b.Get(1, 0);
+    T w = a.Get(0, 0) * b.Get(3, 0) - a.Get(1, 0) * b.Get(2, 0) +
+               a.Get(2, 0) * b.Get(1, 0) + a.Get(3, 0) * b.Get(0, 0);
+    Set(0, 0, x);
+    Set(1, 0, y);
+    Set(2, 0, z);
+    Set(3, 0, w);
 }
-double Matrix::DotProduct(const Matrix &A, const Matrix &B)
 
-{
-        double dot = 0;
+template <typename T>
+void Matrix<T>::QuaternionProductDot(Matrix &a, Matrix &b) {
+    QuaternionProductCross(b, a);
+}
 
-        for(uint8_t i = 0 ; i < 3; i++)
-        {
-            dot += A.Get(i,0) * B.Get(i,0);
-        }
+template <typename T>
+T Matrix<T>::DotProduct(const Matrix &A, const Matrix &B) {
+    T dot = 0;
+
+    for (uint8_t i = 0; i < 3; i++) {
+        dot += A.Get(i, 0) * B.Get(i, 0);
+    }
 
     return dot;
 }
-
 
 #endif  // SRC_UTIL_MATRIX_H_

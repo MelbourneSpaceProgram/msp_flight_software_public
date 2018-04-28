@@ -32,7 +32,6 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestErrorQuaternionGenerator();
 
 
 /*=======Suite Setup=====*/
@@ -77,7 +76,6 @@ int nadir_error_generator_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/adcs/tests/nadir_error_generator_tests.cpp");
-    RUN_TEST(TestErrorQuaternionGenerator, 6);
   } catch (etl::exception e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
