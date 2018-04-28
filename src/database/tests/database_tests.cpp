@@ -53,24 +53,15 @@ void TestHamming() {
 
     failed = false;
     try {
-        HammingCoder::DecodeByteArray(decoded_byte_array, 4, invalid_bytes, 4,
+        HammingCoder::DecodeByteArray(decoded_byte_array, 4, invalid_bytes,
                                       encoded_byte_array, 2);
     } catch (etl::exception& e) {
         failed = true;
     }
     TEST_ASSERT_TRUE(failed);
 
-    failed = false;
-    try {
-        HammingCoder::DecodeByteArray(decoded_byte_array, 2, invalid_bytes, 3,
-                                      encoded_byte_array, 4);
-    } catch (etl::exception& e) {
-        failed = true;
-    }
-    TEST_ASSERT_TRUE(failed);
-
     HammingCoder::EncodeByteArray(encoded_byte_array, 4, byte_array, 2);
-    HammingCoder::DecodeByteArray(decoded_byte_array, 2, invalid_bytes, 2,
+    HammingCoder::DecodeByteArray(decoded_byte_array, 2, invalid_bytes,
                                   encoded_byte_array, 4);
     TEST_ASSERT_EQUAL_UINT8(byte_array[0], decoded_byte_array[0]);
     TEST_ASSERT_EQUAL_UINT8(byte_array[1], decoded_byte_array[1]);

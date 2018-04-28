@@ -26,8 +26,6 @@ const char text_array[] =
 const uint16_t copy_buffer_size = 128;
 
 void TestFatFsReadWrite() {
-    SDFatFS_Handle handle = SdCard::SdOpen();
-
     File src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
                                                 SdCard::kFileReadMode |
                                                 SdCard::kFileCreateAlwaysMode);
@@ -97,5 +95,4 @@ void TestFatFsReadWrite() {
     SdCard::FileClose(dst);
     SdCard::FileDelete(input_file);
     SdCard::FileDelete(output_file);
-    SdCard::SdClose(handle);
 }
