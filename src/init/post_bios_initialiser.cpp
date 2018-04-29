@@ -56,7 +56,7 @@ void PostBiosInitialiser::RunUnitTests() {
     Semaphore_Handle test_complete = Semaphore_create(0, &sem_params, NULL);
     TestInitialiser::GetInstance()->InitSemaphore(test_complete);
     TaskHolder* test_task =
-        new TaskHolder(9300, "Unit Tests", 7, TestInitialiser::GetInstance());
+        new TaskHolder(11000, "Unit Tests", 7, TestInitialiser::GetInstance());
     test_task->Init();
     Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
     delete test_task;
@@ -172,7 +172,7 @@ void PostBiosInitialiser::PostBiosInit() {
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();
-        //InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
+        InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
 
         I2c* bus_a = new I2c(I2C_BUS_A);
         I2c* bus_b = new I2c(I2C_BUS_B);
