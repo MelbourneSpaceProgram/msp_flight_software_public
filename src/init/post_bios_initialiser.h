@@ -3,6 +3,8 @@
 
 #include <src/i2c/i2c.h>
 #include <src/tasks/runnable.h>
+#include <src/tasks/task_holder.h>
+#include <xdc/runtime/System.h>
 
 class PostBiosInitialiser : public Runnable {
    public:
@@ -18,6 +20,7 @@ class PostBiosInitialiser : public Runnable {
     static void InitStateManagement();
     static void InitDataDashboard();
     static void InitOrientationControl();
+    static TaskHolder* InitPreDeploymentMagnetometerPoller();
     static void InitBeacon();
     static void RunUnitTests();
     static void InitHardware();

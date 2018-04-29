@@ -59,7 +59,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    Magnetometer magnetometer("asdf");
+    Magnetometer magnetometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
