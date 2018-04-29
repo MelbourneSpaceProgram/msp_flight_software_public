@@ -3,6 +3,7 @@
 #include <src/init/post_bios_initialiser.h>
 #include <src/tasks/task_holder.h>
 #include <test_runners/master_runner.h>
+#include <ti/drivers/SDFatFS.h>
 
 // Initialises the core MSP432 drivers provided by TI and loads the post BIOS
 // init tasks. Should be called once at system startup, and prior to the BIOS
@@ -13,6 +14,7 @@ void PreBiosInit() {
     I2C_init();
     SPI_init();
     UART_init();
+    SDFatFS_init();
     PWM_init();
 
     TaskHolder *post_bios_initialiser_task =

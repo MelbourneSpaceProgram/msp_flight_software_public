@@ -317,6 +317,56 @@ const PWM_Config PWM_config[Board_PWMCOUNT] = {
 const uint_least8_t PWM_count = Board_PWMCOUNT;
 
 /*
+ *  =============================== SDFatFS ===============================
+ */
+#include <ti/drivers/SD.h>
+#include <ti/drivers/SDFatFS.h>
+
+/*
+ * Note: The SDFatFS driver provides interface functions to enable FatFs
+ * but relies on the SD driver to communicate with SD cards.  Opening a
+ * SDFatFs driver instance will internally try to open a SD driver instance
+ * reusing the same index number (opening SDFatFs driver at index 0 will try to
+ * open SD driver at index 0).  This requires that all SDFatFs driver instances
+ * have an accompanying SD driver instance defined with the same index.  It is
+ * acceptable to have more SD driver instances than SDFatFs driver instances
+ * but the opposite is not supported & the SDFatFs will fail to open.
+ */
+SDFatFS_Object sdfatfsObjects[MSP_EXP432P401R_SDFatFSCOUNT];
+
+const SDFatFS_Config SDFatFS_config[MSP_EXP432P401R_SDFatFSCOUNT] = {
+    {
+        .object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS0]
+    }
+};
+
+const uint_least8_t SDFatFS_count = MSP_EXP432P401R_SDFatFSCOUNT;
+
+/*
+ *  =============================== SD ===============================
+ */
+#include <ti/drivers/SD.h>
+#include <ti/drivers/sd/SDSPI.h>
+
+SDSPI_Object sdspiObjects[MSP_EXP432P401R_SDCOUNT];
+
+const SDSPI_HWAttrs sdspiHWAttrs[MSP_EXP432P401R_SDCOUNT] = {
+    {
+        .spiIndex = 0,
+        .spiCsGpioIndex = NVM_nCS_1
+    }
+};
+
+const SD_Config SD_config[MSP_EXP432P401R_SDCOUNT] = {
+    {
+        .fxnTablePtr = &SDSPI_fxnTable,
+        .object = &sdspiObjects[MSP_EXP432P401R_SDSPI0],
+        .hwAttrs = &sdspiHWAttrs[MSP_EXP432P401R_SDSPI0]
+    },
+};
+
+const uint_least8_t SD_count = MSP_EXP432P401R_SDCOUNT;
+/*
  *  =============================== SPI ===============================
  */
 #include <ti/drivers/SPI.h>

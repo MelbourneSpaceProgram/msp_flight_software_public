@@ -50,6 +50,26 @@ extern "C" {
 #endif
 
 /*!
+ *  @def    MSP_EXP432P401R_SDFatFSName
+ *  @brief  Enum of SDFatFS names on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_SDFatFSName {
+    MSP_EXP432P401R_SDFatFS0 = 0,
+
+    MSP_EXP432P401R_SDFatFSCOUNT
+} MSP_EXP432P401R_SDFatFSName;
+
+/*!
+ *  @def    MSP_EXP432P401R_SDName
+ *  @brief  Enum of SD names on the MSP_EXP432P401R dev board
+ */
+typedef enum MSP_EXP432P401R_SDName {
+    MSP_EXP432P401R_SDSPI0 = 0,
+
+    MSP_EXP432P401R_SDCOUNT
+} MSP_EXP432P401R_SDName;
+
+/*!
  *  @def    MSP_EXP432P401R_CaptureName
  *  @brief  Enum of Capture timer names on the MSP_EXP432P401R dev board
  */
