@@ -5,6 +5,7 @@
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
+#include <src/database/sd_card.h>
 #include <src/debug_interface/debug_stream.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
@@ -56,7 +57,7 @@ void PostBiosInitialiser::RunUnitTests() {
     Semaphore_Handle test_complete = Semaphore_create(0, &sem_params, NULL);
     TestInitialiser::GetInstance()->InitSemaphore(test_complete);
     TaskHolder* test_task =
-        new TaskHolder(4096, "Unit Tests", 7, TestInitialiser::GetInstance());
+        new TaskHolder(8192, "Unit Tests", 7, TestInitialiser::GetInstance());
     test_task->Init();
     Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
     delete test_task;

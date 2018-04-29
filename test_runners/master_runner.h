@@ -13,6 +13,7 @@ int nadir_error_generator_tests_runner();
 int sgp4_tests_runner();
 int wmm_tests_runner();
 int database_tests_runner();
+int sd_tests_runner();
 int runnable_data_dashboard_tests_runner();
 int debug_interface_tests_runner();
 int i2c_tests_runner();
