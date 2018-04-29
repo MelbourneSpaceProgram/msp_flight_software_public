@@ -131,15 +131,21 @@ void PostBiosInitialiser::InitHardware() {
     MagnetorquerControl::Initialize();
 }
 
-void PostBiosInitialiser::DeploymentWait() {
-    I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
-    RTime time = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
+void PostBiosInitialiser::DeploymentWait(uint16_t delay) {
+    // The deployment wait acts as a timer counting for `delay` minutes,
+    // starting from the time the `DeploymentWait` call is made.
+    // It is a blocking wait.
 
-    // TODO(dingbenjamin): Make a function for this time check
-    while (time.min < 30 && time.hour < 1 && time.date < 2 && time.month < 2) {
-        RTime reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
+    I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
+
+    RTime reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
+    time_t init_time = Rtc::RTimeToEpoch(reading);
+    time_t cur_time = init_time;
+
+    while ((cur_time - init_time) / kSecsInMin < delay) {
+        reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
         if (Rtc::ValidTime(reading)) {
-            time = reading;
+            cur_time = Rtc::RTimeToEpoch(reading);
         }
         TaskUtils::SleepMilli(kDelayCheckInterval);
     }
@@ -183,10 +189,12 @@ void PostBiosInitialiser::PostBiosInit() {
         TaskHolder* pre_deployment_magnetometer_poller_task =
             InitPreDeploymentMagnetometerPoller();
 
-        DeploymentWait();
-
-        // TODO(dingbenjamin): Deploy antenna conditional on power usage
+        // TODO(akremor): We should add a force-enable based on number of
+        // reboots feature In case the satellite gets stuck in a boot loop or
+        // similar, we don't want the timers to be operating each time
+        DeploymentWait(kBeaconDelay);
         InitRadioListener();
+        DeploymentWait(kAntennaDelay);
         DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                        kill_task_on_orientation_control_begin_semaphore);
