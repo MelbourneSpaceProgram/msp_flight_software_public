@@ -1,6 +1,7 @@
 #include <Board.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
+#include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/config/board_definitions.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
@@ -13,8 +14,7 @@
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
-#include <src/system/tasks/runnable_state_management.h>
-#include <src/tasks/task_holder.h>
+#include <src/system/tasks/runnable_state_management.h>s
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
@@ -26,7 +26,6 @@
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Error.h>
 #include <xdc/runtime/Log.h>
-#include <xdc/runtime/System.h>
 #include <xdc/std.h>
 #include <string>
 
@@ -105,6 +104,18 @@ void PostBiosInitialiser::InitOrientationControl() {
     orientation_control_task->Init();
 }
 
+TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
+    RunnablePreDeploymentMagnetometerPoller::
+        SetupKillTaskOnOrientationControlBeginSemaphore();
+    // TODO(rskew) review priority
+    TaskHolder* pre_deployment_magnetometer_poller_task = new TaskHolder(
+        // works with this little stack?
+        1024, "PreDeploymentMagnetometerPoller", 5,
+        new RunnablePreDeploymentMagnetometerPoller());
+    pre_deployment_magnetometer_poller_task->Init();
+    return pre_deployment_magnetometer_poller_task;
+}
+
 void PostBiosInitialiser::DeployAntenna() {
     Antenna* antenna = Antenna::GetAntenna();
     if (!antenna->IsDoorsOpen()) antenna->SafeDeploy();
@@ -169,15 +180,20 @@ void PostBiosInitialiser::PostBiosInit() {
 #elif defined ORBIT_CONFIGURATION
         InitStateManagement();
         if (hil_enabled) InitDataDashboard();
+        TaskHolder* pre_deployment_magnetometer_poller_task =
+            InitPreDeploymentMagnetometerPoller();
 
         DeploymentWait();
 
         // TODO(dingbenjamin): Deploy antenna conditional on power usage
         InitRadioListener();
         DeployAntenna();
+        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
+                       kill_task_on_orientation_control_begin_semaphore);
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
+        Task_delete(pre_deployment_magnetometer_poller_task);
 #else
         System_printf("No configuration defined. Not doing anything");
 #endif

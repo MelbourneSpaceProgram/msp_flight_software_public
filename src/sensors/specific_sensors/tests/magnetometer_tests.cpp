@@ -8,7 +8,7 @@ void TestMagnetometer() {
     if (!imu_test_enabled || !hil_enabled) {
         TEST_IGNORE_MESSAGE("Ignore Magnetometer tests without HIL or I2C");
     }
-    Magnetometer magnetometer("blah");
+    Magnetometer magnetometer;
     bool success = magnetometer.TakeReading();
 
     TEST_ASSERT_TRUE(success);
