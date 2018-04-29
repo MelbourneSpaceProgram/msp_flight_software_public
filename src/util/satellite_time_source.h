@@ -12,7 +12,6 @@ class SatelliteTimeSource {
 
    private:
     static Time satellite_time;
-    static const uint16_t kSatelliteEpochYear = 1970;
 };
 
 #endif  // SRC_UTIL_SATELLITE_TIME_SOURCE_H_

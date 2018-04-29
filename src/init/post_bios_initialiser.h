@@ -24,12 +24,16 @@ class PostBiosInitialiser : public Runnable {
     static void InitBeacon();
     static void RunUnitTests();
     static void InitHardware();
-    static void DeploymentWait();
+    static void DeploymentWait(uint16_t delay);
     static void DeployAntenna();
     static void InitMemoryLogger();
     static void InitTimeSource();
 
     static const uint16_t kDelayCheckInterval = 60000;
+    static const uint16_t kSecsInMin = 60;
+    static const uint16_t kBeaconDelay = 30;
+    static const uint16_t kAntennaDelay = 90;
+
 };
 
 #endif  // SRC_INIT_POST_BIOS_INITIALISER_H_

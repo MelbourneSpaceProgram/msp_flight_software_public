@@ -5,6 +5,7 @@
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/util/data_types.h>
 #include <ti/sysbios/knl/Task.h>
+#include <time.h>
 #include <functional>
 
 typedef etl::map<byte, byte, 6, std::less<uint8_t> > RTCMaskMap;
@@ -19,6 +20,7 @@ class Rtc : public I2cSensor {
     byte GetUnitTime(byte write_buffer, byte read_buffer[]);
     static bool ValidTime(RTime time);
     byte BCDToBinary(byte output);
+    static time_t RTimeToEpoch(RTime time);
 
    private:
     static const byte kTimeRegisterSec = 0x01;
@@ -41,6 +43,7 @@ class Rtc : public I2cSensor {
 
     static const uint8_t kReadBufLen = 1;
     static const uint16_t kCurrCentury = 2000;
+    static const uint16_t kSatelliteEpochYear = 1970;
 
     enum Months {
         Jan = 0x01,
