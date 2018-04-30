@@ -78,7 +78,7 @@ int i2c_sensor_tests_runner(void)
   try {
   UnityBegin("src/sensors/i2c_sensors/tests/i2c_sensor_tests.cpp");
     RUN_TEST(TestADC, 14);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

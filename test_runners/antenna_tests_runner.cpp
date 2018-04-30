@@ -78,7 +78,7 @@ int antenna_tests_runner(void)
   try {
   UnityBegin("src/telecomms/tests/antenna_tests.cpp");
     RUN_TEST(TestSafeDeploy, 13);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

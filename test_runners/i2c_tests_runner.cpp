@@ -80,7 +80,7 @@ int i2c_tests_runner(void)
   UnityBegin("src/i2c/tests/i2c_tests.cpp");
     RUN_TEST(TestI2cWriteTransaction, 10);
     RUN_TEST(TestI2cReadTransaction, 23);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

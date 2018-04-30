@@ -82,7 +82,7 @@ int database_tests_runner(void)
     RUN_TEST(TestHamming, 9);
     RUN_TEST(TestEepromReadWriteStatus, 79);
     RUN_TEST(TestEepromReadWriteData, 90);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

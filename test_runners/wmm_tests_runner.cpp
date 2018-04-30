@@ -78,7 +78,7 @@ int wmm_tests_runner(void)
   try {
   UnityBegin("src/adcs/tests/wmm_tests.cpp");
     RUN_TEST(TestWorldMagneticModel, 8);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

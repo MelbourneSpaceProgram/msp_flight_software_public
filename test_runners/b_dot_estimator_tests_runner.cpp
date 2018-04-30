@@ -78,7 +78,7 @@ int b_dot_estimator_tests_runner(void)
   try {
   UnityBegin("src/adcs/tests/b_dot_estimator_tests.cpp");
     RUN_TEST(TestBDotEstimator, 5);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

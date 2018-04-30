@@ -80,7 +80,7 @@ int bms_tests_runner(void)
   UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
     RUN_TEST(TestBms, 15);
     RUN_TEST(TestBmsTemperatureRead, 45);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

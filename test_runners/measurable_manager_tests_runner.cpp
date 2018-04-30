@@ -78,7 +78,7 @@ int measurable_manager_tests_runner(void)
   try {
   UnityBegin("src/sensors/tests/measurable_manager_tests.cpp");
     RUN_TEST(TestManagerRead, 13);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

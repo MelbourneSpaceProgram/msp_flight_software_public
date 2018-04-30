@@ -78,7 +78,7 @@ int memory_troubleshooter_tests_runner(void)
   try {
   UnityBegin("src/util/tests/memory_troubleshooter_tests.cpp");
     RUN_TEST(TestMemoryLeak, 6);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

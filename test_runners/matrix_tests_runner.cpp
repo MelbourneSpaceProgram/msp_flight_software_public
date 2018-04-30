@@ -146,7 +146,7 @@ int matrix_tests_runner(void)
     RUN_TEST(TestMultiplyRow, 688);
     RUN_TEST(TestSwitchRows, 708);
     RUN_TEST(TestRowReduce, 736);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 
