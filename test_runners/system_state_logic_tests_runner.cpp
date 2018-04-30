@@ -82,7 +82,7 @@ int system_state_logic_tests_runner(void)
     RUN_TEST(TestPowerStateLogic, 34);
     RUN_TEST(TestTelecomsStateLogic, 82);
     RUN_TEST(TestAdcsStateLogic, 123);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

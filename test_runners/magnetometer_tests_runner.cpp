@@ -78,7 +78,7 @@ int magnetometer_tests_runner(void)
   try {
   UnityBegin("src/sensors/specific_sensors/tests/magnetometer_tests.cpp");
     RUN_TEST(TestMagnetometer, 7);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

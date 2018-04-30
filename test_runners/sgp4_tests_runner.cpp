@@ -78,7 +78,7 @@ int sgp4_tests_runner(void)
   try {
   UnityBegin("src/adcs/tests/sgp4_tests.cpp");
     RUN_TEST(TestSimplifiedGeneralPerturbationModel, 11);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

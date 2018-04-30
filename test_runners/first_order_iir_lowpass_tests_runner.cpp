@@ -78,7 +78,7 @@ int first_order_iir_lowpass_tests_runner(void)
   try {
   UnityBegin("src/util/tests/first_order_iir_lowpass_tests.cpp");
     RUN_TEST(TestProcessSampleFilter, 6);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

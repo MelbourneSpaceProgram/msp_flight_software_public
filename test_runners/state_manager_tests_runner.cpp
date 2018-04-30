@@ -78,7 +78,7 @@ int state_manager_tests_runner(void)
   try {
   UnityBegin("src/system/tests/state_manager_tests.cpp");
     RUN_TEST(TestStateManager, 11);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

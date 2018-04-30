@@ -82,7 +82,7 @@ int sensor_state_logic_tests_runner(void)
     RUN_TEST(TestBatteryChargeStateFlow, 84);
     RUN_TEST(TestBatteryTempStateFlow, 118);
     RUN_TEST(TestTelecomsTempStateFlow, 152);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

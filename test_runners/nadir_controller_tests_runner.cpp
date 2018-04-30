@@ -78,7 +78,7 @@ int nadir_controller_tests_runner(void)
   try {
   UnityBegin("src/adcs/tests/nadir_controller_tests.cpp");
     RUN_TEST(TestNadirControl, 7);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

@@ -92,7 +92,7 @@ int message_tests_runner(void)
     RUN_TEST(TestSerialiseEtlArray, 116);
     RUN_TEST(TestSerialiseArray, 129);
     RUN_TEST(TestRebuildableMessageFieldIterator, 142);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

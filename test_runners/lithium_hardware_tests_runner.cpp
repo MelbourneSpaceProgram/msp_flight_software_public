@@ -84,7 +84,7 @@ int lithium_hardware_tests_runner(void)
     RUN_TEST(TestGetConfigHardware, 18);
     RUN_TEST(TestTransmitAckHardware, 26);
     RUN_TEST(TestWriteFlashHardware, 35);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 
