@@ -80,7 +80,7 @@ int debug_interface_tests_runner(void)
   UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
     RUN_TEST(TestRequestMessageFromSimulator, 11);
     RUN_TEST(TestPostMessageToDebugClient, 34);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

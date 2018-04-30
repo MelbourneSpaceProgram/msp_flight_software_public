@@ -78,7 +78,7 @@ int runnable_data_dashboard_tests_runner(void)
   try {
   UnityBegin("src/data_dashboard/tests/runnable_data_dashboard_tests.cpp");
     RUN_TEST(TestTransmitMessage, 12);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

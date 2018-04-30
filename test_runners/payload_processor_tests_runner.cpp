@@ -78,7 +78,7 @@ int payload_processor_tests_runner(void)
   try {
   UnityBegin("src/payload_processor/tests/payload_processor_tests.cpp");
     RUN_TEST(TestPayloadProcessor, 7);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

@@ -78,7 +78,7 @@ int nadir_error_generator_tests_runner(void)
   try {
   UnityBegin("src/adcs/tests/nadir_error_generator_tests.cpp");
     RUN_TEST(TestErrorQuaternionGenerator, 6);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

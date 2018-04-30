@@ -80,7 +80,7 @@ int spi_tests_runner(void)
   UnityBegin("src/spi/tests/spi_tests.cpp");
     RUN_TEST(TestSpiWriteTransaction, 8);
     RUN_TEST(TestSpiReadTransaction, 20);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

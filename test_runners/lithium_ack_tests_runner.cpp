@@ -88,7 +88,7 @@ int lithium_ack_tests_runner(void)
     RUN_TEST(TestTransmitAck, 30);
     RUN_TEST(TestFailNoOpAck, 35);
     RUN_TEST(TestFailGetConfigAck, 50);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

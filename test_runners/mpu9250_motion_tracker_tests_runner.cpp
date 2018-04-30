@@ -84,7 +84,7 @@ int mpu9250_motion_tracker_tests_runner(void)
     RUN_TEST(TestMagnoRead, 36);
     RUN_TEST(TestTempRead, 56);
     RUN_TEST(TestAccelRead, 75);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

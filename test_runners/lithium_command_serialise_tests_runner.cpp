@@ -86,7 +86,7 @@ int lithium_command_serialise_tests_runner(void)
     RUN_TEST(TestGetConfigurationSerialisation, 48);
     RUN_TEST(TestTransmitTestPayloadSerialisation, 69);
     RUN_TEST(TestWriteFlashSerialisation, 115);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

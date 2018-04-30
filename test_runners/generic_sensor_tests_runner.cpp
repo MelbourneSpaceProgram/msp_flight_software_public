@@ -78,7 +78,7 @@ int generic_sensor_tests_runner(void)
   try {
   UnityBegin("src/sensors/tests/generic_sensor_tests.cpp");
     RUN_TEST(TestGenericSensor, 6);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

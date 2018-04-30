@@ -78,7 +78,7 @@ int multiplexer_tests_runner(void)
   try {
   UnityBegin("src/i2c/multiplexers/tests/multiplexer_tests.cpp");
     RUN_TEST(TestMultiplexer, 18);
-  } catch (etl::exception e) {
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

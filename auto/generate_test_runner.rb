@@ -383,7 +383,7 @@ class UnityTestRunnerGenerator
     else
       tests.each { |test| output.puts("    RUN_TEST(#{test[:test]}, #{test[:line_number]});") }
     end
-    output.puts('  } catch (etl::exception e) {')
+    output.puts('  } catch (etl::exception &e) {')
     output.puts('    TEST_FAIL_MESSAGE("Uncaught exception in test");')
     output.puts('  }')
     output.puts
