@@ -21,16 +21,20 @@ class StateManager {
     void CreateStateMachines();
     void RemoveLastSystemStateMachine();
     void DeleteInstance();
+    Semaphore_Handle GetFunctionEnableHandle(FunctionEnableHandle handle_id);
 
    private:
     ~StateManager();
     void NotifySystems();
+    void InitFunctionEnableSempahores();
     static StateManager* instance;
     static const uint8_t TotalSystemStateMachines = 3;
     Semaphore_Handle state_update_semaphore_handle;
     etl::array<StateMachine*, kNumStateMachines> state_machines;
     etl::vector<SystemStateMachine*, TotalSystemStateMachines>
         system_state_machines;
+    etl::array<Semaphore_Handle, kTotalFunctionEnableHandles>
+        function_enable_handles;
 };
 
 #endif  // SRC_SYSTEM_STATE_MANAGER_H_

@@ -19,6 +19,7 @@ StateManager* StateManager::instance = NULL;
 StateManager::StateManager() {
     Semaphore_Params semaphore_params;
     Semaphore_Params_init(&semaphore_params);
+    InitFunctionEnableSempahores();
     state_update_semaphore_handle =
         Semaphore_create(0, &semaphore_params, NULL);
     if (state_update_semaphore_handle == NULL) {
@@ -131,4 +132,23 @@ StateManager::~StateManager() {
     Semaphore_delete(&state_update_semaphore_handle);
     state_update_semaphore_handle = NULL;
     instance = NULL;
+}
+
+void StateManager::InitFunctionEnableSempahores() {
+    Semaphore_Params semaphore_params;
+    Semaphore_Params_init(&semaphore_params);
+
+    function_enable_handles[kOrientationControlEnable] =
+        Semaphore_create(0, &semaphore_params, NULL);
+
+    if (function_enable_handles[kOrientationControlEnable] == NULL) {
+        etl::exception e("Unable to create state update semaphore", __FILE__,
+                         __LINE__);
+        throw e;
+    }
+}
+
+Semaphore_Handle StateManager::GetFunctionEnableHandle(
+    FunctionEnableHandle handle_id) {
+    return function_enable_handles[handle_id];
 }

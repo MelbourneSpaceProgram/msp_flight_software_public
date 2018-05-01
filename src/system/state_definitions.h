@@ -47,4 +47,9 @@ enum StateMachineIndex {
     kNumStateMachines
 };
 
+enum FunctionEnableHandle {
+    kOrientationControlEnable,
+    kTotalFunctionEnableHandles
+};
+
 #endif  // SRC_SYSTEM_STATE_DEFINITIONS_H_

@@ -15,6 +15,8 @@
 #include <src/messages/Tle.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
+#include <src/system/state_definitions.h>
+#include <src/system/state_manager.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
@@ -62,12 +64,16 @@ void RunnableOrientationControl::ControlOrientation() {
     Magnetometer magnetometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
+    StateManager* state_manager = StateManager::GetStateManager();
+    Semaphore_Handle orientation_control_enabled =
+        state_manager->GetFunctionEnableHandle(kOrientationControlEnable);
 
     // TODO (rskew) replace this with actual rtc time
     double tsince_millis = 0;
 
     while (1) {
-        Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+        Semaphore_pend(timer_semaphore, BIOS_WAIT_FOREVER);
+        Semaphore_pend(orientation_control_enabled, BIOS_WAIT_FOREVER);
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
