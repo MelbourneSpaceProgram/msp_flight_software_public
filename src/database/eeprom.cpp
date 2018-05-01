@@ -1,6 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/database/eeprom.h>
-#include <src/database/HammingCoder.h>
+#include <src/database/hamming_coder.h>
 #include <src/spi/spi.h>
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>

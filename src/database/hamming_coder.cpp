@@ -1,5 +1,5 @@
 #include <external/etl/exception.h>
-#include <src/database/HammingCoder.h>
+#include <src/database/hamming_coder.h>
 
 HammingEncodedByte HammingCoder::Encode(byte data) {
     HammingEncodedByte hamming_encoded_byte;
