@@ -209,7 +209,8 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
-        Task_delete(pre_deployment_magnetometer_poller_task);
+        // TODO(rskew): Debug what needs to be passed in to Task_delete
+        //Task_delete(pre_deployment_magnetometer_poller_task);
 #else
         System_printf("No configuration defined. Not doing anything");
 #endif
