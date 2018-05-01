@@ -5,6 +5,7 @@
 #include <external/etl/vector.h>
 #include <src/system/state_definitions.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <ti/sysbios/knl/Mailbox.h>
 
 class SystemStateMachine;
 class StateMachine;
@@ -21,19 +22,19 @@ class StateManager {
     void CreateStateMachines();
     void RemoveLastSystemStateMachine();
     void DeleteInstance();
-    Semaphore_Handle GetFunctionEnableHandle(FunctionEnableHandle handle_id);
+    Mailbox_Handle GetFunctionEnableHandle(FunctionEnableHandle handle_id);
 
    private:
     ~StateManager();
     void NotifySystems();
-    void InitFunctionEnableSempahores();
+    void InitFunctionEnableMailboxes();
     static StateManager* instance;
     static const uint8_t TotalSystemStateMachines = 3;
     Semaphore_Handle state_update_semaphore_handle;
     etl::array<StateMachine*, kNumStateMachines> state_machines;
     etl::vector<SystemStateMachine*, TotalSystemStateMachines>
         system_state_machines;
-    etl::array<Semaphore_Handle, kTotalFunctionEnableHandles>
+    etl::array<Mailbox_Handle, kTotalFunctionEnableHandles>
         function_enable_handles;
 };
 

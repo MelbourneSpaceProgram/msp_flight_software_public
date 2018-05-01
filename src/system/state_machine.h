@@ -16,10 +16,10 @@ class StateMachine {
    protected:
     StateMachine(StateManager* state_manager, StateId initial_state);
     void SetState(StateId new_state);
+    StateManager* state_manager;
 
    private:
     StateId current_state;
-    StateManager* state_manager;
     bool locked;
 };
 

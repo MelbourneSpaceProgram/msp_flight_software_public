@@ -19,7 +19,7 @@ StateManager* StateManager::instance = NULL;
 StateManager::StateManager() {
     Semaphore_Params semaphore_params;
     Semaphore_Params_init(&semaphore_params);
-    InitFunctionEnableSempahores();
+    InitFunctionEnableMailboxes();
     state_update_semaphore_handle =
         Semaphore_create(0, &semaphore_params, NULL);
     if (state_update_semaphore_handle == NULL) {
@@ -134,12 +134,12 @@ StateManager::~StateManager() {
     instance = NULL;
 }
 
-void StateManager::InitFunctionEnableSempahores() {
-    Semaphore_Params semaphore_params;
-    Semaphore_Params_init(&semaphore_params);
+void StateManager::InitFunctionEnableMailboxes() {
+    Mailbox_Params mailbox_params;
+    Mailbox_Params_init(&mailbox_params);
 
     function_enable_handles[kOrientationControlEnable] =
-        Semaphore_create(0, &semaphore_params, NULL);
+            Mailbox_create(sizeof(bool), 1, &mailbox_params, NULL);
 
     if (function_enable_handles[kOrientationControlEnable] == NULL) {
         etl::exception e("Unable to create state update semaphore", __FILE__,
@@ -148,7 +148,7 @@ void StateManager::InitFunctionEnableSempahores() {
     }
 }
 
-Semaphore_Handle StateManager::GetFunctionEnableHandle(
+Mailbox_Handle StateManager::GetFunctionEnableHandle(
     FunctionEnableHandle handle_id) {
     return function_enable_handles[handle_id];
 }

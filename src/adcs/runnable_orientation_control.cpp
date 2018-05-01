@@ -20,6 +20,7 @@
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
+#include <ti/sysbios/knl/Mailbox.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
@@ -64,16 +65,25 @@ void RunnableOrientationControl::ControlOrientation() {
     Magnetometer magnetometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
+
     StateManager* state_manager = StateManager::GetStateManager();
-    Semaphore_Handle orientation_control_enabled =
+    Mailbox_Handle orientation_control_enabled =
         state_manager->GetFunctionEnableHandle(kOrientationControlEnable);
+    bool enabled_by_state_manager = false;
 
     // TODO (rskew) replace this with actual rtc time
     double tsince_millis = 0;
 
     while (1) {
         Semaphore_pend(timer_semaphore, BIOS_WAIT_FOREVER);
-        Semaphore_pend(orientation_control_enabled, BIOS_WAIT_FOREVER);
+
+        Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
+                                 BIOS_NO_WAIT);
+
+        while (!enabled_by_state_manager) {
+            Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
+                                             BIOS_WAIT_FOREVER);
+        }
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
