@@ -7,7 +7,7 @@ BatteryTempStateMachine::BatteryTempStateMachine(StateManager* state_manager)
 void BatteryTempStateMachine::Update() {
     BmsTemperatureMeasurable* sensor_with_reading = GetSensorWithReading();
     if (sensor_with_reading != NULL) {
-        UpdateState(sensor_with_reading->TakeI2cReading());
+        UpdateState(sensor_with_reading->GetReading());
     }
 }
 
