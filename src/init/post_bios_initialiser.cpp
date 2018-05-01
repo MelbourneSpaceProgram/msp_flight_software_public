@@ -181,6 +181,14 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitSingletons(bus_a, bus_b, bus_c, bus_d);
 
+        // The satellite now runs either the unit tests or the in-orbit
+        // configuration for memory reasons.
+        // To swap between the two configurations:
+        // - Right click on the project (MSP)
+        // - Build Configurations
+        // - Set Active
+        // - Choose Orbit or TIRTOS Build
+
 #if defined TEST_CONFIGURATION
         RunUnitTests();
 #elif defined ORBIT_CONFIGURATION
