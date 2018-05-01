@@ -14,7 +14,10 @@ class BatteryTempStateMachine
     void Update();
 
    private:
-    void UpdateState(double temp);
+    enum BatteryIndex { kBattery1, kBattery2, kTotalBatteries};
+    void UpdateState(double temp, BatteryIndex id);
+    double battery_1_temp;
+    double battery_2_temp;
 
     static const uint8_t kTempBatteryOperationalHigh = 60;
     static const uint8_t kHysteresis = 5;
