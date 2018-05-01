@@ -14,6 +14,7 @@
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <xdc/runtime/Log.h>
 
 const char Magnetometer::kCalibrationReadingsBufferAFileName[] = "magcal_a.bin";
 const char Magnetometer::kCalibrationReadingsBufferBFileName[] = "magcal_b.bin";
@@ -40,47 +41,45 @@ Magnetometer::Magnetometer()
 // for calibration.
 // For HIL tests, store the simulation readings for calibration.
 bool Magnetometer::TakeReading() {
-    MagnetometerReading imu_a_reading;
-    MagnetometerReading imu_b_reading;
+    MagnetometerReading magnetometer_a_reading;
+    MagnetometerReading magnetometer_b_reading;
     try {
-        imu_a.TakeMagnetometerReading(imu_a_reading);
+        imu_a.TakeMagnetometerReading(magnetometer_a_reading);
     } catch (etl::exception e) {
-        imu_a_reading.x = 0;
-        imu_a_reading.y = 0;
-        imu_a_reading.z = 0;
+        magnetometer_a_reading.x = 0;
+        magnetometer_a_reading.y = 0;
+        magnetometer_a_reading.z = 0;
     }
     try {
-        imu_b.TakeMagnetometerReading(imu_b_reading);
+        imu_b.TakeMagnetometerReading(magnetometer_b_reading);
     } catch (etl::exception e) {
-        imu_b_reading.x = 0;
-        imu_b_reading.y = 0;
-        imu_b_reading.z = 0;
-    }
-    if (hil_enabled) {
-        // Echo reading to data dashboard
-        RunnableDataDashboard::TransmitMessage(
-            kMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &imu_a_reading);
-        RunnableDataDashboard::TransmitMessage(
-            kMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &imu_b_reading);
+        magnetometer_b_reading.x = 0;
+        magnetometer_b_reading.y = 0;
+        magnetometer_b_reading.z = 0;
     }
 
     try {
-    
-        calibration_readings_buffer_b.WriteMessage(imu_b_reading);
+        calibration_readings_buffer_a.WriteMessage(magnetometer_a_reading);
+        calibration_readings_buffer_b.WriteMessage(magnetometer_b_reading);
     } catch (etl::exception e) {
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,
         throw e;
     }
 
-    // TODO (rskew) apply calibration to readings
+    magnetometer_calibration_a.Apply(magnetometer_a_reading);
+    Log_info3("Calibrated magnetometer reading 'a', x: %d, y: %d, z: %d",
+              magnetometer_a_reading.x, magnetometer_a_reading.y,
+              magnetometer_a_reading.z);
+    magnetometer_calibration_b.Apply(magnetometer_b_reading);
+    Log_info3("Calibrated magnetometer reading 'b', x: %d, y: %d, z: %d",
+              magnetometer_b_reading.x, magnetometer_b_reading.y,
+              magnetometer_b_reading.z);
 
     // Average readings from IMUs
-    reading.x = (imu_a_reading.x + imu_b_reading.x) / 2;
-    reading.y = (imu_a_reading.y + imu_b_reading.y) / 2;
-    reading.z = (imu_a_reading.z + imu_b_reading.z) / 2;
+    reading.x = (magnetometer_a_reading.x + magnetometer_b_reading.x) / 2;
+    reading.y = (magnetometer_a_reading.y + magnetometer_b_reading.y) / 2;
+    reading.z = (magnetometer_a_reading.z + magnetometer_b_reading.z) / 2;
 
     // TODO (rskew) combine noise from hardware readings with simulated readings
 
@@ -115,4 +114,51 @@ bool Magnetometer::TakeReadingHil() {
     }
 
     return success;
+}
+
+bool Magnetometer::Calibrate() {
+    for (uint32_t i = 0; i < kCalibrationReadingsBufferSize /
+                                 MagnetometerCalibration::kBatchSize;
+         i++) {
+        // read data from circular buffer
+        MagnetometerReading
+            magnetometer_readings_batch_a[MagnetometerCalibration::kBatchSize];
+        MagnetometerReading
+            magnetometer_readings_batch_b[MagnetometerCalibration::kBatchSize];
+        for (uint8_t j = 0; j < MagnetometerCalibration::kBatchSize; j++) {
+            try {
+                calibration_readings_buffer_a.ReadMessage(
+                    magnetometer_readings_batch_a[j]);
+                calibration_readings_buffer_b.ReadMessage(
+                    magnetometer_readings_batch_b[j]);
+            } catch (etl::exception e) {
+                // TODO (rskew) if the Hamming decoding fails, discard the
+                // message and read another one.
+                // TODO (rskew) handle reaching the end of buffer early.
+                // If the buffer runs out before reading ~150 messages,
+                // calibration could be pretty bad, so return failure. > ~150
+                // and the calibration is mayeb ok?
+                throw e;
+                return false;
+            }
+        }
+        // compute aggregated data in magnetometer calibration
+        double magnetometer_readings_batch_matrix_a_data
+            [10][MagnetometerCalibration::kBatchSize];
+        double magnetometer_readings_batch_matrix_b_data
+            [10][MagnetometerCalibration::kBatchSize];
+        Matrix magnetometer_readings_batch_matrix_a(
+            magnetometer_readings_batch_matrix_a_data);
+        Matrix magnetometer_readings_batch_matrix_b(
+            magnetometer_readings_batch_matrix_b_data);
+        magnetometer_calibration_a.AggregateReadings(
+            magnetometer_readings_batch_matrix_a);
+        magnetometer_calibration_b.AggregateReadings(
+            magnetometer_readings_batch_matrix_b);
+    }
+    // compute calibration
+    magnetometer_calibration_a.ComputeCalibrationParameters();
+    magnetometer_calibration_b.ComputeCalibrationParameters();
+
+    return true;
 }

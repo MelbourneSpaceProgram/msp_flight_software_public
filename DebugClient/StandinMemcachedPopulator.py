@@ -53,6 +53,12 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Simulation_Torque_Y"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Torque_Z"))[0])
 
+        if mc.get("Magnetometer_X"):
+            print("Magnetometer data from onboard:")
+            print(struct.unpack('>d', mc.get("Magnetometer_X"))[0])
+            print(struct.unpack('>d', mc.get("Magnetometer_Y"))[0])
+            print(struct.unpack('>d', mc.get("Magnetometer_Z"))[0])
+
         #if mc.get("Simulation_IR_X_Pos"):
         #    print("Infrared output from simulation:")
         #    print(struct.unpack('>d', mc.get("Simulation_IR_X_Pos"))[0])

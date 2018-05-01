@@ -9,6 +9,7 @@
 #include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/SensorReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <test_runners/mpu9250_motion_tracker_tests.h>
 #include <src/util/memory_troubleshooter.h>

@@ -42,35 +42,35 @@ void TestWriteAndRead() {
     dummy_magnetometer_reading.timestamp_millis_unix_epoch = 131415;
     circular_buffer.WriteMessage(dummy_magnetometer_reading);
 
-    dummy_magnetometer_reading = circular_buffer.ReadMessage();
+    circular_buffer.ReadMessage(dummy_magnetometer_reading);
     TEST_ASSERT_EQUAL_DOUBLE(13, dummy_magnetometer_reading.x);
     TEST_ASSERT_EQUAL_DOUBLE(14, dummy_magnetometer_reading.y);
     TEST_ASSERT_EQUAL_DOUBLE(15, dummy_magnetometer_reading.z);
     TEST_ASSERT_EQUAL_DOUBLE(
         131415, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
 
-    dummy_magnetometer_reading = circular_buffer.ReadMessage();
+    circular_buffer.ReadMessage(dummy_magnetometer_reading);
     TEST_ASSERT_EQUAL_DOUBLE(4, dummy_magnetometer_reading.x);
     TEST_ASSERT_EQUAL_DOUBLE(5, dummy_magnetometer_reading.y);
     TEST_ASSERT_EQUAL_DOUBLE(6, dummy_magnetometer_reading.z);
     TEST_ASSERT_EQUAL_DOUBLE(
         456, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
 
-    dummy_magnetometer_reading = circular_buffer.ReadMessage();
+    circular_buffer.ReadMessage(dummy_magnetometer_reading);
     TEST_ASSERT_EQUAL_DOUBLE(7, dummy_magnetometer_reading.x);
     TEST_ASSERT_EQUAL_DOUBLE(8, dummy_magnetometer_reading.y);
     TEST_ASSERT_EQUAL_DOUBLE(9, dummy_magnetometer_reading.z);
     TEST_ASSERT_EQUAL_DOUBLE(
         789, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
 
-    dummy_magnetometer_reading = circular_buffer.ReadMessage();
+    circular_buffer.ReadMessage(dummy_magnetometer_reading);
     TEST_ASSERT_EQUAL_DOUBLE(10, dummy_magnetometer_reading.x);
     TEST_ASSERT_EQUAL_DOUBLE(11, dummy_magnetometer_reading.y);
     TEST_ASSERT_EQUAL_DOUBLE(12, dummy_magnetometer_reading.z);
     TEST_ASSERT_EQUAL_DOUBLE(
         101112, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
 
-    dummy_magnetometer_reading = circular_buffer.ReadMessage();
+    circular_buffer.ReadMessage(dummy_magnetometer_reading);
     TEST_ASSERT_EQUAL_DOUBLE(13, dummy_magnetometer_reading.x);
     TEST_ASSERT_EQUAL_DOUBLE(14, dummy_magnetometer_reading.y);
     TEST_ASSERT_EQUAL_DOUBLE(15, dummy_magnetometer_reading.z);

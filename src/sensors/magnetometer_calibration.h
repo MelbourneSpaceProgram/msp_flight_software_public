@@ -5,18 +5,20 @@
 #ifndef SRC_SENSORS_MAGNETOMETER_CALIBRATION_H_
 #define SRC_SENSORS_MAGNETOMETER_CALIBRATION_H_
 
+#include <src/messages/MagnetometerReading.pb.h>
 #include <src/util/matrix.h>
 
 class MagnetometerCalibration {
    public:
     MagnetometerCalibration();
     void ComputeCalibrationParameters();
-    void ComputeAggregatedReadings(const Matrix &mag_data);
+    void AggregateReadings(const Matrix &mag_data);
     Matrix GetBiases() const;
     Matrix GetScaleFactors() const;
     Matrix GetAggregatedReadings() const;
+    void Apply(MagnetometerReading &magnetometer_reading_struct);
 
-    static const uint8_t kDataSize = 40;
+    static const uint8_t kBatchSize = 1;
 
    private:
     void GenerateBiases(const Matrix &v, const Matrix &Q);

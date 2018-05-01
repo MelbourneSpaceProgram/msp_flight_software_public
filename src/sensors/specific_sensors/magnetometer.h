@@ -5,12 +5,14 @@
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/generic_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
+#include <src/sensors/magnetometer_calibration.h>
 #include <string>
 
 class Magnetometer : public GenericMeasurable<MagnetometerReading> {
    public:
     explicit Magnetometer();
     bool TakeReading();
+    bool Calibrate();
 
    private:
     bool TakeReadingHil();
@@ -18,9 +20,11 @@ class Magnetometer : public GenericMeasurable<MagnetometerReading> {
     CircularBufferNanopb<MagnetometerReading, MagnetometerReading_size,
                          MagnetometerReading_fields>
         calibration_readings_buffer_a;
+    MagnetometerCalibration magnetometer_calibration_a;
     CircularBufferNanopb<MagnetometerReading, MagnetometerReading_size,
                          MagnetometerReading_fields>
         calibration_readings_buffer_b;
+    MagnetometerCalibration magnetometer_calibration_b;
     MPU9250MotionTracker imu_a;
     MPU9250MotionTracker imu_b;
 

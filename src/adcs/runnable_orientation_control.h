@@ -24,6 +24,8 @@ class RunnableOrientationControl : public Runnable {
     static void ControlOrientation();
 
     static Semaphore_Handle control_loop_timer_semaphore;
+
+    static const uint32_t kMagCalRetrySleepPeriodMillis = 1 * 60 * 60 * 1000;
 };
 
 #endif  // SRC_ADCS_RUNNABLE_ORIENTATION_CONTROL_H_

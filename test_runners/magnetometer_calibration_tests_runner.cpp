@@ -32,17 +32,8 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-<<<<<<< HEAD
-<<<<<<< HEAD
-extern void TestComputeS(void);
-=======
-extern void TestComputeAggregatedReadings(void);
->>>>>>> 
-extern void TestMagnetometerCalibration(void);
-=======
 extern void TestComputeAggregatedReadings();
 extern void TestMagnetometerCalibration();
->>>>>>> Action CPPCHECK, fix crashes, doesn't fit in program memory
 
 
 /*=======Suite Setup=====*/
@@ -87,15 +78,9 @@ int magnetometer_calibration_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/sensors/tests/magnetometer_calibration_tests.cpp");
-<<<<<<< HEAD
-    RUN_TEST(TestComputeS, 107);
-    RUN_TEST(TestMagnetometerCalibration, 126);
-  } catch (etl::exception &e) {
-=======
     RUN_TEST(TestComputeAggregatedReadings, 66);
     RUN_TEST(TestMagnetometerCalibration, 84);
-  } catch (etl::exception e) {
->>>>>>> 
+  } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

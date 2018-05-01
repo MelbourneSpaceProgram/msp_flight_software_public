@@ -5,17 +5,21 @@
 #include <external/magnetometer_calibration_library/magnetometer_calibration_library.h>
 #include <math.h>
 #include <src/sensors/magnetometer_calibration.h>
+#include <xdc/runtime/Log.h>
 
 MagnetometerCalibration::MagnetometerCalibration()
     : biases(biases_data),
       scale_factors(scale_factors_data),
-      aggregated_readings(aggregated_readings_data) {}
+      aggregated_readings(aggregated_readings_data) {
+    biases.Fill(0);
+    scale_factors.Identity();
+    aggregated_readings.Fill(0);
+}
 
-void MagnetometerCalibration::ComputeAggregatedReadings(
-    const Matrix &mag_data) {
-    double D_data[10][kDataSize];
+void MagnetometerCalibration::AggregateReadings(const Matrix &mag_data) {
+    double D_data[10][kBatchSize];
     Matrix D(D_data);
-    for (uint8_t i = 0; i < kDataSize; i++) {
+    for (uint8_t i = 0; i < kBatchSize; i++) {
         double x = mag_data.Get(i, 0);
         double y = mag_data.Get(i, 1);
         double z = mag_data.Get(i, 2);
@@ -30,10 +34,15 @@ void MagnetometerCalibration::ComputeAggregatedReadings(
         D.Set(8, i, 2.0 * z);
         D.Set(9, i, 1.0);
     }
-    double Dt_data[kDataSize][10];
+    double Dt_data[kBatchSize][10];
     Matrix Dt(Dt_data);
     Dt.Transpose(D);
-    aggregated_readings.Multiply(D, Dt);
+    double batch_aggregated_readings_data[kBatchSize][10];
+    Matrix batch_aggregated_readings(batch_aggregated_readings_data);
+    batch_aggregated_readings.Multiply(D, Dt);
+    // Matrix operations cannot be assumed to work in-place in general.
+    // Add is ok.
+    aggregated_readings.Add(aggregated_readings, batch_aggregated_readings);
 }
 
 void MagnetometerCalibration::GenerateScaleFactors(double *eigen_real3,
@@ -157,6 +166,17 @@ void MagnetometerCalibration::ComputeCalibrationParameters() {
     SSSS.Set(2, 2, SSSS.Get(2, 2) / norm3);
 
     GenerateScaleFactors(eigen_real3, hmb, SSSS);
+
+    Log_info3("Magnetometer Calibration Biases\n%d, %d, %d", biases.Get(0, 0),
+              biases.Get(1, 0), biases.Get(2, 0));
+
+    Log_info3("Magnetometer Calibration Scale Factors\n%d, %d, %d",
+              scale_factors.Get(0, 0), scale_factors.Get(0, 1),
+              scale_factors.Get(0, 2));
+    Log_info3("%d, %d, %d", scale_factors.Get(1, 0), scale_factors.Get(1, 1),
+              scale_factors.Get(1, 2));
+    Log_info3("%d, %d, %d", scale_factors.Get(2, 0), scale_factors.Get(2, 1),
+              scale_factors.Get(2, 2));
 }
 
 Matrix MagnetometerCalibration::GetBiases() const { return biases; }
@@ -167,4 +187,30 @@ Matrix MagnetometerCalibration::GetScaleFactors() const {
 
 Matrix MagnetometerCalibration::GetAggregatedReadings() const {
     return aggregated_readings;
+}
+
+void MagnetometerCalibration::Apply(
+    MagnetometerReading &magnetometer_reading_struct) {
+    double magnetometer_reading_data[3][1];
+    Matrix magnetometer_reading(magnetometer_reading_data);
+    magnetometer_reading.Set(0, 0, magnetometer_reading_struct.x);
+    magnetometer_reading.Set(1, 0, magnetometer_reading_struct.y);
+    magnetometer_reading.Set(2, 0, magnetometer_reading_struct.z);
+
+    double scaled_magnetometer_reading_data[3][1];
+    Matrix scaled_magnetometer_reading(scaled_magnetometer_reading_data);
+    scaled_magnetometer_reading.Multiply(scale_factors, magnetometer_reading);
+
+    double shifted_scaled_magnetometer_reading_data[3][1];
+    Matrix shifted_scaled_magnetometer_reading(
+        shifted_scaled_magnetometer_reading_data);
+    shifted_scaled_magnetometer_reading.Add(scaled_magnetometer_reading,
+                                            biases);
+
+    magnetometer_reading_struct.x =
+        shifted_scaled_magnetometer_reading.Get(0, 0);
+    magnetometer_reading_struct.y =
+        shifted_scaled_magnetometer_reading.Get(1, 0);
+    magnetometer_reading_struct.z =
+        shifted_scaled_magnetometer_reading.Get(2, 0);
 }

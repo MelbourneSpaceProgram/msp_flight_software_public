@@ -58,14 +58,7 @@ void master_tests_thread() {
     nadir_error_generator_tests_runner();
     sgp4_tests_runner();
     wmm_tests_runner();
-<<<<<<< HEAD
-<<<<<<< HEAD
     circular_buffer_nanopb_tests_runner();
-=======
->>>>>>> Action CPPCHECK, fix crashes, doesn't fit in program memory
-=======
-    circular_buffer_nanopb_tests_runner();
->>>>>>> Detumbling branch to get detumbling working until it works
     database_tests_runner();
     sd_tests_runner();
     runnable_data_dashboard_tests_runner();

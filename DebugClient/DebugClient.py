@@ -234,6 +234,10 @@ def testLoop(debug_serial_port, logger, mc):
                 logger.info("Message data: " + str(magnetometer_reading_echo))
                 mc.set("Magnetometer_X",
                        struct.pack('>d',magnetometer_reading_echo.x))
+                mc.set("Magnetometer_Y",
+                       struct.pack('>d',magnetometer_reading_echo.y))
+                mc.set("Magnetometer_Z",
+                       struct.pack('>d',magnetometer_reading_echo.z))
 
 
             elif message_code == \

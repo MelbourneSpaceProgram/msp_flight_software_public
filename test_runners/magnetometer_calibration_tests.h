@@ -9,11 +9,7 @@
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 
-<<<<<<< HEAD
-void TestComputeS(void);
-=======
 void TestComputeAggregatedReadings(void);
->>>>>>> 
 void TestMagnetometerCalibration(void);
 
 #endif  // TEST_RUNNERS_MAGNETOMETER_CALIBRATION_TESTS_H_

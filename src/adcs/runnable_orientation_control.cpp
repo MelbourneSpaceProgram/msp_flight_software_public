@@ -1,5 +1,4 @@
 #include <Board.h>
-#include <src/util/satellite_time_source.h>
 #include <external/nanopb/pb_decode.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
@@ -15,13 +14,14 @@
 #include <src/messages/GyrometerReading.pb.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <src/messages/Tle.pb.h>
 #include <src/messages/Time.pb.h>
+#include <src/messages/Tle.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/gyrometer.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
+#include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 
@@ -80,10 +80,14 @@ void RunnableOrientationControl::ControlOrientation() {
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
+    bool successful_calibration = magnetometer.Calibrate();
+    if (!successful_calibration) {
+        // Try once more before just starting anyway
+        TaskUtils::SleepMilli(kMagCalRetrySleepPeriodMillis);
+        magnetometer.Calibrate();
+    }
     Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
-                   kill_task_on_orientation_control_begin_semaphore);
-
-    // TODO (rskew) Run calibration routine
+                       kill_task_on_orientation_control_begin_semaphore);
 
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
@@ -121,7 +125,8 @@ void RunnableOrientationControl::ControlOrientation() {
         }
         GyrometerReading gyrometer_reading = gyrometer.GetReading();
 
-        // Calculate angular momentum for debugging (and momentum dumping detumbling?)
+        // Calculate angular momentum for debugging (and momentum dumping
+        // detumbling?)
         double angular_velocity_data[3][1];
         Matrix angular_velocity(angular_velocity_data);
         angular_velocity.Set(0, 0, gyrometer_reading.x);
@@ -154,13 +159,15 @@ void RunnableOrientationControl::ControlOrientation() {
                 location_estimator.StoreTle(tle);
 
                 // Calculate position
-                // TODO (rskew) calculate absolute time in millis since tle epoch
+                // TODO (rskew) calculate absolute time in millis since tle
+                // epoch
                 Time satellite_time = SatelliteTimeSource::GetTime();
                 if (!satellite_time.is_valid) {
-                  // TODO (rskew) update TleStateMachine
-                  continue;
+                    // TODO (rskew) update TleStateMachine
+                    continue;
                 }
-                location_estimator.UpdateLocation(satellite_time.timestamp_millis_unix_epoch);
+                location_estimator.UpdateLocation(
+                    satellite_time.timestamp_millis_unix_epoch);
 
                 // Write calculated position to data dashboard
                 LocationReading location_reading = LocationReading_init_zero;
