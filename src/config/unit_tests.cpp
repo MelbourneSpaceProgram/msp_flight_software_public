@@ -19,4 +19,4 @@ bool i2c_enumeration_enabled = true;
 bool measurable_test_enabled = false;
 bool sd_test_enabled = true;
 
-bool i2c_enabled = true;
+bool i2c_enabled = false;

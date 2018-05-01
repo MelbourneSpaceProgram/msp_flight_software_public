@@ -23,6 +23,7 @@ int bms_tests_runner();
 int multiplexer_tests_runner();
 int message_tests_runner();
 int payload_processor_tests_runner();
+int earth_sensor_tests_runner();
 int generic_sensor_tests_runner();
 int magnetometer_calibration_tests_runner();
 int measurable_manager_tests_runner();
