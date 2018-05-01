@@ -75,7 +75,7 @@ void RunnableOrientationControl::ControlOrientation() {
     double tsince_millis = 0;
 
     while (1) {
-        Semaphore_pend(timer_semaphore, BIOS_WAIT_FOREVER);
+        Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
         Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
                                  BIOS_NO_WAIT);
