@@ -28,6 +28,7 @@
 #include <xdc/runtime/Log.h>
 #include <xdc/std.h>
 #include <string>
+#include <src/system/tasks/runnable_system_health_check.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -114,6 +115,11 @@ TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
         new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Init();
     return pre_deployment_magnetometer_poller_task;
+}
+void PostBiosInitialiser::InitSystemHealthCheck() {
+    TaskHolder* system_health_check_task = new TaskHolder(
+        1536, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
+    system_health_check_task->Init();
 }
 
 void PostBiosInitialiser::DeployAntenna() {
