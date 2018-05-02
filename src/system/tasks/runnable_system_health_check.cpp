@@ -18,6 +18,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
 
     while (1) {
         measurable_manager->ReadI2cMeasurable<double>(kPowerTemp1, 1);
+        measurable_manager->ReadI2cMeasurable<double>(kPowerTemp2, 1);
         TaskUtils::SleepMilli(1000);
     }
 }
