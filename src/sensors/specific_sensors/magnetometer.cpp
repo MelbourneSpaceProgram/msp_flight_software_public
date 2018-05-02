@@ -45,6 +45,9 @@ bool Magnetometer::TakeReading() {
     MagnetometerReading magnetometer_b_reading;
     try {
         imu_a.TakeMagnetometerReading(magnetometer_a_reading);
+        Log_info3("Raw magnetometer reading 'a', x: %d, y: %d, z: %d",
+                  magnetometer_a_reading.x, magnetometer_a_reading.y,
+                  magnetometer_a_reading.z);
     } catch (etl::exception e) {
         magnetometer_a_reading.x = 0;
         magnetometer_a_reading.y = 0;
@@ -52,6 +55,9 @@ bool Magnetometer::TakeReading() {
     }
     try {
         imu_b.TakeMagnetometerReading(magnetometer_b_reading);
+        Log_info3("Raw magnetometer reading 'a', x: %d, y: %d, z: %d",
+                  magnetometer_b_reading.x, magnetometer_b_reading.y,
+                  magnetometer_b_reading.z);
     } catch (etl::exception e) {
         magnetometer_b_reading.x = 0;
         magnetometer_b_reading.y = 0;
@@ -59,8 +65,8 @@ bool Magnetometer::TakeReading() {
     }
 
     try {
-        calibration_readings_buffer_a.WriteMessage(magnetometer_a_reading);
-        calibration_readings_buffer_b.WriteMessage(magnetometer_b_reading);
+//        calibration_readings_buffer_a.WriteMessage(magnetometer_a_reading);
+//        calibration_readings_buffer_b.WriteMessage(magnetometer_b_reading);
     } catch (etl::exception e) {
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,

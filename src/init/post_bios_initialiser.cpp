@@ -91,7 +91,7 @@ void PostBiosInitialiser::InitDataDashboard() {
     data_dashboard_task->Init();
 }
 
-void InitOrientationControl() {
+void PostBiosInitialiser::InitOrientationControl() {
     // Set up timer for orientation control loop
     RunnableOrientationControl::SetupControlLoopTimer();
 
@@ -210,7 +210,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
-        Task_delete(pre_deployment_magnetometer_poller_task);
+        //Task_delete(pre_deployment_magnetometer_poller_task);
 #else
         System_printf("No configuration defined. Not doing anything");
 #endif
