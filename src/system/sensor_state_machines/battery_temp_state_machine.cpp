@@ -53,6 +53,7 @@ void BatteryTempStateMachine::UpdateState(double temp, BatteryIndex id) {
                 (battery_2_temp > kTempBatteryOperationalHigh)) {
                 SetStateAndNotify(kBatteryTempCriticalHigh);
             }
+            break;
         case kBatteryTempCriticalHigh:
             if ((battery_1_temp < kTempBatteryOperationalHigh - kHysteresis) &&
                 (battery_2_temp < kTempBatteryOperationalHigh - kHysteresis)) {
