@@ -215,7 +215,7 @@ void MagnetometerCalibration::Apply(
 
     double shifted_magnetometer_reading_data[3][1];
     Matrix shifted_magnetometer_reading(shifted_magnetometer_reading_data);
-    shifted_magnetometer_reading.Subtract(biases, magnetometer_reading);
+    shifted_magnetometer_reading.Subtract(magnetometer_reading, biases);
 
     double shifted_scaled_magnetometer_reading_data[3][1];
     Matrix shifted_scaled_magnetometer_reading(

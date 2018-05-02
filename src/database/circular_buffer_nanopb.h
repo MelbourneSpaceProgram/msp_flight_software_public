@@ -4,7 +4,7 @@
 #include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
-#include <src/database/HammingCoder.h>
+#include <src/database/hamming_coder.h>
 #include <src/database/sd_card.h>
 #include <src/messages/pb.h>
 #include <src/util/data_types.h>
