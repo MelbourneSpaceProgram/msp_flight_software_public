@@ -76,11 +76,27 @@ class Matrix {
     void SwitchRows(uint8_t row_a, uint8_t row_b);
     void RowReduce();
 
+    template <uint8_t size>
+    void InvertMatrix(const Matrix &A) {
+        double augmented_data[size][2 * size];
+        Matrix augmented(augmented_data);
+        augmented.CopyInto(0, 0, A);
+
+        double identity_data[size][size];
+        Matrix identity(identity_data);
+        identity.Identity();
+        augmented.CopyInto(0, size, identity);
+
+        augmented.RowReduce();
+
+        Slice(0, size - 1, size, 2 * size - 1, augmented);
+    }
+
     void QuaternionNormalise(const Matrix &q);
     void RotationMatrixFromQuaternion(const Matrix &q);
     void QuaternionConjugate();
     void QuaternionProductCross(Matrix &a, Matrix &b);
-    void QuaternionProductDot(Matrix &a, Matrix&b);
+    void QuaternionProductDot(Matrix &a, Matrix &b);
 
    private:
     double *data;
