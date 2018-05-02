@@ -1,6 +1,6 @@
 #include <src/config/unit_tests.h>
 
-bool satellite_configuration = SATELLITE_CONFIG;
+//bool satellite_configuration = SATELLITE_CONFIG;
 
 bool spi_test_enabled = false;
 bool eeprom_test_enabled = false;

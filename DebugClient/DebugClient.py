@@ -6,6 +6,7 @@ import sys
 import datetime
 import serial.tools.list_ports
 import MagnetometerReading_pb2
+import InfraredReading_pb2
 import GyrometerReading_pb2
 import SensorReading_pb2
 import StateMachineStateReading_pb2
@@ -152,7 +153,9 @@ def testLoop(debug_serial_port, logger, mc):
 
                 logger.info("Sending message: " + str(magnetometer_reading))
                 serialised_message = magnetometer_reading.SerializeToString()
-                send_message(debug_serial_port, 0x06, serialised_message)
+                send_message(debug_serial_port,
+                             message_codes["magnetometer_reading_request_code"],
+                             serialised_message)
 
 
             elif message_code == \
@@ -260,7 +263,8 @@ def testLoop(debug_serial_port, logger, mc):
                 test_sensor_reading.value = test_message_value
                 test_sensor_reading.timestamp_millis_unix_epoch = \
                                             test_message_timestamp
-                send_message(debug_serial_port, 0x0A,
+                send_message(debug_serial_port,
+                             message_codes["test_sensor_reading_linked_request_code"],
                              test_sensor_reading.SerializeToString())
 
 
@@ -271,7 +275,8 @@ def testLoop(debug_serial_port, logger, mc):
                 test_sensor_reading = SensorReading_pb2.SensorReading()
                 test_sensor_reading.value = 1234
                 test_sensor_reading.timestamp_millis_unix_epoch = 4321
-                send_message(debug_serial_port, 0x0B,
+                send_message(debug_serial_port,
+                             message_codes["test_sensor_reading_request_code"],
                              test_sensor_reading.SerializeToString())
 
 
@@ -317,7 +322,9 @@ def testLoop(debug_serial_port, logger, mc):
 
                 logger.info("Sending message: " + str(tle))
                 serialised_message = tle.SerializeToString()
-                send_message(debug_serial_port, 0x0C, serialised_message)
+                send_message(debug_serial_port,
+                             message_codes["tle_request_code"],
+                             serialised_message)
 
 
             elif message_code == \
@@ -360,6 +367,63 @@ def testLoop(debug_serial_port, logger, mc):
                 logger.info("Sending message: " + str(gyrometer_reading))
                 serialised_message = gyrometer_reading.SerializeToString()
                 send_message(debug_serial_port, 0x0E, serialised_message)
+
+
+            if message_code == \
+                message_codes["infrared_reading_request_code"]:
+                infrared_reading = \
+                    InfraredReading_pb2.InfraredReading()
+                if mc.get("Simulation_IR_X_Pos") != None:
+                    infrared_reading.positive_x = \
+                        struct.unpack('>d', mc.get("Simulation_IR_X_Pos"))[0]
+                    infrared_reading.negative_x = \
+                        struct.unpack('>d', mc.get("Simulation_IR_X_Neg"))[0]
+                    infrared_reading.positive_y = \
+                        struct.unpack('>d', mc.get("Simulation_IR_Y_Pos"))[0]
+                    infrared_reading.negative_y = \
+                        struct.unpack('>d', mc.get("Simulation_IR_Y_Neg"))[0]
+                    infrared_reading.negative_z_a = \
+                        struct.unpack('>d', mc.get("Simulation_IR_Z_Neg"))[0]
+                    infrared_reading.negative_z_b = \
+                        struct.unpack('>d', mc.get("Simulation_IR_Z_Neg"))[0]
+                    infrared_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+                else:
+                    infrared_reading.positive_x = 0
+                    infrared_reading.negative_x = 0
+                    infrared_reading.positive_y = 0
+                    infrared_reading.negative_y = 0
+                    infrared_reading.negative_z_a = 0
+                    infrared_reading.negative_z_b = 0
+                    infrared_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+
+                logger.info("Sending message: " + str(infrared_reading))
+                serialised_message = infrared_reading.SerializeToString()
+                send_message(debug_serial_port,
+                             message_codes["infrared_reading_request_code"],
+                             serialised_message)
+
+
+            elif message_code == \
+                message_codes["infrared_reading_code"]:
+                # Infrared Reading Echo
+
+                infrared_reading_echo = InfraredReading_pb2.InfraredReading()
+                infrared_reading_echo.ParseFromString(payload)
+                logger.info("Message data: " + str(infrared_reading_echo))
+                mc.set("IR_X_Pos",
+                       struct.pack('>d',infrared_reading_echo.positive_x))
+                mc.set("IR_X_Neg",
+                       struct.pack('>d',infrared_reading_echo.negative_x))
+                mc.set("IR_Y_Pos",
+                       struct.pack('>d',infrared_reading_echo.positive_y))
+                mc.set("IR_Y_Neg",
+                       struct.pack('>d',infrared_reading_echo.negative_y))
+                mc.set("IR_Z_Neg_A",
+                       struct.pack('>d',infrared_reading_echo.negative_z_a))
+                mc.set("IR_Z_Neg_B",
+                       struct.pack('>d',infrared_reading_echo.negative_z_b))
 
 
             else:

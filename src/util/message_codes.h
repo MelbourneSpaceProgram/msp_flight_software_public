@@ -29,6 +29,8 @@ enum DebugMessageType {
     kTestRequestCode = 0x0B,
     kTleRequestCode = 0x0C,
     kLocationReadingCode = 0x0D,
+    kInfraredReadingRequestCode = 0x0E,
+    kInfraredReadingCode = 0x0F
     kGyrometerReadingRequestCode = 0x0E
 };
 

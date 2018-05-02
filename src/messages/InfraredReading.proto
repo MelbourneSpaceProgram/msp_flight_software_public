@@ -1,0 +1,10 @@
+message InfraredReading {
+   required float positive_x = 1;
+   required float negative_x = 2;
+   required float positive_y = 3;
+   required float negative_y = 4;
+   // TODO (rskew) verify antenna is positive z in other contexts
+   required float negative_z_a = 5;
+   required float negative_z_b = 6;
+   required fixed64 timestamp_millis_unix_epoch = 7;
+}

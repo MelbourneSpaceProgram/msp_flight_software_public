@@ -9,8 +9,7 @@ const double sensor_a_poly_coeffs[10] =
           -2.464410337515545e+03, 3.785871673586688e+02, -30.453780230032056,
           2.973281695942479 };
 
-class InfraredSensor
-{
+class InfraredSensor {
 public:
     explicit InfraredSensor(Matrix &side_normal_matrix);
     Matrix GetSideNormal() const;

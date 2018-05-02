@@ -59,14 +59,27 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Magnetometer_Y"))[0])
             print(struct.unpack('>d', mc.get("Magnetometer_Z"))[0])
 
-        #if mc.get("Simulation_IR_X_Pos"):
-        #    print("Infrared output from simulation:")
-        #    print(struct.unpack('>d', mc.get("Simulation_IR_X_Pos"))[0])
-        #    print(struct.unpack('>d', mc.get("Simulation_IR_X_Neg"))[0])
-        #    print(struct.unpack('>d', mc.get("Simulation_IR_Y_Pos"))[0])
-        #    print(struct.unpack('>d', mc.get("Simulation_IR_Y_Neg"))[0])
-        #    print(struct.unpack('>d', mc.get("Simulation_IR_Z_Pos"))[0])
-        #    print(struct.unpack('>d', mc.get("Simulation_IR_Z_Neg"))[0])
+        if mc.get("IR_X_Pos"):
+            print("Infrared readings from the flight computer:")
+            print(struct.unpack('>d', mc.get("IR_X_Pos"))[0])
+            print(struct.unpack('>d', mc.get("IR_X_Neg"))[0])
+            print(struct.unpack('>d', mc.get("IR_Y_Pos"))[0])
+            print(struct.unpack('>d', mc.get("IR_Y_Neg"))[0])
+            print(struct.unpack('>d', mc.get("IR_Z_Neg_A"))[0])
+            print(struct.unpack('>d', mc.get("IR_Z_Neg_B"))[0])
+
+        if mc.get("Simulation_TLE_Mean_Anomaly"):
+            print("TLE output from simulation:")
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Anomaly"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion_First_Deriv"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Mean_Motion_Second_Deriv"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Argument_Perigee"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Eccentricity_1e7"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Inclination"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Bstar"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Epoch"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_TLE_Raan"))[0])
 
         #if mc.get("Simulation_TLE_Mean_Anomaly"):
         #    print("TLE output from simulation:")
