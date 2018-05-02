@@ -15,6 +15,7 @@
 #include <src/messages/Tle.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
+#include <src/sensors/earth_sensor.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
@@ -60,6 +61,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
     Magnetometer magnetometer;
+    EarthSensor earth_sensor;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
@@ -68,6 +70,8 @@ void RunnableOrientationControl::ControlOrientation() {
 
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+
+        earth_sensor.ReadSensors();
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 

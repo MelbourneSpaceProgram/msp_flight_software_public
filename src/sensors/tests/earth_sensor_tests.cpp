@@ -33,10 +33,11 @@ void TestCalculateNadirVector(void) {
 
     earth_sensor.SetPosXSensorReading(0.133315183411290);
     earth_sensor.SetPosYSensorReading(0.004293997614282);
-    earth_sensor.SetPosZSensorReading(0.636557561183074);
+    // earth_sensor.SetPosZSensorReading(0.636557561183074);
     earth_sensor.SetNegXSensorReading(0.595124837677689);
     earth_sensor.SetNegYSensorReading(0.807433740690897);
-    earth_sensor.SetNegZSensorReading(0.097213969998926);
+    earth_sensor.SetNegZASensorReading(0.097213969998926);
+    earth_sensor.SetNegZBSensorReading(0.097213969998926);
 
     earth_sensor.CalculateNadirVector();
     nadir_vector = earth_sensor.GetNadirVector();

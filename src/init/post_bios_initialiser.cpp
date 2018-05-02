@@ -193,21 +193,21 @@ void PostBiosInitialiser::PostBiosInit() {
         RunUnitTests();
 #elif defined ORBIT_CONFIGURATION
         InitStateManagement();
-        if (hil_enabled) InitDataDashboard();
-        TaskHolder* pre_deployment_magnetometer_poller_task =
-            InitPreDeploymentMagnetometerPoller();
+//        if (hil_enabled) InitDataDashboard();
+//        TaskHolder* pre_deployment_magnetometer_poller_task =
+//            InitPreDeploymentMagnetometerPoller();
 
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
-        DeploymentWait(kBeaconDelayMins);
-        InitRadioListener();
-        DeploymentWait(kAntennaDelayMins);
-        DeployAntenna();
-        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
-                           kill_task_on_orientation_control_begin_semaphore);
-        InitBeacon();
-        InitPayloadProcessor();
+        //DeploymentWait(kBeaconDelayMins);
+        //InitRadioListener();
+        //DeploymentWait(kAntennaDelayMins);
+        //DeployAntenna();
+//        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
+//                           kill_task_on_orientation_control_begin_semaphore);
+//        InitBeacon();
+//        InitPayloadProcessor();
         InitOrientationControl();
         // TODO(rskew): Debug what needs to be passed in to Task_delete
         //Task_delete(pre_deployment_magnetometer_poller_task);

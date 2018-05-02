@@ -12,4 +12,6 @@ message_codes = {
     "test_sensor_reading_request_code": 0x0B,
     "tle_request_code": 0x0C,
     "location_reading_code": 0x0D,
+    "infrared_reading_request_code": 0x0E,
+    "infrared_reading_code": 0x0F,
 }
