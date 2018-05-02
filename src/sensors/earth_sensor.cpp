@@ -87,4 +87,5 @@ void EarthSensor::SetNegYSensorReading(double value) {
 void EarthSensor::SetNegZSensorReading(double value) {
     neg_z_sensor.SetInfraredReading(value);
 }
-Matrix EarthSensor::GetNadirVector() { return nadir_vector; }
+
+const Matrix EarthSensor::GetNadirVector() { return nadir_vector; }
