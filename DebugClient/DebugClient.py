@@ -399,6 +399,33 @@ def testLoop(debug_serial_port, logger, mc):
             else:
                 logger.info("Received unhandled message with ID ".format(message_code))
 
+            if message_code == 0x10:
+                # Gyrometer reading has been requested
+                gyrometer_reading = \
+                    GyrometerReading_pb2.GyrometerReading()
+                if mc.get("Simulation_Gyrometer_X") != None:
+                    gyrometer_reading.x = \
+                        struct.unpack('>d', mc.get("Simulation_Gyrometer_X"))[0]
+                    gyrometer_reading.y = \
+                        struct.unpack('>d', mc.get("Simulation_Gyrometer_Y"))[0]
+                    gyrometer_reading.z = \
+                        struct.unpack('>d', mc.get("Simulation_Gyrometer_Z"))[0]
+                    gyrometer_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+                else:
+                    gyrometer_reading.x = 0
+                    gyrometer_reading.y = 0
+                    gyrometer_reading.z = 0
+                    gyrometer_reading.timestamp_millis_unix_epoch = \
+                        round(time.time()*1000)
+
+                logger.info("Sending message: " + str(gyrometer_reading))
+                serialised_message = gyrometer_reading.SerializeToString()
+                send_message(debug_serial_port, 0x10, serialised_message)
+
+
+            else:
+                logger.info("Received unhandled message with ID {}".format(message_code))
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")
 

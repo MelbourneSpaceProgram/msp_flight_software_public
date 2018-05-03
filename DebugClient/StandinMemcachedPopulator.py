@@ -56,6 +56,12 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Simulation_IR_Z_Pos"))[0])
             print(struct.unpack('>d', mc.get("Simulation_IR_Z_Neg"))[0])
 
+        if mc.get("Simulation_Gyrometer_X"):
+            print("Gyro output from simulation:")
+            print(struct.unpack('>d', mc.get("Simulation_Gyrometer_X"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_Gyrometer_Y"))[0])
+            print(struct.unpack('>d', mc.get("Simulation_Gyrometer_Z"))[0])
+            
         if mc.get("IR_X_Pos"):
             print("Infrared readings from the flight computer:")
             print(struct.unpack('>d', mc.get("IR_X_Pos"))[0])
