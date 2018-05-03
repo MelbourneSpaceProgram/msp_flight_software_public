@@ -90,9 +90,9 @@ void RunnableOrientationControl::ControlOrientation()
         double nadir_quaternion_data[4][1];
         Matrix nadir_quaternion(nadir_quaternion_data);
         nadir_quaternion.Set(0, 0, 1);
-        nadir_quaternion.Set(0, 1, earth_sensor.GetNadirVector().Get(0, 0));
-        nadir_quaternion.Set(0, 2, earth_sensor.GetNadirVector().Get(0, 1));
-        nadir_quaternion.Set(0, 3, earth_sensor.GetNadirVector().Get(0, 2));
+        nadir_quaternion.Set(1, 0, earth_sensor.GetNadirVector().Get(0, 0));
+        nadir_quaternion.Set(2, 0, earth_sensor.GetNadirVector().Get(1, 0));
+        nadir_quaternion.Set(3, 0, earth_sensor.GetNadirVector().Get(2, 0));
         double ref_quaternion_data[4][1] = { { 0 }, { 0 }, { 0 }, { 1 } };
         Matrix ref_quaternion(ref_quaternion_data);
         double error_quaternion_data[4][1];
@@ -109,7 +109,7 @@ void RunnableOrientationControl::ControlOrientation()
         bool success = magnetometer.TakeReading();
         if (!success)
         {
-            continue;
+//            continue;
         }
         MagnetometerReading magnetometer_reading = magnetometer.GetReading();
 
@@ -139,7 +139,7 @@ void RunnableOrientationControl::ControlOrientation()
 
         if (!success)
         {
-            continue;
+//            continue;
         }
         GyrometerReading gyrometer_reading = gyrometer.GetReading();
         double angular_velocity_data[3][1];

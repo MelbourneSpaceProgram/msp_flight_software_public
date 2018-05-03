@@ -23,20 +23,21 @@ bool Gyrometer::TakeReadingHil() {
     DebugStream *debug_stream = DebugStream::GetInstance();
     uint8_t buffer[GyrometerReading_size];
 
-    debug_stream->RequestMessageFromSimulator(kGyrometerReadingRequestCode,
+    bool success = debug_stream->RequestMessageFromSimulator(kGyrometerReadingRequestCode,
                                               buffer, GyrometerReading_size);
+    if (success){
 
-    pb_istream_t stream =
-        pb_istream_from_buffer(buffer, GyrometerReading_size);
+        pb_istream_t stream =
+            pb_istream_from_buffer(buffer, GyrometerReading_size);
 
-    bool status = pb_decode(&stream, GyrometerReading_fields, &reading);
-    if (!status) {
-        etl::exception e("pb_decode failed",
-                         __FILE__, __LINE__);
-        throw e;
+        bool status = pb_decode(&stream, GyrometerReading_fields, &reading);
+        if (!status) {
+            etl::exception e("pb_decode failed",
+                             __FILE__, __LINE__);
+            throw e;
+        }
+
+        NotifyObservers();
     }
-
-    NotifyObservers();
-
-    return true;
+    return success;
 }
