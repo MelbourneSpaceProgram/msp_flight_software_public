@@ -150,11 +150,10 @@ void RunnableOrientationControl::ControlOrientation() {
         angular_velocity.Set(0, 0, gyrometer_reading.x);
         angular_velocity.Set(1, 0, gyrometer_reading.y);
         angular_velocity.Set(2, 0, gyrometer_reading.z);
-        double angular_momentum_data[3][1];
-        Matrix angular_momentum(angular_momentum_data);
-        angular_momentum.Multiply(
-            RunnableOrientationControl::acrux1_inertia_matrix,
-            angular_velocity);
+
+        double torque_output_data[3][1];
+        Matrix torque_output(torque_output_data);
+        NadirController::Control(error_quaternion, angular_velocity, torque_output);
 
         // TODO(rskew) tell DetumbledStateMachine about Bdot
 
@@ -209,10 +208,8 @@ void RunnableOrientationControl::ControlOrientation() {
 
         // Detumbling controller
         // TODO (rskew) controller output PWM
-        double torque_output_data[3][1];
-        Matrix torque_output(torque_output_data);
-        BDotController::Control(geomag, b_dot_estimate, torque_output);
-        float torque_boost = 10.0f;
+
+        double torque_boost = 1;
         MagnetorquerControl::SetMagnetorquersPowerFraction(
             torque_output.Get(0, 0) * torque_boost,
             torque_output.Get(1, 0) * torque_boost,

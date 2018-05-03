@@ -344,7 +344,7 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
 
 
-            if message_code == 0x0E:
+            if message_code == 0x10
                 # Gyrometer reading has been requested
                 gyrometer_reading = \
                     GyrometerReading_pb2.GyrometerReading()
@@ -366,7 +366,7 @@ def testLoop(debug_serial_port, logger, mc):
 
                 logger.info("Sending message: " + str(gyrometer_reading))
                 serialised_message = gyrometer_reading.SerializeToString()
-                send_message(debug_serial_port, 0x0E, serialised_message)
+                send_message(debug_serial_port, 0x10, serialised_message)
 
 
             if message_code == \

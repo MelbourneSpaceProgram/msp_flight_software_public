@@ -57,8 +57,8 @@ void master_tests_thread() {
     location_estimator_tests_runner();
     nadir_controller_tests_runner();
     nadir_error_generator_tests_runner();
-    sgp4_tests_runner();
-    wmm_tests_runner();
+//    sgp4_tests_runner();
+//    wmm_tests_runner();
     circular_buffer_nanopb_tests_runner();
     database_tests_runner();
     sd_tests_runner();
