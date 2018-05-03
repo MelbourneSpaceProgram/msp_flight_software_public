@@ -25,6 +25,8 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
+#include <src/adcs/state_estimators/nadir_error_generator.h>
+#include <src/adcs/controllers/nadir_controller.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
@@ -95,6 +97,18 @@ void RunnableOrientationControl::ControlOrientation() {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
         earth_sensor.ReadSensors();
+        double nadir_quaternion_data[4][1];
+        Matrix nadir_quaternion(nadir_quaternion_data);
+        nadir_quaternion.Set(0,0,1);
+        nadir_quaternion.Set(0,1, earth_sensor.GetNadirVector().Get(0,0));
+        nadir_quaternion.Set(0,2, earth_sensor.GetNadirVector().Get(0,1));
+        nadir_quaternion.Set(0,3, earth_sensor.GetNadirVector().Get(0,2));
+        double ref_quaternion_data[4][1] = {{0},{0},{0},{1}};
+        Matrix ref_quaternion(ref_quaternion_data);
+        double error_quaternion_data[4][1];
+        Matrix error_quaternion(error_quaternion_data);
+        ErrorQuaternionCalculatorEarthSensor(ref_quaternion,nadir_quaternion,error_quaternion);
+
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
