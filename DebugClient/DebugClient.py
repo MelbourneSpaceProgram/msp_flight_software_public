@@ -16,6 +16,7 @@ import LocationReading_pb2
 import time
 import logging
 import struct
+import GyrometerReading_pb2
 from messagecodes import message_codes
 
 logger = logging.getLogger('debug_interface')
