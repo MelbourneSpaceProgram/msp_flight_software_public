@@ -61,18 +61,6 @@ void Bms::SetConfiguration()
     bus->PerformWriteTransaction(address, package, 3);
 }
 
-//Read NTC ratio
-
-uint16_t Bms::GetNTCRatio(byte register_location,
-                               etl::array<byte, 2>& read_buffer)
-{
-    SelectRegister(register_location);
-    ReadFromCurrentRegister(read_buffer);
-    uint16_t rtc_binary_reading = ((static_cast<uint16_t>(read_buffer.at(1)))
-            << 8) | static_cast<uint16_t>(read_buffer.at(0));
-    return rtc_binary_reading;
-}
-
 //Read 2-byte from BMS Registers
 uint16_t Bms::GetConfiguration(byte register_location,
                                etl::array<byte, 2>& read_buffer)
@@ -163,9 +151,10 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer)
     }
 }
 
+//Die Temperature
 double Bms::TakeI2cTempReading() {
     etl::array<byte, 2> read_buffer;
-    SelectRegister(kBatteryTempRegister);
+    SelectRegister(kDieTempRegister);
     ReadFromCurrentRegister(read_buffer);
     return ConvertToTemperature(read_buffer);
 }
@@ -174,6 +163,25 @@ double Bms::ConvertToTemperature(etl::array<byte, 2> read_buffer) {
     uint16_t register_value =
         (read_buffer[1] << 8) | read_buffer[0];
     double temp_in_celcius =
-        (register_value - kBatteryTempOffset) / kBatteryTempConversionFactor;
+        (register_value - kDieTempOffset) / kDieTempConversionFactor;
     return temp_in_celcius;
 }
+
+//Thermistor Temperature
+double Bms::TakeBatteryTempReading() {
+    etl::array<byte, 2> read_buffer;
+    SelectRegister(kNTCRatioRegister);
+    ReadFromCurrentRegister(read_buffer);
+    return ConvertInoTemperature(read_buffer);
+}
+
+double Bms::ConvertInoTemperature(etl::array<byte, 2> read_buffer) {
+    uint16_t ntc_ratio_register_value =
+        (read_buffer[1] << 8) | read_buffer[0];
+    double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value / (kNTCBitWeight-ntc_ratio_register_value);
+
+    double battery_temp_in_kelvin = kConversionCoeffientA + kConversionCoeffientB*log(rntc_resistance) + kConversionCoeffientC * pow (log(rntc_resistance),3);
+    return battery_temp_in_kelvin;
+}
+
+

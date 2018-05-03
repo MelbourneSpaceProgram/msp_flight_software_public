@@ -36,6 +36,8 @@ class Bms : public I2cSensor {
     bool GetTelemetryValid(etl::array<byte, 2>& read_buffer);
     double TakeI2cTempReading();
     double ConvertToTemperature(etl::array<byte, 2> read_buffer);
+    double TakeBatteryTempReading();
+    double ConvertInoTemperature(etl::array<byte, 2> read_buffer);
 
     static const byte kUVCLRegisterValue = 0x8D;
     static const byte kVChargeRegisterValue = 0x0F;
@@ -93,9 +95,18 @@ class Bms : public I2cSensor {
     static const byte kPrescaleFactorRegisterLocation = 0x12;
     static const byte kPrescaleFactorRegisterValue = 0x03;
 
-    static const byte kBatteryTempRegister = 0x3F;
-    static const uint16_t kBatteryTempOffset = 12010;
-    static const double kBatteryTempConversionFactor = 45.6;
+    static const byte kDieTempRegister = 0x3F;
+    static const uint16_t kDieTempOffset = 12010;
+    static const double kDieTempConversionFactor = 45.6;
+
+    static const byte kNTCRatioRegister = 0x40;
+    static const double kNTCBiasResistance = 10000.0;
+    static const double kNTCBitWeight = 21845.0;
+
+    static const double kConversionCoeffientA = 0.00084220;
+    static const double kConversionCoeffientB = 0x00026265;
+    static const double kConversionCoeffientC = 0.00000011875;
+
 };
 
 #endif  // SRC_I2C_BMS_BMS_H

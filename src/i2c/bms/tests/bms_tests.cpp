@@ -23,8 +23,6 @@ void TestBms()
     I2c bus_d(I2C_BUS_D);
     Bms bms(&bus_d, test_bms_address);
     etl::array<byte, kReadRegisterCount> read_buffer;
-    TEST_ASSERT_GREATER_THAN(0,
-                       bms.GetNTCRatio(0x40, read_buffer));
 
     TEST_ASSERT_EQUAL_INT16(Bms::kUVCLRegisterValue,
                             bms.GetConfiguration(0x16, read_buffer));
