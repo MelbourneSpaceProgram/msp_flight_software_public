@@ -47,6 +47,6 @@ void TestBmsTemperatureRead() {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
     double temp =
-          i2c_measurable_manager->ReadI2cMeasurable<double>(kPowerBmsTemp1, 1);
+          i2c_measurable_manager->ReadI2cMeasurable<double>(kPowerBmsDieTemp1, 1);
     TEST_ASSERT_GREATER_THAN(0, temp);
 }

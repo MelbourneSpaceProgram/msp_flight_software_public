@@ -1,4 +1,5 @@
 #include <src/i2c/bms/bms.h>
+#include <math.h>
 
 Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
@@ -152,7 +153,7 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer)
 }
 
 //Die Temperature
-double Bms::TakeI2cTempReading() {
+double Bms::TakeI2cDieTempReading() {
     etl::array<byte, 2> read_buffer;
     SelectRegister(kDieTempRegister);
     ReadFromCurrentRegister(read_buffer);

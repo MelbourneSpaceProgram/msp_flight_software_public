@@ -34,7 +34,7 @@ class Bms : public I2cSensor {
     Bms::ChargeStatus GetChargeStatus(etl::array<byte, 2>& read_buffer);
     Bms::SystemStatus GetSystemStatus(etl::array<byte, 2>& read_buffer);
     bool GetTelemetryValid(etl::array<byte, 2>& read_buffer);
-    double TakeI2cTempReading();
+    double TakeI2cDieTempReading();
     double ConvertToTemperature(etl::array<byte, 2> read_buffer);
     double TakeBatteryTempReading();
     double ConvertInoTemperature(etl::array<byte, 2> read_buffer);
