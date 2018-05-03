@@ -104,8 +104,9 @@ class Bms : public I2cSensor {
     static const double kNTCBitWeight = 21845.0;
 
     static const double kConversionCoeffientA = 0.00084220;
-    static const double kConversionCoeffientB = 0x00026265;
+    static const double kConversionCoeffientB = 0.00026265;
     static const double kConversionCoeffientC = 0.00000011875;
+    static const double kKelvinToCelciusOffset = 273.15;
 
 };
 

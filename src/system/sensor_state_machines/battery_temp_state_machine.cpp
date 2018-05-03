@@ -1,13 +1,12 @@
 #include <src/sensors/i2c_measurable_manager.h>
-#include <src/sensors/i2c_sensors/measurables/bms_temperature_measurable.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 
 BatteryTempStateMachine::BatteryTempStateMachine(StateManager* state_manager)
-    : SensorStateMachine<BmsTemperatureMeasurable>(state_manager,
+    : SensorStateMachine<BmsBatteryTemperatureMeasurable>(state_manager,
                                                    kBatteryTempNominal) {}
 
 void BatteryTempStateMachine::Update() {
-    BmsTemperatureMeasurable* sensor_with_reading = GetSensorWithReading();
+    BmsBatteryTemperatureMeasurable* sensor_with_reading = GetSensorWithReading();
     if (sensor_with_reading == NULL) {
         etl::exception e(
             "Null pointer obtained when updating battery temp state machine.",
@@ -18,12 +17,12 @@ void BatteryTempStateMachine::Update() {
     BatteryIndex id;
     I2cMeasurableManager* measurable_manager =
         I2cMeasurableManager::GetInstance();
-    BmsTemperatureMeasurable* battery_1_sensor =
-        dynamic_cast<BmsTemperatureMeasurable*>(
-            measurable_manager->GetMeasurable<double>(kPowerBmsTemp1));
-    BmsTemperatureMeasurable* battery_2_sensor =
-        dynamic_cast<BmsTemperatureMeasurable*>(
-            measurable_manager->GetMeasurable<double>(kPowerBmsTemp2));
+    BmsBatteryTemperatureMeasurable* battery_1_sensor =
+        dynamic_cast<BmsBatteryTemperatureMeasurable*>(
+            measurable_manager->GetMeasurable<double>(kPowerBmsBatteryTemp1));
+    BmsBatteryTemperatureMeasurable* battery_2_sensor =
+        dynamic_cast<BmsBatteryTemperatureMeasurable*>(
+            measurable_manager->GetMeasurable<double>(kPowerBmsBatteryTemp2));
 
     if (sensor_with_reading == battery_1_sensor) {
         id = kBattery1;

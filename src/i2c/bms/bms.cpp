@@ -179,10 +179,13 @@ double Bms::TakeI2cBatteryTempReading() {
 double Bms::ConvertInoTemperature(etl::array<byte, 2> read_buffer) {
     uint16_t ntc_ratio_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
-    double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value / (kNTCBitWeight-ntc_ratio_register_value);
+    double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value /
+            (kNTCBitWeight-ntc_ratio_register_value);
 
-    double battery_temp_in_kelvin = kConversionCoeffientA + kConversionCoeffientB*log(rntc_resistance) + kConversionCoeffientC * pow (log(rntc_resistance),3);
-    return battery_temp_in_kelvin;
+    double battery_temp_in_kelvin = 1/(kConversionCoeffientA +
+            kConversionCoeffientB*log(rntc_resistance) + kConversionCoeffientC *
+            pow (log(rntc_resistance),3));
+    return battery_temp_in_kelvin - kKelvinToCelciusOffset;
 }
 
 
