@@ -1,6 +1,8 @@
 #include <src/i2c/bms/bms.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/adc.h>
+#include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/rtime_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
@@ -8,7 +10,6 @@
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_manager.h>
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
-#include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
 
 I2cMeasurableManager *I2cMeasurableManager::instance = NULL;
 
@@ -83,18 +84,26 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     Bms *power_bms_die_temp_2 =
         new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
 
+    Bms *power_bms_battery_temp_1 =
+                 new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+    Bms *power_bms_battery_temp_2 =
+        new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+
     StateManager *state_manager = StateManager::GetStateManager();
     BatteryTempStateMachine *battery_temp_state_machine =
-        static_cast<BatteryTempStateMachine*>(
+        static_cast<BatteryTempStateMachine *>(
             state_manager->GetStateMachine(kBatteryTempStateMachine));
 
     battery_temp_state_machine->RegisterWithSensor(
-        AddBmsTemperature(kPowerBmsTemp1, power_bms_temp_1));
+            AddBmsDieTempMeasurable(kPowerBmsBatteryTemp1, power_bms_battery_temp_1));
     battery_temp_state_machine->RegisterWithSensor(
-        AddBmsTemperature(kPowerBmsTemp2, power_bms_temp_2));
+            AddBmsDieTempMeasurable(kPowerBmsBatteryTemp1, power_bms_battery_temp_2));
 
     AddTemperature(kPowerTemp1, power_temp_1);
     AddTemperature(kPowerTemp2, power_temp_2);
+    AddBmsDieTempMeasurable(kPowerBmsDieTemp1, power_bms_die_temp_1);
+    AddBmsDieTempMeasurable(kPowerBmsDieTemp2, power_bms_die_temp_2);
+
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -190,10 +199,21 @@ void I2cMeasurableManager::AddTemperature(MeasurableId id,
     measurables[id] = temp;
 }
 
-BmsTemperatureMeasurable *I2cMeasurableManager::AddBmsTemperature(
+BmsDieTemperatureMeasurable *I2cMeasurableManager::AddBmsDieTempMeasurable(
     MeasurableId id, Bms *temp_sensor) {
     CheckValidId(id);
-    BmsDieTemperatureMeasurable *temp = new BmsDieTemperatureMeasurable(temp_sensor);
+    BmsDieTemperatureMeasurable *temp =
+        new BmsDieTemperatureMeasurable(temp_sensor);
+    measurables[id] = temp;
+    return temp;
+}
+
+BmsBatteryTemperatureMeasurable *
+I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id,
+                                                  Bms *temp_sensor) {
+    CheckValidId(id);
+    BmsBatteryTemperatureMeasurable *temp =
+        new BmsBatteryTemperatureMeasurable(temp_sensor);
     measurables[id] = temp;
     return temp;
 }

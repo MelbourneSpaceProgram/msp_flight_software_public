@@ -169,7 +169,7 @@ double Bms::ConvertToTemperature(etl::array<byte, 2> read_buffer) {
 }
 
 //Thermistor Temperature
-double Bms::TakeBatteryTempReading() {
+double Bms::TakeI2cBatteryTempReading() {
     etl::array<byte, 2> read_buffer;
     SelectRegister(kNTCRatioRegister);
     ReadFromCurrentRegister(read_buffer);

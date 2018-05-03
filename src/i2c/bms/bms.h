@@ -36,7 +36,7 @@ class Bms : public I2cSensor {
     bool GetTelemetryValid(etl::array<byte, 2>& read_buffer);
     double TakeI2cDieTempReading();
     double ConvertToTemperature(etl::array<byte, 2> read_buffer);
-    double TakeBatteryTempReading();
+    double TakeI2cBatteryTempReading();
     double ConvertInoTemperature(etl::array<byte, 2> read_buffer);
 
     static const byte kUVCLRegisterValue = 0x8D;
