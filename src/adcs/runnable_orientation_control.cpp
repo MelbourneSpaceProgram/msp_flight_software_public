@@ -102,14 +102,14 @@ void RunnableOrientationControl::ControlOrientation()
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
-        MagnetorquerControl::Degauss();
+        //MagnetorquerControl::Degauss();
 
         // Read Magnetometer
         // TODO(rskew) handle false return value
         bool success = magnetometer.TakeReading();
         if (!success)
         {
-//            continue;
+            continue;
         }
         MagnetometerReading magnetometer_reading = magnetometer.GetReading();
 
@@ -139,7 +139,7 @@ void RunnableOrientationControl::ControlOrientation()
 
         if (!success)
         {
-//            continue;
+            continue;
         }
         GyrometerReading gyrometer_reading = gyrometer.GetReading();
         double angular_velocity_data[3][1];
@@ -150,9 +150,12 @@ void RunnableOrientationControl::ControlOrientation()
 
 
         // Run controller
+
         double torque_output_data[3][1];
         Matrix torque_output(torque_output_data);
-//        BDotController::Control(geomag, b_dot_estimate, torque_output);
+
+//      BDotController::Control(geomag, b_dot_estimate, torque_output);
+
         NadirController::Control(error_quaternion, angular_velocity,torque_output);
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]
@@ -160,12 +163,16 @@ void RunnableOrientationControl::ControlOrientation()
         // TODO(crozone):
         //
         // Verify that torque_boost here is correct for driver input range.
-        float torque_boost = 100.0f;
+        float torque_boost = 1;
 
         MagnetorquerControl::SetMagnetorquersPowerFraction(
                 torque_output.Get(0, 0) * torque_boost,
                 torque_output.Get(1, 0) * torque_boost,
                 torque_output.Get(2, 0) * torque_boost);
+//        MagnetorquerControl::SetMagnetorquersPowerFraction(
+//                -angular_velocity.Get(0,0)*1e-1,
+//                -angular_velocity.Get(1,0)*1e-1,
+//                -angular_velocity.Get(2,0)*1e-1);
 
         if (hil_enabled)
         {

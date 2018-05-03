@@ -1,8 +1,8 @@
 #include <src/adcs/controllers/nadir_controller.h>
 
 const double NadirController::max_achievable_dipole[] = {0.35, 0.35, 0.05};
-const double NadirController::kp =0;
-const double NadirController::kd = 1e-7;
+const double NadirController::kp =1e-4;
+const double NadirController::kd = 1e-2;
 
 void NadirController::Control(const Matrix &nadir_error_quart, Matrix &omega,
                               Matrix &torque_output) {

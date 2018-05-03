@@ -46,9 +46,9 @@ def send_message(debug_serial_port, messageCode, serialisedMessage):
 
     debug_serial_port.write(serialisedMessage)
 
-    logger.debug("Sent {} bytes".format(len(serialisedMessage)))
+    # logger.debug("Sent {} bytes".format(len(serialisedMessage)))
 
-    logger.info("Sent message with ID {}".format(messageCode))
+    # logger.info("Sent message with ID {}".format(messageCode))
 
 def wait_for_message(debug_serial_port):
 
@@ -122,6 +122,9 @@ def main():
 
 def testLoop(debug_serial_port, logger, mc):
     # Persistent var for flight-computer-side unit test
+
+    debug_serial_port.flushInput()
+    debug_serial_port.flushOutput()
     test_message_value = 0
     test_message_timestamp = 0
     try:
@@ -340,7 +343,7 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
 
 
-            if message_code == \
+            elif message_code == \
                 message_codes["infrared_reading_request_code"]:
                 infrared_reading = \
                     InfraredReading_pb2.InfraredReading()
@@ -397,10 +400,7 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>d',infrared_reading_echo.negative_z_b))
 
 
-            else:
-                logger.info("Received unhandled message with ID ".format(message_code))
-
-            if message_code == 0x10:
+            elif message_code == 0x10:
                 # Gyrometer reading has been requested
                 gyrometer_reading = \
                     GyrometerReading_pb2.GyrometerReading()
@@ -427,6 +427,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             else:
                 logger.info("Received unhandled message with ID {}".format(message_code))
+
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")
 
