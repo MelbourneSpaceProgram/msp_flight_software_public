@@ -33,7 +33,8 @@
 extern void SetUp(void);
 extern void TearDown(void);
 extern void TestBms();
-extern void TestBmsTemperatureRead();
+extern void TestBmsDieTemperatureRead();
+extern void TestBmsBatteryTemperatureRead();
 
 
 /*=======Suite Setup=====*/
@@ -79,7 +80,8 @@ int bms_tests_runner(void)
   try {
   UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
     RUN_TEST(TestBms, 15);
-    RUN_TEST(TestBmsTemperatureRead, 45);
+    RUN_TEST(TestBmsDieTemperatureRead, 39);
+    RUN_TEST(TestBmsBatteryTemperatureRead, 50);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
