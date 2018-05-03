@@ -19,16 +19,25 @@
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
+#include <src/adcs/controllers/nadir_controller.h>
+#include <src/adcs/state_estimators/nadir_error_generator.h>
+#include <src/sensors/specific_sensors/gyrometer.h>
+#include <src/messages/GyrometerReading.pb.h>
+
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
-RunnableOrientationControl::RunnableOrientationControl() {}
+RunnableOrientationControl::RunnableOrientationControl()
+{
+}
 
-fnptr RunnableOrientationControl::GetRunnablePointer() {
+fnptr RunnableOrientationControl::GetRunnablePointer()
+{
     return &RunnableOrientationControl::ControlOrientation;
 }
 
-void RunnableOrientationControl::SetupControlLoopTimer() {
+void RunnableOrientationControl::SetupControlLoopTimer()
+{
     Timer_Handle orientation_control_timer;
     // Potential issues with this object going out of scope:
     //   If the timer has parameters changed at runtime and
@@ -38,40 +47,58 @@ void RunnableOrientationControl::SetupControlLoopTimer() {
     Semaphore_Params_init(&orientation_control_timer_semaphore_params);
     orientation_control_timer_semaphore_params.mode = Semaphore_Mode_BINARY;
     RunnableOrientationControl::control_loop_timer_semaphore =
-        Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
+    Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
     Timer_Params_init(&orientation_control_timer_params);
     orientation_control_timer_params.period =
-        RunnableOrientationControl::kControlLoopPeriodMicros;
+            RunnableOrientationControl::kControlLoopPeriodMicros;
     orientation_control_timer_params.arg =
-        (UArg)RunnableOrientationControl::control_loop_timer_semaphore;
+            (UArg) RunnableOrientationControl::control_loop_timer_semaphore;
     orientation_control_timer = Timer_create(
-        Board_TIMER2, RunnableOrientationControl::OrientationControlTimerISR,
-        &orientation_control_timer_params, NULL);
-    if (orientation_control_timer == NULL) {
+            Board_TIMER2,
+            RunnableOrientationControl::OrientationControlTimerISR,
+            &orientation_control_timer_params, NULL);
+    if (orientation_control_timer == NULL)
+    {
         etl::exception e("Timer create failed", __FILE__, __LINE__);
         throw e;
     }
 }
 
 void RunnableOrientationControl::OrientationControlTimerISR(
-    UArg orientation_control_timer_semaphore) {
-    Semaphore_post((Semaphore_Handle)orientation_control_timer_semaphore);
+        UArg orientation_control_timer_semaphore)
+{
+    Semaphore_post((Semaphore_Handle) orientation_control_timer_semaphore);
 }
 
-void RunnableOrientationControl::ControlOrientation() {
+void RunnableOrientationControl::ControlOrientation()
+{
     DebugStream* debug_stream = DebugStream::GetInstance();
     Magnetometer magnetometer;
     EarthSensor earth_sensor;
+    Gyrometer gyrometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
     // TODO (rskew) replace this with actual rtc time
     double tsince_millis = 0;
 
-    while (1) {
+    while (1)
+    {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
-
+        /* Earth Sensor Steps */
         earth_sensor.ReadSensors();
+        double nadir_quaternion_data[4][1];
+        Matrix nadir_quaternion(nadir_quaternion_data);
+        nadir_quaternion.Set(0, 0, 1);
+        nadir_quaternion.Set(0, 1, earth_sensor.GetNadirVector().Get(0, 0));
+        nadir_quaternion.Set(0, 2, earth_sensor.GetNadirVector().Get(0, 1));
+        nadir_quaternion.Set(0, 3, earth_sensor.GetNadirVector().Get(0, 2));
+        double ref_quaternion_data[4][1] = { { 0 }, { 0 }, { 0 }, { 1 } };
+        Matrix ref_quaternion(ref_quaternion_data);
+        double error_quaternion_data[4][1];
+        Matrix error_quaternion(error_quaternion_data);
+        ErrorQuaternionCalculatorEarthSensor(ref_quaternion, nadir_quaternion,
+                                             error_quaternion);
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
@@ -80,37 +107,55 @@ void RunnableOrientationControl::ControlOrientation() {
         // Read Magnetometer
         // TODO(rskew) handle false return value
         bool success = magnetometer.TakeReading();
-        if (!success) {
+        if (!success)
+        {
             continue;
         }
         MagnetometerReading magnetometer_reading = magnetometer.GetReading();
 
-        if (hil_enabled) {
+        if (hil_enabled)
+        {
             // Echo reading to data dashboard
-            RunnableDataDashboard::TransmitMessage(
-                kMagnetometerReadingCode, MagnetometerReading_size,
-                MagnetometerReading_fields, &magnetometer_reading);
+            RunnableDataDashboard::TransmitMessage(kMagnetometerReadingCode,
+                                                   MagnetometerReading_size,
+                                                   MagnetometerReading_fields,
+                                                   &magnetometer_reading);
         }
 
         // Run estimator
-        double geomag_data[3][1] = {{magnetometer_reading.x},
-                                    {magnetometer_reading.y},
-                                    {magnetometer_reading.z}};
-        Matrix geomag(geomag_data);
-        double b_dot_estimate_data[3][1];
-        Matrix b_dot_estimate(b_dot_estimate_data);
-        b_dot_estimator.Estimate(geomag, b_dot_estimate);
+        double geomag_data[3][1] = { { magnetometer_reading.x }, {
+                magnetometer_reading.y },
+                                     { magnetometer_reading.z } };
+        /*
+         Matrix geomag(geomag_data);
+         double b_dot_estimate_data[3][1];
+
+         Matrix b_dot_estimate(b_dot_estimate_data);
+         b_dot_estimator.Estimate(geomag, b_dot_estimate);*/
 
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
+        /*Gyroscope things*/
+        success = gyrometer.TakeReading();
+
+        if (!success)
+        {
+            continue;
+        }
+        GyrometerReading gyrometer_reading = gyrometer.GetReading();
+        double angular_velocity_data[3][1];
+        Matrix angular_velocity(angular_velocity_data);
+        angular_velocity.Set(0, 0, gyrometer_reading.x);
+        angular_velocity.Set(1, 0, gyrometer_reading.y);
+        angular_velocity.Set(2, 0, gyrometer_reading.z);
+
 
         // Run controller
         double torque_output_data[3][1];
         Matrix torque_output(torque_output_data);
-        BDotController::Control(geomag, b_dot_estimate, torque_output);
-
+//        BDotController::Control(geomag, b_dot_estimate, torque_output);
+        NadirController::Control(error_quaternion, angular_velocity,torque_output);
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]
-
         //
         // TODO(crozone):
         //
@@ -118,23 +163,26 @@ void RunnableOrientationControl::ControlOrientation() {
         float torque_boost = 100.0f;
 
         MagnetorquerControl::SetMagnetorquersPowerFraction(
-            torque_output.Get(0, 0) * torque_boost,
-            torque_output.Get(1, 0) * torque_boost,
-            torque_output.Get(2, 0) * torque_boost);
+                torque_output.Get(0, 0) * torque_boost,
+                torque_output.Get(1, 0) * torque_boost,
+                torque_output.Get(2, 0) * torque_boost);
 
-        if (hil_enabled) {
+        if (hil_enabled)
+        {
             // TODO (rskew) move this code to a command handler, allowing the
             // TLE update to be driven by the ground station.
 
             DebugStream* debug_stream = DebugStream::GetInstance();
             uint8_t buffer[Tle_size];
             bool success = debug_stream->RequestMessageFromSimulator(
-                kTleRequestCode, buffer, Tle_size);
-            if (success) {
+                    kTleRequestCode, buffer, Tle_size);
+            if (success)
+            {
                 pb_istream_t stream = pb_istream_from_buffer(buffer, Tle_size);
                 Tle tle = Tle_init_zero;
                 bool status = pb_decode(&stream, Tle_fields, &tle);
-                if (!status) {
+                if (!status)
+                {
                     etl::exception e("pb_decode failed", __FILE__, __LINE__);
                     throw e;
                 }
@@ -150,16 +198,17 @@ void RunnableOrientationControl::ControlOrientation() {
                 // Write calculated position to data dashboard
                 LocationReading location_reading = LocationReading_init_zero;
                 location_reading.lattitude_geodetic_degrees =
-                    location_estimator.GetLattitudeGeodeticDegrees();
+                        location_estimator.GetLattitudeGeodeticDegrees();
                 location_reading.longitude_degrees =
-                    location_estimator.GetLongitudeDegrees();
+                        location_estimator.GetLongitudeDegrees();
                 location_reading.altitude_above_ellipsoid_km =
-                    location_estimator.GetAltitudeAboveEllipsoidKm();
+                        location_estimator.GetAltitudeAboveEllipsoidKm();
                 // TODO (rskew) generate timestamp
                 location_reading.timestamp_millis_unix_epoch = 0;
-                RunnableDataDashboard::TransmitMessage(
-                    kLocationReadingCode, LocationReading_size,
-                    LocationReading_fields, &location_reading);
+                RunnableDataDashboard::TransmitMessage(kLocationReadingCode,
+                                                       LocationReading_size,
+                                                       LocationReading_fields,
+                                                       &location_reading);
             }
         }
     }
