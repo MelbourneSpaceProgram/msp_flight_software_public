@@ -77,7 +77,7 @@ void RunnableOrientationControl::ControlOrientation() {
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
-        Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
+        bool has_mail = Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
                                  BIOS_NO_WAIT);
 
         while (!enabled_by_state_manager) {
