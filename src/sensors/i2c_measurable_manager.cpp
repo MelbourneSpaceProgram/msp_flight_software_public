@@ -97,13 +97,12 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     battery_temp_state_machine->RegisterWithSensor(
             AddBmsDieTempMeasurable(kPowerBmsBatteryTemp1, power_bms_battery_temp_1));
     battery_temp_state_machine->RegisterWithSensor(
-            AddBmsDieTempMeasurable(kPowerBmsBatteryTemp1, power_bms_battery_temp_2));
+            AddBmsDieTempMeasurable(kPowerBmsBatteryTemp2, power_bms_battery_temp_2));
 
     AddTemperature(kPowerTemp1, power_temp_1);
     AddTemperature(kPowerTemp2, power_temp_2);
     AddBmsDieTempMeasurable(kPowerBmsDieTemp1, power_bms_die_temp_1);
     AddBmsDieTempMeasurable(kPowerBmsDieTemp2, power_bms_die_temp_2);
-
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
