@@ -7,15 +7,13 @@
 #include <src/util/data_types.h>
 #include <string>
 
-class Bms: public I2cSensor
-{
-public:
+class Bms : public I2cSensor {
+   public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
     void SetConfiguration();
 
-    enum ChargeStatus
-    {
+    enum ChargeStatus {
         kConstantVoltage,
         kConstantCurrent,
         kIinLimitActive,
@@ -24,10 +22,7 @@ public:
         kError
     };
 
-    enum SystemStatus
-    {
-        kChargeEnable, kChargeDisable, kOther
-    };
+    enum SystemStatus { kChargeEnable, kChargeDisable, kOther };
     uint16_t GetNTCRatio(byte register_location,
                          etl::array<byte, 2>& read_buffer);
 
@@ -50,7 +45,7 @@ public:
     static const byte kReChargeThresholdLRegisterValue = 0x0C;
     static const byte kReChargeThresholdURegisterValue = 0x43;
 
-private:
+   private:
     static const uint16_t kTelemetryValidBitMask = 0x0001;
     static const uint16_t kConstantVoltageBitMask = 0x0001;
     static const uint16_t kConstantCurrentBitMask = 0x0002;
