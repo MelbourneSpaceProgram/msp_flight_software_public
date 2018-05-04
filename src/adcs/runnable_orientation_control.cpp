@@ -17,10 +17,11 @@
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
+#include <src/system/system_state_machines/power_state_machine.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
-#include <ti/sysbios/knl/Mailbox.h>
+#include <src/util/task_utils.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
@@ -67,9 +68,6 @@ void RunnableOrientationControl::ControlOrientation() {
     LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
-    Mailbox_Handle orientation_control_enabled =
-        state_manager->GetFunctionEnableHandle(kOrientationControlEnable);
-    bool enabled_by_state_manager = false;
 
     // TODO (rskew) replace this with actual rtc time
     double tsince_millis = 0;
@@ -77,12 +75,13 @@ void RunnableOrientationControl::ControlOrientation() {
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
-        bool has_mail = Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
-                                 BIOS_NO_WAIT);
+        StateId power_state =
+            state_manager->GetCurrentStateOfStateMachine(kPowerStateMachine);
 
-        while (!enabled_by_state_manager) {
-            Mailbox_pend(orientation_control_enabled, &enabled_by_state_manager,
-                                             BIOS_WAIT_FOREVER);
+        while (power_state != kPowerNominal) {
+            TaskUtils::SleepMilli(kOperationDisableWaitTime);
+            power_state = state_manager->GetCurrentStateOfStateMachine(
+                kPowerStateMachine);
         }
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
