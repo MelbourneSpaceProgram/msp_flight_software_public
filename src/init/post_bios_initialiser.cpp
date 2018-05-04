@@ -66,7 +66,6 @@ void PostBiosInitialiser::RunUnitTests() {
 void PostBiosInitialiser::InitStateManagement() {
     // TODO(rskew) review priority
     StateManager* state_manager = StateManager::GetStateManager();
-    state_manager->CreateStateMachines();
 
     TaskHolder* state_management_task = new TaskHolder(
         1024, "StateManagement", 11, new RunnableStateManagement());
