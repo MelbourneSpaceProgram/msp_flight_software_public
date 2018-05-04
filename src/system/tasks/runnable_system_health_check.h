@@ -11,7 +11,8 @@ class RunnableSystemHealthCheck : public Runnable {
    private:
     static void SystemHealthCheck();
     static void PollSensors();
-    static const uint64_t kMaxCacheTimeMilliseconds = 1000;
+    //TODO(naverill) set  kMaxCacheTimeMilliseconds
+    static const uint64_t kMaxCacheTimeMilliseconds;
 
 };
 
