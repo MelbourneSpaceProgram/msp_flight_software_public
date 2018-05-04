@@ -26,6 +26,7 @@
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Error.h>
 #include <xdc/runtime/Log.h>
+#include <src/system/tasks/runnable_system_health_check.h>
 #include <xdc/std.h>
 #include <string>
 
@@ -210,6 +211,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
+        RunnableSystemHealthCheck::SystemHealthCheck()
         // TODO(rskew): Debug what needs to be passed in to Task_delete
         // Task_delete(pre_deployment_magnetometer_poller_task);
 #else
