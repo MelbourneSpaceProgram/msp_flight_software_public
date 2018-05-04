@@ -80,12 +80,14 @@ void RunnableOrientationControl::ControlOrientation() {
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
-//    bool successful_calibration = magnetometer.Calibrate();
-//    if (!successful_calibration) {
-//        // Try once more before just starting anyway
-//        TaskUtils::SleepMilli(kMagCalRetrySleepPeriodMillis);
-//        magnetometer.Calibrate();
-//    }
+    bool successful_calibration = magnetometer.Calibrate();
+    if (!successful_calibration) {
+        // Try once more before just starting anyway
+        //TaskUtils::SleepMilli(kMagCalRetrySleepPeriodMillis);
+        //magnetometer.Calibrate();
+      etl::exception e("Magnetometer calibration failed", __FILE__, __LINE__);
+      throw e;
+    }
     Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                        kill_task_on_orientation_control_begin_semaphore);
 

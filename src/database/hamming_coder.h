@@ -21,8 +21,7 @@ class HammingCoder {
                                 byte *input, uint32_t input_length);
     static HammingDecodedByte Decode(HammingEncodedByte hamming_encoded_byte);
     static void DecodeByteArray(byte *output, uint32_t output_length,
-                                bool *valid_output,
-                                uint32_t valid_output_length, byte *input,
+                                bool *valid_output, byte *input,
                                 uint32_t input_length);
 
    private:

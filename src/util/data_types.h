@@ -6,6 +6,8 @@
 
 typedef uint8_t byte;
 
+const uint8_t kUint32_tSize = 4;
+
 // TODO(dingbenjamin): Create Time class with difference function
 typedef struct time {
     byte sec;

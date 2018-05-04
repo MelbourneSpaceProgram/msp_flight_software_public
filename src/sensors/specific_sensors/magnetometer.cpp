@@ -16,17 +16,17 @@
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
 
-const char Magnetometer::kCalibrationReadingsBufferAFileName[] = "magcal_a.bin";
-const char Magnetometer::kCalibrationReadingsBufferBFileName[] = "magcal_b.bin";
+const char Magnetometer::kCalibrationReadingsBufferAFileName[] = "magcal_a.pb";
+const char Magnetometer::kCalibrationReadingsBufferBFileName[] = "magcal_b.pb";
 
 Magnetometer::Magnetometer()
-    : calibration_readings_buffer_a(kCalibrationReadingsBufferSize,
-                                    kCalibrationReadingsBufferAFileName),
-      calibration_readings_buffer_b(kCalibrationReadingsBufferSize,
-                                    kCalibrationReadingsBufferBFileName),
       // Direct bus access to be replaced with I2cMeasureableManager
-      imu_a(new I2c(I2C_BUS_A), kImuAddress, "imu_a"),
-      imu_b(new I2c(I2C_BUS_B), kImuAddress, "imu_b") {
+  : imu_a(new I2c(I2C_BUS_A), kImuAddress, "imu_a"),
+    imu_b(new I2c(I2C_BUS_B), kImuAddress, "imu_b") {
+  CircularBufferNanopb(MagnetometerReading)::Create(kCalibrationReadingsBufferAFileName,
+                               kCalibrationReadingsBufferSize);
+  CircularBufferNanopb(MagnetometerReading)::Create(kCalibrationReadingsBufferBFileName,
+                               kCalibrationReadingsBufferSize);
     imu_a.SetMagnetometerOperationMode(kMagnoSingleMeasurement);
     imu_b.SetMagnetometerOperationMode(kMagnoSingleMeasurement);
     imu_a.SetMagnetometerOutputBitSetting(k16BitOutput);
@@ -65,8 +65,8 @@ bool Magnetometer::TakeReading() {
     }
 
     try {
-//        calibration_readings_buffer_a.WriteMessage(magnetometer_a_reading);
-//        calibration_readings_buffer_b.WriteMessage(magnetometer_b_reading);
+      CircularBufferNanopb(MagnetometerReading)::WriteMessage(kCalibrationReadingsBufferAFileName, magnetometer_a_reading);
+      CircularBufferNanopb(MagnetometerReading)::WriteMessage(kCalibrationReadingsBufferBFileName, magnetometer_b_reading);
     } catch (etl::exception e) {
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,
@@ -133,10 +133,10 @@ bool Magnetometer::Calibrate() {
             magnetometer_readings_batch_b[MagnetometerCalibration::kBatchSize];
         for (uint8_t j = 0; j < MagnetometerCalibration::kBatchSize; j++) {
             try {
-                calibration_readings_buffer_a.ReadMessage(
-                    magnetometer_readings_batch_a[j]);
-                calibration_readings_buffer_b.ReadMessage(
-                    magnetometer_readings_batch_b[j]);
+                magnetometer_readings_batch_a[j] =
+                  CircularBufferNanopb(MagnetometerReading)::ReadMessage(kCalibrationReadingsBufferAFileName);
+                magnetometer_readings_batch_b[j] =
+                  CircularBufferNanopb(MagnetometerReading)::ReadMessage(kCalibrationReadingsBufferBFileName);
             } catch (etl::exception e) {
                 // TODO (rskew) if the Hamming decoding fails, discard the
                 // message and read another one.
@@ -145,7 +145,6 @@ bool Magnetometer::Calibrate() {
                 // calibration could be pretty bad, so return failure. > ~150
                 // and the calibration is mayeb ok?
                 throw e;
-                return false;
             }
         }
         // compute aggregated data in magnetometer calibration
