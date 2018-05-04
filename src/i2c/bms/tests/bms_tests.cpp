@@ -12,10 +12,8 @@
 static const byte test_bms_address = 0x68;
 static const uint8_t kReadRegisterCount = 2;
 
-void TestBms()
-{
-    if (!bms_test_enabled)
-    {
+void TestBms() {
+    if (!bms_test_enabled) {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
 
@@ -30,37 +28,32 @@ void TestBms()
                             bms.GetConfiguration(0x1B, read_buffer));
     TEST_ASSERT_EQUAL_INT16(Bms::kIChargeRegisterValue,
                             bms.GetConfiguration(0x1A, read_buffer));
-    TEST_ASSERT_EQUAL_INT16(
-            (Bms::kReChargeThresholdURegisterValue << 8
-                    | Bms::kReChargeThresholdLRegisterValue),
-            bms.GetConfiguration(0x2E, read_buffer));
+    TEST_ASSERT_EQUAL_INT16((Bms::kReChargeThresholdURegisterValue << 8 |
+                             Bms::kReChargeThresholdLRegisterValue),
+                            bms.GetConfiguration(0x2E, read_buffer));
 
     TEST_ASSERT_NOT_EQUAL(Bms::kError, bms.GetChargeStatus(read_buffer));
     TEST_ASSERT_NOT_EQUAL(Bms::kOther, bms.GetSystemStatus(read_buffer));
 }
 
-void TestBmsDieTemperatureRead()
-{
-    if (!bms_test_enabled)
-    {
+void TestBmsDieTemperatureRead() {
+    if (!bms_test_enabled) {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
     I2cMeasurableManager* i2c_measurable_manager =
-            I2cMeasurableManager::GetInstance();
-    double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(
-            kPowerBmsDieTemp1, 1);
+        I2cMeasurableManager::GetInstance();
+    double temp =
+        i2c_measurable_manager->ReadI2cMeasurable<double>(kPowerBmsDieTemp1, 1);
     TEST_ASSERT_GREATER_THAN(0, temp);
 }
 
-void TestBmsBatteryTemperatureRead()
-{
-    if (!bms_test_enabled)
-    {
+void TestBmsBatteryTemperatureRead() {
+    if (!bms_test_enabled) {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
     I2cMeasurableManager* i2c_measurable_manager =
-            I2cMeasurableManager::GetInstance();
+        I2cMeasurableManager::GetInstance();
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(
-            kPowerBmsBatteryTemp1, 1);
+        kPowerBmsBatteryTemp1, 1);
     TEST_ASSERT_GREATER_THAN(0, temp);
 }
