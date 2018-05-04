@@ -17,14 +17,15 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
     }
 }
 
-void RunnableStateManagement::PollSensors(){
+void RunnableSystemHealthCheck::PollSensors(){
   I2cMeasurableManager *measurable_manager = I2cMeasurableManager::GetInstance();
 
-  for(int i=0; i<kNumMeasurables; i++){
-    MeasurableId id = static_cast<MeasurableId>i;
+  for(uint16_t i=0; i<kNumMeasurables; i++){
+    MeasurableId id = static_cast<MeasurableId>(i);
     if(measurable_manager->CheckValidMeasurable(id)){
         //do something
-        measurable_manager->ReadI2cMeasurable(id, kMaxCacheTimeMilliseconds)
+        //TODO(naverill) remove bool type, replace with Measurable T type
+        measurable_manager->ReadI2cMeasurable<bool>(i, kMaxCacheTimeMilliseconds);
     }
   }
 }

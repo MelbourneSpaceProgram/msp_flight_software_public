@@ -10,8 +10,8 @@ class RunnableSystemHealthCheck : public Runnable {
 
    private:
     static void SystemHealthCheck();
-    void PollSensors();
-    static uint64_t kMaxCacheTimeMilliseconds;
+    static void PollSensors();
+    static const uint64_t kMaxCacheTimeMilliseconds = 1000;
 
 };
 
