@@ -3,6 +3,7 @@
 
 #include <src/tasks/runnable.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <src/i2c/i2c.h>
 
 class RunnablePreDeploymentMagnetometerPoller : public Runnable {
    public:
@@ -12,13 +13,16 @@ class RunnablePreDeploymentMagnetometerPoller : public Runnable {
 
     static Semaphore_Handle kill_task_on_orientation_control_begin_semaphore;
 
+    static I2c* i2c_bus_a;
+
    private:
     static void PollMagnetometer();
 
     // Want to collect ~1000 samples in just under 2 hours.
     //     total_seconds * safety_factor / n_samples = polling_period_seconds
     //     2*60*60 * 0.95 / 1000 = 6.84 seconds
-    static const uint16_t kSleepPeriodMillis = 6840;
+    //static const uint16_t kSleepPeriodMillis = 6840;
+    static const uint16_t kSleepPeriodMillis = 100;
 };
 
 #endif  // SRC_ADCS_RUNNABLE_PRE_DEPLOYMENT_MAGNETOMETER_POLLER_H_

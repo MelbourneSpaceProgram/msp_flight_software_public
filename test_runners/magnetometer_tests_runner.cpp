@@ -32,7 +32,6 @@
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
 extern void TearDown(void);
-extern void TestMagnetometer();
 
 
 /*=======Suite Setup=====*/
@@ -77,7 +76,6 @@ int magnetometer_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/sensors/specific_sensors/tests/magnetometer_tests.cpp");
-    RUN_TEST(TestMagnetometer, 7);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

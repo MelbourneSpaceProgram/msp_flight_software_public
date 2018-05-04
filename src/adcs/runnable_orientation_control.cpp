@@ -27,6 +27,8 @@
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
+I2c* RunnableOrientationControl::i2c_bus_a;
+
 /* TODO(rskew) update inertia matrix. */
 double RunnableOrientationControl::acrux1_inertia_matrix_data[3][3] =
     /* kg.m^2 */
@@ -75,7 +77,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    Magnetometer magnetometer;
+    Magnetometer magnetometer(i2c_bus_a);
     Gyrometer gyrometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;

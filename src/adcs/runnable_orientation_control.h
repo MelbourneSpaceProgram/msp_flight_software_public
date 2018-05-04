@@ -7,6 +7,7 @@
 #include <src/util/matrix.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <src/i2c/i2c.h>
 
 class RunnableOrientationControl : public Runnable {
    public:
@@ -19,6 +20,8 @@ class RunnableOrientationControl : public Runnable {
     static const uint32_t kControlLoopPeriodMicros = 100000;
     static double acrux1_inertia_matrix_data[3][3];
     static const Matrix acrux1_inertia_matrix;
+
+    static I2c* i2c_bus_a;
 
    private:
     static void ControlOrientation();

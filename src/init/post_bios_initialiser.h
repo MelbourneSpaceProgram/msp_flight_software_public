@@ -19,8 +19,8 @@ class PostBiosInitialiser : public Runnable {
     static void InitPayloadProcessor();
     static void InitStateManagement();
     static void InitDataDashboard();
-    static void InitOrientationControl();
-    static TaskHolder* InitPreDeploymentMagnetometerPoller();
+    static void InitOrientationControl(I2c *bus_a);
+    static TaskHolder* InitPreDeploymentMagnetometerPoller(I2c* bus_a);
     static void InitBeacon();
     static void RunUnitTests();
     static void InitHardware();

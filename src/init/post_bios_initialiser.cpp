@@ -41,7 +41,7 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
     Antenna::GetAntenna()->InitAntenna(bus_d);
     Lithium::GetInstance();
     StateManager::GetStateManager()->CreateStateMachines();
-    I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
+    //I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
 }
 
 void PostBiosInitialiser::InitRadioListener() {
@@ -91,12 +91,15 @@ void PostBiosInitialiser::InitDataDashboard() {
     data_dashboard_task->Init();
 }
 
-void PostBiosInitialiser::InitOrientationControl() {
+void PostBiosInitialiser::InitOrientationControl(I2c* bus_a) {
     // Set up timer for orientation control loop
     RunnableOrientationControl::SetupControlLoopTimer();
 
     // Set up timer for degaussing routine
     MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
+
+    // This will get removed when IMU is read via the measurable manager
+    RunnableOrientationControl::i2c_bus_a = bus_a;
 
     // TODO(rskew) review priority
     TaskHolder* orientation_control_task = new TaskHolder(
@@ -104,13 +107,16 @@ void PostBiosInitialiser::InitOrientationControl() {
     orientation_control_task->Init();
 }
 
-TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
+TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller(I2c *bus_a) {
     RunnablePreDeploymentMagnetometerPoller::
         SetupKillTaskOnOrientationControlBeginSemaphore();
+
+    RunnablePreDeploymentMagnetometerPoller::i2c_bus_a = bus_a;
+
     // TODO(rskew) review priority
     TaskHolder* pre_deployment_magnetometer_poller_task = new TaskHolder(
         // works with this little stack?
-        1024, "PreDeploymentMagnetometerPoller", 5,
+        4096, "PreDeploymentMagnetometerPoller", 5,
         new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Init();
     return pre_deployment_magnetometer_poller_task;
@@ -129,6 +135,7 @@ void PostBiosInitialiser::InitHardware() {
     I2c::InitBusses();
     Eeprom::Init();
     MagnetorquerControl::Initialize();
+    SdCard::SdOpen();
 }
 
 void PostBiosInitialiser::DeploymentWait(uint16_t delay) {
@@ -192,24 +199,24 @@ void PostBiosInitialiser::PostBiosInit() {
 #if defined TEST_CONFIGURATION
         RunUnitTests();
 #elif defined ORBIT_CONFIGURATION
-        InitStateManagement();
-        InitDataDashboard();
+        //InitStateManagement();
+        //InitDataDashboard();
 
         TaskHolder* pre_deployment_magnetometer_poller_task =
-            InitPreDeploymentMagnetometerPoller();
+            InitPreDeploymentMagnetometerPoller(bus_a);
 
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
-        DeploymentWait(kBeaconDelayMins);
-        InitRadioListener();
-        DeploymentWait(kAntennaDelayMins);
-        DeployAntenna();
-        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
-                           kill_task_on_orientation_control_begin_semaphore);
-        InitBeacon();
-        InitPayloadProcessor();
-        InitOrientationControl();
+//        DeploymentWait(kBeaconDelayMins);
+//        InitRadioListener();
+//        DeploymentWait(kAntennaDelayMins);
+//        DeployAntenna();
+       // Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
+         //                  kill_task_on_orientation_control_begin_semaphore);
+        //InitBeacon();
+        //InitPayloadProcessor();
+        //InitOrientationControl(bus_a);
         //Task_delete(pre_deployment_magnetometer_poller_task);
 #else
         System_printf("No configuration defined. Not doing anything");

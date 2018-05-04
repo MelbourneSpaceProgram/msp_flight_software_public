@@ -90,9 +90,8 @@ void TestMagnetometerCalibration() {
         const_cast<double(&)[3][3]>(scale_factors_expected_data));
 
     MagnetometerCalibration magnetometer_calibration;
-    uint8_t batchSize = 100;
-    uint8_t dataSize = 100;
-    for (uint8_t i = 0; i < dataSize; i += batchSize) {
+    uint8_t dataSize = 40;
+    for (uint8_t i = 0; i < dataSize; i += MagnetometerCalibration::kBatchSize) {
         magnetometer_calibration.AggregateReadings(
             test_calibration_values);
     }

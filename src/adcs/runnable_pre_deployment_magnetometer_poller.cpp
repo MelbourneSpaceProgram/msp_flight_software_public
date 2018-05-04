@@ -12,6 +12,8 @@
 Semaphore_Handle RunnablePreDeploymentMagnetometerPoller::
     kill_task_on_orientation_control_begin_semaphore;
 
+I2c* RunnablePreDeploymentMagnetometerPoller::i2c_bus_a;
+
 fnptr RunnablePreDeploymentMagnetometerPoller::GetRunnablePointer() {
     return &RunnablePreDeploymentMagnetometerPoller::PollMagnetometer;
 }
@@ -30,7 +32,7 @@ void RunnablePreDeploymentMagnetometerPoller::
 
 void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    Magnetometer magnetometer;
+    Magnetometer magnetometer(i2c_bus_a);
 
     MagnetorquerControl::Degauss();
 
