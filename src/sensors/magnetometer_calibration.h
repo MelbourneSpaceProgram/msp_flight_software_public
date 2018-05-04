@@ -18,7 +18,7 @@ class MagnetometerCalibration {
     Matrix GetAggregatedReadings() const;
     void Apply(MagnetometerReading &magnetometer_reading_struct);
 
-    static const uint8_t kBatchSize = 1;
+    static const uint8_t kBatchSize = 10;
 
    private:
     void GenerateBiases(const Matrix &v, const Matrix &Q);

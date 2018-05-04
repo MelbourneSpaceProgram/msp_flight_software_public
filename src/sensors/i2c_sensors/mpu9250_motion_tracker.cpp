@@ -98,6 +98,12 @@ void MPU9250MotionTracker::TakeMagnetometerReading(
             DecodeMagnoReadingToSI(magno_y_reading_bytes, magno_y_adjust);
         magnetometer_reading.z =
             DecodeMagnoReadingToSI(magno_z_reading_bytes, magno_z_adjust);
+
+        // Read from ST2 register to trigger a new reading to be taken inside the device
+        SelectMagnetometerRegister(0x09);
+        byte dummy_buffer[1];
+        bus->PerformReadTransaction(
+            kInternalMagnetometerAddress, dummy_buffer, 1);
     } else {
         etl::exception e("Unable to read from magnetometer", __FILE__,
                          __LINE__);

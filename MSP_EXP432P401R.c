@@ -37,6 +37,7 @@
  */
 
 #include <src/config/unit_tests.h>
+#define SATELLITE_CONFIG 1
 #include <stdbool.h>
 
 #include <ti/drivers/Power.h>

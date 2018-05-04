@@ -29,10 +29,12 @@ class PostBiosInitialiser : public Runnable {
     static void InitMemoryLogger();
     static void InitTimeSource();
 
-    static const uint16_t kDelayCheckInterval = 60000;
+    static const uint16_t kDelayCheckInterval = 1000;
     static const uint16_t kSecsInMin = 60;
     static const uint16_t kBeaconDelayMins = 30;
+    static const uint16_t kBeaconDelaySeconds = kBeaconDelayMins * kSecsInMin;
     static const uint16_t kAntennaDelayMins = 90;
+    static const uint16_t kAntennaDelaySeconds = kAntennaDelayMins * kSecsInMin;
 };
 
 #endif  // SRC_INIT_POST_BIOS_INITIALISER_H_

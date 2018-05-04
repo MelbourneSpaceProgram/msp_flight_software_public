@@ -63,14 +63,20 @@ bool Magnetometer::TakeReading() {
         imu_a->TakeMagnetometerReading(magnetometer_a_reading);
         multiplexer_a->CloseAllChannels();
 
-        Log_warning3("\nRaw magnetometer reading 'a', x: %d, y: %d, z: %d",
-                  magnetometer_a_reading.x, magnetometer_a_reading.y,
-                  magnetometer_a_reading.z);
+        //Log_warning3("\nRaw magnetometer reading 'a', x: %f, y: %f, z: %f",
+        //             floatToArg(magnetometer_a_reading.x),
+        //             floatToArg(magnetometer_a_reading.y),
+        //             floatToArg(magnetometer_a_reading.z));
+
     } catch (etl::exception e) {
         magnetometer_a_reading.x = 0;
         magnetometer_a_reading.y = 0;
         magnetometer_a_reading.z = 0;
     }
+
+    RunnableDataDashboard::TransmitMessage(
+        kMagnetometerReadingCode, MagnetometerReading_size,
+        MagnetometerReading_fields, &magnetometer_a_reading);
     // try {
     //    imu_b.TakeMagnetometerReading(magnetometer_b_reading);
     //    Log_info3("Raw magnetometer reading 'a', x: %d, y: %d, z: %d",
@@ -82,21 +88,29 @@ bool Magnetometer::TakeReading() {
     //    magnetometer_b_reading.z = 0;
     //}
 
+    ///////////////////////// calibration stuff
+
     try {
         CircularBufferNanopb(MagnetometerReading)::WriteMessage(
             kCalibrationReadingsBufferAFileName, magnetometer_a_reading);
         // CircularBufferNanopb(MagnetometerReading)::WriteMessage(kCalibrationReadingsBufferBFileName,
         // magnetometer_b_reading);
-    } catch (etl::exception e) {
+    } catch (etl::exception &e) {
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,
         throw e;
     }
 
+
     magnetometer_calibration_a.Apply(magnetometer_a_reading);
-    Log_warning3("\nCalibrated magnetometer reading 'a', x: %d, y: %d, z: %d",
-              magnetometer_a_reading.x, magnetometer_a_reading.y,
-              magnetometer_a_reading.z);
+    RunnableDataDashboard::TransmitMessage(
+        kCalibratedMagnetometerReadingCode, MagnetometerReading_size,
+        MagnetometerReading_fields, &magnetometer_a_reading);
+
+    //Log_warning3("\nCalibrated magnetometer reading 'a', x: %f, y: %f, z: %f",
+    //             floatToArg(magnetometer_a_reading.x),
+    //             floatToArg(magnetometer_a_reading.y),
+    //             floatToArg(magnetometer_a_reading.z));
     // magnetometer_calibration_b.Apply(magnetometer_b_reading);
     // Log_info3("Calibrated magnetometer reading 'b', x: %d, y: %d, z: %d",
     //          magnetometer_b_reading.x, magnetometer_b_reading.y,
@@ -116,7 +130,8 @@ bool Magnetometer::TakeReading() {
     // activate magnetorquers in response to simulated tumbling
     bool success;
     if (hil_enabled) {
-        success = TakeReadingHil();
+      // This is slow for some reason!!!
+      //success = TakeReadingHil();
     }
 
     return success;
@@ -128,7 +143,6 @@ bool Magnetometer::TakeReadingHil() {
 
     bool success = debug_stream->RequestMessageFromSimulator(
         kMagnetometerReadingRequestCode, buffer, MagnetometerReading_size);
-
     if (success) {
         pb_istream_t stream =
             pb_istream_from_buffer(buffer, MagnetometerReading_size);
@@ -174,11 +188,16 @@ bool Magnetometer::Calibrate() {
         }
         // compute aggregated data in magnetometer calibration
         double magnetometer_readings_batch_matrix_a_data
-            [10][MagnetometerCalibration::kBatchSize];
+          [MagnetometerCalibration::kBatchSize][3];
 //        double magnetometer_readings_batch_matrix_b_data
 //            [10][MagnetometerCalibration::kBatchSize];
         Matrix magnetometer_readings_batch_matrix_a(
             magnetometer_readings_batch_matrix_a_data);
+        for (uint16_t i=0; i<MagnetometerCalibration::kBatchSize; i++) {
+            magnetometer_readings_batch_matrix_a.Set(i,0, magnetometer_readings_batch_a[i].x);
+            magnetometer_readings_batch_matrix_a.Set(i,1, magnetometer_readings_batch_a[i].y);
+            magnetometer_readings_batch_matrix_a.Set(i,2, magnetometer_readings_batch_a[i].z);
+        }
 //        Matrix magnetometer_readings_batch_matrix_b(
 //            magnetometer_readings_batch_matrix_b_data);
         magnetometer_calibration_a.AggregateReadings(

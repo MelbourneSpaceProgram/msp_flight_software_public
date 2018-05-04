@@ -7,6 +7,7 @@
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
 #include <src/util/task_utils.h>
+#include <xdc/runtime/Log.h>
 #include <ti/sysbios/BIOS.h>
 
 Semaphore_Handle RunnablePreDeploymentMagnetometerPoller::
@@ -34,8 +35,6 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
     DebugStream* debug_stream = DebugStream::GetInstance();
     Magnetometer magnetometer(i2c_bus_a);
 
-    MagnetorquerControl::Degauss();
-
     while (1) {
         TaskUtils::SleepMilli(kSleepPeriodMillis);
 
@@ -43,15 +42,21 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
         // multiple tasks controlling the magnetorquers.
         // Semaphore_pend returns false when it times out and true
         // when the semaphore is set.
+
         bool orientation_control_begin = Semaphore_pend(
             kill_task_on_orientation_control_begin_semaphore, BIOS_NO_WAIT);
         if (orientation_control_begin) {
+            Log_warning0("\nExiting RunnablePreDeploymentMagnetometerPoller");
             Task_exit();
+            //while (1) {
+            //  TaskUtils::SleepMilli(1000);
+            //}
         }
 
         // Poll magnetometer, which internally writes new readings
         // to a persistant buffer backed by a file on the SD card.
         // TODO(rskew) handle false return value
+        //MagnetorquerControl::Degauss();
         bool success = magnetometer.TakeReading();
         if (!success) {
             continue;

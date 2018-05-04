@@ -30,7 +30,7 @@ class MagnetorquerControl {
     static void SetupDegaussingPolaritySwitchTimer();
     static void DegaussingTimerISR(UArg degaussing_timer_semaphore);
 
-    static const uint32_t kDegaussingSwitchPeriodMicros = 100000;
+    static const uint32_t kDegaussingSwitchPeriodMicros = 10000;
 
    private:
     typedef enum MagnetorquerAxis {
@@ -74,18 +74,18 @@ class MagnetorquerControl {
     static const bool kMagnetorquerHardwareEnabled = true;
 
     static Semaphore_Handle degaussing_timer_semaphore;
-    static const uint16_t kDegaussingTimeConstantMillis = 300;
+    static const uint16_t kDegaussingTimeConstantMillis = 100;
 
     // Compute the exponential decay multiplier from the time constant
     // and sample period:
     //     exp(-(2 * (double)kDegaussingSwitchPeriodMicros * 1e-6) /
     //         ((double)kDegaussingTimeConstantMillis * 1e-3));
-    static const float kDegaussingDecayMultiplier = 0.513417119;
+    static const float kDegaussingDecayMultiplier = 0.90;
 
-    // 3 time constants worth of exp decay:
-    //     round((3 * (double)kDegaussingTimeConstantMillis * 1e-3) /
+    // 5 time constants worth of exp decay:
+    //     round((5 * (double)kDegaussingTimeConstantMillis * 1e-3) /
     //       ((double)kDegaussingSwitchPeriodMicros * 1e-6));
-    static const uint16_t kNDegaussPulses = 9;
+    static const uint16_t kNDegaussPulses = 50;
 };
 
 #endif  // SRC_MAGNETORQUER_CONTROL_H_

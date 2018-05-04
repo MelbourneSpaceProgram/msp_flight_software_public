@@ -32,7 +32,7 @@ class Magnetometer : public GenericMeasurable<MagnetometerReading> {
     static I2cMultiplexer *multiplexer_a;
 
     static const uint8_t kImuAddress = 0x68;
-    static const uint32_t kCalibrationReadingsBufferSize = 1000;
+    static const uint32_t kCalibrationReadingsBufferSize = 100;
     static const char kCalibrationReadingsBufferAFileName[];
     //static const char kCalibrationReadingsBufferBFileName[];
 };

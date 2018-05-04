@@ -39,7 +39,7 @@ void MagnetometerCalibration::AggregateReadings(const Matrix &mag_data)
     double Dt_data[kBatchSize][10];
     Matrix Dt(Dt_data);
     Dt.Transpose(D);
-    double batch_aggregated_readings_data[kBatchSize][10];
+    double batch_aggregated_readings_data[10][10];
     Matrix batch_aggregated_readings(batch_aggregated_readings_data);
     batch_aggregated_readings.Multiply(D, Dt);
     // Matrix operations cannot be assumed to work in-place in general.

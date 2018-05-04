@@ -22,7 +22,7 @@ class RunnablePreDeploymentMagnetometerPoller : public Runnable {
     //     total_seconds * safety_factor / n_samples = polling_period_seconds
     //     2*60*60 * 0.95 / 1000 = 6.84 seconds
     //static const uint16_t kSleepPeriodMillis = 6840;
-    static const uint16_t kSleepPeriodMillis = 100;
+    static const uint16_t kSleepPeriodMillis = 200;
 };
 
 #endif  // SRC_ADCS_RUNNABLE_PRE_DEPLOYMENT_MAGNETOMETER_POLLER_H_
