@@ -17,16 +17,10 @@ void PowerStateMachine::CheckUpstreamStates() {
     StateId battery_charge = battery_charge_state_machine->GetCurrentState();
     StateId battery_temp = battery_temp_state_machine->GetCurrentState();
 
-    if (battery_temp == kBatteryTempCriticalHigh ||
-        battery_charge == kBatteryChargeCriticalLow) {
+    if (battery_temp == kBatteryTempCriticalHigh) {
         SetState(kPowerEverythingOff);
 
-    } else if (battery_temp == kBatteryTempNominal &&
-               battery_charge == kBatteryChargeLow) {
-        SetState(kPowerLimited);
-
-    } else if (battery_temp == kBatteryTempNominal &&
-               battery_charge == kBatteryChargeNominal) {
+    }  else if (battery_temp == kBatteryTempNominal) {
         SetState(kPowerNominal);
 
     } else {
