@@ -7,13 +7,15 @@
 #include <src/util/data_types.h>
 #include <string>
 
-class Bms : public I2cSensor {
-   public:
+class Bms: public I2cSensor
+{
+public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
     void SetConfiguration();
 
-    enum ChargeStatus {
+    enum ChargeStatus
+    {
         kConstantVoltage,
         kConstantCurrent,
         kIinLimitActive,
@@ -22,9 +24,12 @@ class Bms : public I2cSensor {
         kError
     };
 
-    enum SystemStatus { kChargeEnable, kChargeDisable, kOther };
+    enum SystemStatus
+    {
+        kChargeEnable, kChargeDisable, kOther
+    };
     uint16_t GetNTCRatio(byte register_location,
-                                   etl::array<byte, 2>& read_buffer);
+                         etl::array<byte, 2>& read_buffer);
 
     uint16_t GetConfiguration(byte register_location,
                               etl::array<byte, 2>& read_buff);
@@ -34,8 +39,10 @@ class Bms : public I2cSensor {
     Bms::ChargeStatus GetChargeStatus(etl::array<byte, 2>& read_buffer);
     Bms::SystemStatus GetSystemStatus(etl::array<byte, 2>& read_buffer);
     bool GetTelemetryValid(etl::array<byte, 2>& read_buffer);
-    double TakeI2cTempReading();
-    double ConvertToTemperature(etl::array<byte, 2> read_buffer);
+    double TakeI2cDieTempReading();
+    double ConvertToDieTemperature(etl::array<byte, 2> read_buffer);
+    double TakeI2cBatteryTempReading();
+    double ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer);
 
     static const byte kUVCLRegisterValue = 0x8D;
     static const byte kVChargeRegisterValue = 0x0F;
@@ -43,7 +50,7 @@ class Bms : public I2cSensor {
     static const byte kReChargeThresholdLRegisterValue = 0x0C;
     static const byte kReChargeThresholdURegisterValue = 0x43;
 
-   private:
+private:
     static const uint16_t kTelemetryValidBitMask = 0x0001;
     static const uint16_t kConstantVoltageBitMask = 0x0001;
     static const uint16_t kConstantCurrentBitMask = 0x0002;
@@ -93,9 +100,18 @@ class Bms : public I2cSensor {
     static const byte kPrescaleFactorRegisterLocation = 0x12;
     static const byte kPrescaleFactorRegisterValue = 0x03;
 
-    static const byte kBatteryTempRegister = 0x3F;
-    static const uint16_t kBatteryTempOffset = 12010;
-    static const double kBatteryTempConversionFactor = 45.6;
+    static const byte kDieTempRegister = 0x3F;
+    static const uint16_t kDieTempOffset = 12010;
+    static const double kDieTempConversionFactor = 45.6;
+
+    static const byte kNTCRatioRegister = 0x40;
+    static const double kNTCBiasResistance = 10000.0;
+    static const double kNTCBitWeight = 21845.0;
+
+    static const double kConversionCoeffientA = 0.00084220;
+    static const double kConversionCoeffientB = 0.00026265;
+    static const double kConversionCoeffientC = 0.00000011875;
+    static const double kKelvinToCelciusOffset = 273.15;
 };
 
 #endif  // SRC_I2C_BMS_BMS_H
