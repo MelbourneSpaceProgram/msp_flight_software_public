@@ -1,8 +1,10 @@
 #include <src/i2c/bms/bms.h>
+#include <math.h>
 
 Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
-         I2cMultiplexer::MuxChannel channel)
-    : I2cSensor(bus, address, multiplexer, channel) {
+         I2cMultiplexer::MuxChannel channel) :
+        I2cSensor(bus, address, multiplexer, channel)
+{
     SetConfiguration();
 }
 
@@ -59,18 +61,6 @@ void Bms::SetConfiguration()
     package[1] = Bms::kPrescaleFactorRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
     bus->PerformWriteTransaction(address, package, 3);
-}
-
-//Read NTC ratio
-
-uint16_t Bms::GetNTCRatio(byte register_location,
-                               etl::array<byte, 2>& read_buffer)
-{
-    SelectRegister(register_location);
-    ReadFromCurrentRegister(read_buffer);
-    uint16_t rtc_binary_reading = ((static_cast<uint16_t>(read_buffer.at(1)))
-            << 8) | static_cast<uint16_t>(read_buffer.at(0));
-    return rtc_binary_reading;
 }
 
 //Read 2-byte from BMS Registers
@@ -163,17 +153,46 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer)
     }
 }
 
-double Bms::TakeI2cTempReading() {
+double Bms::TakeI2cDieTempReading()
+{
     etl::array<byte, 2> read_buffer;
-    SelectRegister(kBatteryTempRegister);
-    ReadFromCurrentRegister(read_buffer);
-    return ConvertToTemperature(read_buffer);
+    if (GetTelemetryValid(read_buffer))
+    {
+        SelectRegister(kDieTempRegister);
+        ReadFromCurrentRegister(read_buffer);
+        return ConvertToDieTemperature(read_buffer);
+    }
 }
 
-double Bms::ConvertToTemperature(etl::array<byte, 2> read_buffer) {
-    uint16_t register_value =
-        (read_buffer[1] << 8) | read_buffer[0];
-    double temp_in_celcius =
-        (register_value - kBatteryTempOffset) / kBatteryTempConversionFactor;
+double Bms::ConvertToDieTemperature(etl::array<byte, 2> read_buffer)
+{
+    uint16_t register_value = (read_buffer[1] << 8) | read_buffer[0];
+    double temp_in_celcius = (register_value - kDieTempOffset)
+            / kDieTempConversionFactor;
     return temp_in_celcius;
 }
+
+double Bms::TakeI2cBatteryTempReading()
+{
+    etl::array<byte, 2> read_buffer;
+    if (GetTelemetryValid(read_buffer))
+    {
+        SelectRegister(kNTCRatioRegister);
+        ReadFromCurrentRegister(read_buffer);
+        return ConvertToBatteryTemperature(read_buffer);
+    }
+}
+
+double Bms::ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer)
+{
+    uint16_t ntc_ratio_register_value = (read_buffer[1] << 8) | read_buffer[0];
+    double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value
+            / (kNTCBitWeight - ntc_ratio_register_value);
+
+    double battery_temp_in_kelvin = 1
+            / (kConversionCoeffientA
+                    + kConversionCoeffientB * log(rntc_resistance)
+                    + kConversionCoeffientC * pow(log(rntc_resistance), 3));
+    return battery_temp_in_kelvin - kKelvinToCelciusOffset;
+}
+
