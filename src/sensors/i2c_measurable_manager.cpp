@@ -214,3 +214,7 @@ void I2cMeasurableManager::CheckValidId(MeasurableId id) {
         throw e;
     }
 }
+
+void I2cMeasurableManager::CheckValidMeasurable(MeasurableId id) {
+  return (id < kMaxMeasurables - 1) && (measurables.at(id) != NULL);
+}

@@ -80,6 +80,7 @@ class I2cMeasurableManager {
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     void AddBmsBatteryTempMeasurable(MeasurableId id, Bms *temp_sensor);
     void CheckValidId(MeasurableId id);
+    void CheckValidMeasurable(MeasurableId id);
 
     static I2cMeasurableManager *instance;
     static const uint16_t kMaxMeasurables = 400;

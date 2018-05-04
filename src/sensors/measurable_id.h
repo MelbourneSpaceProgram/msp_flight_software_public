@@ -31,7 +31,8 @@ enum MeasurableId {
     kCdhRtc,
     kSolarAdc1,
     kSolarTemp1,
-    kSolarTemp2
+    kSolarTemp2,
+    kNumMeasurables
 };
 
 #endif  // SRC_SENSORS_MEASURABLE_ID_H_
