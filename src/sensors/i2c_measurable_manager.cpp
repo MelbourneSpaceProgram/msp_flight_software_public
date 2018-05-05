@@ -14,6 +14,7 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
+#include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_manager.h>
@@ -161,16 +162,34 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_1);
     AddImuAcceleromterMeasurable(kFsImuAccelerometer1, fs_imu_1);
     AddImuTemperatureMeasurable(kFsImuTemperature1, fs_imu_1);
-    AddImuMagnetometerMeasurable(kFsImuMagnetometer1, fs_imu_1,
-                                 kImuAToBodyFrameTransform);
+    double initial_biases_bus_a_data[3][1];
+    const Matrix initial_biases_bus_a(
+        kPreFlightMagnetometerCalibrationBiasesImuBusA,
+        initial_biases_bus_a_data);
+    double initial_scale_factors_bus_a_data[3][1];
+    const Matrix initial_scale_factors_bus_a(
+        kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
+        initial_scale_factors_bus_a_data);
+    AddImuMagnetometerMeasurable(
+        kFsImuMagnetometer1, fs_imu_1, kImuAToBodyFrameTransform,
+        initial_biases_bus_a, initial_scale_factors_bus_a);
 
     MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
     AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
     AddImuAcceleromterMeasurable(kFsImuAccelerometer2, fs_imu_2);
     AddImuTemperatureMeasurable(kFsImuTemperature2, fs_imu_2);
-    AddImuMagnetometerMeasurable(kFsImuMagnetometer2, fs_imu_2,
-                                 kImuBToBodyFrameTransform);
+    double initial_biases_bus_b_data[3][1];
+    const Matrix initial_biases_bus_b(
+        kPreFlightMagnetometerCalibrationBiasesImuBusB,
+        initial_biases_bus_b_data);
+    double initial_scale_factors_bus_b_data[3][1];
+    const Matrix initial_scale_factors_bus_b(
+        kPreFlightMagnetometerCalibrationScaleFactorsImuBusB,
+        initial_scale_factors_bus_b_data);
+    AddImuMagnetometerMeasurable(
+        kFsImuMagnetometer2, fs_imu_2, kImuBToBodyFrameTransform,
+        initial_biases_bus_b, initial_scale_factors_bus_b);
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
@@ -342,10 +361,11 @@ void I2cMeasurableManager::AddImuTemperatureMeasurable(
 }
 void I2cMeasurableManager::AddImuMagnetometerMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor,
-    const Matrix frame_mapping) {
+    const Matrix &frame_mapping, const Matrix &initial_biases,
+    const Matrix &initial_scale_factors) {
     CheckValidId(id);
-    ImuMagnetometerMeasurable *magnetometer =
-        new ImuMagnetometerMeasurable(imu_sensor, frame_mapping);
+    ImuMagnetometerMeasurable *magnetometer = new ImuMagnetometerMeasurable(
+        imu_sensor, frame_mapping, initial_biases, initial_scale_factors);
     measurables[id] = magnetometer;
 }
 BmsBatteryTemperatureMeasurable *

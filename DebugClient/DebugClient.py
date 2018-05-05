@@ -251,6 +251,20 @@ def testLoop(debug_serial_port, logger, mc):
 
 
             elif message_code == \
+                message_codes["calibrated_magnetometer_reading_code"]:
+
+                magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
+                magnetometer_reading_echo.ParseFromString(payload)
+                logger.info("Message data: " + str(magnetometer_reading_echo))
+                mc.set("Calibrated_Magnetometer_X",
+                       struct.pack('>d',magnetometer_reading_echo.x))
+                mc.set("Calibrated_Magnetometer_Y",
+                       struct.pack('>d',magnetometer_reading_echo.y))
+                mc.set("Calibrated_Magnetometer_Z",
+                       struct.pack('>d',magnetometer_reading_echo.z))
+
+
+            elif message_code == \
                 message_codes["test_sensor_reading_code"]:
                 # Test Sensor Reading, store it for the test reading request
 
