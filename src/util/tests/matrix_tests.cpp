@@ -5,52 +5,47 @@
 #include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
 
-void TestDotProduct()
-{
-    // Tests Column vector input 
+void TestDotProduct() {
+    // Tests Column vector input
     double aData[3][1] = {{2}, {3}, {4}};
     double bData[3][1] = {{2}, {3}, {4}};
-    Matrix a(aData), b(bData); 
-    double c = Matrix::DotProduct(a,b); 
-    TEST_ASSERT_EQUAL_DOUBLE(c, 29); 
+    Matrix a(aData), b(bData);
+    double c = Matrix::DotProduct(a, b);
+    TEST_ASSERT_EQUAL_DOUBLE(c, 29);
     // tests row vector input
-
 }
 
-void TestQuaternionConjugate(){
-    double q_data[4][1] = {{1.0},{2},{3},{4}};
+void TestQuaternionConjugate() {
+    double q_data[4][1] = {{1.0}, {2}, {3}, {4}};
     Matrix q(q_data);
     q.QuaternionConjugate();
-    TEST_ASSERT_EQUAL_DOUBLE(1.0, q.Get(0,0));
-    TEST_ASSERT_EQUAL_DOUBLE(-2.0, q.Get(1,0));
-    TEST_ASSERT_EQUAL_DOUBLE(-3.0, q.Get(2,0));
-    TEST_ASSERT_EQUAL_DOUBLE(-4.0, q.Get(3,0));
-
+    TEST_ASSERT_EQUAL_DOUBLE(1.0, q.Get(0, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(-2.0, q.Get(1, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(-3.0, q.Get(2, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(-4.0, q.Get(3, 0));
 }
-void TestQuaternionDotProduct()
-{
-    double q1[4][1] = {{0.060346},{0.8606},{0.23381},{0.37978}};
-    double q2[4][1] = {{-0.53115},{-0.58631},{-0.92527},{0.32673}};
+void TestQuaternionDotProduct() {
+    double q1[4][1] = {{0.060346}, {0.8606}, {0.23381}, {0.37978}};
+    double q2[4][1] = {{-0.53115}, {-0.58631}, {-0.92527}, {0.32673}};
 
     Matrix qa(q1), qb(q2), qc(q1);
     qc.QuaternionProductDot(qa, qb);
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,0.56477, qc.Get(0,0));
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,-0.064697, qc.Get(1,0));
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,-0.68388, qc.Get(2,0));
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,-0.84121, qc.Get(3,0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.56477, qc.Get(0, 0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, -0.064697, qc.Get(1, 0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, -0.68388, qc.Get(2, 0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, -0.84121, qc.Get(3, 0));
 }
 
-void TestQuaternionCrossProduct()
-{
-    double q1[4][1] = {{0.060346},{0.8606},{0.23381},{0.37978}};
-    double q2[4][1] = {{-0.53115},{-0.58631},{-0.92527},{0.32673}};
+void TestQuaternionCrossProduct() {
+    double q1[4][1] = {{0.060346}, {0.8606}, {0.23381}, {0.37978}};
+    double q2[4][1] = {{-0.53115}, {-0.58631}, {-0.92527}, {0.32673}};
 
     Matrix qa(q1), qb(q2), qc(q1);
     qc.QuaternionProductCross(qa, qb);
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,0.56477, qc.Get(0,0));
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,-0.92028, qc.Get(1,0));
-    TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.32383, qc.Get(2,0));
-    TEST_ASSERT_DOUBLE_WITHIN(0.001,0.4772, qc.Get(3,0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.56477, qc.Get(0, 0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, -0.92028, qc.Get(1, 0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.32383, qc.Get(2, 0));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.4772, qc.Get(3, 0));
 }
 
 void TestCopyConstructor() {
