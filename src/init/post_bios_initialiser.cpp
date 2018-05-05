@@ -132,8 +132,8 @@ void PostBiosInitialiser::InitHardware() {
     SdCard::SdOpen();
 }
 
-void PostBiosInitialiser::DeploymentWait(uint16_t delay) {
-    // The deployment wait acts as a timer counting for `delay` minutes,
+void PostBiosInitialiser::DeploymentWait(uint16_t delay_seconds) {
+    // The deployment wait acts as a timer counting for `delay_seconds`,
     // starting from the time the `DeploymentWait` call is made.
     // It is a blocking wait.
 
@@ -143,7 +143,7 @@ void PostBiosInitialiser::DeploymentWait(uint16_t delay) {
     time_t init_time = Rtc::RTimeToEpoch(reading);
     time_t cur_time = init_time;
 
-    while ((cur_time - init_time) / kSecsInMin < delay) {
+    while (cur_time - init_time < delay_seconds) {
         reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
         if (Rtc::ValidTime(reading)) {
             cur_time = Rtc::RTimeToEpoch(reading);
@@ -201,9 +201,12 @@ void PostBiosInitialiser::PostBiosInit() {
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
-        DeploymentWait(kBeaconDelayMins);
+        Log_warning0("Waiting for beacon to start");
+        DeploymentWait(kBeaconDelaySeconds);
+        Log_warning0("Beacon starting");
         InitRadioListener();
-        DeploymentWait(kAntennaDelayMins);
+        DeploymentWait(kAntennaDelaySeconds);
+        Log_warning0("Antenna Deploying");
         DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
