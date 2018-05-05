@@ -14,6 +14,7 @@
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
@@ -77,6 +78,19 @@ void RunnableOrientationControl::ControlOrientation() {
     Time current_time;
     double time_since_tle_updated_millis;
 
+    if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
+              measurable_manager->GetMeasurable<MagnetometerReading>(
+                  kFsImuMagnetometer1)))
+             ->Calibrate()) {
+        Log_error0("Magnetometer on bus A calibration failed");
+    }
+    if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
+              measurable_manager->GetMeasurable<MagnetometerReading>(
+                  kFsImuMagnetometer2)))
+             ->Calibrate()) {
+        Log_error0("Magnetometer on bus B calibration failed");
+    }
+
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
@@ -102,7 +116,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 kFsImuMagnetometer2, 0);
 
         if (hil_available) {
-            // Echo reading to data dashboard
+            // Echo magnetometer reading to data dashboard
             RunnableDataDashboard::TransmitMessage(
                 kMagnetometerReadingCode, MagnetometerReading_size,
                 MagnetometerReading_fields, &magnetometer_reading);

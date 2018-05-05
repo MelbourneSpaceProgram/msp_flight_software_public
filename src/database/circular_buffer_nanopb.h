@@ -151,6 +151,15 @@ class CircularBufferNanopb {
         return message_struct;
     }
 
+    static uint32_t ReadCountMessagesWritten(const char *file_name) {
+        File file_handle = SdCard::FileOpen(
+            file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
+                           SdCard::kFileReadMode);
+        uint32_t count_messages_written = GetCountMessagesWritten(file_handle);
+        SdCard::FileClose(file_handle);
+        return count_messages_written;
+    }
+
     // TODO (rskew) return header struct
     static void ReadHeader(const char *file_name) {
         File file_handle = SdCard::FileOpen(
