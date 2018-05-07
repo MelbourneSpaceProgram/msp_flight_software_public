@@ -132,3 +132,7 @@ StateManager::~StateManager() {
     state_update_semaphore_handle = NULL;
     instance = NULL;
 }
+
+StateId StateManager::GetCurrentStateOfStateMachine(StateMachineIndex index) {
+    return GetStateMachine(index)->GetCurrentState();
+}

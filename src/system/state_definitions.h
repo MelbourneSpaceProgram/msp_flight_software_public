@@ -5,7 +5,6 @@ enum StateId {
     kBatteryChargeCriticalLow,
     kBatteryChargeLow,
     kBatteryChargeNominal,
-    kBatteryTempCriticalLow,
     kBatteryTempNominal,
     kBatteryTempCriticalHigh,
     kPowerEverythingOff,

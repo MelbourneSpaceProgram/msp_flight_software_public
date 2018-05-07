@@ -28,6 +28,7 @@
 #include <xdc/runtime/Log.h>
 #include <xdc/std.h>
 #include <string>
+#include <src/system/tasks/runnable_system_health_check.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -65,7 +66,6 @@ void PostBiosInitialiser::RunUnitTests() {
 void PostBiosInitialiser::InitStateManagement() {
     // TODO(rskew) review priority
     StateManager* state_manager = StateManager::GetStateManager();
-    state_manager->CreateStateMachines();
 
     TaskHolder* state_management_task = new TaskHolder(
         1024, "StateManagement", 11, new RunnableStateManagement());
@@ -114,6 +114,11 @@ TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
         new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Init();
     return pre_deployment_magnetometer_poller_task;
+}
+void PostBiosInitialiser::InitSystemHealthCheck() {
+    TaskHolder* system_health_check_task = new TaskHolder(
+        1536, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
+    system_health_check_task->Init();
 }
 
 void PostBiosInitialiser::DeployAntenna() {
@@ -213,6 +218,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         InitPayloadProcessor();
         InitOrientationControl();
+        InitSystemHealthCheck();
         // TODO(rskew): Debug what needs to be passed in to Task_delete
         // Task_delete(pre_deployment_magnetometer_poller_task);
 #else

@@ -21,6 +21,7 @@ class StateManager {
     void CreateStateMachines();
     void RemoveLastSystemStateMachine();
     void DeleteInstance();
+    StateId GetCurrentStateOfStateMachine(StateMachineIndex index);
 
    private:
     ~StateManager();

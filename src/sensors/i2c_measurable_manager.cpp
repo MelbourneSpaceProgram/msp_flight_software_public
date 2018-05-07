@@ -7,6 +7,8 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
 #include <src/sensors/measurable_id.h>
+#include <src/system/sensor_state_machines/battery_temp_state_machine.h>
+#include <src/system/state_manager.h>
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
 
 I2cMeasurableManager *I2cMeasurableManager::instance = NULL;
@@ -83,12 +85,20 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     Bms *bms_bus_d = new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
     Bms *bms_bus_c = new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
 
+    StateManager *state_manager = StateManager::GetStateManager();
+    BatteryTempStateMachine *battery_temp_state_machine =
+        static_cast<BatteryTempStateMachine *>(
+            state_manager->GetStateMachine(kBatteryTempStateMachine));
+
+    battery_temp_state_machine->RegisterWithSensor(AddBmsBatteryTempMeasurable(
+        kPowerBmsBatteryTemp1, bms_bus_d));
+    battery_temp_state_machine->RegisterWithSensor(AddBmsBatteryTempMeasurable(
+        kPowerBmsBatteryTemp2, bms_bus_c));
+
     AddTemperature(kPowerTemp1, power_temp_1);
     AddTemperature(kPowerTemp2, power_temp_2);
     AddBmsDieTempMeasurable(kPowerBmsDieTemp1, bms_bus_d);
     AddBmsDieTempMeasurable(kPowerBmsDieTemp2, bms_bus_c);
-    AddBmsBatteryTempMeasurable(kPowerBmsBatteryTemp1, bms_bus_d);
-    AddBmsBatteryTempMeasurable(kPowerBmsBatteryTemp2, bms_bus_c);
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -190,12 +200,14 @@ void I2cMeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {
     measurables[id] = temp;
 }
 
-void I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id,
-                                                       Bms *bms) {
+BmsBatteryTemperatureMeasurable *
+I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id,
+                                                  Bms *bms) {
     CheckValidId(id);
     BmsBatteryTemperatureMeasurable *temp =
         new BmsBatteryTemperatureMeasurable(bms);
     measurables[id] = temp;
+    return temp;
 }
 
 void I2cMeasurableManager::CheckValidId(MeasurableId id) {

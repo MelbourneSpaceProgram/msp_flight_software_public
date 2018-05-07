@@ -15,9 +15,14 @@
 #include <src/messages/Tle.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
+#include <src/system/state_definitions.h>
+#include <src/system/state_manager.h>
+#include <src/system/system_state_machines/power_state_machine.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
+#include <src/util/task_utils.h>
+#include <xdc/runtime/Log.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
@@ -63,11 +68,23 @@ void RunnableOrientationControl::ControlOrientation() {
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
+    StateManager* state_manager = StateManager::GetStateManager();
+
     // TODO (rskew) replace this with actual rtc time
     double tsince_millis = 0;
 
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+
+        StateId adcs_state =
+            state_manager->GetCurrentStateOfStateMachine(kAdcsStateMachine);
+
+        if(adcs_state == kAdcsOff) {
+            Log_warning0("Orientation Control Disabled.");
+            // Execution goes back to the semaphore pend and waits for next
+            // enable from the timer
+            continue;
+        }
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
