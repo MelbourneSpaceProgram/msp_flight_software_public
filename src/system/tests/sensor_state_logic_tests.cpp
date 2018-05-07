@@ -42,29 +42,6 @@ StateId BatteryChargeStateCheck(double soc, StateId current_state) {
     return current_state;
 }
 
-StateId BatteryTempStateCheck(double temp, StateId current_state) {
-    switch (current_state) {
-        case kBatteryTempCriticalLow:
-            if (temp > kTempBatteryOperationalLow + kHysteresisTemp) {
-                return (kBatteryTempNominal);
-            }
-            break;
-        case kBatteryTempNominal:
-            if (temp < kTempBatteryOperationalLow) {
-                return (kBatteryTempCriticalLow);
-            } else if (temp > kTempBatteryOperationalHigh + kHysteresisTemp) {
-                return (kBatteryTempCriticalHigh);
-            }
-            break;
-        case kBatteryTempCriticalHigh:
-            if (temp < kTempBatteryOperationalHigh) {
-                return (kBatteryTempNominal);
-            }
-            break;
-    }
-    return current_state;
-}
-
 StateId TelecomsTempStateCheck(double temp, StateId current_state) {
     switch (current_state) {
         case kTelecomsTempNominal:
@@ -112,40 +89,6 @@ void TestBatteryChargeStateFlow(void) {
             BatteryChargeStateCheck(dummy_soc_reading, state_before_reading),
             battery_charge_state_machine.GetCurrentState());
         dummy_soc_reading -= 0.01;
-    }
-}
-
-void TestBatteryTempStateFlow(void) {
-    StateManager* state_manager = StateManager::GetStateManager();
-    BatteryTempStateMachine battery_temp_state_machine(state_manager);
-
-    TestI2cSensor battery_temp_sensor;
-    battery_temp_state_machine.RegisterWithSensor(&battery_temp_sensor);
-
-    double kMaxTemp = 50;
-    double kMinTemp = 0;
-    double dummy_temp_reading = kMinTemp;
-    StateId state_before_reading;
-    while (dummy_temp_reading < kMaxTemp) {
-        state_before_reading = battery_temp_state_machine.GetCurrentState();
-        battery_temp_sensor.SetDummySensorData(dummy_temp_reading);
-        battery_temp_sensor.TakeReading();
-
-        TEST_ASSERT_EQUAL_INT(
-            BatteryTempStateCheck(dummy_temp_reading, state_before_reading),
-            battery_temp_state_machine.GetCurrentState());
-        dummy_temp_reading += 1;
-    }
-
-    while (dummy_temp_reading > kMinTemp) {
-        state_before_reading = battery_temp_state_machine.GetCurrentState();
-        battery_temp_sensor.SetDummySensorData(dummy_temp_reading);
-        battery_temp_sensor.TakeReading();
-
-        TEST_ASSERT_EQUAL_INT(
-            BatteryTempStateCheck(dummy_temp_reading, state_before_reading),
-            battery_temp_state_machine.GetCurrentState());
-        dummy_temp_reading -= 1;
     }
 }
 

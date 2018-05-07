@@ -16,23 +16,16 @@ AdcsStateMachine::AdcsStateMachine(
 
 void AdcsStateMachine::CheckUpstreamStates() {
     StateId power_state = power_state_machine->GetCurrentState();
-    StateId tle_state = tle_state_machine->GetCurrentState();
-    StateId detumbled_state = detumbled_state_machine->GetCurrentState();
 
-    if (power_state == kPowerEverythingOff || power_state == kPowerLimited) {
+    if (power_state == kPowerEverythingOff) {
         SetState(kAdcsOff);
-    } else if (power_state == kPowerNominal &&
-               detumbled_state == kDetumbledFalse) {
-        SetState(kAdcsDetumbling);
-    } else if (power_state == kPowerNominal &&
-               detumbled_state == kDetumbledTrue && tle_state == kTleInvalid) {
-        SetState(kAdcsNadirPointing);
-    } else if (power_state == kPowerNominal &&
-               detumbled_state == kDetumbledTrue && tle_state == kTleValid) {
+    } else if (power_state == kPowerNominal) {
         SetState(kAdcsNominal);
     } else {
         // This state should cause all unit tests to fail
         SetState(kAdcsNoState);
-        // TODO(rskew) log major error
+        etl::exception e("State machine entered an invalid state.", __FILE__,
+                         __LINE__);
+        throw e;
     }
 }

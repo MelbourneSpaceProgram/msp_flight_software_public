@@ -17,9 +17,6 @@ static const uint8_t kNumPowerStates = 3;
 StateId battery_charge_states[kNumBatteryChargeStates] = {
     kBatteryChargeCriticalLow, kBatteryChargeLow, kBatteryChargeNominal};
 
-StateId battery_temp_states[kNumBatteryTempStates] = {
-    kBatteryTempCriticalLow, kBatteryTempNominal, kBatteryTempCriticalHigh};
-
 StateId telecoms_temp_states[kNumTelecomsTempStates] = {
     kTelecomsTempNominal, kTelecomsTempCriticalHigh};
 
@@ -31,53 +28,6 @@ StateId detumbled_states[kNumDetumbledStates] = {kDetumbledFalse,
 StateId power_states[kNumPowerStates] = {kPowerEverythingOff, kPowerLimited,
                                          kPowerNominal};
 
-void TestPowerStateLogic() {
-    BatteryChargeStateMachine battery_charge_state_machine(NULL);
-    BatteryTempStateMachine battery_temp_state_machine(NULL);
-    PowerStateMachine power_state_machine(NULL, &battery_charge_state_machine,
-                                          &battery_temp_state_machine);
-
-    // Check aaaaaaaall the permutations
-    for (uint8_t battery_charge_index = 0;
-         battery_charge_index < kNumBatteryChargeStates;
-         battery_charge_index++) {
-        for (uint8_t battery_temp_index = 0;
-             battery_temp_index < kNumBatteryTempStates; battery_temp_index++) {
-            battery_charge_state_machine.OverrideState(
-                battery_charge_states[battery_charge_index]);
-
-            battery_temp_state_machine.OverrideState(
-                battery_temp_states[battery_temp_index]);
-
-            power_state_machine.CheckUpstreamStates();
-            StateId current_power_state = power_state_machine.GetCurrentState();
-
-            if (battery_charge_states[battery_charge_index] ==
-                kBatteryChargeCriticalLow) {
-                TEST_ASSERT_EQUAL_INT(kPowerEverythingOff, current_power_state);
-            } else if (battery_charge_states[battery_charge_index] ==
-                       kBatteryChargeLow) {
-                TEST_ASSERT_TRUE(kPowerEverythingOff == current_power_state ||
-                                 kPowerLimited == current_power_state);
-            }
-
-            if (battery_temp_states[battery_temp_index] ==
-                kBatteryTempCriticalLow) {
-                TEST_ASSERT_EQUAL_INT(kPowerEverythingOff, current_power_state);
-            } else if (battery_temp_states[battery_temp_index] ==
-                       kBatteryTempCriticalHigh) {
-                TEST_ASSERT_EQUAL_INT(kPowerEverythingOff, current_power_state);
-            }
-
-            if (battery_charge_states[battery_charge_index] ==
-                    kBatteryChargeNominal &&
-                battery_temp_states[battery_temp_index] ==
-                    kBatteryTempNominal) {
-                TEST_ASSERT_EQUAL_INT(kPowerNominal, current_power_state);
-            }
-        }
-    }
-}
 
 void TestTelecomsStateLogic() {
     PowerStateMachine power_state_machine(NULL, NULL, NULL);

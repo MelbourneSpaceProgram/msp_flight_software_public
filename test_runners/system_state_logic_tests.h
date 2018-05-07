@@ -14,7 +14,6 @@
 #include <src/util/memory_troubleshooter.h>
 #include <external/etl/exception.h>
 
-void TestPowerStateLogic(void);
 void TestTelecomsStateLogic(void);
 void TestAdcsStateLogic(void);
 
