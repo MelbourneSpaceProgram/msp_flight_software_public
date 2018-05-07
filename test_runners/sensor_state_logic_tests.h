@@ -17,7 +17,6 @@
 #include <external/etl/exception.h>
 
 void TestBatteryChargeStateFlow(void);
-void TestBatteryTempStateFlow(void);
 void TestTelecomsTempStateFlow(void);
 
 #endif  // TEST_RUNNERS_SENSOR_STATE_LOGIC_TESTS_H_
