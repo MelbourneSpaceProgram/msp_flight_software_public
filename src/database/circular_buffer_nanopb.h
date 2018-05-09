@@ -46,7 +46,10 @@ class CircularBufferNanopb {
         File file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenAlwaysMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
-        uint32_t file_size_in_bytes = file_handle.fsize;
+        // TODO(akremor): Need to develop a fix for the below
+        // It is API version dependent which means it breaks some builds
+        // uint32_t file_size_in_bytes = file_handle.fsize;
+        uint32_t file_size_in_bytes = 0;
         // If file is empty, initialise metadata
         // TODO (rskew) check that metadata is valid
         if (file_size_in_bytes < kEncodedHeaderSize) {

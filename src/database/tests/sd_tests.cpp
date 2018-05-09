@@ -67,7 +67,10 @@ void TestFatFsReadWrite() {
 
     SdCard::FileFlush(dst);
 
-    uint32_t filesize = src.fsize;
+    // TODO(akremor): Need to develop a fix for the below
+    // It is API version dependent which means it breaks some builds
+    // uint32_t filesize = src.fsize;
+    uint32_t filesize = 0;
 
     SdCard::FileClose(src);
     SdCard::FileClose(dst);
