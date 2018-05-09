@@ -9,11 +9,11 @@ class I2cMultiplexer {
         kMuxChannel0 = 0x00,
         kMuxChannel1 = 0x01,
         kMuxChannel2 = 0x02,
-        kMuxChannel3 = 0x04,
-        kMuxChannel4 = 0x08,
-        kMuxChannel5 = 0x10,
-        kMuxChannel6 = 0x20,
-        kMuxChannel7 = 0x40,
+        kMuxChannel3 = 0x03,
+        kMuxChannel4 = 0x04,
+        kMuxChannel5 = 0x05,
+        kMuxChannel6 = 0x06,
+        kMuxChannel7 = 0x07,
         kMuxNoChannel = 0xFF
     };
 
