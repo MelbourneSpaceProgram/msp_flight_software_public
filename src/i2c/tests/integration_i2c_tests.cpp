@@ -32,6 +32,10 @@ void TestEnumerateAllI2cDevices(void) {
         bus_a_multiplexer.OpenChannel(channel);
         System_printf("Operating on Bus A channel %d\n", channel);
         for (uint8_t addr = 8; addr < 120; addr++) {
+            // Don't communicate with the multiplexer as it can cause a bus switch
+            if(addr == 0x76){
+                continue;
+            }
             if (bus_a.PerformWriteTransaction(addr, data, 1)) {
                 System_printf("Found device at 0x%02x\n", addr);
             }
@@ -50,6 +54,10 @@ void TestEnumerateAllI2cDevices(void) {
         bus_c_multiplexer.OpenChannel(channel);
         System_printf("Operating on Bus C channel %d\n", channel);
         for (uint8_t addr = 8; addr < 120; addr++) {
+            // Don't communicate with the multiplexer as it can cause a bus switch
+            if(addr == 0x71){
+                continue;
+            }
             if (bus_c.PerformWriteTransaction(addr, data, 1)) {
                 System_printf("Found device at 0x%02x\n", addr);
             }
