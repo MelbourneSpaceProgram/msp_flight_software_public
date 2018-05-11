@@ -76,32 +76,6 @@ pipeline {
             }
         }
 
-        stage('Unit Tests') { 
-            agent {
-                label 'flatsat'
-            }
-            steps {
-		unstash 'flight_software_binary'
-		sh '''
-			tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-			container_name=${docker_name}"_unittest"
-			docker run -td --name $container_name --privileged -v /dev/bus/usb:/dev/bus/usb jigglemein/ccs7_final_image_v3
-			docker cp ${WORKSPACE}/CDH_software.tar.gz $container_name:/tmp/code
-                        docker exec -t $container_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
-			docker cp ${WORKSPACE}/MSP.out $container_name:"/tmp/code/TIRTOS Build/MSP.out"
-			docker exec -t $container_name /opt/ti/ccsv7/ccs_base/scripting/bin/dss.sh /tmp/code/targetConfigs/runner.js unittest
-                    '''
-            }
-            post {
-                always {
-                    sh '''
-			container_name=${docker_name}"_unittest"
-                        docker rm -f $container_name
-                    '''
-                }
-            }
-        }
-
         stage('Day In The Life') { 
             agent {
                 label 'flatsat'
