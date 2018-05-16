@@ -18,5 +18,6 @@
 void TestBms(void);
 void TestBmsDieTemperatureRead(void);
 void TestBmsBatteryTemperatureRead(void);
+void TestJeitaRegion(void);
 
 #endif  // TEST_RUNNERS_BMS_TESTS_H_
