@@ -38,10 +38,13 @@ class Bms : public I2cSensor {
     double ConvertToDieTemperature(etl::array<byte, 2> read_buffer);
     double TakeI2cBatteryTempReading();
     double ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer);
+    uint16_t GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer);
+    double GetVChargeDEC(etl::array<byte, 2>& read_buffer);
+    double GetIChargeDEC(etl::array<byte, 2>& read_buffer);
 
     static const byte kUVCLRegisterValue = 0x8D;
     static const byte kVChargeRegisterValue = 0x0F;
-    static const byte kIChargeRegisterValue = 0x01;
+    static const byte kIChargeRegisterValue = 0x07;
     static const byte kReChargeThresholdLRegisterValue = 0x0C;
     static const byte kReChargeThresholdURegisterValue = 0x43;
 
@@ -59,6 +62,8 @@ class Bms : public I2cSensor {
     static const byte kUVCLRegisterLocation = 0x16;
     static const byte kVChargeRegisterLocation = 0x1B;
     static const byte kIChargeRegisterLocation = 0x1A;
+    static const byte kVChargeDACRegisterLocation = 0x45;
+    static const byte kIChargeDACRegisterLocation = 0x44;
     static const byte kReChargeThresholdRegisterLocation = 0x2E;
     static const byte kVinRegisterLocation = 0x3B;
     static const byte kIinRegisterLocation = 0x3E;
@@ -69,23 +74,29 @@ class Bms : public I2cSensor {
     static const byte kChemandCellsRegisterLocation = 0x43;
     static const byte kSystemStatusRegisterLocation = 0x39;
     static const byte kTelemetryValidRegisterLocation = 0x4A;
-    static const byte kVsysLowLimitRegisterLocation = 0x05;
-    static const byte kVsysLowLimitU = 0x08;
-    static const byte kVsysLowLimitL = 0x4C;
-    static const byte kVsysHighLimitRegisterLocation = 0x06;
-    static const byte kVsysHighLimitU = 0x0A;
-    static const byte kVsysHighLimitL = 0xAB;
-    static const byte kVsysAlertEnableRegisterLocation = 0x0D;
-    static const byte kVsysAlertEnable = 0xC0;
-    static const byte kVsysAlertRegisterLocation = 0x36;
 
     // CHARGING TERMINATION
     static const byte kMaxCVTimeRegisterLocation = 0x1D;
     static const byte kMaxCVTimeRegisterValue = 0x00;
-    static const byte kCXRegisterLocation = 0x29;
-    static const byte kCXRegisterValue = 0x04;
+    static const byte kCXJeitaEnableRegisterLocation = 0x29;
+    static const byte kCXJeitaEnableRegisterValue = 0x05;
     static const byte kCXThresholdRegisterLocation = 0x1C;
     static const byte kCXThresholdRegisterValue = 0x88;
+    static const byte kJeitaRegionRegisterLocation = 0x42;
+    static const byte kJeitaT1RegisterLocation = 0x1F;
+    static const byte kJeitaT1ConfiqurationUBValue = 0x4B;
+    static const byte kJeitaT1ConfiqurationLBValue = 0x07;
+    static const byte kVChargeJeita5to6RegisterLocation = 0x25;
+    static const byte kVChargeJeita2to4RegisterLocation = 0x26;
+    static const byte kIChargeJeita5to6RegisterLocation = 0x27;
+    static const byte kIChargeJeita5to6ConfigurationValue = 0xE7;
+    static const byte kIChargeJeita2to4RegisterLocation = 0x28;
+    static const byte kIChargeJeita2to4ConfigurationLBValue = 0xE7;
+    static const byte kIChargeJeita2to4ConfigurationUBValue = 0x1C;
+    static const double kVchargeDivisionFactor = 80.0;
+    static const double kVchargeAdditionFactor = 3.4125;
+    static const double kIchargeAdditionFactor = 1.0;
+    static const double kIchargeMultiplicationFactor = 0.125;
 
     //%COULOMB Counting
     static const byte kCoulomConfigRegisterLocation = 0x14;
@@ -103,9 +114,9 @@ class Bms : public I2cSensor {
     static const double kNTCBiasResistance = 10000.0;
     static const double kNTCBitWeight = 21845.0;
 
-    static const double kConversionCoeffientA = 0.00084220;
-    static const double kConversionCoeffientB = 0.00026265;
-    static const double kConversionCoeffientC = 0.00000011875;
+    static const double kConversionCoefficientA = 0.00084220;
+    static const double kConversionCoefficientB = 0.00026265;
+    static const double kConversionCoefficientC = 0.00000011875;
     static const double kKelvinToCelciusOffset = 273.15;
 };
 
