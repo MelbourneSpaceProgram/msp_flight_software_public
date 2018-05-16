@@ -12,16 +12,16 @@
 #include <src/init/init.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <src/messages/Tle.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
 #include <src/system/system_state_machines/power_state_machine.h>
 #include <src/util/message_codes.h>
+#include <src/util/satellite_time_source.h>
+#include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
-#include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
@@ -70,8 +70,9 @@ void RunnableOrientationControl::ControlOrientation() {
 
     StateManager* state_manager = StateManager::GetStateManager();
 
-    // TODO (rskew) replace this with actual rtc time
-    double tsince_millis = 0;
+    Time tle_last_updated;
+    Time current_time;
+    double time_since_tle_updated_millis;
 
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
@@ -79,7 +80,7 @@ void RunnableOrientationControl::ControlOrientation() {
         StateId adcs_state =
             state_manager->GetCurrentStateOfStateMachine(kAdcsStateMachine);
 
-        if(adcs_state == kAdcsOff) {
+        if (adcs_state == kAdcsOff) {
             Log_warning0("Orientation Control Disabled.");
             // Execution goes back to the semaphore pend and waits for next
             // enable from the timer
@@ -135,45 +136,37 @@ void RunnableOrientationControl::ControlOrientation() {
             torque_output.Get(1, 0) * torque_boost,
             torque_output.Get(2, 0) * torque_boost);
 
-        if (hil_enabled) {
-            // TODO (rskew) move this code to a command handler, allowing the
-            // TLE update to be driven by the ground station.
-
-            DebugStream* debug_stream = DebugStream::GetInstance();
-            uint8_t buffer[Tle_size];
-            bool success = debug_stream->RequestMessageFromSimulator(
-                kTleRequestCode, buffer, Tle_size);
-            if (success) {
-                pb_istream_t stream = pb_istream_from_buffer(buffer, Tle_size);
-                Tle tle = Tle_init_zero;
-                bool status = pb_decode(&stream, Tle_fields, &tle);
-                if (!status) {
-                    etl::exception e("pb_decode failed", __FILE__, __LINE__);
-                    throw e;
-                }
-
-                location_estimator.StoreTle(tle);
-
-                // Calculate position
-                // TODO (rskew) calculate absolute time in millis since tle
-                // epoch
-                tsince_millis += 50 * 100;
-                location_estimator.UpdateLocation(tsince_millis);
-
-                // Write calculated position to data dashboard
-                LocationReading location_reading = LocationReading_init_zero;
-                location_reading.lattitude_geodetic_degrees =
-                    location_estimator.GetLattitudeGeodeticDegrees();
-                location_reading.longitude_degrees =
-                    location_estimator.GetLongitudeDegrees();
-                location_reading.altitude_above_ellipsoid_km =
-                    location_estimator.GetAltitudeAboveEllipsoidKm();
-                // TODO (rskew) generate timestamp
-                location_reading.timestamp_millis_unix_epoch = 0;
-                RunnableDataDashboard::TransmitMessage(
-                    kLocationReadingCode, LocationReading_size,
-                    LocationReading_fields, &location_reading);
+        if (over_the_air_enabled) {
+            if (location_estimator.CheckForUpdatedTle()) {
+                tle_last_updated = SatelliteTimeSource::GetTime();
             }
+        } else if (hil_enabled) {
+            location_estimator.RequestTleFromDebugClient();
+            tle_last_updated = SatelliteTimeSource::GetTime();
+        }
+
+        if (hil_enabled || over_the_air_enabled) {
+            // Calculate position
+            current_time = SatelliteTimeSource::GetTime();
+            time_since_tle_updated_millis =
+                current_time.timestamp_millis_unix_epoch -
+                tle_last_updated.timestamp_millis_unix_epoch;
+            location_estimator.UpdateLocation(time_since_tle_updated_millis);
+
+            // Write calculated position to data dashboard
+            LocationReading location_reading = LocationReading_init_zero;
+            location_reading.lattitude_geodetic_degrees =
+                location_estimator.GetLattitudeGeodeticDegrees();
+            location_reading.longitude_degrees =
+                location_estimator.GetLongitudeDegrees();
+            location_reading.altitude_above_ellipsoid_km =
+                location_estimator.GetAltitudeAboveEllipsoidKm();
+            // TODO (rskew) generate timestamp
+            location_reading.timestamp_millis_unix_epoch =
+                current_time.timestamp_millis_unix_epoch;
+            RunnableDataDashboard::TransmitMessage(
+                kLocationReadingCode, LocationReading_size,
+                LocationReading_fields, &location_reading);
         }
     }
 }

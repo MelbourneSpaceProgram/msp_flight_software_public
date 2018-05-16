@@ -51,7 +51,7 @@ extern bool memory_troubleshooter_test_enabled;
 extern bool io_expander_test_enabled;
 extern bool i2c_enumeration_enabled;
 extern bool measurable_test_enabled;
-
 extern bool i2c_enabled;
 extern bool sd_test_enabled;
+extern bool over_the_air_enabled;
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_

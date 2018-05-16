@@ -1,6 +1,7 @@
 #include <src/payload_processor/commands/command.h>
 #include <src/payload_processor/commands/lithium_enable_command.h>
 #include <src/payload_processor/commands/test_command.h>
+#include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
@@ -9,8 +10,8 @@ bool PayloadProcessor::ParseAndExecuteCommands(byte* payload) {
     byte current_index = 0;
 
     while (current_index < Lithium::kMaxReceivedSize &&
-           !(payload[current_index] != kEndTerminator &&
-           payload[current_index + 1] != kEndTerminator)) {
+           !(payload[current_index] == kEndTerminator &&
+             payload[current_index + 1] == kEndTerminator)) {
         bool command_execution_successful =
             ParseNextCommandAndExecute(current_index, payload);
 
@@ -34,11 +35,14 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
             TestCommand echo_command(payload, index + kCommandCodeLength);
             command = &echo_command;
             break;
-
         case kLithiumEnableCommand:
             LithiumEnableCommand lithium_enable_command(payload +
                                                         kCommandCodeLength);
             command = &lithium_enable_command;
+        case kTleUpdateCommand:
+            TleUpdateCommand tle_update_command(payload,
+                                                index + kCommandCodeLength);
+            command = &tle_update_command;
             break;
     }
 
