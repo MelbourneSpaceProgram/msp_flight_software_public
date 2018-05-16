@@ -35,6 +35,7 @@ extern void TearDown(void);
 extern void TestBms();
 extern void TestBmsDieTemperatureRead();
 extern void TestBmsBatteryTemperatureRead();
+extern void TestJeitaRegion();
 
 
 /*=======Suite Setup=====*/
@@ -82,6 +83,7 @@ int bms_tests_runner(void)
     RUN_TEST(TestBms, 15);
     RUN_TEST(TestBmsDieTemperatureRead, 42);
     RUN_TEST(TestBmsBatteryTemperatureRead, 55);
+    RUN_TEST(TestJeitaRegion, 68);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

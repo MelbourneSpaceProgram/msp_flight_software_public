@@ -35,14 +35,29 @@ void Bms::SetConfiguration() {
     package[2] = Bms::kEmptybuffervalue;
     bus->PerformWriteTransaction(address, package, 3);
 
-    package[0] = Bms::kCXRegisterLocation;
-    package[1] = Bms::kCXRegisterValue;
+    package[0] = Bms::kCXJeitaEnableRegisterLocation;
+    package[1] = Bms::kCXJeitaEnableRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kCXThresholdRegisterLocation;
     package[1] = Bms::kCXThresholdRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
+    bus->PerformWriteTransaction(address, package, 3);
+
+    package[0] = Bms::kJeitaT1RegisterLocation;
+    package[1] = Bms::kJeitaT1ConfiqurationLBValue;
+    package[2] = Bms::kJeitaT1ConfiqurationUBValue;
+    bus->PerformWriteTransaction(address, package, 3);
+
+    package[0] = Bms::kIChargeJeita5to6RegisterLocation;
+    package[1] = Bms::kIChargeJeita5to6ConfigurationValue;
+    package[2] = Bms::kEmptybuffervalue;
+    bus->PerformWriteTransaction(address, package, 3);
+
+    package[0] = Bms::kIChargeJeita2to4RegisterLocation;
+    package[1] = Bms::kIChargeJeita2to4ConfigurationLBValue;
+    package[2] = Bms::kIChargeJeita2to4ConfigurationUBValue;
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kCoulomConfigRegisterLocation;
@@ -143,6 +158,45 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer) {
     }
 }
 
+// Jeita Region VCharge
+uint16_t Bms::GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer)
+{
+    if (GetTelemetryValid(read_buffer))
+    {
+        SelectRegister(kJeitaRegionRegisterLocation);
+        ReadFromCurrentRegister(read_buffer);
+        uint16_t Jeita_region_binary_reading;
+        Jeita_region_binary_reading =
+                ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                        | static_cast<uint16_t>(read_buffer.at(0));
+        return Jeita_region_binary_reading;
+    }
+}
+//VCharge Dec
+double Bms::GetVChargeDEC(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kVChargeDACRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t vcharge_dec_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (vcharge_dec_binary_reading / kVchargeDivisionFactor)
+            + kVchargeAdditionFactor;
+}
+
+//ICharge Dec
+double Bms::GetIChargeDEC(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kIChargeDACRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t icharge_dec_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (icharge_dec_binary_reading + kIchargeAdditionFactor)
+            * kIchargeMultiplicationFactor;
+}
+
+
 double Bms::TakeI2cDieTempReading() {
     etl::array<byte, 2> read_buffer;
     if (GetTelemetryValid(read_buffer)) {
@@ -172,10 +226,9 @@ double Bms::ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer) {
     uint16_t ntc_ratio_register_value = (read_buffer[1] << 8) | read_buffer[0];
     double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value /
                              (kNTCBitWeight - ntc_ratio_register_value);
-
-    double battery_temp_in_kelvin =
-        1 /
-        (kConversionCoeffientA + kConversionCoeffientB * log(rntc_resistance) +
-         kConversionCoeffientC * pow(log(rntc_resistance), 3));
+    double battery_temp_in_kelvin = 1
+            / (kConversionCoefficientA
+                    + kConversionCoefficientB * log(rntc_resistance)
+                    + kConversionCoefficientC * pow(log(rntc_resistance), 3));
     return battery_temp_in_kelvin - kKelvinToCelciusOffset;
 }

@@ -17,7 +17,6 @@ void TestBms() {
         TEST_IGNORE_MESSAGE("Hardware test ignored");
     }
 
-    // (SCL, SDA) -> (3.5,3.6)
     I2c bus_d(I2C_BUS_D);
     Bms bms(&bus_d, test_bms_address);
     etl::array<byte, kReadRegisterCount> read_buffer;
@@ -34,6 +33,7 @@ void TestBms() {
 
     TEST_ASSERT_NOT_EQUAL(Bms::kError, bms.GetChargeStatus(read_buffer));
     TEST_ASSERT_NOT_EQUAL(Bms::kOther, bms.GetSystemStatus(read_buffer));
+
 }
 
 void TestBmsDieTemperatureRead() {
@@ -57,3 +57,25 @@ void TestBmsBatteryTemperatureRead() {
         kPowerBmsBatteryTemp1, 1);
     TEST_ASSERT_GREATER_THAN(0, temp);
 }
+
+void TestJeitaRegion()
+{
+    if (!bms_test_enabled)
+    {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
+
+    I2c bus_d(I2C_BUS_D);
+    Bms bms(&bus_d, test_bms_address);
+    etl::array<byte, kReadRegisterCount> read_buffer;
+
+    uint16_t Jeita_region = 3;
+    double Vcharge = 3.6;
+    double Icharge = 1.0;
+
+    TEST_ASSERT_EQUAL_INT16(Jeita_region,
+                            bms.GetJeitaRegionVCharge(read_buffer));
+    TEST_ASSERT_DOUBLE_WITHIN(+-0.15, Vcharge, bms.GetVChargeDEC(read_buffer));
+    TEST_ASSERT_DOUBLE_WITHIN(0.1, Icharge, bms.GetIChargeDEC(read_buffer));
+}
+
