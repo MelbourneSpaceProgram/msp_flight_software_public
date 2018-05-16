@@ -64,7 +64,7 @@ void TestTempRead(void) {
 
     MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
 
-    TemperatureReading temperature_reading;
+    Mpu9250TemperatureReading temperature_reading;
     test_imu.TakeTemperatureReading(temperature_reading);
 
     multiplexer.CloseAllChannels();
