@@ -5,6 +5,7 @@
 #include <src/tasks/runnable.h>
 #include <src/tasks/task_holder.h>
 #include <xdc/runtime/System.h>
+#include <ti/sysbios/knl/Mailbox.h>
 
 class PostBiosInitialiser : public Runnable {
    public:

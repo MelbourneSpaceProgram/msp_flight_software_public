@@ -2,6 +2,7 @@
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
+#include <src/adcs/state_estimators/location_estimator.h>
 #include <src/config/board_definitions.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
@@ -11,6 +12,9 @@
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
+#include <src/messages/Tle.pb.h>
+#include <src/payload_processor/commands/tle_update_command.h>
+#include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
@@ -101,6 +105,20 @@ void PostBiosInitialiser::InitOrientationControl() {
     // TODO(rskew) review priority
     TaskHolder* orientation_control_task = new TaskHolder(
         4096, "OrientationControl", 7, new RunnableOrientationControl());
+    Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
+    Mailbox_Handle tle_update_command_mailbox_handle = Mailbox_create(
+        sizeof(Tle), 1, &LocationEstimator::tle_update_command_mailbox_params,
+        NULL);
+    if (tle_update_command_mailbox_handle == NULL) {
+        etl::exception e("Unable to create TLE update command mailbox",
+                         __FILE__, __LINE__);
+        throw e;
+    }
+    LocationEstimator::SetTleUpdateCommandMailboxHandle(
+        tle_update_command_mailbox_handle);
+    TleUpdateCommand::SetTleUpdateCommandMailboxHandle(
+        tle_update_command_mailbox_handle);
+
     orientation_control_task->Init();
 }
 
