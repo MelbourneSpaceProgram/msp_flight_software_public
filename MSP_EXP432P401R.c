@@ -568,8 +568,12 @@ const WatchdogMSP432_HWAttrs
         {.baseAddr = WDT_A_BASE,
          .intNum = INT_WDT_A,
          .intPriority = (~0),
-         .clockSource = WDT_A_CLOCKSOURCE_SMCLK,
-         .clockDivider = WDT_A_CLOCKDIVIDER_8192K}};
+         .clockSource = WDT_A_CLOCKSOURCE_ACLK,
+         // Watchdog clock source /8192k (00:04:16 at 32 kHz)
+         // From http://www.ti.com/lit/ug/slau369/slau369.pdf page 6
+         // TODO(naverill): Re-visit watchdog timer to ensure appropriate value
+         // Current value is large enough to be unlikely to interfere with debugging
+         .clockDivider = WDT_A_CLOCKITERATIONS_8192K}};
 
 const Watchdog_Config Watchdog_config[MSP_EXP432P401R_WATCHDOGCOUNT] = {
     {.fxnTablePtr = &WatchdogMSP432_fxnTable,

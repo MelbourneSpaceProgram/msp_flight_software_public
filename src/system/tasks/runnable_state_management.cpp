@@ -2,6 +2,7 @@
 #include <src/system/state_machine.h>
 #include <src/system/state_manager.h>
 #include <src/system/tasks/runnable_state_management.h>
+#include <src/util/system_watchdog.h>
 
 RunnableStateManagement::RunnableStateManagement() {}
 
@@ -10,11 +11,13 @@ fnptr RunnableStateManagement::GetRunnablePointer() {
 }
 
 void RunnableStateManagement::StateManagement() {
+    SystemWatchdog(0, 1000*60);
     StateManager* state_manager = StateManager::GetStateManager();
 
     while (1) {
         // Task will block when there are no state changes. As this is a
         // high priority thread this task will not be preempted.
         state_manager->ProcessStateChanges();
+        SystemWatchdog::ResetTimer();
     }
 }
