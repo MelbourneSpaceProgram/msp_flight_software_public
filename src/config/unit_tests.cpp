@@ -18,6 +18,7 @@ bool memory_troubleshooter_test_enabled = true;
 bool i2c_enumeration_enabled = false;
 bool measurable_test_enabled = false;
 bool sd_test_enabled = true;
+bool write_back_test_enabled = true;
 bool i2c_enabled = true;
 bool io_expander_test_enabled = true;
 bool over_the_air_enabled = false;

@@ -19,9 +19,9 @@ typedef struct _AccelerometerReading {
     double z;
 } AccelerometerReading;
 
-typedef struct _TemperatureReading {
+typedef struct _Mpu9250TemperatureReading {
     double temp;
-} TemperatureReading;
+} Mpu9250TemperatureReading;
 
 // data types for the gyroscope/accelerometer chip
 enum GyroFullScaleValue {
@@ -58,7 +58,7 @@ class MPU9250MotionTracker {
     MPU9250MotionTracker(I2c *bus, byte address, std::string id);
     void TakeGyroscopeReading(GyroscopeReading &gyroscope_reading);
     void TakeAccelerometerReading(AccelerometerReading &accelerometer_reading);
-    void TakeTemperatureReading(TemperatureReading &temperature_reading);
+    void TakeTemperatureReading(Mpu9250TemperatureReading &temperature_reading);
     void TakeMagnetometerReading(MagnetometerReading &magnetometer_reading);
 
     void SetGyroFullScaleSetting(GyroFullScaleValue gyro_full_scale_value);

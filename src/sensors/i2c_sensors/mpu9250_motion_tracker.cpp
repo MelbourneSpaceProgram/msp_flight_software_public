@@ -68,7 +68,7 @@ void MPU9250MotionTracker::TakeAccelerometerReading(
 }
 
 void MPU9250MotionTracker::TakeTemperatureReading(
-    TemperatureReading &temperature_reading) {
+    Mpu9250TemperatureReading &temperature_reading) {
     SelectRegister(kTempOutHigh);
     etl::array<byte, 2> temp_reading_bytes = ReadTwoBytesFromCurrentRegister();
     temperature_reading.temp = DecodeTempReadingToSI(temp_reading_bytes);
