@@ -10,7 +10,7 @@
             </property>
             <property Type="choicelist" Value="1" id="Debug Probe Selection">
                 <choice Name="Select by serial number" value="0">
-                    <property Type="stringfield" Value="ADCS_SIM" id="-- Enter the serial number"/>
+                    <property Type="stringfield" Value="M4321005" id="-- Enter the serial number"/>
                 </choice>
             </property>
             <platform XML_version="1.2" id="platform_0">

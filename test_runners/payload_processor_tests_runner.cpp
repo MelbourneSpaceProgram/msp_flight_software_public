@@ -33,6 +33,7 @@
 extern void SetUp(void);
 extern void TearDown(void);
 extern void TestPayloadProcessor(void);
+extern void TestTleUpdateCommand(void);
 
 
 /*=======Suite Setup=====*/
@@ -77,8 +78,9 @@ int payload_processor_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/payload_processor/tests/payload_processor_tests.cpp");
-    RUN_TEST(TestPayloadProcessor, 7);
-  } catch (etl::exception &e) {
+    RUN_TEST(TestPayloadProcessor, 12);
+    RUN_TEST(TestTleUpdateCommand, 27);
+  } catch (etl::exception e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
 

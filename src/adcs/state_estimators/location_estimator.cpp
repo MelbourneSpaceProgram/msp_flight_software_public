@@ -7,15 +7,50 @@
 #include <src/config/unit_tests.h>
 #include <src/debug_interface/debug_stream.h>
 #include <src/messages/LocationReading.pb.h>
-#include <src/messages/Tle.pb.h>
 #include <src/util/message_codes.h>
 #include <src/util/physical_constants.h>
+#include <ti/sysbios/BIOS.h>
+
+Mailbox_Handle LocationEstimator::tle_update_command_mailbox_handle;
+Mailbox_Params LocationEstimator::tle_update_command_mailbox_params;
 
 LocationEstimator::LocationEstimator()
     : satrec(),
       lattitude_geodetic_degrees(0),
       longitude_degrees(0),
       altitude_above_ellipsoid_km(0) {}
+
+void LocationEstimator::SetTleUpdateCommandMailboxHandle(
+    Mailbox_Handle tle_update_command_mailbox_handle) {
+    LocationEstimator::tle_update_command_mailbox_handle =
+        tle_update_command_mailbox_handle;
+}
+
+bool LocationEstimator::CheckForUpdatedTle() {
+    Tle tle;
+    bool new_tle_received =
+        Mailbox_pend(tle_update_command_mailbox_handle, &tle, BIOS_NO_WAIT);
+    if (new_tle_received) {
+        StoreTle(tle);
+    }
+    return new_tle_received;
+}
+
+void LocationEstimator::RequestTleFromDebugClient() {
+    DebugStream* debug_stream = DebugStream::GetInstance();
+    byte buffer[Tle_size];
+    debug_stream->RequestMessageFromSimulator(kTleRequestCode, buffer,
+                                              Tle_size);
+    pb_istream_t stream = pb_istream_from_buffer(buffer, Tle_size);
+    Tle tle = Tle_init_zero;
+    bool status = pb_decode(&stream, Tle_fields, &tle);
+    if (!status) {
+        etl::exception e("pb_decode failed", __FILE__, __LINE__);
+        throw e;
+    }
+
+    StoreTle(tle);
+}
 
 void LocationEstimator::StoreTle(Tle tle) {
     Sgp4::InitialisePropagator(tle, satrec);
@@ -68,3 +103,5 @@ double LocationEstimator::GetLongitudeDegrees() const {
 double LocationEstimator::GetAltitudeAboveEllipsoidKm() const {
     return altitude_above_ellipsoid_km;
 }
+
+elsetrec LocationEstimator::GetSatrec() const { return satrec; }
