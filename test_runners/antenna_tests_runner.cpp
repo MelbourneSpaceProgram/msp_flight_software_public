@@ -33,6 +33,7 @@
 extern void SetUp(void);
 extern void TearDown(void);
 extern void TestSafeDeploy(void);
+extern void TestForceDeploy(void);
 
 
 /*=======Suite Setup=====*/
@@ -78,6 +79,7 @@ int antenna_tests_runner(void)
   try {
   UnityBegin("src/telecomms/tests/antenna_tests.cpp");
     RUN_TEST(TestSafeDeploy, 13);
+    RUN_TEST(TestForceDeploy, 42);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
