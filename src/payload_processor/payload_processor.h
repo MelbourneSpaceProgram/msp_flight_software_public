@@ -14,7 +14,8 @@ class PayloadProcessor {
         kEchoCommand = 1,
         kLithiumEnableCommand = 2,
         kTleUpdateCommand = 3,
-        kCommandsLength = 4
+        kForceResetCommand = 4,
+        kCommandsLength = 5
     };
     static const byte kCommandCodeLength = 2;
     static const uint8_t kEndTerminator = 0;
