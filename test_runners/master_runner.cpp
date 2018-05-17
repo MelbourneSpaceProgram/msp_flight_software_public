@@ -26,6 +26,7 @@
 #include <test_runners/measurable_manager_tests.h>
 #include <test_runners/rtc_tests.h>
 #include <test_runners/i2c_sensor_tests.h>
+#include <test_runners/ina169_tests.h>
 #include <test_runners/mpu9250_motion_tracker_tests.h>
 #include <test_runners/magnetometer_tests.h>
 #include <test_runners/spi_tests.h>
@@ -75,6 +76,7 @@ void master_tests_thread() {
     measurable_manager_tests_runner();
     rtc_tests_runner();
     i2c_sensor_tests_runner();
+    ina169_tests_runner();
     mpu9250_motion_tracker_tests_runner();
     magnetometer_tests_runner();
     spi_tests_runner();

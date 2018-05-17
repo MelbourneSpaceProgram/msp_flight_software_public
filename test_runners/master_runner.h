@@ -30,6 +30,7 @@ int magnetometer_calibration_tests_runner();
 int measurable_manager_tests_runner();
 int rtc_tests_runner();
 int i2c_sensor_tests_runner();
+int ina169_tests_runner();
 int mpu9250_motion_tracker_tests_runner();
 int magnetometer_tests_runner();
 int spi_tests_runner();
