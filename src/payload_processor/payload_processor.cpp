@@ -1,4 +1,5 @@
 #include <src/payload_processor/commands/command.h>
+#include <src/payload_processor/commands/force_reset_command.h>
 #include <src/payload_processor/commands/lithium_enable_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
@@ -39,10 +40,15 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
             LithiumEnableCommand lithium_enable_command(payload +
                                                         kCommandCodeLength);
             command = &lithium_enable_command;
+            break;
         case kTleUpdateCommand:
             TleUpdateCommand tle_update_command(payload,
                                                 index + kCommandCodeLength);
             command = &tle_update_command;
+            break;
+        case kForceResetCommand:
+            ForceResetCommand force_reset_command;
+            command = &force_reset_command;
             break;
     }
 
