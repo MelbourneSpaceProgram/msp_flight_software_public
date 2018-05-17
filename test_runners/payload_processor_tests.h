@@ -5,6 +5,8 @@
 
 #include "unity.h"
 #include <external/nanopb/pb_encode.h>
+#include <external/sgp4/sgp4.h>
+#include <src/adcs/state_estimators/location_estimator.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>

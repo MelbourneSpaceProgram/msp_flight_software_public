@@ -81,9 +81,9 @@ int bms_tests_runner(void)
   try {
   UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
     RUN_TEST(TestBms, 15);
-    RUN_TEST(TestBmsDieTemperatureRead, 42);
-    RUN_TEST(TestBmsBatteryTemperatureRead, 55);
-    RUN_TEST(TestJeitaRegion, 68);
+    RUN_TEST(TestBmsDieTemperatureRead, 39);
+    RUN_TEST(TestBmsBatteryTemperatureRead, 50);
+    RUN_TEST(TestJeitaRegion, 61);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
