@@ -5,6 +5,12 @@ import os
 import argparse
 from pathlib import Path, PurePosixPath
 
+test_main_names_to_ignore = [
+        "wmm_tests_runner",
+        "sgp4_tests_runner",
+        "matrix_tests_runner",
+        "kalman_filter_tests_runner"
+        ]
 
 def find_all_test_files(directory_root="./"):
     """ Finds all file paths that define a set of unit tests.
@@ -81,8 +87,12 @@ def write_master_runner_impl(definitions, location="./test_runners/master_runner
         f.write("    UnityPrint(startMessage);\n")
         f.write("    UNITY_PRINT_EOL();\n\n")
 
-        for test_runner_definition in definitions:
-            f.write("    {}();\n".format(test_runner_definition['main_name']))
+        for test_runner_definition in definitions: 
+            if(test_is_ignored(test_runner_definition)):
+                print("{} has been marked as ignored".format(test_runner_definition['main_name']))
+                print("It will not be compiled. Look at the top of generate_tests.py to enable this test.")
+            else:
+                f.write("    {}();\n".format(test_runner_definition['main_name']))
 
         f.write("\n")
         f.write("    UNITY_PRINT_EOL();\n")
@@ -96,6 +106,9 @@ def write_master_runner_impl(definitions, location="./test_runners/master_runner
         f.write("void SetUp() {}\n")
         f.write("void TearDown() {}\n")
 
+
+def test_is_ignored(definition):
+    return (definition['main_name'] in test_main_names_to_ignore)
 
 def clean_test_runners_directory():
     """ Removes all automatically generated test files, except for the Unity test framework
@@ -138,6 +151,7 @@ if __name__ == "__main__":
     for test_file_path_string in find_all_test_files():
         test_file_path = Path(test_file_path_string)
         definition = generate_test_runner_definition(test_file_path)
+
         test_runner_definitions.append(definition)
 
         # Generate the execution command for the Ruby script
