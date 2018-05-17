@@ -2,6 +2,7 @@
 #define SRC_TELECOMMS_ANTENNA_H_
 
 #include <src/i2c/i2c.h>
+#include <src/i2c/io_expander/io_expander.h>
 #include <src/messages/antenna_message.h>
 #include <src/util/data_types.h>
 
@@ -40,12 +41,15 @@ class Antenna {
     // Time to wait (in milliseconds) after trying deployment algorithms
     static const uint32_t kWaitTime = 20000;
     // Time to wait (in milliseconds) when manually overriding deployment
-    static const uint32_t kWaitTimeManualOverride = 10000;
+    static const uint32_t kWaitTimeManualOverride = 30000;
     // TODO(wschuetz): Confirm with EnduroSat how long override should be held
     // high for
-    static const uint8_t kPrimaryOverridePin = 0x01;
-    static const uint8_t kBackupOverridePin = 0x02;
+    static const I2cIoExpander::IoPin kPrimaryOverridePin =
+        I2cIoExpander::kIoPin4;
+    static const I2cIoExpander::IoPin kBackupOverridePin =
+        I2cIoExpander::kIoPin5;
     static const uint8_t kMaxNumberOfIterations = 0x03;
+    static const byte kAntennaOverRideIoExpanderAddress = 0x22;
 
     bool WriteCommand(AntennaCommand command) const;
     Antenna();
