@@ -55,4 +55,5 @@ extern bool i2c_enabled;
 extern bool sd_test_enabled;
 extern bool over_the_air_enabled;
 extern bool write_back_test_enabled;
+extern bool current_sensor_test_enabled;
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_

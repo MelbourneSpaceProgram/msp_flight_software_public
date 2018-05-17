@@ -16,3 +16,19 @@ void I2cSensor::MuxDeselect() const {
         multiplexer->CloseChannel(channel);
     }
 }
+
+const I2c* I2cSensor::GetI2cBus() const {
+    return bus;
+}
+
+uint8_t I2cSensor::GetI2cAddress() const {
+    return address;
+}
+
+const I2cMultiplexer* I2cSensor::GetI2cMultiplexer() const {
+    return multiplexer;
+}
+
+I2cMultiplexer::MuxChannel I2cSensor::GetMultiplexerChannel() const {
+    return channel;
+}

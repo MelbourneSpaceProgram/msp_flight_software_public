@@ -7,8 +7,6 @@
 #include <src/util/data_types.h>
 #include <string>
 
-class AdcMeasurable;
-
 enum AdcOperationalStatus { kAdcNoConversion = 0, kAdcConversion = 1 };
 
 enum AdcDataRate {
