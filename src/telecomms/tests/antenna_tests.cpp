@@ -38,3 +38,31 @@ void TestSafeDeploy(void) {
                                                    1);
     }
 }
+
+void TestForceDeploy(void) {
+    if (!antenna_test_enabled) {
+        TEST_IGNORE_MESSAGE("Hardware test ignored");
+    }
+    Antenna *antenna = Antenna::GetAntenna();
+    byte test_number = 0xF2;
+    byte reset = 0xff;
+
+    // Start primary override test
+    antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr, &test_number,
+                                               1);
+    antenna->ForceDeploy();
+    TEST_ASSERT(antenna->IsDoorsOpen());
+
+    // Reset antenna deployment simulator
+    antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr, &reset, 1);
+
+    // Start backup override test
+    test_number = 0xF3;
+    antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr, &test_number,
+                                               1);
+    antenna->ForceDeploy();
+    TEST_ASSERT(antenna->IsDoorsOpen());
+
+    // Reset antenna deployment simulator
+    antenna->GetBus()->PerformWriteTransaction(kTestHardwareAddr, &reset, 1);
+}
