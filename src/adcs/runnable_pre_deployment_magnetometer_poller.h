@@ -7,11 +7,10 @@
 class RunnablePreDeploymentMagnetometerPoller : public Runnable {
    public:
     fnptr GetRunnablePointer();
-    RunnableMagnetometerPoller(){};
-    static void SetupKillTaskOnOrientationControlBeginSemaphore();
+    RunnablePreDeploymentMagnetometerPoller(){};
 
-    static Semaphore_Handle RunnablePreDeploymentMagnetometerPoller::
-        kill_task_on_orientation_control_begin_semaphore;
+    static void SetupKillTaskOnOrientationControlBeginSemaphore();
+    static Semaphore_Handle kill_task_on_orientation_control_begin_semaphore;
 
    private:
     static void PollMagnetometer();
