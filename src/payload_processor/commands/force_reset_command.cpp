@@ -4,6 +4,6 @@
 ForceResetCommand::ForceResetCommand() : Command(kForceResetCommandLength) {}
 
 bool ForceResetCommand::ExecuteCommand() {
-    ResetCtl_initiateSoftResetWithSource(
+    ResetCtl_initiateHardResetWithSource(
         RESET_SRC_0);  // choice of reset flag 0 is arbitrary
 }
