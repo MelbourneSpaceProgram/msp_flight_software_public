@@ -19,6 +19,7 @@
 #include <external/etl/exception.h>
 
 void TestPayloadProcessor(void);
+void TestForceResetCommand(void);
 void TestTleUpdateCommand(void);
 
 #endif  // TEST_RUNNERS_PAYLOAD_PROCESSOR_TESTS_H_

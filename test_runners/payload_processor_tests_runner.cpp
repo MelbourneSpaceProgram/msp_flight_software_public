@@ -33,6 +33,7 @@
 extern void SetUp(void);
 extern void TearDown(void);
 extern void TestPayloadProcessor(void);
+extern void TestForceResetCommand(void);
 extern void TestTleUpdateCommand(void);
 
 
@@ -79,7 +80,8 @@ int payload_processor_tests_runner(void)
   try {
   UnityBegin("src/payload_processor/tests/payload_processor_tests.cpp");
     RUN_TEST(TestPayloadProcessor, 14);
-    RUN_TEST(TestTleUpdateCommand, 31);
+    RUN_TEST(TestForceResetCommand, 31);
+    RUN_TEST(TestTleUpdateCommand, 42);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
