@@ -22,8 +22,10 @@ void I2c::InitBusses() {
                                   I2C_BUS_D_SDA};
 
     if (!i2c_enabled) {
+        Log_info0("I2C has been disabled in unit_tests.cpp");
         return;
     }
+
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
         if (I2c_busses.at(i) == NULL) {
             int scl_pulled_up = GPIO_read(scl.at(i));
@@ -60,7 +62,9 @@ void I2c::Open() {
     handle = I2c_busses.at(index);
     i2c_params = I2c_params.at(index);
     if (handle == NULL) {
-        Log_error0("Attempting to use an uninitialised I2C bus");
+        if(!i2c_enabled) {
+            Log_error0("Attempting to use an uninitialised I2C bus");
+        }
     }
 }
 
@@ -72,7 +76,9 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
                              uint16_t read_buffer_length, byte* write_buffer,
                              uint16_t write_buffer_length) const {
     if (handle == NULL) {
-        Log_error0("Attempting to use uninitialised I2C bus");
+        if(!i2c_enabled) {
+            Log_error0("Attempting to use uninitialised I2C bus");
+        }
         return false;
     }
 
@@ -114,7 +120,9 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
                                   uint16_t write_buffer_length) const {
     if (handle == NULL) {
-        Log_error0("Attempting to use uninitialised I2C bus");
+        if(!i2c_enabled) {
+            Log_error0("Attempting to use uninitialised I2C bus");
+        }
         return false;
     }
     return I2c::PerformTransaction(address, NULL, 0, write_buffer,
@@ -124,7 +132,9 @@ bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
 bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
                                  uint16_t read_buffer_length) const {
     if (handle == NULL) {
-        Log_error0("Attempting to use uninitialised I2C bus");
+        if(!i2c_enabled) {
+            Log_error0("Attempting to use uninitialised I2C bus");
+        }
         return false;
     }
     return I2c::PerformTransaction(address, read_buffer, read_buffer_length,
@@ -134,11 +144,15 @@ bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
 void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
                            bool success) {
     if (handle == NULL) {
-        Log_error0("Attempting to use uninitialised I2C bus");
+        if(!i2c_enabled) {
+            Log_error0("Attempting to use uninitialised I2C bus");
+        }
         return;
     }
     if (i2c_transaction == NULL) {
-        Log_error0("I2c transaction is NULL");
+        if(!i2c_enabled) {
+            Log_error0("I2c transaction is NULL");
+        }
         return;
     }
     // Check to see whether the I2C_Transaction struct has been given a
