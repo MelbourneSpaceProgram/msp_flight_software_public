@@ -28,6 +28,17 @@ void TestPayloadProcessor(void) {
     TEST_ASSERT(payload_processor.ParseAndExecuteCommands(payload));
 }
 
+void TestForceResetCommand(void) {
+    byte buffer[4];
+    buffer[0] = 4;  // 4 indicates a force reset command
+    buffer[1] = 0;
+    buffer[2] = 0;
+    buffer[3] = 0;
+
+    PayloadProcessor payload_processor;
+    TEST_ASSERT(payload_processor.ParseAndExecuteCommands(buffer));
+}
+
 void TestTleUpdateCommand(void) {
     Tle test_tle;
     // TLE test data (from sgp4_tests.cpp)
@@ -41,7 +52,7 @@ void TestTleUpdateCommand(void) {
     test_tle.bstar_drag = 0.000028098;
 
     uint8_t buffer[Tle_size + 2];
-    buffer[0] = 3;  // 3 indicates tle update command
+    buffer[0] = 3;  // 3 indicates a tle update command
     buffer[1] = 0;
     pb_ostream_t stream =
         pb_ostream_from_buffer(buffer + 2, sizeof(buffer) - 2);
