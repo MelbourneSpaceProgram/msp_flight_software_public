@@ -64,11 +64,10 @@ pipeline {
 		    docker cp $docker_name:"/tmp/code/TIRTOS Build/MSP.out" ${WORKSPACE}/MSP.out 
 		    '''
 		    stash includes: 'MSP.out', name: 'flight_software_binary'
-    		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
     	    }
             post {
                 always {
-			
+		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
                     sh '''
                       docker rm -f ${docker_name}
                     '''
