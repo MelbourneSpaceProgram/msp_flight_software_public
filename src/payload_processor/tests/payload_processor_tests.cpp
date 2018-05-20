@@ -1,6 +1,7 @@
 #include <external/nanopb/pb_encode.h>
 #include <external/sgp4/sgp4.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/config/unit_tests.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
@@ -29,6 +30,10 @@ void TestPayloadProcessor(void) {
 }
 
 void TestForceResetCommand(void) {
+    if (!force_reset_command_test_enabled) {
+        TEST_IGNORE_MESSAGE("Force reset command test ignored");
+    }
+
     byte buffer[4];
     buffer[0] = 4;  // 4 indicates a force reset command
     buffer[1] = 0;
