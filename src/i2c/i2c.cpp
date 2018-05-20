@@ -1,5 +1,5 @@
-#include <MSP_EXP432P401R.h>
 #include <external/etl/exception.h>
+#include <src/board/board.h>
 #include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
 #include <src/util/task_utils.h>

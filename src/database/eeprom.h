@@ -1,9 +1,9 @@
 #ifndef SRC_DATABASE_EEPROM_H_
 #define SRC_DATABASE_EEPROM_H_
 
-#include <Board.h>
 #include <src/util/data_types.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include "../board/board.h"
 
 enum EepromInstructions {
     kEepromWriteStatus = 0b001,

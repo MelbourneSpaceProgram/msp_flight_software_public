@@ -4,7 +4,7 @@
 #define TEST_RUNNERS_SPI_TESTS_H_
 
 #include "unity.h"
-#include <Board.h>
+#include <src/board/board.h>
 #include <src/config/unit_tests.h>
 #include <src/spi/spi.h>
 #include <test_runners/spi_tests.h>

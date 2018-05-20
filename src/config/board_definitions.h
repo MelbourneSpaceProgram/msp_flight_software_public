@@ -10,7 +10,7 @@
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
 
-#include "MSP_EXP432P401R.h"
+#include <src/board/board.h>
 
 #define Board_initGeneral MSP_EXP432P401R_initGeneral
 
