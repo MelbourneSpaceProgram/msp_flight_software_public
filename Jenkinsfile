@@ -1,24 +1,18 @@
 pipeline {
 
-    agent any
+    agent none
 
-    environment {
-        PR_ID = sh (
-            script: 'if [ -z ${CHANGE_ID+x} ]; then echo "-1"; else echo "$CHANGE_ID"; fi',
-            returnStdout: true
-            ).trim()
-	container_uuid = sh (
-		script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1",
-		returnStdout: true,
-		).trim()
-	docker_name = "${GIT_COMMIT}_${BUILD_ID}_${container_uuid}"
-    }
-    
     stages {
        stage('Static Analysis') {
             agent {
                 label 'master'
             }
+			environment {
+				PR_ID = sh (
+					script: 'if [ -z ${CHANGE_ID+x} ]; then echo "-1"; else echo "$CHANGE_ID"; fi',
+					returnStdout: true
+					).trim()
+			}
             steps {
                 sh 'if [ -d "checker_output" ]; then rm -Rf checker_output; fi'
                 sh 'mkdir checker_output'
@@ -54,6 +48,10 @@ pipeline {
             agent {
                 label 'AWS_Docker_Agent'
             }
+			environment {
+				container_uuid = "${BUILD_TAG}-PR${CHANGE_ID}"
+				docker_name = "${GIT_COMMIT}_${BUILD_ID}_${container_uuid}"
+			}
             steps {
                 sh '''
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
