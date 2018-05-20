@@ -6,6 +6,8 @@
 class PayloadProcessor {
    public:
     bool ParseAndExecuteCommands(byte* payload);
+    static byte GetCommandCodeLength();
+    static byte GetEndTerminator();
 
    private:
     bool ParseNextCommandAndExecute(byte& index, byte* payload);
