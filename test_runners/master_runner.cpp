@@ -21,6 +21,7 @@
 #include <test_runners/message_tests.h>
 #include <test_runners/payload_processor_tests.h>
 #include <test_runners/cache_write_back_tests.h>
+#include <test_runners/earth_sensor_tests.h>
 #include <test_runners/generic_sensor_tests.h>
 #include <test_runners/magnetometer_calibration_tests.h>
 #include <test_runners/measurable_manager_tests.h>
@@ -74,6 +75,7 @@ void master_tests_thread() {
     message_tests_runner();
     payload_processor_tests_runner();
     cache_write_back_tests_runner();
+    earth_sensor_tests_runner();
     generic_sensor_tests_runner();
     magnetometer_calibration_tests_runner();
     measurable_manager_tests_runner();

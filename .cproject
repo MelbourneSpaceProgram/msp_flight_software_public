@@ -142,8 +142,9 @@
 						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.967187611" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.1487417464.1925053794.2102940171" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.1487417464.1925053794"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1616482163.540812294.1747060438" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1616482163.540812294"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1061041550" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.2133090561">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1584733074" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1584733074" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.1676011775" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.1437007644" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.51856747" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
@@ -511,6 +512,7 @@
 		</project-mappings>
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Orbit"/>
 		<configuration configurationName="TIRTOS Build">
 			<resource resourceType="PROJECT" workspacePath="/MSP"/>
 		</configuration>
@@ -522,4 +524,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
