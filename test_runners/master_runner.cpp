@@ -56,7 +56,6 @@ void master_tests_thread() {
     UnityPrint(startMessage);
     UNITY_PRINT_EOL();
 
-    payload_processor_tests_runner();
     b_dot_controller_tests_runner();
     b_dot_estimator_tests_runner();
     location_estimator_tests_runner();
@@ -73,6 +72,7 @@ void master_tests_thread() {
     io_expander_tests_runner();
     multiplexer_tests_runner();
     message_tests_runner();
+    payload_processor_tests_runner();
     cache_write_back_tests_runner();
     generic_sensor_tests_runner();
     magnetometer_calibration_tests_runner();
