@@ -4,7 +4,7 @@
 #define TEST_RUNNERS_IO_EXPANDER_TESTS_H_
 
 #include "unity.h"
-#include <Board.h>
+#include <src/board/board.h>
 #include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
 #include <src/i2c/io_expander/io_expander.h>

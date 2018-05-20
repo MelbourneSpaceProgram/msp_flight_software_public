@@ -1,8 +1,8 @@
-#include <Board.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/board/board.h>
 #include <src/config/board_definitions.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>

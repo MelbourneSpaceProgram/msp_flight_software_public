@@ -1,6 +1,6 @@
-#include <Board.h>
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
+#include <src/board/board.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/messages/TorqueOutputReading.pb.h>
