@@ -59,3 +59,7 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
 
     return command_execution_successful;
 }
+
+byte PayloadProcessor::GetCommandCodeLength() { return kCommandCodeLength; }
+
+byte PayloadProcessor::GetEndTerminator() { return kEndTerminator; }
