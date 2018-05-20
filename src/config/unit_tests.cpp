@@ -23,3 +23,4 @@ bool i2c_enabled = true;
 bool io_expander_test_enabled = true;
 bool over_the_air_enabled = false;
 bool current_sensor_test_enabled = true;
+bool force_reset_command_test_enabled = false;
