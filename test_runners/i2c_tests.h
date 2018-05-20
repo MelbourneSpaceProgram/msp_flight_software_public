@@ -4,9 +4,9 @@
 #define TEST_RUNNERS_I2C_TESTS_H_
 
 #include "unity.h"
+#include <src/board/board.h>
 #include <test_runners/i2c_tests.h>
 #include <src/i2c/i2c.h>
-#include <Board.h>
 #include <src/config/unit_tests.h>
 #include <ti/sysbios/knl/Task.h>
 #include <src/util/memory_troubleshooter.h>

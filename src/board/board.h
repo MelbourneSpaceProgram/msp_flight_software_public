@@ -48,37 +48,14 @@ extern "C" {
 
 #include "MSP_EXP432P401R.h"
 
-#define Board_initGeneral           MSP_EXP432P401R_initGeneral
+#define Board_initGeneral MSP_EXP432P401R_initGeneral
 
-#define Board_CAPTURE0              MSP_EXP432P401R_CAPTURE_TA1
-#define Board_CAPTURE1              MSP_EXP432P401R_CAPTURE_TA2
-#define Board_CAPTURE2              MSP_EXP432P401R_CAPTURE_TA3
+#define Board_PWM0 Mag_STR_CDH_FS_Out1
+#define Board_PWM1 Mag_STR_CDH_FS_Out2
+#define Board_PWM2 Mag_STR_CDH_FS_Out3
 
-#define Board_I2C_TMP               I2C_BUS_A
-
-#define Board_PWM0                  Mag_STR_CDH_FS_Out1
-#define Board_PWM1                  Mag_STR_CDH_FS_Out2
-#define Board_PWM2                  Mag_STR_CDH_FS_Out3
-
-#define Board_TIMER0                MSP_EXP432P401R_TIMER_T32_0
-#define Board_TIMER1                MSP_EXP432P401R_TIMER_T32_1
-#define Board_TIMER2                MSP_EXP432P401R_TIMER_TA_1
-#define Board_TIMER3                MSP_EXP432P401R_TIMER_TA_2
-#define Board_TIMER4                MSP_EXP432P401R_TIMER_TA_3
-
-#define Board_WATCHDOG0             MSP_EXP432P401R_WATCHDOG
-
-/*
- * These macros are provided for backwards compatibility.
- * Please use the <Driver>_init functions directly rather
- * than Board_init<Driver>.
- */
-#define Board_initGPIO              GPIO_init
-#define Board_initI2C               I2C_init
-#define Board_initPWM               PWM_init
-#define Board_initSPI               SPI_init
-#define Board_initUART              UART_init
-#define Board_initWatchdog          Watchdog_init
+#define Board_TIMER2 MSP_EXP432P401R_TIMER_TA_1
+#define Board_TIMER3 MSP_EXP432P401R_TIMER_TA_2
 
 #ifdef __cplusplus
 }

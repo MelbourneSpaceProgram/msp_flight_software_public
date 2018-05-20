@@ -1,10 +1,10 @@
 #ifndef SRC_SPI_SPI_H_
 #define SRC_SPI_SPI_H_
 
-#include <Board.h>
 #include <src/util/data_types.h>
 #include <ti/drivers/SPI.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include "../board/board.h"
 
 class Spi {
    public:

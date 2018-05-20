@@ -1,7 +1,7 @@
+#include <src/board/board.h>
 #include <test_runners/i2c_tests.h>
 #include <test_runners/unity.h>
 #include <src/i2c/i2c.h>
-#include <Board.h>
 #include <src/config/unit_tests.h>
 #include <ti/sysbios/knl/Task.h>
 

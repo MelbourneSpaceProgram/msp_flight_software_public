@@ -4,7 +4,7 @@
 #define TEST_RUNNERS_ANTENNA_TESTS_H_
 
 #include "unity.h"
-#include <Board.h>
+#include <src/board/board.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>

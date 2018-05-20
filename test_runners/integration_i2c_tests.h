@@ -4,8 +4,8 @@
 #define TEST_RUNNERS_INTEGRATION_I2C_TESTS_H_
 
 #include "unity.h"
-#include <Board.h>
 #include <external/etl/array.h>
+#include <src/board/board.h>
 #include <src/config/unit_tests.h>
 #include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>

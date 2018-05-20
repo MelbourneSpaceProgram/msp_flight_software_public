@@ -1,4 +1,5 @@
 #include <external/etl/exception.h>
+#include <src/board/board.h>
 #include <src/database/sd_card.h>
 #include <string.h>
 #include <third_party/fatfs/ff.h>
@@ -6,7 +7,6 @@
 #include <time.h>
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
-#include "Board.h"
 
 SdHandle SdCard::handle = NULL;
 

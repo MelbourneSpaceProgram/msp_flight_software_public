@@ -1,4 +1,4 @@
-#include <MSP_EXP432P401R.h>
+#include <src/board/board.h>
 #include <src/i2c/i2c.h>
 #include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/sensors/i2c_sensors/rtc.h>

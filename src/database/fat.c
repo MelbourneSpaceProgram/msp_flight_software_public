@@ -28,7 +28,7 @@
 #include <ti/drivers/SDFatFS.h>
 #include <xdc/runtime/System.h>
 /* Example/Board Header files */
-#include "Board.h"
+#include <src/board/board.h>
 /*
  *  ======== fatfs_getFatTime ========
  */
