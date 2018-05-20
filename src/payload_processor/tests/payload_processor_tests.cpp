@@ -24,6 +24,8 @@ void TestPayloadProcessor(void) {
     payload[5] = 0;
     payload[6] = TestCommand::kTestValue1;
     payload[7] = TestCommand::kTestValue2;
+    payload[8] = PayloadProcessor::GetEndTerminator();
+    payload[9] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
     TEST_ASSERT(payload_processor.ParseAndExecuteCommands(payload));
@@ -34,14 +36,17 @@ void TestForceResetCommand(void) {
         TEST_IGNORE_MESSAGE("Force reset command test ignored");
     }
 
-    byte buffer[4];
-    buffer[0] = 4;  // 4 indicates a force reset command
-    buffer[1] = 0;
-    buffer[2] = 0;
-    buffer[3] = 0;
+    byte payload[Lithium::kMaxReceivedSize] = {0};
+
+    payload[0] = 4;
+    payload[1] = 0;  // 0x04 indicates a tle update command
+    payload[2] = PayloadProcessor::GetEndTerminator();
+    payload[3] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    TEST_ASSERT(payload_processor.ParseAndExecuteCommands(buffer));
+    TEST_ASSERT(payload_processor.ParseAndExecuteCommands(payload));
+    TEST_FAIL_MESSAGE("Software reset failed.");  // reset has failed if program
+                                                  // reaches this line
 }
 
 void TestTleUpdateCommand(void) {
@@ -56,11 +61,15 @@ void TestTleUpdateCommand(void) {
     test_tle.mean_anomaly = 19.3264;
     test_tle.bstar_drag = 0.000028098;
 
-    uint8_t buffer[Tle_size + 2];
-    buffer[0] = 3;  // 3 indicates a tle update command
-    buffer[1] = 0;
-    pb_ostream_t stream =
-        pb_ostream_from_buffer(buffer + 2, sizeof(buffer) - 2);
+    byte payload[Lithium::kMaxReceivedSize] = {0};
+    payload[0] = 3;
+    payload[1] = 0;  // 0x03 indicates a tle update command
+    payload[PayloadProcessor::GetCommandCodeLength() + Tle_size] =
+        PayloadProcessor::GetEndTerminator();
+    payload[PayloadProcessor::GetCommandCodeLength() + Tle_size + 1] =
+        PayloadProcessor::GetEndTerminator();
+    pb_ostream_t stream = pb_ostream_from_buffer(
+        payload + PayloadProcessor::GetCommandCodeLength(), Tle_size);
     pb_encode(&stream, Tle_fields, &test_tle);
 
     // Create test mailbox
@@ -82,7 +91,7 @@ void TestTleUpdateCommand(void) {
     // it to the TLE update mailbox)
     PayloadProcessor test_payload_processor;
     bool command_executed =
-        test_payload_processor.ParseAndExecuteCommands(buffer);
+        test_payload_processor.ParseAndExecuteCommands(payload);
 
     // Have a location estimator retrieve the decoded TLE from the mailbox and
     // update its internal satrec values
