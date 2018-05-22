@@ -19,6 +19,7 @@
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/state_manager.h>
 #include <src/system/tasks/runnable_state_management.h>
+#include <src/system/tasks/runnable_system_health_check.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
@@ -32,7 +33,6 @@
 #include <xdc/runtime/Log.h>
 #include <xdc/std.h>
 #include <string>
-#include <src/system/tasks/runnable_system_health_check.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -42,11 +42,35 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
 
 void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
                                          I2c* bus_d) {
-    DebugStream::GetInstance();
-    Antenna::GetAntenna()->InitAntenna(bus_d);
-    Lithium::GetInstance();
-    StateManager::GetStateManager()->CreateStateMachines();
-    I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
+    try {
+        DebugStream::GetInstance();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        Antenna::GetAntenna()->InitAntenna(bus_d);
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        Lithium::GetInstance();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        StateManager::GetStateManager()->CreateStateMachines();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
 }
 
 void PostBiosInitialiser::InitRadioListener() {
@@ -149,10 +173,29 @@ void PostBiosInitialiser::DeployAntenna() {
 }
 
 void PostBiosInitialiser::InitHardware() {
-    I2c::InitBusses();
-    Eeprom::Init();
-    MagnetorquerControl::Initialize();
-    SdCard::SdOpen();
+    try {
+        I2c::InitBusses();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        Eeprom::Init();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        MagnetorquerControl::Initialize();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
+
+    try {
+        SdCard::SdOpen();
+    } catch (etl::exception e) {
+        // TODO(akremor): Possible failure mode needs to be handled
+    }
 }
 
 void PostBiosInitialiser::DeploymentWait(uint16_t delay_seconds) {
