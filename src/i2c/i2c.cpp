@@ -62,7 +62,7 @@ void I2c::Open() {
     handle = I2c_busses.at(index);
     i2c_params = I2c_params.at(index);
     if (handle == NULL) {
-        if(!i2c_enabled) {
+        if(i2c_enabled) {
             Log_error0("Attempting to use an uninitialised I2C bus");
         }
     }
@@ -76,7 +76,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
                              uint16_t read_buffer_length, byte* write_buffer,
                              uint16_t write_buffer_length) const {
     if (handle == NULL) {
-        if(!i2c_enabled) {
+        if(i2c_enabled) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return false;
@@ -120,7 +120,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
                                   uint16_t write_buffer_length) const {
     if (handle == NULL) {
-        if(!i2c_enabled) {
+        if(i2c_enabled) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return false;
@@ -132,7 +132,7 @@ bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
 bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
                                  uint16_t read_buffer_length) const {
     if (handle == NULL) {
-        if(!i2c_enabled) {
+        if(i2c_enabled) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return false;
@@ -144,13 +144,13 @@ bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
 void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
                            bool success) {
     if (handle == NULL) {
-        if(!i2c_enabled) {
+        if(i2c_enabled) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return;
     }
     if (i2c_transaction == NULL) {
-        if(!i2c_enabled) {
+        if(i2c_enabled) {
             Log_error0("I2c transaction is NULL");
         }
         return;
