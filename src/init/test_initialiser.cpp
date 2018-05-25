@@ -10,21 +10,6 @@ TestInitialiser* TestInitialiser::GetInstance() {
     return instance;
 }
 
-TestInitialiser::TestInitialiser() : test_finished(NULL) {}
-
-void TestInitialiser::InitSemaphore(Semaphore_Handle sem_handle) {
-    if (test_finished == NULL) {
-        test_finished = sem_handle;
-    }
-}
-
-void TestInitialiser::FinishTests() {
-    Semaphore_post(test_finished);
-}
-
 fnptr TestInitialiser::GetRunnablePointer() { return &RunUnitTests; }
 
-void TestInitialiser::RunUnitTests() {
-    master_tests_thread();
-    TestInitialiser::GetInstance()->FinishTests();
-}
+void TestInitialiser::RunUnitTests() { master_tests_thread(); }
