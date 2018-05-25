@@ -25,7 +25,7 @@ bool i2c_enumeration_enabled = true;
 bool measurable_test_enabled = true;
 
 bool write_back_test_enabled = true;
-bool i2c_enabled = true;
+bool i2c_enabled = false;
 bool io_expander_test_enabled = true;
 bool over_the_air_enabled = true;
 bool current_sensor_test_enabled = true;

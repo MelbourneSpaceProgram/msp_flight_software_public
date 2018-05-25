@@ -109,8 +109,8 @@ static void schmidt_norm_to_unnorm(float snorm[169], float fm[13], int maxord,
     return;
 }
 
-void time_adjust_gauss_coeff(float time, float otime, float tc[13][13],
-                             int m, int n, float c[13][13], float dt,
+void time_adjust_gauss_coeff(float time, float otime, float tc[13][13], int m,
+                             int n, float c[13][13], float dt,
                              float cd[13][13]) {
     /*
      TIME ADJUST THE GAUSS COEFFICIENTS
@@ -145,11 +145,13 @@ float accumulate_spherical_harmonic_expansions(
     return par;
 }
 
-float geodetic_to_spherical_coords(
-    float alt, float oalt, float glat, float olat, float q, float a2,
-    float c2, float srlat2, float q1, float q2, float b2, float ct,
-    float srlat, float crlat2, float r2, float a4, float c4, float d,
-    float crlat, float &st, float &r, float &ca, float &sa) {
+float geodetic_to_spherical_coords(float alt, float oalt, float glat,
+                                   float olat, float q, float a2, float c2,
+                                   float srlat2, float q1, float q2, float b2,
+                                   float ct, float srlat, float crlat2,
+                                   float r2, float a4, float c4, float d,
+                                   float crlat, float &st, float &r, float &ca,
+                                   float &sa) {
     /* CONVERT FROM GEODETIC COORDS. TO SPHERICAL COORDS. */
     if (alt != oalt || glat != olat) {
         q = sqrt(a2 - c2 * srlat2);
@@ -167,15 +169,14 @@ float geodetic_to_spherical_coords(
 }
 
 static void E0000(int IENTRY, int *maxdeg, float alt, float glat, float glon,
-                  float time, float *dec, float *dip, float *ti,
-                  float *gv) {
+                  float time, float *dec, float *dip, float *ti, float *gv) {
     static int maxord, n, m, j, D1, D2, D3, D4;
     static float c[13][13], cd[13][13], tc[13][13], dp[13][13], snorm[169],
         sp[13], cp[13], fn[13], fm[13], pp[13], k[13][13], pi, dtr, a, b, re,
         a2, b2, c2, a4, b4, c4, gnm, hnm, dgnm, dhnm, flnmj, otime, oalt, olat,
         olon, dt, rlon, rlat, srlat, crlat, srlat2, crlat2, q, q1, q2, ct, st,
-        r2, r, d, ca, sa, aor, ar, br, bt, bp, bpp, par, temp1, temp2, parp, bx,
-        by, bz, bh;
+        r2, r, d, ca, sa, aor, ar, br, bt, bp, bpp, par, temp2, parp, bx, by,
+        bz, bh;
     float epoch = 2015.0;
     static float *p = snorm;
 

@@ -32,24 +32,28 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
     bool command_execution_successful = false;
 
     switch (command_code) {
-        case kEchoCommand:
+        case kEchoCommand: {
             TestCommand echo_command(payload, index + kCommandCodeLength);
             command = &echo_command;
             break;
-        case kLithiumEnableCommand:
+        }
+        case kLithiumEnableCommand: {
             LithiumEnableCommand lithium_enable_command(payload +
                                                         kCommandCodeLength);
             command = &lithium_enable_command;
             break;
-        case kTleUpdateCommand:
+        }
+        case kTleUpdateCommand: {
             TleUpdateCommand tle_update_command(payload,
                                                 index + kCommandCodeLength);
             command = &tle_update_command;
             break;
-        case kForceResetCommand:
+        }
+        case kForceResetCommand: {
             ForceResetCommand force_reset_command;
             command = &force_reset_command;
             break;
+        }
     }
 
     if (command != NULL) {
