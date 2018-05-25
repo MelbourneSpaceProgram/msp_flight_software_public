@@ -80,15 +80,9 @@ void PostBiosInitialiser::InitRadioListener() {
 }
 
 void PostBiosInitialiser::RunUnitTests() {
-    Semaphore_Params sem_params;
-    Semaphore_Params_init(&sem_params);
-    Semaphore_Handle test_complete = Semaphore_create(0, &sem_params, NULL);
-    TestInitialiser::GetInstance()->InitSemaphore(test_complete);
     TaskHolder* test_task =
         new TaskHolder(11000, "Unit Tests", 7, TestInitialiser::GetInstance());
     test_task->Init();
-    Semaphore_pend(test_complete, BIOS_WAIT_FOREVER);
-    delete test_task;
 }
 
 void PostBiosInitialiser::InitStateManagement() {
