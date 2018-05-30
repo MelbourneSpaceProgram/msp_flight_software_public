@@ -18,6 +18,8 @@ class EarthSensor {
     Matrix GetNadirVector() const;
 
    private:
+    static const double kPosX[3][1], kPosY[3][1], kNegX[3][1], kNegY[3][1],
+        kNegZ[3][1];
     double nadir_vector_data[3][1];
     Matrix pos_x_side_normal;
     Matrix pos_y_side_normal;
