@@ -2,16 +2,18 @@
 #include <src/sensors/earth_sensor.h>
 
 // Defined surface normal (unit) vectors in all six sides of the satellite
-const double pos_x[3][1] = {{1}, {0}, {0}}, pos_y[3][1] = {{0}, {1}, {0}},
-             pos_z[3][1] = {{0}, {0}, {1}}, neg_x[3][1] = {{-1}, {0}, {0}},
-             neg_y[3][1] = {{0}, {-1}, {0}}, neg_z[3][1] = {{0}, {0}, {-1}};
+const double EarthSensor::kPosX[3][1] = {{1}, {0}, {0}},
+             EarthSensor::kPosY[3][1] = {{0}, {1}, {0}},
+             EarthSensor::kNegX[3][1] = {{-1}, {0}, {0}},
+             EarthSensor::kNegY[3][1] = {{0}, {-1}, {0}},
+             EarthSensor::kNegZ[3][1] = {{0}, {0}, {-1}};
 
 EarthSensor::EarthSensor()
-    : pos_x_side_normal(const_cast<double (&)[3][1]>(pos_x)),
-      pos_y_side_normal(const_cast<double (&)[3][1]>(pos_y)),
-      neg_x_side_normal(const_cast<double (&)[3][1]>(neg_x)),
-      neg_y_side_normal(const_cast<double (&)[3][1]>(neg_y)),
-      neg_z_side_normal(const_cast<double (&)[3][1]>(neg_z)),
+    : pos_x_side_normal(const_cast<double (&)[3][1]>(kPosX)),
+      pos_y_side_normal(const_cast<double (&)[3][1]>(kPosY)),
+      neg_x_side_normal(const_cast<double (&)[3][1]>(kNegX)),
+      neg_y_side_normal(const_cast<double (&)[3][1]>(kNegY)),
+      neg_z_side_normal(const_cast<double (&)[3][1]>(kNegZ)),
       pos_x_sensor(pos_x_side_normal),
       pos_y_sensor(pos_y_side_normal),
       neg_x_sensor(neg_x_side_normal),

@@ -13,7 +13,7 @@ class InfraredSensor {
 
    private:
     void InfraredToAngle();
-
+    static const double kSensorAPolyCoeffs[10];
     double side_normal_data[3][1];
     Matrix side_normal;
     double infrared_reading;
