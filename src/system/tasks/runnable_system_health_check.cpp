@@ -5,6 +5,7 @@
 #include <src/system/state_manager.h>
 #include <src/system/tasks/runnable_system_health_check.h>
 #include <src/util/task_utils.h>
+#include <src/util/system_watchdog.h>
 
 RunnableSystemHealthCheck::RunnableSystemHealthCheck() {}
 
@@ -19,6 +20,8 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
     while (1) {
         measurable_manager->ReadI2cMeasurable<double>(kPowerBmsBatteryTemp1, 1);
         measurable_manager->ReadI2cMeasurable<double>(kPowerBmsBatteryTemp2, 1);
+
+        SystemWatchdog::ResetTimer();
         TaskUtils::SleepMilli(1000);
     }
 }

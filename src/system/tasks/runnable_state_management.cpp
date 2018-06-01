@@ -11,7 +11,6 @@ fnptr RunnableStateManagement::GetRunnablePointer() {
 }
 
 void RunnableStateManagement::StateManagement() {
-    SystemWatchdog(0, 1000*60);
     StateManager* state_manager = StateManager::GetStateManager();
 
     while (1) {
