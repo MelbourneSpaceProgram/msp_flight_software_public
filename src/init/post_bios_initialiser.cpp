@@ -2,14 +2,10 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
-#include <src/board/board.h>
-#include <src/config/board_definitions.h>
-#include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
 #include <src/database/sd_card.h>
 #include <src/debug_interface/debug_stream.h>
-#include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
 #include <src/messages/Tle.pb.h>
@@ -26,13 +22,10 @@
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/runnable_time_source.h>
+#include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
-#include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
-#include <xdc/runtime/Error.h>
 #include <xdc/runtime/Log.h>
-#include <xdc/std.h>
-#include <string>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -74,7 +67,7 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
 }
 
 void PostBiosInitialiser::InitRadioListener() {
-    TaskHolder* radio_listener = new TaskHolder(1024, "RadioListener", 11,
+    TaskHolder* radio_listener = new TaskHolder(1200, "RadioListener", 11,
                                                 new RunnableLithiumListener());
     radio_listener->Init();
 }
@@ -159,9 +152,17 @@ void PostBiosInitialiser::InitSystemHealthCheck() {
 
 void PostBiosInitialiser::DeployAntenna() {
     Antenna* antenna = Antenna::GetAntenna();
-    if (!antenna->IsDoorsOpen()) antenna->SafeDeploy();
-    if (!antenna->IsDoorsOpen()) antenna->ForceDeploy();
     if (!antenna->IsDoorsOpen()) {
+        Log_info0("Trying safe deploy");
+        antenna->SafeDeploy();
+    }
+    if (!antenna->IsDoorsOpen()) {
+        Log_info0("Trying force deploy");
+        antenna->ForceDeploy();
+    }
+    if (antenna->IsDoorsOpen()) {
+        Log_info0("Antenna deployed");
+    } else {
         Log_error0("Antenna failed to deploy");
     }
 }
@@ -199,14 +200,24 @@ void PostBiosInitialiser::DeploymentWait(uint16_t delay_seconds) {
 
     I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
 
+    // TODO(akremor): This returns random data if i2c/rtc is not available.
+    // It MAY be considered a valid time
     RTime reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
     time_t init_time = Rtc::RTimeToEpoch(reading);
     time_t cur_time = init_time;
 
     while (cur_time - init_time < delay_seconds) {
         reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
-        if (Rtc::ValidTime(reading)) {
+        // TODO(akremor): Remove i2c_enabled check once above TODO is solved (reading being valid)
+        if (i2c_enabled && Rtc::ValidTime(reading)) {
             cur_time = Rtc::RTimeToEpoch(reading);
+        } else {
+            // TODO(akremor): How do we ensure it does not get stuck in an
+            // infinite loop, but equally we respect the countdown?
+
+            // Break does not respect the countdown therefore it is not an
+            // acceptable long-term solution
+            break;
         }
         TaskUtils::SleepMilli(kDelayCheckInterval);
     }
@@ -227,6 +238,8 @@ void PostBiosInitialiser::InitTimeSource() {
 }
 
 void PostBiosInitialiser::PostBiosInit() {
+    Log_info0("System has started");
+    SystemWatchdog(0);
     InitMemoryLogger();
 
     try {
@@ -261,23 +274,34 @@ void PostBiosInitialiser::PostBiosInit() {
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
-        Log_warning0("Waiting for beacon to start");
+        Log_info0("Starting beacon delay timer");
         DeploymentWait(kBeaconDelaySeconds);
-        Log_warning0("Beacon starting");
+        Log_info0("Beacon delay timer finished");
+
         InitRadioListener();
+        Log_info0("Radio receiver started");
+        InitPayloadProcessor();
+        Log_info0("Payload processor started");
+
         DeploymentWait(kAntennaDelaySeconds);
-        Log_warning0("Antenna Deploying");
+        Log_info0("Antenna deploying, can take awhile");
         DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
         InitBeacon();
-        InitPayloadProcessor();
+        Log_info0("Beacon started");
+
         InitOrientationControl();
+        Log_info0("Orientation control started");
+
         InitSystemHealthCheck();
+        Log_info0("System healthcheck started");
+
+        Log_info0("System start up complete");
         // TODO(rskew): Debug what needs to be passed in to Task_delete
         // Task_delete(pre_deployment_magnetometer_poller_task);
 #else
-        System_printf("No configuration defined. Not doing anything");
+    #error "No configuration (orbit/test) defined."
 #endif
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");
