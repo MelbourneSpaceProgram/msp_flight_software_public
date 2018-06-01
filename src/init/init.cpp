@@ -2,8 +2,12 @@
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/tasks/task_holder.h>
-#include <test_runners/master_runner.h>
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/I2C.h>
 #include <ti/drivers/SDFatFS.h>
+#include <ti/drivers/SPI.h>
+#include <ti/drivers/UART.h>
+#include <ti/drivers/Watchdog.h>
 
 // Initialises the core MSP432 drivers provided by TI and loads the post BIOS
 // init tasks. Should be called once at system startup, and prior to the BIOS
