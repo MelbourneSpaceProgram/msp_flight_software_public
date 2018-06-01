@@ -7,6 +7,7 @@
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
+#include <xdc/runtime/Log.h>
 
 RunnableLithiumListener::RunnableLithiumListener() {}
 
@@ -17,19 +18,33 @@ fnptr RunnableLithiumListener::GetRunnablePointer() {
 void RunnableLithiumListener::Receive() {
     byte read_buffer[Lithium::kMaxReceivedSize];
     while (1) {
-        // Ensure read buffer is reset
-        read_buffer[0] = 0;
-        read_buffer[1] = 0;
+
+        // Grab sync characters (first two bytes of header/packet) one char at a time
+        // Not two at a time so we can 'burn off' additional characters and regain sync
+        Lithium::GetInstance()->GetUart()->PerformReadTransaction(
+            read_buffer, 1);
+
+        if (read_buffer[0] != Lithium::kSyncCharOne) {
+            continue;
+        }
+
+        Lithium::GetInstance()->GetUart()->PerformReadTransaction(
+            read_buffer + 1, 1);
+
+        if (read_buffer[1] != Lithium::kSyncCharTwo) {
+            continue;
+        }
 
         // Blocking read that reads headers only
         Lithium::GetInstance()->GetUart()->PerformReadTransaction(
-            read_buffer, Lithium::kLithiumHeaderSize);
+            read_buffer + Lithium::kLithiumSyncSize, Lithium::kLithiumHeaderSize - Lithium::kLithiumSyncSize);
 
         if (!LithiumUtils::IsValidHeader(read_buffer)) {
-            etl::exception e("Invalid Lithium header", __FILE__, __LINE__);
-            throw e;
+            Log_error0("Invalid Lithium header");
+            continue;
         }
 
+        // TODO(akremor): This sometimes crashes, even when nothing was sent. Perhaps noise or general corruption if sending too fast?
         uint16_t payload_size = LithiumUtils::GetPayloadSize(read_buffer);
 
         if (LithiumUtils::GetCommandCode(read_buffer) != kReceivedDataCode) {
