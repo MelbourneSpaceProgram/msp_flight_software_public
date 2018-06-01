@@ -1,5 +1,4 @@
 #include <src/board/board.h>
-#include <src/config/board_definitions.h>
 #include <src/debug_interface/debug_stream.h>
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/test_message.h>
