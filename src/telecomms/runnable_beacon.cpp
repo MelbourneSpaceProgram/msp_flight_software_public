@@ -25,7 +25,9 @@ void RunnableBeacon::Beacon() {
         // Avoid building the packet if transmit is disabled
         if (lithium->IsTransmitEnabled()) {
             TransmitCommand transmit_command(&beacon, tx_count++, 0, 0);
-            if (!lithium->DoCommand(&transmit_command)) {
+            if (lithium->DoCommand(&transmit_command)) {
+                Log_info0("Beacon transmission succeeded");
+            } else {
                 Log_error0("Beacon transmission failed");
             }
         } else {
