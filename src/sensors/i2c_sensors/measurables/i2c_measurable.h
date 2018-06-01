@@ -1,6 +1,7 @@
 #ifndef SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
 #define SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
 
+#include <src/config/unit_tests.h>
 #include <external/etl/exception.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/sensors/measurable.h>
@@ -25,7 +26,9 @@ class I2cMeasurable : public Reading<R>, public Measurable {
         } catch (etl::exception e) {
             if (sensor != NULL) sensor->MuxDeselect();
             // TODO(dingbenjamin): Change log to output bus and address
-            Log_error0("Failed to read from sensor");
+            if(i2c_enabled){
+                Log_error0("Failed to read from sensor");
+            }
             return false;
         }
     }
