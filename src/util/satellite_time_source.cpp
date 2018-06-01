@@ -1,4 +1,5 @@
 #include <src/util/satellite_time_source.h>
+#include <src/config/unit_tests.h>
 #include <time.h>
 #include <xdc/runtime/Log.h>
 #include <src/sensors/i2c_sensors/rtc.h>
@@ -22,8 +23,10 @@ void SatelliteTimeSource::SetTime(RTime time) {
 }
 
 Time SatelliteTimeSource::GetTime() {
-    if (!satellite_time.is_valid) {
-        Log_error0("Satellite time is not valid");
+    if(i2c_enabled) {
+        if (!satellite_time.is_valid) {
+            Log_error0("Satellite time is not valid");
+        }
     }
 
     return satellite_time;
