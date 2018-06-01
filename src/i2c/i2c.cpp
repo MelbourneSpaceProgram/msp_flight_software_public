@@ -31,7 +31,7 @@ void I2c::InitBusses() {
             int scl_pulled_up = GPIO_read(scl.at(i));
             int sda_pulled_up = GPIO_read(sda.at(i));
 
-            if (!(scl_pulled_up && sda_pulled_up)) {
+            /*if (!(scl_pulled_up && sda_pulled_up)) {
                 // Missing bus pull up resistors or bus is disconnected.
                 // Attempting to use the I2C bus will result in the CPU
                 // locking up as the transaction timeout functionality only
@@ -39,7 +39,7 @@ void I2c::InitBusses() {
                 Log_error1("Failed to sense pull-up resistors for I2C bus %d",
                            i);
                 continue;
-            }
+            }*/
 
             I2C_Params_init(&I2c_params.at(i));
             I2c_params.at(i).transferMode = I2C_MODE_CALLBACK;
