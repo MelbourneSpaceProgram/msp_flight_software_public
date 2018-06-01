@@ -38,7 +38,7 @@ void RunnableMemoryLogger::LogMemoryStats() {
             task = Task_Object_next(task);
         }
 
-        Task_sleep(TaskUtils::MilliToCycles(30000));
+        Task_sleep(TaskUtils::MilliToCycles(60000));
     }
 }
 
