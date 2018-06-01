@@ -1,5 +1,5 @@
 #include <external/etl/exception.h>
-#include <src/config/board_definitions.h>
+#include <src/board/board.h>
 #include <src/messages/serialised_message.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_utils.h>
