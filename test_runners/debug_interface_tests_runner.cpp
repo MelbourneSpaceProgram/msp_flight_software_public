@@ -63,6 +63,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -85,9 +86,9 @@ int debug_interface_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
-  UnityBegin("src/debug_interface/tests/debug_interface_tests.cpp");
-    RUN_TEST(TestRequestMessageFromSimulator, 11);
-    RUN_TEST(TestPostMessageToDebugClient, 34);
+  UnityBegin("src/board/debug_interface/tests/debug_interface_tests.cpp");
+    RUN_TEST(TestRequestMessageFromSimulator, 10);
+    RUN_TEST(TestPostMessageToDebugClient, 33);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

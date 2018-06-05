@@ -27,7 +27,11 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "spi_tests.h"
+#include <src/board/board.h>
+#include <src/board/spi/spi.h>
+#include <src/config/unit_tests.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -55,6 +59,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -77,9 +82,9 @@ int spi_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
-  UnityBegin("src/spi/tests/spi_tests.cpp");
-    RUN_TEST(TestSpiWriteTransaction, 8);
-    RUN_TEST(TestSpiReadTransaction, 20);
+  UnityBegin("src/board/spi/tests/spi_tests.cpp");
+    RUN_TEST(TestSpiWriteTransaction, 6);
+    RUN_TEST(TestSpiReadTransaction, 18);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

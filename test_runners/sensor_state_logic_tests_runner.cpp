@@ -27,7 +27,16 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "sensor_state_logic_tests.h"
+#include <src/config/unit_tests.h>
+#include <src/sensors/test_sensors/test_i2c_sensor.h>
+#include <src/system/sensor_state_machines/battery_charge_state_machine.h>
+#include <src/system/sensor_state_machines/battery_temp_state_machine.h>
+#include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
+#include <src/system/state_definitions.h>
+#include <src/system/state_manager.h>
+#include <string>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -55,6 +64,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -78,8 +88,8 @@ int sensor_state_logic_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/system/tests/sensor_state_logic_tests.cpp");
-    RUN_TEST(TestBatteryChargeStateFlow, 61);
-    RUN_TEST(TestTelecomsTempStateFlow, 95);
+    RUN_TEST(TestBatteryChargeStateFlow, 60);
+    RUN_TEST(TestTelecomsTempStateFlow, 94);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
