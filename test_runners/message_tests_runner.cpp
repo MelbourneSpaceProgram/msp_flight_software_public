@@ -27,7 +27,15 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "message_tests.h"
+#include <external/etl/array.h>
+#include <src/messages/serialised_message_builder.h>
+#include <src/messages/temperature_message.h>
+#include <src/messages/test_container_message.h>
+#include <src/messages/test_message.h>
+#include <src/util/data_types.h>
+#include <src/util/message_codes.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -61,6 +69,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -84,14 +93,14 @@ int message_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/messages/tests/message_tests.cpp");
-    RUN_TEST(TestTestMessageSerialise, 13);
-    RUN_TEST(TestTempMessageSerialise, 27);
-    RUN_TEST(TestContainerMessageSerialise, 46);
-    RUN_TEST(TestSerialisedMessageBuilder, 67);
-    RUN_TEST(TestPadWithZero, 92);
-    RUN_TEST(TestSerialiseEtlArray, 116);
-    RUN_TEST(TestSerialiseArray, 129);
-    RUN_TEST(TestRebuildableMessageFieldIterator, 142);
+    RUN_TEST(TestTestMessageSerialise, 12);
+    RUN_TEST(TestTempMessageSerialise, 26);
+    RUN_TEST(TestContainerMessageSerialise, 45);
+    RUN_TEST(TestSerialisedMessageBuilder, 66);
+    RUN_TEST(TestPadWithZero, 91);
+    RUN_TEST(TestSerialiseEtlArray, 115);
+    RUN_TEST(TestSerialiseArray, 128);
+    RUN_TEST(TestRebuildableMessageFieldIterator, 141);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

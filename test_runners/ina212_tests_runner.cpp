@@ -27,7 +27,14 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "ina212_tests.h"
+#include <src/board/board.h>
+#include <src/board/i2c/i2c.h>
+#include <src/board/i2c/multiplexers/i2c_multiplexer.h>
+#include <src/config/unit_tests.h>
+#include <src/sensors/i2c_sensors/current_sensors/ina212.h>
+#include <src/sensors/i2c_sensors/measurables/ina212_current_measurable.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -54,6 +61,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -77,7 +85,7 @@ int ina212_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/sensors/i2c_sensors/tests/ina212_tests.cpp");
-    RUN_TEST(TestIna212CurrentRead, 13);
+    RUN_TEST(TestIna212CurrentRead, 12);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

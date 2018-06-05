@@ -27,7 +27,13 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "measurable_manager_tests.h"
+#include <src/config/unit_tests.h>
+#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
+#include <src/sensors/measurable_id.h>
+#include <src/util/satellite_time_source.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -54,6 +60,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -77,7 +84,7 @@ int measurable_manager_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/sensors/tests/measurable_manager_tests.cpp");
-    RUN_TEST(TestManagerRead, 13);
+    RUN_TEST(TestManagerRead, 12);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

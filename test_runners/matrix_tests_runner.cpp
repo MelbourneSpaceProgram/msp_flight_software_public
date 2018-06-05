@@ -27,7 +27,12 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "matrix_tests.h"
+#include <external/etl/exception.h>
+#include <math.h>
+#include <src/util/data_types.h>
+#include <src/util/matrix.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -88,6 +93,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -111,41 +117,41 @@ int matrix_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/util/tests/matrix_tests.cpp");
-    RUN_TEST(TestDotProduct, 8);
-    RUN_TEST(TestQuaternionConjugate, 18);
-    RUN_TEST(TestQuaternionDotProduct, 27);
-    RUN_TEST(TestQuaternionCrossProduct, 39);
-    RUN_TEST(TestCopyConstructor, 51);
-    RUN_TEST(TestSlice, 70);
-    RUN_TEST(TestGetNRows, 94);
-    RUN_TEST(TestGetNColumns, 101);
-    RUN_TEST(TestIsSquare, 108);
-    RUN_TEST(TestGet, 118);
-    RUN_TEST(TestSet, 136);
-    RUN_TEST(TestDoubleIsEqual, 159);
-    RUN_TEST(TestIsEqual, 176);
-    RUN_TEST(TestSameSize, 198);
-    RUN_TEST(TestSameNRows, 210);
-    RUN_TEST(TestSameNColumns, 222);
-    RUN_TEST(TestTranspose, 234);
-    RUN_TEST(TestVectorNorm, 255);
-    RUN_TEST(TestAdd, 272);
-    RUN_TEST(TestSubtract, 297);
-    RUN_TEST(TestMultiply, 322);
-    RUN_TEST(TestMultiplyScalar, 348);
-    RUN_TEST(TestCrossProduct, 371);
-    RUN_TEST(TestFill, 396);
-    RUN_TEST(TestCopyInto, 407);
-    RUN_TEST(TestIdentity, 443);
-    RUN_TEST(TestQuaternionNormalise, 464);
-    RUN_TEST(TestRotationMatrixFromQuaternion, 498);
-    RUN_TEST(TestSkewSymmetricFill, 539);
-    RUN_TEST(TestConcatenateHorizontally, 584);
-    RUN_TEST(TestConcatenateVertically, 619);
-    RUN_TEST(TestAddRows, 654);
-    RUN_TEST(TestMultiplyRow, 683);
-    RUN_TEST(TestSwitchRows, 703);
-    RUN_TEST(TestRowReduce, 731);
+    RUN_TEST(TestDotProduct, 7);
+    RUN_TEST(TestQuaternionConjugate, 17);
+    RUN_TEST(TestQuaternionDotProduct, 26);
+    RUN_TEST(TestQuaternionCrossProduct, 38);
+    RUN_TEST(TestCopyConstructor, 50);
+    RUN_TEST(TestSlice, 69);
+    RUN_TEST(TestGetNRows, 93);
+    RUN_TEST(TestGetNColumns, 100);
+    RUN_TEST(TestIsSquare, 107);
+    RUN_TEST(TestGet, 117);
+    RUN_TEST(TestSet, 135);
+    RUN_TEST(TestDoubleIsEqual, 158);
+    RUN_TEST(TestIsEqual, 175);
+    RUN_TEST(TestSameSize, 197);
+    RUN_TEST(TestSameNRows, 209);
+    RUN_TEST(TestSameNColumns, 221);
+    RUN_TEST(TestTranspose, 233);
+    RUN_TEST(TestVectorNorm, 254);
+    RUN_TEST(TestAdd, 271);
+    RUN_TEST(TestSubtract, 296);
+    RUN_TEST(TestMultiply, 321);
+    RUN_TEST(TestMultiplyScalar, 347);
+    RUN_TEST(TestCrossProduct, 370);
+    RUN_TEST(TestFill, 395);
+    RUN_TEST(TestCopyInto, 406);
+    RUN_TEST(TestIdentity, 442);
+    RUN_TEST(TestQuaternionNormalise, 463);
+    RUN_TEST(TestRotationMatrixFromQuaternion, 497);
+    RUN_TEST(TestSkewSymmetricFill, 538);
+    RUN_TEST(TestConcatenateHorizontally, 583);
+    RUN_TEST(TestConcatenateVertically, 618);
+    RUN_TEST(TestAddRows, 653);
+    RUN_TEST(TestMultiplyRow, 682);
+    RUN_TEST(TestSwitchRows, 702);
+    RUN_TEST(TestRowReduce, 730);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

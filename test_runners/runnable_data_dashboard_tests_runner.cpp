@@ -27,7 +27,16 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "runnable_data_dashboard_tests.h"
+#include <external/nanopb/pb_decode.h>
+#include <external/nanopb/pb_encode.h>
+#include <src/board/debug_interface/debug_stream.h>
+#include <src/config/unit_tests.h>
+#include <src/data_dashboard/runnable_data_dashboard.h>
+#include <src/messages/SensorReading.pb.h>
+#include <src/util/data_types.h>
+#include <src/util/message_codes.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -54,6 +63,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -77,7 +87,7 @@ int runnable_data_dashboard_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/data_dashboard/tests/runnable_data_dashboard_tests.cpp");
-    RUN_TEST(TestTransmitMessage, 12);
+    RUN_TEST(TestTransmitMessage, 11);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
