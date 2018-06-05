@@ -178,18 +178,7 @@ GPIO_PinConfig gpioPinConfigs[] = {
     GPIOMSP432_P6_2 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P6_6 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
     GPIOMSP432_P6_7 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P10_1 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-
-    // Used for the purposes of I2C bus sensing. Should not be used except in
-    // the I2c driver.
-    GPIOMSP432_P1_7 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P1_6 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P6_5 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P6_4 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P10_3 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P10_2 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P3_7 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE,
-    GPIOMSP432_P3_6 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE};
+    GPIOMSP432_P10_1 | GPIO_CFG_IN_NOPULL | GPIO_CFG_IN_INT_NONE};
 
 /*
  * Array of callback function pointers
@@ -334,10 +323,7 @@ const uint_least8_t PWM_count = Board_PWMCOUNT;
 SDFatFS_Object sdfatfsObjects[MSP_EXP432P401R_SDFatFSCOUNT];
 
 const SDFatFS_Config SDFatFS_config[MSP_EXP432P401R_SDFatFSCOUNT] = {
-    {
-        .object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS0]
-    }
-};
+    {.object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS0]}};
 
 const uint_least8_t SDFatFS_count = MSP_EXP432P401R_SDFatFSCOUNT;
 
@@ -350,18 +336,12 @@ const uint_least8_t SDFatFS_count = MSP_EXP432P401R_SDFatFSCOUNT;
 SDSPI_Object sdspiObjects[MSP_EXP432P401R_SDCOUNT];
 
 const SDSPI_HWAttrs sdspiHWAttrs[MSP_EXP432P401R_SDCOUNT] = {
-    {
-        .spiIndex = 0,
-        .spiCsGpioIndex = NVM_nCS_1
-    }
-};
+    {.spiIndex = 0, .spiCsGpioIndex = NVM_nCS_1}};
 
 const SD_Config SD_config[MSP_EXP432P401R_SDCOUNT] = {
-    {
-        .fxnTablePtr = &SDSPI_fxnTable,
-        .object = &sdspiObjects[MSP_EXP432P401R_SDSPI0],
-        .hwAttrs = &sdspiHWAttrs[MSP_EXP432P401R_SDSPI0]
-    },
+    {.fxnTablePtr = &SDSPI_fxnTable,
+     .object = &sdspiObjects[MSP_EXP432P401R_SDSPI0],
+     .hwAttrs = &sdspiHWAttrs[MSP_EXP432P401R_SDSPI0]},
 };
 
 const uint_least8_t SD_count = MSP_EXP432P401R_SDCOUNT;
@@ -571,7 +551,8 @@ const WatchdogMSP432_HWAttrs
          // Watchdog clock source /8192k (00:04:16 at 32 kHz)
          // From http://www.ti.com/lit/ug/slau369/slau369.pdf page 6
          // TODO(naverill): Re-visit watchdog timer to ensure appropriate value
-         // Current value is large enough to be unlikely to interfere with debugging
+         // Current value is large enough to be unlikely to interfere with
+         // debugging
          .clockDivider = WDT_A_CLOCKITERATIONS_8192K}};
 
 const Watchdog_Config Watchdog_config[MSP_EXP432P401R_WATCHDOGCOUNT] = {
