@@ -6,7 +6,7 @@
 
 class SystemWatchdog {
    public:
-    SystemWatchdog(uint16_t index);
+    explicit SystemWatchdog(uint16_t index);
     static void ResetTimer();
 
    private:
