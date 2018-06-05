@@ -9,6 +9,9 @@ class ResetSystemCommand : public LithiumCommand {
     uint16_t GetLithiumPayloadSize() const;
     const byte &GetCommandCode() const;
     uint16_t GetReplyPayloadSize() const;
+
+   private:
+    static const byte kResetSystemCommandCode = 0x02;
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_COMMANDS_RESET_SYSTEM_COMMAND_H_

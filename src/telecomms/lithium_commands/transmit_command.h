@@ -15,6 +15,7 @@ class TransmitCommand : public LithiumCommand {
     const byte &GetCommandCode() const;
 
    private:
+    static const byte kTransmitCommandCode = 0x03;
     TransmitPacket transmit_packet;
 };
 

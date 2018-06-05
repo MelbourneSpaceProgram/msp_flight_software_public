@@ -9,6 +9,9 @@ class NoOpCommand : public LithiumCommand {
     uint16_t GetLithiumPayloadSize() const;
     const byte &GetCommandCode() const;
     uint16_t GetReplyPayloadSize() const;
+
+   private:
+    static const byte kNoOpCommandCode = 0x01;
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_COMMANDS_NO_OP_COMMAND_H_
