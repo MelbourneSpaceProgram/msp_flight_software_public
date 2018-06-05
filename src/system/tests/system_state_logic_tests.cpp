@@ -31,7 +31,6 @@ StateId detumbled_states[kNumDetumbledStates] = {kDetumbledFalse,
 StateId power_states[kNumPowerStates] = {kPowerEverythingOff, kPowerLimited,
                                          kPowerNominal};
 
-
 void TestTelecomsStateLogic() {
     PowerStateMachine power_state_machine(NULL, NULL, NULL);
     TelecomsTempStateMachine telecoms_temp_state_machine(NULL);
@@ -39,7 +38,8 @@ void TestTelecomsStateLogic() {
                                                 &telecoms_temp_state_machine);
 
     // Check aaaaaaaall the permutations
-    for (uint8_t power_index = 0; power_index < kNumPowerStates; power_index++) {
+    for (uint8_t power_index = 0; power_index < kNumPowerStates;
+         power_index++) {
         for (uint8_t telecoms_temp_index = 0;
              telecoms_temp_index < kNumTelecomsTempStates;
              telecoms_temp_index++) {
@@ -82,10 +82,12 @@ void TestAdcsStateLogic() {
                                         &detumbled_state_machine);
 
     // Check aaaaaaaall the permutations
-    for (uint8_t power_index = 0; power_index < kNumPowerStates; power_index++) {
+    for (uint8_t power_index = 0; power_index < kNumPowerStates;
+         power_index++) {
         for (uint8_t detumbled_index = 0; detumbled_index < kNumDetumbledStates;
              detumbled_index++) {
-            for (uint8_t tle_index = 0; tle_index < kNumTleStates; tle_index++) {
+            for (uint8_t tle_index = 0; tle_index < kNumTleStates;
+                 tle_index++) {
                 power_state_machine.OverrideState(power_states[power_index]);
 
                 tle_state_machine.OverrideState(tle_states[tle_index]);

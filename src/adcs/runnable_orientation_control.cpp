@@ -149,6 +149,9 @@ void RunnableOrientationControl::ControlOrientation() {
         if (hil_enabled || over_the_air_enabled) {
             // Calculate position
             current_time = SatelliteTimeSource::GetTime();
+            // TODO(rskew): Need to check if the returned time was valid
+            // (current_time.is_valid). Also appears as if tle_last_updated can
+            // be accessed before it is initialised
             time_since_tle_updated_millis =
                 current_time.timestamp_millis_unix_epoch -
                 tle_last_updated.timestamp_millis_unix_epoch;

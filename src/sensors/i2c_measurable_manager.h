@@ -101,7 +101,8 @@ class I2cMeasurableManager {
     void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line);
     void AddTemperature(MeasurableId id, MCP9808 *temp_sensor);
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
-    BmsBatteryTemperatureMeasurable* AddBmsBatteryTempMeasurable(MeasurableId id, Bms *temp_sensor);
+    BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
+        MeasurableId id, Bms *temp_sensor);
     void CheckValidId(MeasurableId id);
 
     static I2cMeasurableManager *instance;

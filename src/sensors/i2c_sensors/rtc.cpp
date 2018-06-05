@@ -76,16 +76,17 @@ bool Rtc::ValidTime(RTime time) {
     return true;
 }
 
-time_t Rtc::RTimeToEpoch(RTime time){
-  tm converted_time;
-  converted_time.tm_year = time.year - kSatelliteEpochYear;
-  converted_time.tm_mon = time.month - 1;  // RTime uses 1 based month indices
-  converted_time.tm_mday = time.date;
-  converted_time.tm_hour = time.hour;
-  converted_time.tm_min = time.min;
-  converted_time.tm_sec = time.sec;
+time_t Rtc::RTimeToEpoch(RTime time) {
+    tm converted_time;
+    converted_time.tm_year = time.year - kSatelliteEpochYear;
+    converted_time.tm_mon = time.month - 1;  // RTime uses 1 based month indices
+    converted_time.tm_mday = time.date;
+    converted_time.tm_hour = time.hour;
+    converted_time.tm_min = time.min;
+    converted_time.tm_sec = time.sec;
+    converted_time.tm_isdst = false;
 
-  time_t epoch_seconds = std::mktime(&converted_time);
+    time_t epoch_seconds = std::mktime(&converted_time);
 
-  return epoch_seconds;
+    return epoch_seconds;
 }

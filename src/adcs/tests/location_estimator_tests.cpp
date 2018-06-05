@@ -41,4 +41,4 @@ void TestUpdateLocation() {
                              calculated_lattitude_geodetic_degrees);
     TEST_ASSERT_EQUAL_DOUBLE(expected_altitude_above_ellipsoid_km,
                              calculated_altitude_above_ellipsoid_km);
-};
+}

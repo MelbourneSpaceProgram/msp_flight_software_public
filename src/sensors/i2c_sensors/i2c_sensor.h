@@ -18,7 +18,7 @@ class I2cSensor {
     const I2c* GetI2cBus() const;
     uint8_t GetI2cAddress() const;
     const I2cMultiplexer* GetI2cMultiplexer() const;
-    I2cMultiplexer:: MuxChannel GetMultiplexerChannel() const;
+    I2cMultiplexer::MuxChannel GetMultiplexerChannel() const;
 
    protected:
     const I2c* bus;
