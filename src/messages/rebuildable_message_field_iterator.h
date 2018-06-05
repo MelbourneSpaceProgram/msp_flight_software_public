@@ -22,7 +22,7 @@ class RebuildableMessageFieldIterator {
         }
 
         serialised_length -= sizeof(T);
-        std::memcpy(data, serialised_message_buffer + serialised_length,
+        memcpy(data, serialised_message_buffer + serialised_length,
                     sizeof(T));
     }
 

@@ -7,6 +7,7 @@
 #include <src/messages/serialised_message.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
+#include <string.h>
 
 class SerialisedMessageBuilder {
    public:
@@ -27,7 +28,7 @@ class SerialisedMessageBuilder {
                              __LINE__);
             throw e;
         } else {
-            std::memcpy(serialised_message_buffer + serialised_length, &data,
+            memcpy(serialised_message_buffer + serialised_length, &data,
                         sizeof(T));
             serialised_length += sizeof(T);
         }
