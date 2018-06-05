@@ -27,7 +27,11 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "earth_sensor_tests.h"
+#include <math.h>
+#include <src/sensors/earth_sensor.h>
+#include <src/sensors/infrared_sensor.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);

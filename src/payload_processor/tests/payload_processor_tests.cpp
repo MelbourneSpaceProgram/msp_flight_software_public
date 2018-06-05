@@ -7,7 +7,6 @@
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
-#include <test_runners/payload_processor_tests.h>
 #include <test_runners/unity.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>

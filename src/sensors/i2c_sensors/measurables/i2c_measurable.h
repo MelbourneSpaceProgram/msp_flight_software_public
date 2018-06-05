@@ -1,8 +1,9 @@
 #ifndef SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
 #define SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
 
-#include <src/config/unit_tests.h>
 #include <external/etl/exception.h>
+#include <src/board/i2c/i2c.h>
+#include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/sensors/measurable.h>
 #include <src/sensors/reading.h>

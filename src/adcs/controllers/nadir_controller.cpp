@@ -1,4 +1,6 @@
 #include <src/adcs/controllers/nadir_controller.h>
+#include <src/util/matrix.h>
+#include <src/util/physical_constants.h>
 
 const double NadirController::max_achievable_dipole[] = {0.35, 0.35, 0.05};
 const double NadirController::kp = 0.02;

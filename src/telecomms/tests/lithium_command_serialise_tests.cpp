@@ -1,7 +1,13 @@
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/get_configuration_command.h>
+#include <src/telecomms/lithium_commands/no_op_command.h>
+#include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/transmit_command.h>
+#include <src/telecomms/lithium_commands/write_flash_command.h>
+#include <src/telecomms/lithium_md5.h>
 #include <src/telecomms/lithium_utils.h>
+#include <src/telecomms/msp_payloads/test_payload.h>
 #include <src/util/data_types.h>
-#include <test_runners/lithium_command_serialise_tests.h>
 #include <test_runners/unity.h>
 
 void TestNoOpSerialisation() {

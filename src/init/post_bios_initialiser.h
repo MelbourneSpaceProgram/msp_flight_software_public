@@ -1,11 +1,11 @@
 #ifndef SRC_INIT_POST_BIOS_INITIALISER_H_
 #define SRC_INIT_POST_BIOS_INITIALISER_H_
 
-#include <src/i2c/i2c.h>
 #include <src/tasks/runnable.h>
-#include <src/tasks/task_holder.h>
 #include <xdc/runtime/System.h>
-#include <ti/sysbios/knl/Mailbox.h>
+
+class TaskHolder;
+class I2c;
 
 class PostBiosInitialiser : public Runnable {
    public:

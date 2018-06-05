@@ -1,7 +1,7 @@
 #ifndef SRC_TASKS_TASK_HOLDER_H_
 #define SRC_TASKS_TASK_HOLDER_H_
 
-#include <src/tasks/runnable.h>
+class Runnable;
 #include <ti/sysbios/knl/Task.h>
 
 class TaskHolder {

@@ -1,8 +1,7 @@
 #ifndef CONTROLLERS_NADIR_CONTROLLER_H_
 #define CONTROLLERS_NADIR_CONTROLLER_H_
 
-#include <src/util/matrix.h>
-#include <src/util/physical_constants.h>
+class Matrix;
 
 class NadirController {
    public:

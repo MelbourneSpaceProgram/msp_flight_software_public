@@ -2,7 +2,6 @@
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <string.h>
-#include <test_runners/sd_tests.h>
 #include <test_runners/unity.h>
 #include <xdc/runtime/Log.h>
 

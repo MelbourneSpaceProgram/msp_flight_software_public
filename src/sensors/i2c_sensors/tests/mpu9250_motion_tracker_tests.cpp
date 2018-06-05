@@ -1,10 +1,9 @@
 #include <src/board/board.h>
+#include <src/board/i2c/i2c.h>
+#include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/config/unit_tests.h>
-#include <src/i2c/i2c.h>
-#include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
-#include <test_runners/mpu9250_motion_tracker_tests.h>
 #include <test_runners/unity.h>
 
 static const uint8_t mpu9250_address = 104;  // assuming LSB is set to 0

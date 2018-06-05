@@ -6,9 +6,9 @@
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/board.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
-#include <src/debug_interface/debug_stream.h>
 #include <src/init/init.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
@@ -17,6 +17,7 @@
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
 #include <src/system/system_state_machines/power_state_machine.h>
+#include <src/util/matrix.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>

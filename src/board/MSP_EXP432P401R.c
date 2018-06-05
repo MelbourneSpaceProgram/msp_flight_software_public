@@ -57,7 +57,7 @@
 #include <ti/devices/msp432p4xx/driverlib/wdt_a.h>
 #include <ti/devices/msp432p4xx/inc/msp.h>
 
-#include "MSP_EXP432P401R.h"
+#include <src/board/MSP_EXP432P401R.h>
 
 /*
  *  ============================= Capture =============================
@@ -319,7 +319,6 @@ const uint_least8_t PWM_count = Board_PWMCOUNT;
 /*
  *  =============================== SDFatFS ===============================
  */
-#include <ti/drivers/SD.h>
 #include <ti/drivers/SDFatFS.h>
 
 /*

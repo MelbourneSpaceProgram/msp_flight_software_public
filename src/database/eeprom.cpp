@@ -1,7 +1,7 @@
 #include <external/etl/exception.h>
+#include <src/board/spi/spi.h>
 #include <src/database/eeprom.h>
 #include <src/database/hamming_coder.h>
-#include <src/spi/spi.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Task.h>

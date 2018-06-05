@@ -1,6 +1,5 @@
 #include <src/adcs/kalman_filter.h>
 #include <src/util/matrix.h>
-#include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
 
 void TestKalmanPredictAndUpdate() {

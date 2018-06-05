@@ -2,6 +2,7 @@
 #include <external/nanopb/pb_decode.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/tle_update_command.h>
+#include <ti/sysbios/BIOS.h>
 
 Mailbox_Handle TleUpdateCommand::tle_update_command_mailbox_handle;
 

@@ -27,7 +27,10 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "b_dot_estimator_tests.h"
+#include <src/adcs/state_estimators/b_dot_estimator.h>
+#include <src/util/matrix.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);

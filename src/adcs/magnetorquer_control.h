@@ -1,12 +1,9 @@
 #ifndef SRC_MAGNETORQUER_CONTROL_H_
 #define SRC_MAGNETORQUER_CONTROL_H_
 
-#include <external/etl/exception.h>
-#include <ti/drivers/GPIO.h>
+#include <src/board/board.h>
 #include <ti/drivers/PWM.h>
-#include <ti/sysbios/hal/Timer.h>
 #include <ti/sysbios/knl/Semaphore.h>
-#include "../board/board.h"
 
 //
 // Controls magnetorquer power output and polarity via on-chip PWM and GPIO

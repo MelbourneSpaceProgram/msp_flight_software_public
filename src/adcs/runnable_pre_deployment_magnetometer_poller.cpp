@@ -1,13 +1,14 @@
 #include <external/nanopb/pb_decode.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
-#include <src/debug_interface/debug_stream.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Task.h>
 
 Semaphore_Handle RunnablePreDeploymentMagnetometerPoller::
     kill_task_on_orientation_control_begin_semaphore;

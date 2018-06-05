@@ -1,6 +1,5 @@
 #include <src/config/unit_tests.h>
 #include <src/util/memory_troubleshooter.h>
-#include <test_runners/memory_troubleshooter_tests.h>
 #include <test_runners/unity.h>
 
 void TestMemoryLeak() {

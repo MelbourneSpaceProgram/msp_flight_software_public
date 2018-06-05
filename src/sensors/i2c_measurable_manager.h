@@ -1,14 +1,12 @@
 #ifndef SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
 #define SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
 
-#include <src/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
-#include <src/sensors/i2c_sensors/rtc.h>
 #include <src/sensors/measurable_id.h>
-#include <src/util/satellite_time_source.h>
 
+class I2cMultiplexer;
 class I2c;
 class Measurable;
 class Rtc;
