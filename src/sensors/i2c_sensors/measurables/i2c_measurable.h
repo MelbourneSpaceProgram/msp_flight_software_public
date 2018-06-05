@@ -26,9 +26,10 @@ class I2cMeasurable : public Reading<R>, public Measurable {
             return true;
         } catch (etl::exception e) {
             if (sensor != NULL) sensor->MuxDeselect();
-            // TODO(dingbenjamin): Change log to output bus and address
-            if(i2c_enabled){
-                Log_error0("Failed to read from sensor");
+            if (i2c_enabled) {
+                Log_error2("Failed to read from sensor 0x%02X on bus %c",
+                           sensor->GetI2cAddress(),
+                           sensor->GetI2cBus()->GetBusLabel());
             }
             return false;
         }
