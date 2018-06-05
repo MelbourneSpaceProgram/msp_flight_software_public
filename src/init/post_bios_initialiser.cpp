@@ -195,36 +195,6 @@ void PostBiosInitialiser::InitHardware() {
     }
 }
 
-void PostBiosInitialiser::DeploymentWait(uint16_t delay_seconds) {
-    // The deployment wait acts as a timer counting for `delay_seconds`,
-    // starting from the time the `DeploymentWait` call is made.
-    // It is a blocking wait.
-
-    I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
-
-    // TODO(akremor): This returns random data if i2c/rtc is not available.
-    // It MAY be considered a valid time
-    RTime reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
-    time_t init_time = Rtc::RTimeToEpoch(reading);
-    time_t cur_time = init_time;
-
-    while (cur_time - init_time < delay_seconds) {
-        reading = manager->ReadI2cMeasurable<RTime>(kCdhRtc, 0);
-        // TODO(akremor): Remove i2c_enabled check once above TODO is solved (reading being valid)
-        if (i2c_enabled && Rtc::ValidTime(reading)) {
-            cur_time = Rtc::RTimeToEpoch(reading);
-        } else {
-            // TODO(akremor): How do we ensure it does not get stuck in an
-            // infinite loop, but equally we respect the countdown?
-
-            // Break does not respect the countdown therefore it is not an
-            // acceptable long-term solution
-            break;
-        }
-        TaskUtils::SleepMilli(kDelayCheckInterval);
-    }
-}
-
 void PostBiosInitialiser::InitMemoryLogger() {
     TaskHolder* memory_logger_task =
         new TaskHolder(1024, "MemoryLogger", 13, new RunnableMemoryLogger());
@@ -277,7 +247,7 @@ void PostBiosInitialiser::PostBiosInit() {
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
         Log_info0("Starting beacon delay timer");
-        DeploymentWait(kBeaconDelaySeconds);
+        SatelliteTimeSource::DeploymentWait(kBeaconDelaySeconds);
         Log_info0("Beacon delay timer finished");
 
         InitRadioListener();
@@ -285,7 +255,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitPayloadProcessor();
         Log_info0("Payload processor started");
 
-        DeploymentWait(kAntennaDelaySeconds);
+        SatelliteTimeSource::DeploymentWait(kAntennaDelaySeconds);
         Log_info0("Antenna deploying, can take awhile");
         DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
