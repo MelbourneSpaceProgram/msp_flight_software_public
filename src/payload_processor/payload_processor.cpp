@@ -31,35 +31,46 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
     Command* command = NULL;
     bool command_execution_successful = false;
 
-    switch (command_code) {
-        case kEchoCommand: {
-            TestCommand echo_command(payload, index + kCommandCodeLength);
-            command = &echo_command;
-            break;
+    try {
+        // TODO(akremor): Is this referencing a local variable?
+        switch (command_code) {
+            case kEchoCommand:
+                TestCommand echo_command(payload, index + kCommandCodeLength);
+                command = &echo_command;
+                break;
+            case kLithiumEnableCommand:
+                LithiumEnableCommand lithium_enable_command(payload +
+                                                            kCommandCodeLength);
+                command = &lithium_enable_command;
+                break;
+            case kTleUpdateCommand:
+                TleUpdateCommand tle_update_command(payload,
+                                                    index + kCommandCodeLength);
+                command = &tle_update_command;
+                break;
+            case kForceResetCommand:
+                ForceResetCommand force_reset_command;
+                command = &force_reset_command;
+                break;
         }
-        case kLithiumEnableCommand: {
-            LithiumEnableCommand lithium_enable_command(payload +
-                                                        kCommandCodeLength);
-            command = &lithium_enable_command;
-            break;
+
+        try {
+            if (command != NULL) {
+                command_execution_successful = command->ExecuteCommand();
+                Log_info1("Executed command with code %d", command_code);
+            }
+        } catch (etl::exception e) {
+            Log_error1("Unable to successfully execute command with code %d",
+                       command_code);
+            command_execution_successful = false;
+            // TODO(akremor): Possible failure mode needs to be handled
         }
-        case kTleUpdateCommand: {
-            TleUpdateCommand tle_update_command(payload,
-                                                index + kCommandCodeLength);
-            command = &tle_update_command;
-            break;
-        }
-        case kForceResetCommand: {
-            ForceResetCommand force_reset_command;
-            command = &force_reset_command;
-            break;
-        }
+    } catch (etl::exception e) {
+        Log_error1("Could not parse command with code code %d", command_code);
+        // TODO(akremor): Possible failure mode needs to be handled
     }
 
-    if (command != NULL) {
-        command_execution_successful = command->ExecuteCommand();
-        index += command->GetCommandArgumentLength() + kCommandCodeLength;
-    }
+    index += command->GetCommandArgumentLength() + kCommandCodeLength;
 
     return command_execution_successful;
 }
