@@ -27,7 +27,10 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "memory_troubleshooter_tests.h"
+#include <src/config/unit_tests.h>
+#include <src/util/memory_troubleshooter.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -54,6 +57,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -77,7 +81,7 @@ int memory_troubleshooter_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/util/tests/memory_troubleshooter_tests.cpp");
-    RUN_TEST(TestMemoryLeak, 6);
+    RUN_TEST(TestMemoryLeak, 5);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

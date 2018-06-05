@@ -27,7 +27,11 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "i2c_tests.h"
+#include <src/board/board.h>
+#include <src/board/i2c/i2c.h>
+#include <src/config/unit_tests.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -55,6 +59,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -77,9 +82,9 @@ int i2c_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
-  UnityBegin("src/i2c/tests/i2c_tests.cpp");
-    RUN_TEST(TestI2cWriteTransaction, 10);
-    RUN_TEST(TestI2cReadTransaction, 23);
+  UnityBegin("src/board/i2c/tests/i2c_tests.cpp");
+    RUN_TEST(TestI2cWriteTransaction, 8);
+    RUN_TEST(TestI2cReadTransaction, 21);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }

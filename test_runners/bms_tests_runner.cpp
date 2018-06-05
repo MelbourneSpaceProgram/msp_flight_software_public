@@ -64,6 +64,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -86,11 +87,11 @@ int bms_tests_runner(void)
 {
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
-  UnityBegin("src/i2c/bms/tests/bms_tests.cpp");
-    RUN_TEST(TestBms, 15);
-    RUN_TEST(TestBmsDieTemperatureRead, 39);
-    RUN_TEST(TestBmsBatteryTemperatureRead, 50);
-    RUN_TEST(TestJeitaRegion, 61);
+  UnityBegin("src/board/i2c/bms/tests/bms_tests.cpp");
+    RUN_TEST(TestBms, 13);
+    RUN_TEST(TestBmsDieTemperatureRead, 36);
+    RUN_TEST(TestBmsBatteryTemperatureRead, 47);
+    RUN_TEST(TestJeitaRegion, 58);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
