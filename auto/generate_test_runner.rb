@@ -179,6 +179,8 @@ class UnityTestRunnerGenerator
         output.puts("#include #{inc.include?('<') ? inc : "\"#{inc.gsub('.h', '')}.h\""}")
       end
     end
+    output.puts('#include <src/util/memory_troubleshooter.h>')
+    output.puts('#include <external/etl/exception.h>')
     mocks.each do |mock|
       output.puts("#include \"#{mock.gsub('.h', '')}.h\"")
     end
@@ -267,6 +269,7 @@ class UnityTestRunnerGenerator
     output.puts('        UNITY_PRINT_EOL();')
     output.puts('    }')
     output.puts('    mem_test->~MemoryTroubleshooter();')
+    output.puts('    delete mem_test;')
     if @options[:suite_teardown].nil?
       # New style, call suiteTearDown() if we can use weak symbols
       output.puts('#if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)')
