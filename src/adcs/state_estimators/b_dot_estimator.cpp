@@ -17,8 +17,8 @@ void BDotEstimator::Estimate(const Matrix &magnetometer_reading,
     if (!estimate_output.SameSize(magnetometer_reading) ||
         estimate_output.GetNRows() != geomagnetic_field_vector_nrows ||
         estimate_output.GetNColumns() != geomagnetic_field_vector_ncolumns) {
-        etl::exception e("BDotEstimator::Estimate arguments not 3x1",
-                         __FILE__, __LINE__);
+        etl::exception e("BDotEstimator::Estimate arguments not 3x1", __FILE__,
+                         __LINE__);
         throw e;
     }
     estimate_output.Set(0, 0,

@@ -39,31 +39,31 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
                                          I2c* bus_d) {
     try {
         DebugStream::GetInstance();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         Antenna::GetAntenna()->InitAntenna(bus_d);
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         Lithium::GetInstance();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         StateManager::GetStateManager()->CreateStateMachines();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 }
@@ -270,10 +270,14 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("System healthcheck started");
 
         Log_info0("System start up complete");
-        // TODO(rskew): Debug what needs to be passed in to Task_delete
-        // Task_delete(pre_deployment_magnetometer_poller_task);
+        // TODO(rskew): Ensure all relevant resources are deleted by the pre-mag
+        // task before we delete taskholder We may not want to enable this as it
+        // makes memory verification harder. If we only ever alloc once and
+        // never dealloc it can be easier to determine if we do or do not have
+        // sufficient run-time memory.
+        // pre_deployment_magnetometer_poller_task->~TaskHolder();
 #else
-    #error "No configuration (orbit/test) defined."
+#error "No configuration (orbit/test) defined."
 #endif
     } catch (etl::exception e) {
         System_printf("EXCEPTION OCCURRED\n");

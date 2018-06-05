@@ -5,8 +5,6 @@
 #include <src/util/physical_constants.h>
 #include <test_runners/unity.h>
 
-
-
 void TestSimplifiedGeneralPerturbationModel() {
     /* TLE IN USE:
     1 00005U 58002B   00179.78495062  .00000023  00000-0  28098-4 0  4753
@@ -35,10 +33,10 @@ void TestSimplifiedGeneralPerturbationModel() {
     // TIME: 0.00000000   WE EXPECT:   7022.46529266   -1400.08296755 0.03995155
     // 1.893841015  6.405893759  4.534807250
 
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, -7154.03120202, position[0] );
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, -3783.17682504, position[1] );
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -7154.03120202, position[0]);
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -3783.17682504, position[1]);
     TEST_ASSERT_DOUBLE_WITHIN(0.01, -3536.19412294, position[2]);
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, 4.741887409, velocity[0] );
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, -4.151817765, velocity[1] );
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, -2.093935425, velocity[2] );
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, 4.741887409, velocity[0]);
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -4.151817765, velocity[1]);
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, -2.093935425, velocity[2]);
 }
