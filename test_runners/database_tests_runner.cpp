@@ -62,6 +62,7 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
+    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
@@ -85,9 +86,9 @@ int database_tests_runner(void)
   MemoryTroubleshooter *mem_test = suite_setup();
   try {
   UnityBegin("src/database/tests/database_tests.cpp");
-    RUN_TEST(TestHamming, 9);
-    RUN_TEST(TestEepromReadWriteStatus, 70);
-    RUN_TEST(TestEepromReadWriteData, 81);
+    RUN_TEST(TestHamming, 8);
+    RUN_TEST(TestEepromReadWriteStatus, 69);
+    RUN_TEST(TestEepromReadWriteData, 80);
   } catch (etl::exception &e) {
     TEST_FAIL_MESSAGE("Uncaught exception in test");
   }
