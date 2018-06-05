@@ -21,7 +21,8 @@ void KalmanFilter::Predict(const Matrix &omega) {
 
     ComputeXi(Xi, q_estimate);
     q_delta.Multiply(Xi, omega);
-    q_delta.MultiplyScalar(q_delta, 0.5 * static_cast<double>(sample_time_millis)/1000);
+    q_delta.MultiplyScalar(
+        q_delta, 0.5 * static_cast<double>(sample_time_millis) / 1000);
 
     q_estimate.Add(q_estimate, q_delta);
 
@@ -45,8 +46,9 @@ void KalmanFilter::Predict(const Matrix &omega) {
     PF_transpose.Multiply(P, F_transpose);
     FP_PF_transpose_Q_deltat.Add(FP, PF_transpose);
     FP_PF_transpose_Q_deltat.Add(FP_PF_transpose_Q_deltat, Q);
-    FP_PF_transpose_Q_deltat.MultiplyScalar(FP_PF_transpose_Q_deltat,
-                                            static_cast<double>(sample_time_millis)/1000);
+    FP_PF_transpose_Q_deltat.MultiplyScalar(
+        FP_PF_transpose_Q_deltat,
+        static_cast<double>(sample_time_millis) / 1000);
     P.Add(P, FP_PF_transpose_Q_deltat);
 }
 

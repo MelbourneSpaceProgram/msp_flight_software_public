@@ -10,8 +10,8 @@ void BDotController::Control(const Matrix &b, const Matrix &b_dot,
     if (!b_dot.SameSize(b) || !b_dot.SameSize(torque_output) ||
         b_dot.GetNRows() != geomagnetic_field_vector_nrows ||
         b_dot.GetNColumns() != geomagnetic_field_vector_ncolumns) {
-        etl::exception e("BDotController::Control arguments not 3x1",
-                         __FILE__, __LINE__);
+        etl::exception e("BDotController::Control arguments not 3x1", __FILE__,
+                         __LINE__);
         throw e;
     }
     // Calculate the magnetic dipole to produce

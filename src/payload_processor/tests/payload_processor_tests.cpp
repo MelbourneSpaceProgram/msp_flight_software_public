@@ -69,7 +69,8 @@ void TestTleUpdateCommand(void) {
         PayloadProcessor::GetEndTerminator();
     pb_ostream_t stream = pb_ostream_from_buffer(
         payload + PayloadProcessor::GetCommandCodeLength(), Tle_size);
-    pb_encode(&stream, Tle_fields, &test_tle);
+    // TODO(dingbenjamin): What if the encode fails?
+    bool encode_succeeded = pb_encode(&stream, Tle_fields, &test_tle);
 
     // Create test mailbox
     Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
@@ -104,8 +105,8 @@ void TestTleUpdateCommand(void) {
                 test_tle.inclination * Sgp4Utils::kDegreesToRadians);
     TEST_ASSERT(generated_satrec.nodeo ==
                 test_tle.raan * Sgp4Utils::kDegreesToRadians);
-    TEST_ASSERT(generated_satrec.argpo = test_tle.argument_of_perigee *
-                                         Sgp4Utils::kDegreesToRadians);
+    TEST_ASSERT(generated_satrec.argpo ==
+                test_tle.argument_of_perigee * Sgp4Utils::kDegreesToRadians);
     TEST_ASSERT(generated_satrec.mo ==
                 test_tle.mean_anomaly * Sgp4Utils::kDegreesToRadians);
     TEST_ASSERT(generated_satrec.bstar == test_tle.bstar_drag);

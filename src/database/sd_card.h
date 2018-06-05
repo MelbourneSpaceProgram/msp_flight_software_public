@@ -1,9 +1,9 @@
+#ifndef SRC_DATABASE_SDCARD_H_
+#define SRC_DATABASE_SDCARD_H_
+
 #include <src/util/data_types.h>
 #include <ti/drivers/SD.h>
 #include <ti/drivers/SDFatFS.h>
-
-#ifndef SRC_DATABASE_SDCARD_H_
-#define SRC_DATABASE_SDCARD_H_
 
 typedef FIL File;
 typedef FRESULT FResult;
