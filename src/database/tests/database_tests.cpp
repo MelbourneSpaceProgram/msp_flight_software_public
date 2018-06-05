@@ -3,7 +3,6 @@
 #include <src/database/eeprom.h>
 #include <src/database/hamming_coder.h>
 #include <src/util/data_types.h>
-#include <test_runners/database_tests.h>
 #include <test_runners/unity.h>
 
 void TestHamming() {

@@ -1,4 +1,6 @@
+#include <external/etl/exception.h>
 #include <src/adcs/controllers/b_dot_controller.h>
+#include <src/util/matrix.h>
 #include <src/util/physical_constants.h>
 
 const double BDotController::max_achievable_dipole[] = {0.35, 0.35, 0.05};

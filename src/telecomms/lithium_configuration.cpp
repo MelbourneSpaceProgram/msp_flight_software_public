@@ -1,6 +1,6 @@
+#include <src/board/uart/uart.h>
 #include <src/messages/serialised_message_builder.h>
 #include <src/telecomms/lithium_configuration.h>
-#include <src/uart/uart.h>
 
 const std::string LithiumConfiguration::kDefaultSource = "ACRUX1";
 const std::string LithiumConfiguration::kDefaultDestination = "VK3EXO";

@@ -1,4 +1,6 @@
+#include <math.h>
 #include <src/adcs/state_estimators/nadir_error_generator.h>
+#include <src/util/matrix.h>
 
 void ErrorQuaternionCalculatorMarkely(Matrix &ref_quaternion,
                                       Matrix &nadir_vector,

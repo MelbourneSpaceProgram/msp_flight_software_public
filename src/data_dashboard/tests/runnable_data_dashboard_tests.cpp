@@ -1,12 +1,11 @@
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
-#include <src/debug_interface/debug_stream.h>
 #include <src/messages/SensorReading.pb.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
-#include <test_runners/runnable_data_dashboard_tests.h>
 #include <test_runners/unity.h>
 
 void TestTransmitMessage() {

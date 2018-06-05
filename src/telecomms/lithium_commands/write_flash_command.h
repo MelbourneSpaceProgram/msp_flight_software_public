@@ -2,7 +2,8 @@
 #define SRC_TELECOMMS_LITHIUM_COMMANDS_WRITE_FLASH_COMMAND_H_
 
 #include <src/telecomms/lithium_commands/lithium_command.h>
-#include <src/telecomms/lithium_md5.h>
+
+class LithiumMd5;
 
 class WriteFlashCommand : public LithiumCommand {
    public:

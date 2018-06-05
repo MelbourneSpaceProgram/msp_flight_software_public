@@ -1,7 +1,7 @@
 #include <external/etl/exception.h>
 #include <external/nanopb/pb_encode.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
-#include <src/debug_interface/debug_stream.h>
 #include <src/init/init.h>
 #include <src/messages/SensorReading.pb.h>
 #include <src/messages/StateMachineStateReading.pb.h>
@@ -10,6 +10,7 @@
 #include <src/system/state_definitions.h>
 #include <src/system/system_state_machines/adcs_state_machine.h>
 #include <src/util/message_codes.h>
+#include <ti/sysbios/knl/Task.h>
 
 RunnableDataDashboard::RunnableDataDashboard() {}
 

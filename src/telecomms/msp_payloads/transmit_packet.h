@@ -2,7 +2,8 @@
 #define SRC_TELECOMMS_MSP_PAYLOADS_TRANSMIT_PACKET_H_
 
 #include <src/messages/message.h>
-#include <src/telecomms/msp_payloads/transmit_payload.h>
+
+class TransmitPayload;
 
 class TransmitPacket : public Message {
    public:

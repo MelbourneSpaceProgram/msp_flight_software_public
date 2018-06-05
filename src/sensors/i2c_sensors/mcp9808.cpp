@@ -1,4 +1,5 @@
 #include <external/etl/exception.h>
+#include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
 #include <string>
 

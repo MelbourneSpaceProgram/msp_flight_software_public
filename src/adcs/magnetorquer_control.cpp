@@ -1,11 +1,15 @@
+#include <external/etl/exception.h>
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/PWM.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
 
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;

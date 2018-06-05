@@ -27,7 +27,10 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "circular_buffer_nanopb_tests.h"
+#include <src/database/circular_buffer_nanopb.h>
+#include <src/messages/MagnetometerReading.pb.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);

@@ -1,5 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
+#include <src/util/matrix.h>
 #include <src/util/physical_constants.h>
 
 BDotEstimator::BDotEstimator(uint16_t sample_period_millis,

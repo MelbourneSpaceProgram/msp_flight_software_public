@@ -1,5 +1,4 @@
 #include <src/adcs/state_estimators/location_estimator.h>
-#include <test_runners/location_estimator_tests.h>
 #include <test_runners/unity.h>
 
 void TestUpdateLocation() {
