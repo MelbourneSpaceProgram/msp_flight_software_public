@@ -1,5 +1,5 @@
-#ifndef SRC_MAGNETORQUER_CONTROL_H_
-#define SRC_MAGNETORQUER_CONTROL_H_
+#ifndef SRC_ADCS_MAGNETORQUER_CONTROL_H_
+#define SRC_ADCS_MAGNETORQUER_CONTROL_H_
 
 #include <src/board/board.h>
 #include <ti/drivers/PWM.h>
@@ -85,4 +85,4 @@ class MagnetorquerControl {
     static const uint16_t kNDegaussPulses = 9;
 };
 
-#endif  // SRC_MAGNETORQUER_CONTROL_H_
+#endif  // SRC_ADCS_MAGNETORQUER_CONTROL_H_

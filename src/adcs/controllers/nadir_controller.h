@@ -1,5 +1,5 @@
-#ifndef CONTROLLERS_NADIR_CONTROLLER_H_
-#define CONTROLLERS_NADIR_CONTROLLER_H_
+#ifndef SRC_ADCS_CONTROLLERS_NADIR_CONTROLLER_H_
+#define SRC_ADCS_CONTROLLERS_NADIR_CONTROLLER_H_
 
 class Matrix;
 
@@ -13,4 +13,4 @@ class NadirController {
     static const double kp, kd, ki;
 };
 
-#endif /* CONTROLLERS_NADIR_CONTROLLER_H_ */
+#endif  // SRC_ADCS_CONTROLLERS_NADIR_CONTROLLER_H_
