@@ -33,12 +33,12 @@ bool Antenna::SafeDeploy() const {
 
 bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
     WriteCommand(command);
-    TaskUtils::SleepMilli(kWaitTime);
+    SatelliteTimeSource::DeploymentWait(kWaitTime);
 
     uint8_t iterations = 0;
 
     while (IsHeatersOn() && (iterations < kMaxNumberOfIterations)) {
-        TaskUtils::SleepMilli(kWaitTime);
+        SatelliteTimeSource::DeploymentWait(kWaitTime);
         iterations++;
     }
 
@@ -55,7 +55,7 @@ bool Antenna::ForceDeploy() const {
     io_expander.SetPolarity(kPrimaryOverridePin, I2cIoExpander::kIoActiveHigh);
 
     io_expander.SetPin(kPrimaryOverridePin, true);
-    TaskUtils::SleepMilli(kWaitTimeManualOverride);
+    SatelliteTimeSource::DeploymentWait(kWaitTimeManualOverride);
     io_expander.SetPin(kPrimaryOverridePin, false);
     if (IsDoorsOpen()) {
         return true;
@@ -66,7 +66,7 @@ bool Antenna::ForceDeploy() const {
     io_expander.SetPolarity(kBackupOverridePin, I2cIoExpander::kIoActiveHigh);
 
     io_expander.SetPin(kBackupOverridePin, true);
-    TaskUtils::SleepMilli(kWaitTimeManualOverride);
+    SatelliteTimeSource::DeploymentWait(kWaitTimeManualOverride);
     io_expander.SetPin(kBackupOverridePin, false);
     if (IsDoorsOpen()) {
         return true;
