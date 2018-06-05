@@ -24,10 +24,12 @@ void SatelliteTimeSource::SetTime(RTime time) {
 }
 
 Time SatelliteTimeSource::GetTime() {
-    if(i2c_enabled) {
+    if (i2c_enabled) {
         if (!satellite_time.is_valid) {
             Log_error0("Satellite time is not valid");
         }
+    } else {
+        satellite_time.is_valid = false;
     }
 
     return satellite_time;
@@ -35,4 +37,40 @@ Time SatelliteTimeSource::GetTime() {
 
 uint64_t SatelliteTimeSource::TimeDifferenceMilli(Time start, Time end) {
     return end.timestamp_millis_unix_epoch - start.timestamp_millis_unix_epoch;
+}
+
+void SatelliteTimeSource::DeploymentWait(uint32_t delay_seconds) {
+    // The deployment wait acts as a timer counting for `delay_seconds`,
+    // starting from the time the `DeploymentWait` call is made.
+    // It is a blocking wait.
+
+    if (deployment_waits_are_instant) {
+        Log_info0("Fast-forwarding through deployment wait");
+        return;
+    }
+
+    uint32_t delay_ms = delay_seconds * kMillisecondsInSecond;
+
+    Time init_time = SatelliteTimeSource::GetTime();
+    Time cur_time = init_time;
+    bool rtc_time_reliable = false;
+
+    if (init_time.is_valid) {
+        rtc_time_reliable = true;
+        while ((cur_time.timestamp_millis_unix_epoch -
+                init_time.timestamp_millis_unix_epoch) < delay_ms) {
+            cur_time = SatelliteTimeSource::GetTime();
+
+            if (!cur_time.is_valid) {
+                rtc_time_reliable = false;
+                break;
+            }
+            TaskUtils::SleepMilli(kDelayCheckInterval);
+        }
+    }
+
+    if (!rtc_time_reliable) {
+        // Fallback to internal clock and reset timer (safest option)
+        TaskUtils::SleepMilli(delay_seconds * kMillisecondsInSecond);
+    }
 }

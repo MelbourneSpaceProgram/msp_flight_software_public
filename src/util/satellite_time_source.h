@@ -9,9 +9,12 @@ class SatelliteTimeSource {
     static void SetTime(RTime time);
     static Time GetTime();
     static uint64_t TimeDifferenceMilli(Time start, Time end);
+    static void DeploymentWait(uint32_t delay);
 
    private:
     static Time satellite_time;
+    static const uint16_t kDelayCheckInterval = 1000;
+    static const uint16_t kMillisecondsInSecond = 1000;
 };
 
 #endif  // SRC_UTIL_SATELLITE_TIME_SOURCE_H_
