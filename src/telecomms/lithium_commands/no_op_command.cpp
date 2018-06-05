@@ -1,5 +1,6 @@
-#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
+
+const byte NoOpCommand::kNoOpCommandCode;
 
 NoOpCommand::NoOpCommand() : LithiumCommand(kNoOpCommandCode, NULL) {}
 

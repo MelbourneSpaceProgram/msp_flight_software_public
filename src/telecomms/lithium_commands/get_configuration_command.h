@@ -12,6 +12,7 @@ class GetConfigurationCommand : public LithiumCommand {
 
    private:
     static const uint16_t kGetConfigReplyPayloadSize = 34;
+    static const byte kGetConfigurationCommandCode = 0x05;
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_COMMANDS_GET_CONFIGURATION_COMMAND_H_
