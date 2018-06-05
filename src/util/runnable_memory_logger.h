@@ -15,6 +15,7 @@ class RunnableMemoryLogger : public Runnable {
    private:
     static void LogMemoryStats();
     static void PrintTaskInfo(Task_Handle task);
+    static const uint32_t kMemoryLoggerRunPeriod = 60000;
 };
 
 #endif  // SRC_UTIL_RUNNABLE_MEMORY_LOGGER_H_

@@ -38,7 +38,7 @@ void RunnableMemoryLogger::LogMemoryStats() {
             task = Task_Object_next(task);
         }
 
-        Task_sleep(TaskUtils::MilliToCycles(60000));
+        Task_sleep(TaskUtils::MilliToCycles(kMemoryLoggerRunPeriod));
     }
 }
 
@@ -46,7 +46,6 @@ void RunnableMemoryLogger::PrintTaskInfo(Task_Handle task) {
     Task_Stat stat;
 
     Task_stat(task, &stat);
-    // TODO(akremor): Convert the mode from an integer (enum) to a string
     // TODO(akremor): If we set task names, print them here as well
     Log_info3("Task 0x%x: %d of %d stack bytes used", (xdc_IArg)task, stat.used,
               stat.stackSize);
