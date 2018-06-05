@@ -1,5 +1,5 @@
-#ifndef __BOARD_H
-#define __BOARD_H
+#ifndef SRC_BOARD_BOARD_H_
+#define SRC_BOARD_BOARD_H_
 
 #include <src/board/MSP_EXP432P401R.h>
 
@@ -8,4 +8,4 @@
 #define Board_TIMER2 MSP_EXP432P401R_TIMER_TA_1
 #define Board_TIMER3 MSP_EXP432P401R_TIMER_TA_2
 
-#endif /* __BOARD_H */
+#endif  // SRC_BOARD_BOARD_H_
