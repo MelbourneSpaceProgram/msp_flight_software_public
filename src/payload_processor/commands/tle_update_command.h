@@ -3,7 +3,6 @@
 
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/command.h>
-#include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
 class TleUpdateCommand : public Command {

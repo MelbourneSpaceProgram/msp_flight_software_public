@@ -2,6 +2,12 @@
 #include <src/board/board.h>
 #include <src/messages/serialised_message.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/get_configuration_command.h>
+#include <src/telecomms/lithium_commands/lithium_command.h>
+#include <src/telecomms/lithium_commands/no_op_command.h>
+#include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/transmit_command.h>
+#include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <ti/sysbios/knl/Clock.h>

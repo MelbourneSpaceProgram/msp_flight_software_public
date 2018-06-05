@@ -5,7 +5,6 @@
 #include <src/messages/test_message.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
-#include <test_runners/message_tests.h>
 #include <test_runners/unity.h>
 
 static const DebugMessageVersion kCurrentVersion = kV1;

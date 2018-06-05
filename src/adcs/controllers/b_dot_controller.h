@@ -1,7 +1,7 @@
 #ifndef SRC_ADCS_CONTROLLERS_B_DOT_CONTROLLER_H_
 #define SRC_ADCS_CONTROLLERS_B_DOT_CONTROLLER_H_
 
-#include <src/util/matrix.h>
+class Matrix;
 
 class BDotController {
    public:

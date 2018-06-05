@@ -6,6 +6,8 @@
 #include <src/system/state_machine.h>
 #include <src/system/state_manager.h>
 
+class StateManager;
+
 template <typename T>
 class SensorStateMachine : public GenericObserver<T>, public StateMachine {
    protected:

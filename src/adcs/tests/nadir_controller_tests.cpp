@@ -1,7 +1,7 @@
 
 #include <math.h>
 #include <src/adcs/controllers/nadir_controller.h>
-//#include <test_runners/nadir_controller_tests.h>
+#include <src/util/matrix.h>
 #include <test_runners/unity.h>
 
 void TestNadirControl()

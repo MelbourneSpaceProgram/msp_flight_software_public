@@ -1,7 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium.h>
-#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/telecomms/runnable_lithium_listener.h>

@@ -2,9 +2,9 @@
 #include <external/nanopb/pb_encode.h>
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
-#include <src/debug_interface/debug_stream.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/generic_measurable.h>

@@ -1,4 +1,7 @@
+#include <src/board/i2c/i2c.h>
+#include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
+#include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/sysbios/knl/Clock.h>

@@ -27,7 +27,19 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "cache_write_back_tests.h"
+#include <external/etl/exception.h>
+#include <external/nanopb/pb_decode.h>
+#include <external/nanopb/pb_encode.h>
+#include <src/config/unit_tests.h>
+#include <src/database/circular_buffer_nanopb.h>
+#include <src/database/sd_card.h>
+#include <src/messages/TemperatureReading.pb.h>
+#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_id.h>
+#include <src/sensors/runnable_cache_write_back.h>
+#include <stdio.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);

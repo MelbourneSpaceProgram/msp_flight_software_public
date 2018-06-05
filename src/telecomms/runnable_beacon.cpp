@@ -1,8 +1,9 @@
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/transmit_command.h>
+#include <src/telecomms/msp_payloads/beacon_payload.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/task_utils.h>
-#include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
 
 RunnableBeacon::RunnableBeacon() {}

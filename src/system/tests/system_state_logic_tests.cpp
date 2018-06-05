@@ -1,4 +1,7 @@
 #include <src/config/unit_tests.h>
+#include <src/system/sensor_state_machines/detumbled_state_machine.h>
+#include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
+#include <src/system/sensor_state_machines/tle_state_machine.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_machine.h>
 #include <src/system/state_manager.h>

@@ -1,5 +1,6 @@
 #include <src/messages/serialised_message_builder.h>
 #include <src/telecomms/msp_payloads/transmit_packet.h>
+#include <src/telecomms/msp_payloads/transmit_payload.h>
 
 TransmitPacket::TransmitPacket(TransmitPayload *transmit_payload,
                                uint8_t tx_count, uint8_t total_rx_count,

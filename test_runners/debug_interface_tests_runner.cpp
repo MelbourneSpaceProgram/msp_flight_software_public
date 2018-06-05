@@ -27,7 +27,15 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "debug_interface_tests.h"
+#include <external/etl/exception.h>
+#include <external/nanopb/pb_decode.h>
+#include <external/nanopb/pb_encode.h>
+#include <src/board/debug_interface/debug_stream.h>
+#include <src/config/unit_tests.h>
+#include <src/messages/SensorReading.pb.h>
+#include <src/util/message_codes.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);

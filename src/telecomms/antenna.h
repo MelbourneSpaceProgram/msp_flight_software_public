@@ -1,10 +1,11 @@
 #ifndef SRC_TELECOMMS_ANTENNA_H_
 #define SRC_TELECOMMS_ANTENNA_H_
 
-#include <src/i2c/i2c.h>
-#include <src/i2c/io_expander/io_expander.h>
-#include <src/messages/antenna_message.h>
+#include <src/board/i2c/io_expander/io_expander.h>
 #include <src/util/data_types.h>
+
+class I2c;
+class AntennaMessage;
 
 class Antenna {
    public:

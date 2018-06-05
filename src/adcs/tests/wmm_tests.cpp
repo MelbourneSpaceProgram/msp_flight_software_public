@@ -1,9 +1,6 @@
 #include <external/wmm/worldMagneticModel.h>
 
 #include <test_runners/unity.h>
-#include <test_runners/wmm_tests.h>
-
-
 
 void TestWorldMagneticModel() {
     r_vector b_vector = MagModel(2017.5, 0, -80, 240);

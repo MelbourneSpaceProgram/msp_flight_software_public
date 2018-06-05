@@ -4,7 +4,6 @@
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
 #include <src/system/system_state_machines/power_state_machine.h>
-#include <test_runners/sensor_state_logic_tests.h>
 #include <test_runners/unity.h>
 #include <string>
 

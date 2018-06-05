@@ -3,7 +3,6 @@
 #include <math.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/util/physical_constants.h>
-#include <test_runners/sgp4_tests.h>
 #include <test_runners/unity.h>
 
 

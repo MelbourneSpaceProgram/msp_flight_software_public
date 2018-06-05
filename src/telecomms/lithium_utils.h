@@ -1,8 +1,7 @@
 #ifndef SRC_TELECOMMS_LITHIUM_UTILS_H_
 #define SRC_TELECOMMS_LITHIUM_UTILS_H_
 
-#include <src/telecomms/lithium.h>
-#include <src/telecomms/lithium_commands/lithium_command.h>
+#include <src/util/data_types.h>
 
 class LithiumUtils {
    public:

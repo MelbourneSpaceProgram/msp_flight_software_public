@@ -3,7 +3,7 @@
 
 #include <external/etl/array.h>
 #include <external/etl/exception.h>
-#include <src/i2c/i2c.h>
+#include <src/board/i2c/i2c.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <string>
 

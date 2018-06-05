@@ -1,7 +1,7 @@
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
-#include <test_runners/lithium_command_serialise_tests.h>
 #include <test_runners/unity.h>
 
 void TestNoOpAck() {
