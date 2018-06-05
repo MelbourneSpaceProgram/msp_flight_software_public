@@ -2,10 +2,10 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
 #include <src/database/sd_card.h>
-#include <src/debug_interface/debug_stream.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
 #include <src/messages/Tle.pb.h>
@@ -16,12 +16,14 @@
 #include <src/system/state_manager.h>
 #include <src/system/tasks/runnable_state_management.h>
 #include <src/system/tasks/runnable_system_health_check.h>
+#include <src/tasks/task_holder.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/runnable_time_source.h>
+#include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>

@@ -1,6 +1,5 @@
 #include <math.h>
 #include <src/util/first_order_iir_lowpass.h>
-#include <test_runners/first_order_iir_lowpass_tests.h>
 #include <test_runners/unity.h>
 
 void TestProcessSampleFilter() {

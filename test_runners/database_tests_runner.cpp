@@ -27,7 +27,13 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
-#include "database_tests.h"
+#include <external/etl/exception.h>
+#include <src/config/unit_tests.h>
+#include <src/database/eeprom.h>
+#include <src/database/hamming_coder.h>
+#include <src/util/data_types.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);

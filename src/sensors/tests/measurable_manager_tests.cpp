@@ -3,7 +3,6 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/util/satellite_time_source.h>
-#include <test_runners/measurable_manager_tests.h>
 #include <test_runners/unity.h>
 
 static const byte kMultiplexerAddress = 0x76;

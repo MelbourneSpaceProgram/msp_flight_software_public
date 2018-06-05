@@ -1,16 +1,12 @@
 #include <src/board/board.h>
-#include <src/i2c/i2c.h>
-#include <src/i2c/multiplexers/i2c_multiplexer.h>
+#include <src/board/i2c/i2c.h>
+#include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <src/tasks/runnable.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
-#include <xdc/runtime/System.h>
-#include <xdc/std.h>
 
 fnptr RunnableTimeSource::GetRunnablePointer() {
     return &RunnableTimeSource::UpdateSatelliteTime;

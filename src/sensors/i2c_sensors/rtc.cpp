@@ -1,3 +1,4 @@
+#include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 
 Rtc::Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,

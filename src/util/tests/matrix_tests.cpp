@@ -2,7 +2,6 @@
 #include <math.h>
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
-#include <test_runners/matrix_tests.h>
 #include <test_runners/unity.h>
 
 void TestDotProduct() {

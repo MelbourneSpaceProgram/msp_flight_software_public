@@ -1,5 +1,4 @@
 #include <src/sensors/magnetometer_calibration.h>
-#include <test_runners/magnetometer_calibration_tests.h>
 #include <test_runners/unity.h>
 
 const double

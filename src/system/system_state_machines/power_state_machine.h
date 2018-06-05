@@ -2,8 +2,9 @@
 #define SRC_SYSTEM_SYSTEM_STATE_MACHINES_POWER_STATE_MACHINE_H_
 
 #include <src/system/system_state_machine.h>
-#include <src/system/sensor_state_machines/battery_charge_state_machine.h>
-#include <src/system/sensor_state_machines/battery_temp_state_machine.h>
+
+class BatteryChargeStateMachine;
+class BatteryTempStateMachine;
 
 class PowerStateMachine : public SystemStateMachine {
    public:

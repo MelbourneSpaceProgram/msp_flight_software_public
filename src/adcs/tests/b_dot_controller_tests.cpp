@@ -1,5 +1,5 @@
 #include <src/adcs/controllers/b_dot_controller.h>
-#include <test_runners/b_dot_controller_tests.h>
+#include <src/util/matrix.h>
 #include <test_runners/unity.h>
 
 void TestControl() {

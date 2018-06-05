@@ -1,6 +1,6 @@
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <test_runners/circular_buffer_nanopb_tests.h>
+#include <test_runners/unity.h>
 
 // Overfill the buffer and read all data back to ensure circularity
 void TestWriteAndRead() {

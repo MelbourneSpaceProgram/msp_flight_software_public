@@ -1,5 +1,4 @@
 #include <src/util/finite_difference_symmetric.h>
-#include <test_runners/finite_difference_symmetric_tests.h>
 #include <test_runners/unity.h>
 
 void TestProcessSampleDifferentiator() {
