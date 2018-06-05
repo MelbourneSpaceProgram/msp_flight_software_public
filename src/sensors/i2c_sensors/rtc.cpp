@@ -86,7 +86,7 @@ time_t Rtc::RTimeToEpoch(RTime time) {
     converted_time.tm_sec = time.sec;
     converted_time.tm_isdst = false;
 
-    time_t epoch_seconds = std::mktime(&converted_time);
+    time_t epoch_seconds = mktime(&converted_time);
 
     return epoch_seconds;
 }

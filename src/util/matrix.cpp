@@ -60,9 +60,9 @@ bool Matrix::DoubleIsEqual(double a, double b) {
         throw e;
     }
     if (a > b) {
-        return std::fabs(a - b) <= std::fabs(a * EPSILON_MULT + EPSILON_ADD);
+        return fabs(a - b) <= fabs(a * EPSILON_MULT + EPSILON_ADD);
     }
-    return std::fabs(a - b) <= std::fabs(b * EPSILON_MULT + EPSILON_ADD);
+    return fabs(a - b) <= fabs(b * EPSILON_MULT + EPSILON_ADD);
 }
 
 bool Matrix::IsEqual(const Matrix &A) const {
@@ -373,10 +373,10 @@ void Matrix::RowReduce() {
 
     for (uint8_t i = 0; i < square; i++) {
         uint8_t max_row = i;
-        double max_element = std::fabs(Get(i, i));
+        double max_element = fabs(Get(i, i));
         for (uint8_t j = i + 1; j < nrows; j++) {
-            if (std::fabs(Get(j, i)) > max_element) {
-                max_element = std::fabs(Get(j, i));
+            if (fabs(Get(j, i)) > max_element) {
+                max_element = fabs(Get(j, i));
                 max_row = j;
             }
         }
