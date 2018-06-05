@@ -1,5 +1,6 @@
-#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
+
+const byte TransmitCommand::kTransmitCommandCode;
 
 TransmitCommand::TransmitCommand(TransmitPayload *transmit_payload,
                                  uint8_t tx_count, uint8_t total_rx_count,

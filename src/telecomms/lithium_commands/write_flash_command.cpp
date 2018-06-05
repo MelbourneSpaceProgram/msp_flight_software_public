@@ -1,5 +1,7 @@
-#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
+#include <src/telecomms/lithium_md5.h>
+
+const byte WriteFlashCommand::kWriteFlashCommandCode;
 
 WriteFlashCommand::WriteFlashCommand(LithiumMd5 *md5_message)
     : LithiumCommand(kWriteFlashCommandCode, md5_message),
