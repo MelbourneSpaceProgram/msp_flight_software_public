@@ -82,7 +82,7 @@ void RunnableOrientationControl::ControlOrientation() {
             state_manager->GetCurrentStateOfStateMachine(kAdcsStateMachine);
 
         if (adcs_state == kAdcsOff) {
-            Log_warning0("Orientation Control Disabled.");
+            //Log_warning0("Orientation Control Disabled.");
             // Execution goes back to the semaphore pend and waits for next
             // enable from the timer
             continue;

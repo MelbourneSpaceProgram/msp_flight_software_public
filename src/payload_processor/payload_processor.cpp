@@ -3,6 +3,7 @@
 #include <src/payload_processor/commands/lithium_enable_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
+#include <src/payload_processor/commands/uplink_speed_test_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
@@ -52,6 +53,11 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
                 ForceResetCommand force_reset_command;
                 command = &force_reset_command;
                 break;
+            case kUplinkTestPacket:
+                UplinkSpeedTestCommand uplink_speed_test_command(payload,
+                                                    index + kCommandCodeLength);
+                command = &uplink_speed_test_command;
+                break;
         }
 
         try {
@@ -70,6 +76,7 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
+    // TODO(akremor): This is not safe if command is NULL
     index += command->GetCommandArgumentLength() + kCommandCodeLength;
 
     return command_execution_successful;

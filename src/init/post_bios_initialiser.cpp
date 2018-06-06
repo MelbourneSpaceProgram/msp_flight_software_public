@@ -69,7 +69,7 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
 }
 
 void PostBiosInitialiser::InitRadioListener() {
-    TaskHolder* radio_listener = new TaskHolder(1200, "RadioListener", 11,
+    TaskHolder* radio_listener = new TaskHolder(1200, "RadioListener", 15,
                                                 new RunnableLithiumListener());
     radio_listener->Init();
 }
@@ -97,7 +97,7 @@ void PostBiosInitialiser::InitBeacon() {
 
 void PostBiosInitialiser::InitPayloadProcessor() {
     TaskHolder* payload_processor_task = new TaskHolder(
-        1536, "PayloadProcessor", 12, new RunnablePayloadProcessor());
+        1536, "PayloadProcessor", 15, new RunnablePayloadProcessor());
     payload_processor_task->Init();
 }
 
@@ -198,7 +198,7 @@ void PostBiosInitialiser::InitHardware() {
 void PostBiosInitialiser::InitMemoryLogger() {
     TaskHolder* memory_logger_task =
         new TaskHolder(1024, "MemoryLogger", 13, new RunnableMemoryLogger());
-    memory_logger_task->Init();
+    //memory_logger_task->Init();
 }
 
 void PostBiosInitialiser::InitTimeSource() {

@@ -17,7 +17,8 @@ class PayloadProcessor {
         kLithiumEnableCommand = 2,
         kTleUpdateCommand = 3,
         kForceResetCommand = 4,
-        kCommandsLength = 5
+        kUplinkTestPacket = 10,
+        kCommandsLength = 6 // TODO(akremor): I should go back and make these sequential and increasing by one
     };
     static const byte kCommandCodeLength = 2;
     static const uint8_t kEndTerminator = 0;
