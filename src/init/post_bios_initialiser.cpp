@@ -247,7 +247,7 @@ void PostBiosInitialiser::PostBiosInit() {
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
         Log_info0("Starting beacon delay timer");
-        SatelliteTimeSource::DeploymentWait(kBeaconDelaySeconds);
+        SatelliteTimeSource::RealTimeWait(kBeaconDelaySeconds);
         Log_info0("Beacon delay timer finished");
 
         InitRadioListener();
@@ -255,7 +255,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitPayloadProcessor();
         Log_info0("Payload processor started");
 
-        SatelliteTimeSource::DeploymentWait(kAntennaDelaySeconds);
+        SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
         Log_info0("Antenna deploying, can take awhile");
         DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::

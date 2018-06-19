@@ -39,7 +39,7 @@ uint64_t SatelliteTimeSource::TimeDifferenceMilli(Time start, Time end) {
     return end.timestamp_millis_unix_epoch - start.timestamp_millis_unix_epoch;
 }
 
-void SatelliteTimeSource::DeploymentWait(uint32_t delay_seconds) {
+void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
     // The deployment wait acts as a timer counting for `delay_seconds`,
     // starting from the time the `DeploymentWait` call is made.
     // It is a blocking wait.

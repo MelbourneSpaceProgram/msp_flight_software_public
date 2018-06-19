@@ -9,7 +9,7 @@ class SatelliteTimeSource {
     static void SetTime(RTime time);
     static Time GetTime();
     static uint64_t TimeDifferenceMilli(Time start, Time end);
-    static void DeploymentWait(uint32_t delay);
+    static void RealTimeWait(uint32_t delay);
 
    private:
     static Time satellite_time;
