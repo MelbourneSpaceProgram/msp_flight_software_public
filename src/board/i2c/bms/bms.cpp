@@ -3,12 +3,14 @@
 #include <src/board/i2c/i2c.h>
 
 Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
-         I2cMultiplexer::MuxChannel channel)
-    : I2cSensor(bus, address, multiplexer, channel) {
+         I2cMultiplexer::MuxChannel channel) :
+        I2cSensor(bus, address, multiplexer, channel)
+{
     SetConfiguration();
 }
 
-void Bms::SetConfiguration() {
+void Bms::SetConfiguration()
+{
     byte package[3];
 
     package[0] = Bms::kUVCLRegisterLocation;
@@ -67,8 +69,8 @@ void Bms::SetConfiguration() {
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kQCountInitialRegisterLocation;
-    package[1] = Bms::kQCountInitialRegisterValue;
-    package[2] = Bms::kEmptybuffervalue;
+    package[1] = Bms::kQCountInitialLRegisterValue;
+    package[2] = Bms::kQCountInitialURegisterValue;
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kPrescaleFactorRegisterLocation;
@@ -79,35 +81,39 @@ void Bms::SetConfiguration() {
 
 // Read 2-byte from BMS Registers
 uint16_t Bms::GetConfiguration(byte register_location,
-                               etl::array<byte, 2>& read_buffer) {
+                               etl::array<byte, 2>& read_buffer)
+{
     SelectRegister(register_location);
     ReadFromCurrentRegister(read_buffer);
-    uint16_t read_binary_reading =
-        ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-        static_cast<uint16_t>(read_buffer.at(0));
+    uint16_t read_binary_reading = ((static_cast<uint16_t>(read_buffer.at(1)))
+            << 8) | static_cast<uint16_t>(read_buffer.at(0));
     return read_binary_reading;
 }
 
-void Bms::SelectRegister(byte register_address) {
+void Bms::SelectRegister(byte register_address)
+{
     bus->PerformWriteTransaction(address, &register_address, 1);
 }
 
-void Bms::ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer) {
+void Bms::ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer)
+{
     byte i2c_buffer[2];
-    if (bus->PerformReadTransaction(address, i2c_buffer, 2)) {
+    if (bus->PerformReadTransaction(address, i2c_buffer, 2))
+    {
         read_buffer.at(0) = i2c_buffer[0];
         read_buffer.at(1) = i2c_buffer[1];
     }
 }
 
 // Checking valid condition of BMS' Telemetry system
-bool Bms::GetTelemetryValid(etl::array<byte, 2>& read_buffer) {
+bool Bms::GetTelemetryValid(etl::array<byte, 2>& read_buffer)
+{
     SelectRegister(kTelemetryValidRegisterLocation);
     ReadFromCurrentRegister(read_buffer);
     uint16_t Telemetry_system_binary_reading;
     Telemetry_system_binary_reading =
-        ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-        static_cast<uint16_t>(read_buffer.at(0));
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
     if (Telemetry_system_binary_reading & kTelemetryValidBitMask)
         return true;
     else
@@ -115,14 +121,16 @@ bool Bms::GetTelemetryValid(etl::array<byte, 2>& read_buffer) {
 }
 
 // BMS Charge Status
-Bms::ChargeStatus Bms::GetChargeStatus(etl::array<byte, 2>& read_buffer) {
-    if (GetTelemetryValid(read_buffer)) {
+Bms::ChargeStatus Bms::GetChargeStatus(etl::array<byte, 2>& read_buffer)
+{
+    if (GetTelemetryValid(read_buffer))
+    {
         SelectRegister(kChargeStatusRegisterLocation);
         ReadFromCurrentRegister(read_buffer);
         uint16_t charge_status_binary_reading;
         charge_status_binary_reading =
-            ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-            static_cast<uint16_t>(read_buffer.at(0));
+                ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                        | static_cast<uint16_t>(read_buffer.at(0));
         if (charge_status_binary_reading & kConstantVoltageBitMask)
             return kConstantVoltage;
         else if (charge_status_binary_reading & kConstantCurrentBitMask)
@@ -131,8 +139,8 @@ Bms::ChargeStatus Bms::GetChargeStatus(etl::array<byte, 2>& read_buffer) {
             return kIinLimitActive;
         else if (charge_status_binary_reading & kVinLimitActiveBitMask)
             return kVinLimitActive;
-        else if ((charge_status_binary_reading & kChargeStatusBitMask) ==
-                 kChargeStatusNotCharging)
+        else if ((charge_status_binary_reading & kChargeStatusBitMask)
+                == kChargeStatusNotCharging)
             return kNotCharging;
         else
             return kError;
@@ -140,19 +148,21 @@ Bms::ChargeStatus Bms::GetChargeStatus(etl::array<byte, 2>& read_buffer) {
 }
 
 // BMS System Status
-Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer) {
-    if (GetTelemetryValid(read_buffer)) {
+Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer)
+{
+    if (GetTelemetryValid(read_buffer))
+    {
         SelectRegister(kSystemStatusRegisterLocation);
         ReadFromCurrentRegister(read_buffer);
         uint16_t System_Status_binary_reading;
         System_Status_binary_reading =
-            ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-            static_cast<uint16_t>(read_buffer.at(0));
-        if ((System_Status_binary_reading & kChargeEnableBitMask) ==
-            kChargeEnableBitMask)
+                ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                        | static_cast<uint16_t>(read_buffer.at(0));
+        if ((System_Status_binary_reading & kChargeEnableBitMask)
+                == kChargeEnableBitMask)
             return kChargeEnable;
-        else if ((System_Status_binary_reading & kChargeEnableBitMask) !=
-                 kChargeEnableBitMask)
+        else if ((System_Status_binary_reading & kChargeEnableBitMask)
+                != kChargeEnableBitMask)
             return kChargeDisable;
         else
             return kOther;
@@ -160,71 +170,130 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer) {
 }
 
 // Jeita Region VCharge
-uint16_t Bms::GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer) {
-    if (GetTelemetryValid(read_buffer)) {
+uint16_t Bms::GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer)
+{
+    if (GetTelemetryValid(read_buffer))
+    {
         SelectRegister(kJeitaRegionRegisterLocation);
         ReadFromCurrentRegister(read_buffer);
         uint16_t Jeita_region_binary_reading;
         Jeita_region_binary_reading =
-            ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-            static_cast<uint16_t>(read_buffer.at(0));
+                ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                        | static_cast<uint16_t>(read_buffer.at(0));
         return Jeita_region_binary_reading;
     }
 }
 // VCharge Dec
-double Bms::GetVChargeDEC(etl::array<byte, 2>& read_buffer) {
+double Bms::GetVChargeDEC(etl::array<byte, 2>& read_buffer)
+{
     SelectRegister(kVChargeDACRegisterLocation);
     ReadFromCurrentRegister(read_buffer);
     uint16_t vcharge_dec_binary_reading =
-        ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-        static_cast<uint16_t>(read_buffer.at(0));
-    return (vcharge_dec_binary_reading / kVchargeDivisionFactor) +
-           kVchargeAdditionFactor;
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (vcharge_dec_binary_reading / kVchargeDivisionFactor)
+            + kVchargeAdditionFactor;
 }
 
 // ICharge Dec
-double Bms::GetIChargeDEC(etl::array<byte, 2>& read_buffer) {
+double Bms::GetIChargeDEC(etl::array<byte, 2>& read_buffer)
+{
     SelectRegister(kIChargeDACRegisterLocation);
     ReadFromCurrentRegister(read_buffer);
     uint16_t icharge_dec_binary_reading =
-        ((static_cast<uint16_t>(read_buffer.at(1))) << 8) |
-        static_cast<uint16_t>(read_buffer.at(0));
-    return (icharge_dec_binary_reading + kIchargeAdditionFactor) *
-           kIchargeMultiplicationFactor;
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (icharge_dec_binary_reading + kIchargeAdditionFactor)
+            * kIchargeMultiplicationFactor;
 }
 
-double Bms::TakeI2cDieTempReading() {
+double Bms::TakeI2cDieTempReading()
+{
     etl::array<byte, 2> read_buffer;
-    if (GetTelemetryValid(read_buffer)) {
+    if (GetTelemetryValid(read_buffer))
+    {
         SelectRegister(kDieTempRegister);
         ReadFromCurrentRegister(read_buffer);
         return ConvertToDieTemperature(read_buffer);
     }
 }
 
-double Bms::ConvertToDieTemperature(etl::array<byte, 2> read_buffer) {
+double Bms::ConvertToDieTemperature(etl::array<byte, 2> read_buffer)
+{
     uint16_t register_value = (read_buffer[1] << 8) | read_buffer[0];
-    double temp_in_celcius =
-        (register_value - kDieTempOffset) / kDieTempConversionFactor;
+    double temp_in_celcius = (register_value - kDieTempOffset)
+            / kDieTempConversionFactor;
     return temp_in_celcius;
 }
 
-double Bms::TakeI2cBatteryTempReading() {
+double Bms::TakeI2cBatteryTempReading()
+{
     etl::array<byte, 2> read_buffer;
-    if (GetTelemetryValid(read_buffer)) {
+    if (GetTelemetryValid(read_buffer))
+    {
         SelectRegister(kNTCRatioRegister);
         ReadFromCurrentRegister(read_buffer);
         return ConvertToBatteryTemperature(read_buffer);
     }
 }
 
-double Bms::ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer) {
+double Bms::ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer)
+{
     uint16_t ntc_ratio_register_value = (read_buffer[1] << 8) | read_buffer[0];
-    double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value /
-                             (kNTCBitWeight - ntc_ratio_register_value);
-    double battery_temp_in_kelvin =
-        1 / (kConversionCoefficientA +
-             kConversionCoefficientB * log(rntc_resistance) +
-             kConversionCoefficientC * pow(log(rntc_resistance), 3));
+    double rntc_resistance = kNTCBiasResistance * ntc_ratio_register_value
+            / (kNTCBitWeight - ntc_ratio_register_value);
+    double battery_temp_in_kelvin = 1
+            / (kConversionCoefficientA
+                    + kConversionCoefficientB * log(rntc_resistance)
+                    + kConversionCoefficientC * pow(log(rntc_resistance), 3));
     return battery_temp_in_kelvin - kKelvinToCelciusOffset;
 }
+
+//Coulumb Counting
+double Bms::GetSOCinPercent(etl::array<byte, 2> read_buffer)
+{
+    if (GetTelemetryValid(read_buffer))
+    {
+        Initial_Charge_complete = true;
+        double q_count;
+        double SOC;
+        SelectRegister(kQCountInitialRegisterLocation);
+        ReadFromCurrentRegister(read_buffer);
+        uint16_t q_count_reading = ((static_cast<uint16_t>(read_buffer.at(1)))
+                << 8) | static_cast<uint16_t>(read_buffer.at(0));
+
+        if (Initial_Charge_complete)
+        {
+            q_count = q_count_reading - kQCountAtInitial;
+            return SOC = kSOCPercentFactor * (q_count / kQCountMaximum);
+        }
+        else
+        {
+            return SOC = kSOCPercentFactor
+                    * (q_count / kQCountAtHundreadPercent);
+        }
+
+        if (GetCOverXTerm(read_buffer))
+        {
+            q_count = kQCountAtHundreadPercent;
+            if (Initial_Charge_complete)
+                Initial_Charge_complete = false;
+        }
+    }
+}
+
+bool Bms::GetCOverXTerm(etl::array<byte, 2>& read_buffer)
+{
+    if (GetTelemetryValid(read_buffer))
+    {
+        SelectRegister(kChargeStateRegisterLocation);
+        ReadFromCurrentRegister(read_buffer);
+        uint16_t c_over_x_term_reading = ((static_cast<uint16_t>(read_buffer.at(
+                1))) << 8) | static_cast<uint16_t>(read_buffer.at(0));
+        if (c_over_x_term_reading & kCOverXTermBitMask)
+            return true;
+        else
+            return false;
+    }
+}
+

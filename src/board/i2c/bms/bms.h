@@ -42,6 +42,8 @@ class Bms : public I2cSensor {
     uint16_t GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer);
     double GetVChargeDEC(etl::array<byte, 2>& read_buffer);
     double GetIChargeDEC(etl::array<byte, 2>& read_buffer);
+    double GetSOCinPercent(etl::array<byte, 2> read_buffer);
+    bool GetCOverXTerm(etl::array<byte, 2>& read_buffer);
 
     static const byte kUVCLRegisterValue = 0x8D;
     static const byte kVChargeRegisterValue = 0x0F;
@@ -58,6 +60,8 @@ class Bms : public I2cSensor {
     static const uint16_t kChargeStatusBitMask = 0x000F;
     static const uint16_t kChargeStatusNotCharging = 0x0000;
     static const uint16_t kChargeEnableBitMask = 0x2000;
+    static const uint16_t kCOverXTermBitMask = 0x0008;
+
 
     static const byte kEmptybuffervalue = 0x00;
     static const byte kUVCLRegisterLocation = 0x16;
@@ -71,6 +75,7 @@ class Bms : public I2cSensor {
     static const byte kVsysRegisterLocation = 0x3C;
     static const byte kVbatRegisterLocation = 0x3A;
     static const byte kIbatRegisterLocation = 0x3D;
+    static const byte kChargeStateRegisterLocation = 0x34;
     static const byte kChargeStatusRegisterLocation = 0x35;
     static const byte kChemandCellsRegisterLocation = 0x43;
     static const byte kSystemStatusRegisterLocation = 0x39;
@@ -103,9 +108,10 @@ class Bms : public I2cSensor {
     static const byte kCoulomConfigRegisterLocation = 0x14;
     static const byte kCoulomConfigRegisterValue = 0x14;
     static const byte kQCountInitialRegisterLocation = 0x13;
-    static const byte kQCountInitialRegisterValue = 0x00;
+    static const byte kQCountInitialLRegisterValue = 0x33;
+    static const byte kQCountInitialURegisterValue = 0x33;
     static const byte kPrescaleFactorRegisterLocation = 0x12;
-    static const byte kPrescaleFactorRegisterValue = 0x03;
+    static const byte kPrescaleFactorRegisterValue = 0x1C;
 
     static const byte kDieTempRegister = 0x3F;
     static const uint16_t kDieTempOffset = 12010;
@@ -119,6 +125,13 @@ class Bms : public I2cSensor {
     static const double kConversionCoefficientB = 0.00026265;
     static const double kConversionCoefficientC = 0.00000011875;
     static const double kKelvinToCelciusOffset = 273.15;
+
+    static const double kQCountMaximum = 65535.0;
+    static const double kQCountAtHundreadPercent = 60235.0;
+    static const double kQCountAtInitial = 13107.0;
+    static const double kSOCPercentFactor = 100.0;
+
+    bool Initial_Charge_complete;
 };
 
 #endif  // SRC_BOARD_I2C_BMS_BMS_H_
