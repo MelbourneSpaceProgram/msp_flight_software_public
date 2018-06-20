@@ -27,13 +27,13 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 #include <external/sgp4/sgp4.h>
 #include <external/sgp4/sgp4_utils.h>
 #include <math.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/util/physical_constants.h>
-#include <src/util/memory_troubleshooter.h>
-#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -60,7 +60,6 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
-    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else
