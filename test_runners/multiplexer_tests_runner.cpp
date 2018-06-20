@@ -27,6 +27,8 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
@@ -34,8 +36,6 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/util/data_types.h>
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
-#include <src/util/memory_troubleshooter.h>
-#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -62,7 +62,6 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
-    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else

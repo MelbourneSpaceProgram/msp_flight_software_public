@@ -27,6 +27,8 @@
 #include <setjmp.h>
 #endif
 #include <stdio.h>
+#include <src/util/memory_troubleshooter.h>
+#include <external/etl/exception.h>
 #include <external/etl/array.h>
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/temperature_message.h>
@@ -34,8 +36,6 @@
 #include <src/messages/test_message.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
-#include <src/util/memory_troubleshooter.h>
-#include <external/etl/exception.h>
 
 /*=======External Functions This Runner Calls=====*/
 extern void SetUp(void);
@@ -69,7 +69,6 @@ static int suite_teardown(int num_failures, MemoryTroubleshooter *mem_test)
         UNITY_PRINT_EOL();
     }
     mem_test->~MemoryTroubleshooter();
-    delete mem_test;
 #if defined(UNITY_WEAK_ATTRIBUTE) || defined(UNITY_WEAK_PRAGMA)
   return suiteTearDown(num_failures);
 #else

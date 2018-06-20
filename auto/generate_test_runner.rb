@@ -166,6 +166,9 @@ class UnityTestRunnerGenerator
     output.puts('#include <setjmp.h>')
     output.puts("#endif")
     output.puts('#include <stdio.h>')
+    output.puts('#include <src/util/memory_troubleshooter.h>')
+    output.puts('#include <external/etl/exception.h>')
+
     if @options[:defines] && !@options[:defines].empty?
       @options[:defines].each { |d| output.puts("#define #{d}") }
     end
