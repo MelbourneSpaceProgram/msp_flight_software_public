@@ -53,6 +53,7 @@ src/sysbios/sysbios.aem4f
 WinBuild/
 TIRTOS Build/
 Orbit/
+Coverity/
 
 # Documentation should be auto-generated?
 doc/
