@@ -37,10 +37,9 @@ class Sgp4Utils {
                                  double& j2, double& j3, double& j4,
                                  double& j3oj2);
 
-    // Define here as well as in physical_constants do stop build error
-    static const double kPi = 3.14159265358979323846264338327950288419716939937;
     static const double kJulianDayAtY2000H12 = 2451545.0;
-    static const double kDegreesToRadians = kPi / 180.0;
+    static const double kDegreesToRadians =
+        3.14159265358979323846264338327950288419716939937 / 180.0;
     static const double xpdotp = 229.1831180523293;
     static const double kCnesJdOffset = -2433281.5;
     static const double kEccEarthSquared = 0.006694385000;

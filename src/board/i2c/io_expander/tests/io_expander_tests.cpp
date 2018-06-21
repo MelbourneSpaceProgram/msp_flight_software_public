@@ -24,7 +24,7 @@ void TestIoExpander(void) {
 
     // Open the IO Expander on Bus D, address 0x22
     I2c bus(I2C_BUS_D);
-    I2cIoExpander::I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
 
     // Perform SetDirection and GetDirection test as Input
     test_io_expander.SetDirection(safe_pin, I2cIoExpander::kIoInput);
