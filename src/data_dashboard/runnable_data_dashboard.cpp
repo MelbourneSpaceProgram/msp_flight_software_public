@@ -11,6 +11,7 @@
 #include <src/system/system_state_machines/adcs_state_machine.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/knl/Task.h>
+#include <src/util/nanopb_utils.h>
 
 RunnableDataDashboard::RunnableDataDashboard() {}
 

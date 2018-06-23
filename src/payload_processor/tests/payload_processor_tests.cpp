@@ -8,6 +8,7 @@
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
+#include <src/util/nanopb_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
@@ -62,17 +63,15 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     test_tle.mean_anomaly = 19.3264;
     test_tle.bstar_drag = 0.000028098;
 
-    byte payload[Lithium::kMaxReceivedSize] = {0};
-    payload[0] = 3;
-    payload[1] = 0;  // 0x03 indicates a tle update command
-    payload[PayloadProcessor::GetCommandCodeLength() + Tle_size] =
+    uint8_t buffer[Lithium::kMaxReceivedSize] = {0};
+    buffer[0] = 3;  // 3 indicates tle update command
+    buffer[1] = 0;
+    buffer[PayloadProcessor::GetCommandCodeLength() + Tle_size] =
         PayloadProcessor::GetEndTerminator();
-    payload[PayloadProcessor::GetCommandCodeLength() + Tle_size + 1] =
+    buffer[PayloadProcessor::GetCommandCodeLength() + Tle_size + 1] =
         PayloadProcessor::GetEndTerminator();
-    pb_ostream_t stream = pb_ostream_from_buffer(
-        payload + PayloadProcessor::GetCommandCodeLength(), Tle_size);
-    // TODO(dingbenjamin): What if the encode fails?
-    bool encode_succeeded = pb_encode(&stream, Tle_fields, &test_tle);
+    NanopbEncode(Tle)(buffer + PayloadProcessor::GetCommandCodeLength(),
+                      test_tle);
 
     // Create test mailbox
     Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
@@ -93,7 +92,7 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     // it to the TLE update mailbox)
     PayloadProcessor test_payload_processor;
     bool command_executed =
-        test_payload_processor.ParseAndExecuteCommands(payload);
+        test_payload_processor.ParseAndExecuteCommands(buffer);
 
     // Have a location estimator retrieve the decoded TLE from the mailbox and
     // update its internal satrec values
