@@ -1365,8 +1365,6 @@ void UnityBegin(const char* filename)
 int UnityEnd(void)
 {
     UNITY_PRINT_EOL();
-    UnityPrint(UnityStrBreaker);
-    UNITY_PRINT_EOL();
     UnityPrintNumber((UNITY_INT)(Unity.NumberOfTests));
     UnityPrint(UnityStrResultsTests);
     UnityPrintNumber((UNITY_INT)(Unity.TestFailures));
@@ -1385,6 +1383,9 @@ int UnityEnd(void)
         UNITY_OUTPUT_CHAR('E'); UNITY_OUTPUT_CHAR('D');
 #endif
     }
+    UNITY_PRINT_EOL();
+    UnityPrint(UnityStrBreaker);
+    UNITY_PRINT_EOL();
     UNITY_PRINT_EOL();
     UNITY_FLUSH_CALL();
     UNITY_OUTPUT_COMPLETE();
