@@ -70,6 +70,6 @@ void TestJeitaRegion() {
 
     TEST_ASSERT_EQUAL_INT16(Jeita_region,
                             bms.GetJeitaRegionVCharge(read_buffer));
-    TEST_ASSERT_DOUBLE_WITHIN(+-0.15, Vcharge, bms.GetVChargeDEC(read_buffer));
+    TEST_ASSERT_DOUBLE_WITHIN(0.15, Vcharge, bms.GetVChargeDEC(read_buffer));
     TEST_ASSERT_DOUBLE_WITHIN(0.1, Icharge, bms.GetIChargeDEC(read_buffer));
 }
