@@ -6,6 +6,7 @@
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/runnable_cache_write_back.h>
 #include <src/util/data_types.h>
+#include <src/util/nanopb_utils.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 #include <stdio.h>
@@ -28,7 +29,6 @@ void RunnableCacheWriteBack::WriteBack() {
 void RunnableCacheWriteBack::WriteBackTemp(uint16_t measurable_id) {
     byte buffer[TemperatureReading_size];
     TemperatureReading temp_reading = TemperatureReading_init_zero;
-    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
     I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
 
     temp_reading.temp = manager->ReadI2cMeasurable<double>(
@@ -38,11 +38,7 @@ void RunnableCacheWriteBack::WriteBackTemp(uint16_t measurable_id) {
         manager->GetMeasurableTimeStamp<double>(measurable_id)
             .timestamp_millis_unix_epoch;
 
-    if (!pb_encode(&stream, TemperatureReading_fields, &temp_reading)) {
-        throw etl::exception(
-            "Cache WriteBack::TemperatureReading pb_encode failed", __FILE__,
-            __LINE__);
-    }
+    NanopbEncode(TemperatureReading)(buffer, temp_reading);
 
     // TODO(dingbenjamin): Potentially remove in order to remove stdio include
     char filename[3];

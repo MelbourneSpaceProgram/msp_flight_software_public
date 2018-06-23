@@ -8,6 +8,7 @@
 #include <src/database/sd_card.h>
 #include <src/messages/pb.h>
 #include <src/util/data_types.h>
+#include <src/util/nanopb_utils.h>
 
 /*
   Circular Buffer abstraction backed by sd card files.
@@ -72,13 +73,7 @@ class CircularBufferNanopb {
 
         // Serialise
         byte buffer[NanopbMessageType_size];
-        bool status;
-        pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-        status = pb_encode(&stream, NanopbMessageType_fields, &message);
-        if (!status) {
-            etl::exception e("pb_encode failed", __FILE__, __LINE__);
-            throw e;
-        }
+        NanopbEncode(NanopbMessageType)(buffer, message);
 
         // Write to file
         uint32_t write_index_bytes = GetWriteIndex(file_handle);
@@ -149,15 +144,8 @@ class CircularBufferNanopb {
         }
 
         // Deserialise
-        pb_istream_t stream = pb_istream_from_buffer(hamming_decoded_buffer,
-                                                     NanopbMessageType_size);
-        NanopbMessageType message_struct;
-        bool status =
-            pb_decode(&stream, NanopbMessageType_fields, &message_struct);
-        if (!status) {
-            etl::exception e("pb_decode failed", __FILE__, __LINE__);
-            throw e;
-        }
+        NanopbMessageType message_struct =
+            NanopbDecode(NanopbMessageType)(hamming_decoded_buffer);
 
         SdCard::FileClose(file_handle);
         return message_struct;
