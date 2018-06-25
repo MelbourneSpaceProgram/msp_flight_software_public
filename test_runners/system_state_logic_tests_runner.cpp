@@ -92,7 +92,8 @@ int system_state_logic_tests_runner(void)
     RUN_TEST(TestTelecomsStateLogic, 34);
     RUN_TEST(TestAdcsStateLogic, 76);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

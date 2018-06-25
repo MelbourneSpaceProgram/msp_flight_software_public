@@ -88,7 +88,8 @@ int lithium_configuration_tests_runner(void)
     RUN_TEST(TestLithiumConfigurationDeserialise, 16);
     RUN_TEST(TestFunctionConfigDeserialise, 49);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

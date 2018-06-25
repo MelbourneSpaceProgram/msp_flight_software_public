@@ -387,7 +387,8 @@ class UnityTestRunnerGenerator
       tests.each { |test| output.puts("    RUN_TEST(#{test[:test]}, #{test[:line_number]});") }
     end
     output.puts('  } catch (etl::exception &e) {')
-    output.puts('    TEST_FAIL_MESSAGE("Uncaught exception in test");')
+    output.puts('    const char* message = e.what();')
+    output.puts('    TEST_FAIL_MESSAGE(message);')
     output.puts('  }')
     output.puts
     output.puts('  CMock_Guts_MemFreeFinal();') unless used_mocks.empty?

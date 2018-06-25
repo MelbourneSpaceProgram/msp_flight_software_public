@@ -87,7 +87,8 @@ int antenna_tests_runner(void)
     RUN_TEST(TestSafeDeploy, 13);
     RUN_TEST(TestForceDeploy, 42);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

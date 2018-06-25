@@ -81,7 +81,8 @@ int finite_difference_symmetric_tests_runner(void)
   UnityBegin("src/util/tests/finite_difference_symmetric_tests.cpp");
     RUN_TEST(TestProcessSampleDifferentiator, 4);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

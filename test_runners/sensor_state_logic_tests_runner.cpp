@@ -90,7 +90,8 @@ int sensor_state_logic_tests_runner(void)
     RUN_TEST(TestBatteryChargeStateFlow, 60);
     RUN_TEST(TestTelecomsTempStateFlow, 94);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

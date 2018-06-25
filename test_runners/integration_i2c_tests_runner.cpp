@@ -85,7 +85,8 @@ int integration_i2c_tests_runner(void)
   UnityBegin("src/board/i2c/tests/integration_i2c_tests.cpp");
     RUN_TEST(TestEnumerateAllI2cDevices, 8);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

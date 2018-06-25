@@ -86,7 +86,8 @@ int io_expander_tests_runner(void)
   UnityBegin("src/board/i2c/io_expander/tests/io_expander_tests.cpp");
     RUN_TEST(TestIoExpander, 11);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);
