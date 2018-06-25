@@ -85,7 +85,8 @@ int sgp4_tests_runner(void)
   UnityBegin("src/adcs/tests/sgp4_tests.cpp");
     RUN_TEST(TestSimplifiedGeneralPerturbationModel, 8);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);

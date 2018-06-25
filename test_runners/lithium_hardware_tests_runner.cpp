@@ -98,7 +98,8 @@ int lithium_hardware_tests_runner(void)
     RUN_TEST(TestTransmitAckHardware, 32);
     RUN_TEST(TestWriteFlashHardware, 41);
   } catch (etl::exception &e) {
-    TEST_FAIL_MESSAGE("Uncaught exception in test");
+    const char* message = e.what();
+    TEST_FAIL_MESSAGE(message);
   }
 
   return suite_teardown(UnityEnd(), mem_test);
