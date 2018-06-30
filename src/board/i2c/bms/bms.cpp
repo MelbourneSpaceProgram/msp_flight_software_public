@@ -14,8 +14,8 @@ void Bms::SetConfiguration()
     byte package[3];
 
     package[0] = Bms::kUVCLRegisterLocation;
-    package[1] = Bms::kUVCLRegisterValue;
-    package[2] = Bms::kEmptybuffervalue;
+    package[1] = Bms::kUVCLRegisterLValue;
+    package[2] = Bms::kUVCLRegisterUValue;
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kVChargeRegisterLocation;
@@ -44,13 +44,23 @@ void Bms::SetConfiguration()
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kCXThresholdRegisterLocation;
-    package[1] = Bms::kCXThresholdRegisterValue;
-    package[2] = Bms::kEmptybuffervalue;
+    package[1] = Bms::kCXThresholdRegisterLValue;
+    package[2] = Bms::kCXThresholdRegisterUValue;
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kJeitaT1RegisterLocation;
     package[1] = Bms::kJeitaT1ConfiqurationLBValue;
     package[2] = Bms::kJeitaT1ConfiqurationUBValue;
+    bus->PerformWriteTransaction(address, package, 3);
+
+    package[0] = Bms::kVChargeJeita5to6RegisterLocation;
+    package[1] = Bms::kVChargeJeita5to6ConfigurationLBValue;
+    package[2] = Bms::kVChargeJeita5to6ConfigurationUBValue;
+    bus->PerformWriteTransaction(address, package, 3);
+
+    package[0] = Bms::kVChargeJeita2to4RegisterLocation;
+    package[1] = Bms::kVChargeJeita2to4ConfigurationLBValue;
+    package[2] = Bms::kVChargeJeita2to4ConfigurationUBValue;
     bus->PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kIChargeJeita5to6RegisterLocation;
@@ -120,6 +130,86 @@ bool Bms::GetTelemetryValid(etl::array<byte, 2>& read_buffer)
         return false;
 }
 
+//Battery Voltage and Current
+double Bms::GetBatVoltage(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kVbatRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t vbat_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (vbat_binary_reading * kVoltageforVbat);
+}
+
+double Bms::GetBatCurrent(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kIbatRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    int16_t ibat_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                                | static_cast<uint16_t>(read_buffer.at(0));
+//    if ((ibat_binary_reading & kBatteryCurrent2sComplementBitMask)
+//            == kBatteryCurrent2sComplementBitMask)
+//   return = (~ibat_binary_reading |
+    return (ibat_binary_reading * kCurrentforIinIbat)/kRnsbResistance;
+}
+
+//In Voltage and Current
+double Bms::GetInVoltage(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kVinRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t vin_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (vin_binary_reading * kVoltageforVinVsys);
+}
+
+double Bms::GetInCurrent(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kIinRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t iin_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (iin_binary_reading * kCurrentforIinIbat) / kRnsiResistance;
+}
+
+//Sys Voltage
+double Bms::GetSysVoltage(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kVsysRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t vsys_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (vsys_binary_reading * kVoltageforVinVsys);
+}
+
+// VCharge Dec and ICharge Dec
+double Bms::GetVChargeDEC(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kVChargeDACRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t vcharge_dec_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (vcharge_dec_binary_reading / kVchargeDivisionFactor)
+            + kVchargeAdditionFactor;
+}
+
+double Bms::GetIChargeDEC(etl::array<byte, 2>& read_buffer)
+{
+    SelectRegister(kIChargeDACRegisterLocation);
+    ReadFromCurrentRegister(read_buffer);
+    uint16_t icharge_dec_binary_reading =
+            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
+                    | static_cast<uint16_t>(read_buffer.at(0));
+    return (icharge_dec_binary_reading + kIchargeAdditionFactor)
+            * kIchargeMultiplicationFactor;
+}
+
+
 // BMS Charge Status
 Bms::ChargeStatus Bms::GetChargeStatus(etl::array<byte, 2>& read_buffer)
 {
@@ -183,29 +273,7 @@ uint16_t Bms::GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer)
         return Jeita_region_binary_reading;
     }
 }
-// VCharge Dec
-double Bms::GetVChargeDEC(etl::array<byte, 2>& read_buffer)
-{
-    SelectRegister(kVChargeDACRegisterLocation);
-    ReadFromCurrentRegister(read_buffer);
-    uint16_t vcharge_dec_binary_reading =
-            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
-                    | static_cast<uint16_t>(read_buffer.at(0));
-    return (vcharge_dec_binary_reading / kVchargeDivisionFactor)
-            + kVchargeAdditionFactor;
-}
 
-// ICharge Dec
-double Bms::GetIChargeDEC(etl::array<byte, 2>& read_buffer)
-{
-    SelectRegister(kIChargeDACRegisterLocation);
-    ReadFromCurrentRegister(read_buffer);
-    uint16_t icharge_dec_binary_reading =
-            ((static_cast<uint16_t>(read_buffer.at(1))) << 8)
-                    | static_cast<uint16_t>(read_buffer.at(0));
-    return (icharge_dec_binary_reading + kIchargeAdditionFactor)
-            * kIchargeMultiplicationFactor;
-}
 
 double Bms::TakeI2cDieTempReading()
 {
@@ -254,7 +322,7 @@ double Bms::GetSOCinPercent(etl::array<byte, 2> read_buffer)
 {
     if (GetTelemetryValid(read_buffer))
     {
-        Initial_Charge_complete = true;
+        Initial_Charge_complete = false;
         double q_count;
         double SOC;
         SelectRegister(kQCountInitialRegisterLocation);
@@ -262,23 +330,22 @@ double Bms::GetSOCinPercent(etl::array<byte, 2> read_buffer)
         uint16_t q_count_reading = ((static_cast<uint16_t>(read_buffer.at(1)))
                 << 8) | static_cast<uint16_t>(read_buffer.at(0));
 
-        if (Initial_Charge_complete)
-        {
-            q_count = q_count_reading - kQCountAtInitial;
-            return SOC = kSOCPercentFactor * (q_count / kQCountMaximum);
-        }
-        else
-        {
-            return SOC = kSOCPercentFactor
-                    * (q_count / kQCountAtHundreadPercent);
-        }
-
         if (GetCOverXTerm(read_buffer))
         {
             q_count = kQCountAtHundreadPercent;
-            if (Initial_Charge_complete)
-                Initial_Charge_complete = false;
+            Initial_Charge_complete = true;
         }
+        else
+        {
+            q_count = q_count_reading;
+        }
+
+        if (Initial_Charge_complete)
+            return SOC = kSOCPercentFactor
+                    * (q_count / kQCountAtHundreadPercent);
+        else
+            return SOC = kSOCPercentFactor
+                    * ((q_count - kQCountAtInitial) / kQCountMaximum);
     }
 }
 

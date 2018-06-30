@@ -45,11 +45,20 @@ class Bms : public I2cSensor {
     double GetSOCinPercent(etl::array<byte, 2> read_buffer);
     bool GetCOverXTerm(etl::array<byte, 2>& read_buffer);
 
-    static const byte kUVCLRegisterValue = 0x8D;
+    double GetBatVoltage(etl::array<byte, 2>& read_buffer);
+    double GetBatCurrent(etl::array<byte, 2>& read_buffer);
+    double GetInVoltage(etl::array<byte, 2>& read_buffer);
+    double GetInCurrent(etl::array<byte, 2>& read_buffer);
+    double GetSysVoltage(etl::array<byte, 2>& read_buffer);
+
+    static const byte kUVCLRegisterUValue = 0x04;
+    static const byte kUVCLRegisterLValue = 0x29;
     static const byte kVChargeRegisterValue = 0x0F;
     static const byte kIChargeRegisterValue = 0x07;
-    static const byte kReChargeThresholdLRegisterValue = 0x0C;
-    static const byte kReChargeThresholdURegisterValue = 0x43;
+    static const byte kReChargeThresholdLRegisterValue = 0x1C;
+    static const byte kReChargeThresholdURegisterValue = 0x47;
+    static const byte kCXThresholdRegisterUValue = 0x01;
+    static const byte kCXThresholdRegisterLValue = 0x0E;
 
    private:
     static const uint16_t kTelemetryValidBitMask = 0x0001;
@@ -61,6 +70,8 @@ class Bms : public I2cSensor {
     static const uint16_t kChargeStatusNotCharging = 0x0000;
     static const uint16_t kChargeEnableBitMask = 0x2000;
     static const uint16_t kCOverXTermBitMask = 0x0008;
+    static const uint16_t kBatteryCurrent2sComplementBitMask = 0x8000;
+
 
 
     static const byte kEmptybuffervalue = 0x00;
@@ -87,18 +98,22 @@ class Bms : public I2cSensor {
     static const byte kCXJeitaEnableRegisterLocation = 0x29;
     static const byte kCXJeitaEnableRegisterValue = 0x05;
     static const byte kCXThresholdRegisterLocation = 0x1C;
-    static const byte kCXThresholdRegisterValue = 0x88;
     static const byte kJeitaRegionRegisterLocation = 0x42;
     static const byte kJeitaT1RegisterLocation = 0x1F;
     static const byte kJeitaT1ConfiqurationUBValue = 0x4B;
     static const byte kJeitaT1ConfiqurationLBValue = 0x07;
     static const byte kVChargeJeita5to6RegisterLocation = 0x25;
+    static const byte kVChargeJeita5to6ConfigurationLBValue = 0x73;
+    static const byte kVChargeJeita5to6ConfigurationUBValue = 0x02;
     static const byte kVChargeJeita2to4RegisterLocation = 0x26;
+    static const byte kVChargeJeita2to4ConfigurationLBValue = 0x73;
+    static const byte kVChargeJeita2to4ConfigurationUBValue = 0x4E;
     static const byte kIChargeJeita5to6RegisterLocation = 0x27;
     static const byte kIChargeJeita5to6ConfigurationValue = 0xE7;
     static const byte kIChargeJeita2to4RegisterLocation = 0x28;
     static const byte kIChargeJeita2to4ConfigurationLBValue = 0xE7;
     static const byte kIChargeJeita2to4ConfigurationUBValue = 0x1C;
+
     static const double kVchargeDivisionFactor = 80.0;
     static const double kVchargeAdditionFactor = 3.4125;
     static const double kIchargeAdditionFactor = 1.0;
@@ -118,8 +133,15 @@ class Bms : public I2cSensor {
     static const double kDieTempConversionFactor = 45.6;
 
     static const byte kNTCRatioRegister = 0x40;
-    static const double kNTCBiasResistance = 10000.0;
     static const double kNTCBitWeight = 21845.0;
+    static const double kNTCBiasResistance = 10000.0;
+
+    static const double kRnsiResistance = 0.002;
+    static const double kRnsbResistance = 0.008;
+
+    static const double kVoltageforVbat = 0.000192214;
+    static const double kCurrentforIinIbat = 0.00000146487;
+    static const double kVoltageforVinVsys = 0.001648;
 
     static const double kConversionCoefficientA = 0.00084220;
     static const double kConversionCoefficientB = 0.00026265;

@@ -88,9 +88,9 @@ int bms_tests_runner(void)
   try {
   UnityBegin("src/board/i2c/bms/tests/bms_tests.cpp");
     RUN_TEST(TestBms, 13);
-    RUN_TEST(TestBmsDieTemperatureRead, 36);
-    RUN_TEST(TestBmsBatteryTemperatureRead, 47);
-    RUN_TEST(TestJeitaRegion, 58);
+    RUN_TEST(TestBmsDieTemperatureRead, 45);
+    RUN_TEST(TestBmsBatteryTemperatureRead, 56);
+    RUN_TEST(TestJeitaRegion, 67);
   } catch (etl::exception &e) {
     const char* message = e.what();
     TEST_FAIL_MESSAGE(message);
