@@ -76,7 +76,7 @@ void PostBiosInitialiser::InitRadioListener() {
 
 void PostBiosInitialiser::RunUnitTests() {
     TaskHolder* test_task =
-        new TaskHolder(11000, "Unit Tests", 7, TestInitialiser::GetInstance());
+        new TaskHolder(20000, "Unit Tests", 7, TestInitialiser::GetInstance());
     test_task->Init();
 }
 
@@ -211,8 +211,11 @@ void PostBiosInitialiser::InitTimeSource() {
 
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
-    SystemWatchdog(0);
-    InitMemoryLogger();
+    SystemWatchdog((uint32_t) SYS_WATCHDOG0);
+
+    if (ditl_mode) {
+        InitMemoryLogger();
+    }
 
     try {
         // TODO(dingbenjamin): Init var length array pool
@@ -241,7 +244,10 @@ void PostBiosInitialiser::PostBiosInit() {
 
 #if defined ORBIT_CONFIGURATION
         InitStateManagement();
-        if (hil_enabled) InitDataDashboard();
+        if (hil_available) {
+            InitDataDashboard();
+        }
+
         TaskHolder* pre_deployment_magnetometer_poller_task =
             InitPreDeploymentMagnetometerPoller();
 

@@ -23,7 +23,7 @@
 bool Magnetometer::TakeReading() {
     // TODO(rskew): Implement the I2C read
 
-    if (hil_enabled) {
+    if (hil_available) {
         // Echo reading to data dashboard
         RunnableDataDashboard::TransmitMessage(
             kMagnetometerReadingCode, MagnetometerReading_size,
@@ -37,8 +37,8 @@ bool Magnetometer::TakeReading() {
     // }
 
     // TODO (rskew) combine noise from hardware readings with simulated readings
-    bool success;
-    if (hil_enabled) {
+    bool success = false;
+    if (hil_available) {
         success = TakeReadingHil();
     }
 

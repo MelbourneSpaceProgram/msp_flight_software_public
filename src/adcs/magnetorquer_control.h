@@ -59,9 +59,9 @@ class MagnetorquerControl {
     static const uint8_t kMagnetorquerPWMAxisY = Mag_STR_CDH_FS_Out2;
     static const uint8_t kMagnetorquerPWMAxisZ = Mag_STR_CDH_FS_Out3;
 
-    static const uint32_t kMagnetorquerPolarityGpioAxisX = X_Mag_DIR_CDH_FS;
-    static const uint32_t kMagnetorquerPolarityGpioAxisY = Y_Mag_DIR_CDH_FS;
-    static const uint32_t kMagnetorquerPolarityGpioAxisZ = Z_Mag_DIR_CDH_FS;
+    static const uint32_t kMagnetorquerPolarityGpioAxisX = FS_X_DIR;
+    static const uint32_t kMagnetorquerPolarityGpioAxisY = FS_Y_DIR;
+    static const uint32_t kMagnetorquerPolarityGpioAxisZ = FS_Z_DIR;
 
     //
     // TODO(crozone):

@@ -54,6 +54,8 @@ WinBuild/
 TIRTOS Build/
 Orbit/
 Coverity/
+Unit tests (MSP432E)/
+Tests MSP432E/
 
 # Documentation should be auto-generated?
 doc/

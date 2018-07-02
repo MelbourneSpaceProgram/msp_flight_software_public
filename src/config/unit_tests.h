@@ -58,4 +58,14 @@ extern bool write_back_test_enabled;
 extern bool current_sensor_test_enabled;
 extern bool force_reset_command_test_enabled;
 extern bool deployment_waits_are_instant;
+extern bool i2c_available;
+extern bool spi_available;
+extern bool sd_card_available;
+extern bool lithium_available;
+extern bool hil_available;
+extern bool imu_available;
+extern bool bms_available;
+extern bool antenna_available;
+extern bool ditl_mode;
+
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_

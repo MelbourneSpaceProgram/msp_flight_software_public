@@ -34,6 +34,6 @@ void RunnableBeacon::Beacon() {
         } else {
             Log_info0("Beacon is disabled, did not transmit");
         }
-        TaskUtils::SleepMilli(10000);
+        TaskUtils::SleepMilli(2000);
     }
 }

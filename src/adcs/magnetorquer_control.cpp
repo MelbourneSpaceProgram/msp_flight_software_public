@@ -22,7 +22,7 @@ void MagnetorquerControl::Initialize() { InitializePwm(); }
 
 void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
                                                         float z) {
-    if (hil_enabled) {
+    if (hil_available) {
         PushDebugMessage(x, y, z);
     }
 
@@ -144,12 +144,19 @@ void MagnetorquerControl::Degauss() {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
         // Wait for timer
-        Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
-        // Negative power
-        SetMagnetorquersPowerFraction(-power, -power, -power);
-        // Update power and wait for timer
-        power = power * kDegaussingDecayMultiplier;
-        Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
+        // TODO(rskew): It is possible for this to be null due to how the semaphore is initialised. I (akremor) have temporarily modded it so the code doesn't break but we need to revisit the creation of the semaphore. Perhaps dependency injection.
+        // There is a race condition because this check can be called before the semaphore has been initialised.
+        if (degaussing_timer_semaphore){
+            Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
+            // Negative power
+            SetMagnetorquersPowerFraction(-power, -power, -power);
+            // Update power and wait for timer
+            power = power * kDegaussingDecayMultiplier;
+            Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
+        } else {
+            SetMagnetorquersPowerFraction(-power, -power, -power);
+            power = power * kDegaussingDecayMultiplier;
+        }
     }
 }
 

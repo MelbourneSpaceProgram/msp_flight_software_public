@@ -81,7 +81,7 @@ void I2cMultiplexer::CloseAllChannels() const {
 }
 
 byte I2cMultiplexer::GetChannelStates() const {
-    byte read_buffer;
+    byte read_buffer = 0;
     GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1);
     return read_buffer;
 }

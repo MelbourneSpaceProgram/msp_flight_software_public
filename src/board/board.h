@@ -1,7 +1,7 @@
 #ifndef SRC_BOARD_BOARD_H_
 #define SRC_BOARD_BOARD_H_
 
-#include <src/board/MSP_EXP432P401R.h>
+#include "MSP432E.h"
 
 #define Board_initGeneral MSP_EXP432P401R_initGeneral
 

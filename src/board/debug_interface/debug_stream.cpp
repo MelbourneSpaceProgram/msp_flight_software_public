@@ -9,7 +9,7 @@
 
 DebugStream *DebugStream::instance = NULL;
 
-DebugStream::DebugStream() : debug_uart(UART_CDH_UMB) {
+DebugStream::DebugStream() : debug_uart(UMBILICAL_SIM) {
     debug_uart.SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))

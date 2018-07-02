@@ -2,11 +2,11 @@
 #define SRC_UTIL_SYSTEM_WATCHDOG_H_
 
 #include <ti/drivers/Watchdog.h>
-#include <ti/drivers/watchdog/WatchdogMSP432.h>
+#include <src/board/board.h>
 
 class SystemWatchdog {
    public:
-    explicit SystemWatchdog(uint16_t index);
+    explicit SystemWatchdog(uint32_t index);
     static void ResetTimer();
 
    private:
