@@ -1,9 +1,12 @@
+#include <CppUTest/TestHarness.h>
+#include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <test_runners/unity.h>
+
+TEST_GROUP(CircularBuffer){void setup(){if (!sd_card_available){TEST_EXIT}}};
 
 // Overfill the buffer and read all data back to ensure circularity
-void TestWriteAndRead() {
+TEST(CircularBuffer, WriteAndRead) {
     char* file_name = "crclbuf.tst";
     uint8_t n_messages = 4;
     try {
@@ -59,45 +62,45 @@ void TestWriteAndRead() {
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
-    TEST_ASSERT_EQUAL_DOUBLE(13, dummy_magnetometer_reading.x);
-    TEST_ASSERT_EQUAL_DOUBLE(14, dummy_magnetometer_reading.y);
-    TEST_ASSERT_EQUAL_DOUBLE(15, dummy_magnetometer_reading.z);
-    TEST_ASSERT_EQUAL_DOUBLE(
-        131415, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(13, dummy_magnetometer_reading.x, 0.01);
+    DOUBLES_EQUAL(14, dummy_magnetometer_reading.y, 0.01);
+    DOUBLES_EQUAL(15, dummy_magnetometer_reading.z, 0.01);
+    DOUBLES_EQUAL(131415,
+                  dummy_magnetometer_reading.timestamp_millis_unix_epoch, 0.01);
 
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
-    TEST_ASSERT_EQUAL_DOUBLE(4, dummy_magnetometer_reading.x);
-    TEST_ASSERT_EQUAL_DOUBLE(5, dummy_magnetometer_reading.y);
-    TEST_ASSERT_EQUAL_DOUBLE(6, dummy_magnetometer_reading.z);
-    TEST_ASSERT_EQUAL_DOUBLE(
-        456, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(4, dummy_magnetometer_reading.x, 0.01);
+    DOUBLES_EQUAL(5, dummy_magnetometer_reading.y, 0.01);
+    DOUBLES_EQUAL(6, dummy_magnetometer_reading.z, 0.01);
+    DOUBLES_EQUAL(456, dummy_magnetometer_reading.timestamp_millis_unix_epoch,
+                  0.01);
 
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
-    TEST_ASSERT_EQUAL_DOUBLE(7, dummy_magnetometer_reading.x);
-    TEST_ASSERT_EQUAL_DOUBLE(8, dummy_magnetometer_reading.y);
-    TEST_ASSERT_EQUAL_DOUBLE(9, dummy_magnetometer_reading.z);
-    TEST_ASSERT_EQUAL_DOUBLE(
-        789, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(7, dummy_magnetometer_reading.x, 0.01);
+    DOUBLES_EQUAL(8, dummy_magnetometer_reading.y, 0.01);
+    DOUBLES_EQUAL(9, dummy_magnetometer_reading.z, 0.01);
+    DOUBLES_EQUAL(789, dummy_magnetometer_reading.timestamp_millis_unix_epoch,
+                  0.01);
 
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
-    TEST_ASSERT_EQUAL_DOUBLE(10, dummy_magnetometer_reading.x);
-    TEST_ASSERT_EQUAL_DOUBLE(11, dummy_magnetometer_reading.y);
-    TEST_ASSERT_EQUAL_DOUBLE(12, dummy_magnetometer_reading.z);
-    TEST_ASSERT_EQUAL_DOUBLE(
-        101112, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(10, dummy_magnetometer_reading.x, 0.01);
+    DOUBLES_EQUAL(11, dummy_magnetometer_reading.y, 0.01);
+    DOUBLES_EQUAL(12, dummy_magnetometer_reading.z, 0.01);
+    DOUBLES_EQUAL(101112,
+                  dummy_magnetometer_reading.timestamp_millis_unix_epoch, 0.01);
 
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
-    TEST_ASSERT_EQUAL_DOUBLE(13, dummy_magnetometer_reading.x);
-    TEST_ASSERT_EQUAL_DOUBLE(14, dummy_magnetometer_reading.y);
-    TEST_ASSERT_EQUAL_DOUBLE(15, dummy_magnetometer_reading.z);
-    TEST_ASSERT_EQUAL_DOUBLE(
-        131415, dummy_magnetometer_reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(13, dummy_magnetometer_reading.x, 0.01);
+    DOUBLES_EQUAL(14, dummy_magnetometer_reading.y, 0.01);
+    DOUBLES_EQUAL(15, dummy_magnetometer_reading.z, 0.01);
+    DOUBLES_EQUAL(131415,
+                  dummy_magnetometer_reading.timestamp_millis_unix_epoch, 0.01);
 }

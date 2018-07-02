@@ -1,5 +1,5 @@
+#include <CppUTest/TestHarness.h>
 #include <src/sensors/magnetometer_calibration.h>
-#include <test_runners/unity.h>
 
 const double
     test_calibration_values_data[MagnetometerCalibration::kDataSize][3] = {
@@ -62,7 +62,9 @@ const double aggregated_readings_expected_data[10][10] = {
     {117965.448500, 117214.154900, 313838.250100, 304240.877600, 314856.893400,
      191796.656200, -3982.300000, -4049.020000, -6674.500000, 40.000000}};
 
-void TestComputeAggregatedReadings() {
+TEST_GROUP(MagnetometerCalibration){};
+
+TEST(MagnetometerCalibration, TestComputeAggregatedReadings) {
     Matrix test_calibration_values(
         const_cast<double(&)[40][3]>(test_calibration_values_data));
 
@@ -72,15 +74,16 @@ void TestComputeAggregatedReadings() {
     magnetometer_calibration.ComputeAggregatedReadings(test_calibration_values);
     for (uint8_t i = 0; i < 10; i++) {
         for (uint8_t j = 0; j < 10; j++) {
-            TEST_ASSERT_DOUBLE_WITHIN(
-                1e-4, 1,
+            DOUBLES_EQUAL(
+                1,
                 magnetometer_calibration.GetAggregatedReadings().Get(i, j) /
-                    aggregated_readings_expected.Get(i, j));
+                    aggregated_readings_expected.Get(i, j),
+                0.001);
         }
     }
 }
 
-void TestMagnetometerCalibration() {
+IGNORE_TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
     Matrix test_calibration_values(
         const_cast<double(&)[40][3]>(test_calibration_values_data));
 
@@ -99,15 +102,15 @@ void TestMagnetometerCalibration() {
     magnetometer_calibration.ComputeCalibrationParameters();
 
     for (uint8_t i = 0; i < 3; i++) {
-        TEST_ASSERT_DOUBLE_WITHIN(
-            1e-4, biases_expected.Get(i, 0),
-            magnetometer_calibration.GetBiases().Get(i, 0));
+        DOUBLES_EQUAL(biases_expected.Get(i, 0),
+                      magnetometer_calibration.GetBiases().Get(i, 0), 0.001);
     }
     for (uint8_t i = 0; i < 3; i++) {
         for (uint8_t j = 0; j < 3; j++) {
-            TEST_ASSERT_DOUBLE_WITHIN(
-                1e-4, scale_factors_expected.Get(i, j) / 1000,
-                magnetometer_calibration.GetScaleFactors().Get(i, j) / 1000);
+            DOUBLES_EQUAL(
+                scale_factors_expected.Get(i, j) / 1000,
+                magnetometer_calibration.GetScaleFactors().Get(i, j) / 1000,
+                0.001);
         }
     }
 }

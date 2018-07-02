@@ -1,8 +1,10 @@
+#include <CppUTest/TestHarness.h>
 #include <math.h>
 #include <src/util/first_order_iir_lowpass.h>
-#include <test_runners/unity.h>
 
-void TestProcessSampleFilter() {
+TEST_GROUP(FirstOrderIirLowpass){};
+
+TEST(FirstOrderIirLowpass, TestProcessSampleFilter) {
     double test_input[5] = {1, 1, 1, 1, 1};
     uint16_t time_constant_millis = 1000;
     uint16_t sample_period_millis = 50;
@@ -16,6 +18,6 @@ void TestProcessSampleFilter() {
 
     for (uint8_t i = 0; i < 5; i++) {
         double filter_output = filter.ProcessSample(test_input[i]);
-        TEST_ASSERT_EQUAL_DOUBLE(expected_output[i], filter_output);
+        DOUBLES_EQUAL(expected_output[i], filter_output, 0.001);
     }
 }

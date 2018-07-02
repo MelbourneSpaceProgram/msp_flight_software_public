@@ -1,8 +1,8 @@
+#include <CppUTest/TestHarness.h>
 #include <external/etl/exception.h>
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <string.h>
-#include <test_runners/unity.h>
 #include <xdc/runtime/Log.h>
 
 const char input_file[] = "0:test_in.txt";
@@ -24,13 +24,13 @@ const char text_array[] =
 
 const uint16_t copy_buffer_size = 128;
 
-void TestFatFsReadWrite() {
+TEST_GROUP(SdCard){void setup(){if (!sd_card_available){TEST_EXIT}}};
+TEST(SdCard, FatFsReadWrite) {
     File src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
                                                 SdCard::kFileReadMode |
                                                 SdCard::kFileCreateAlwaysMode);
-    TEST_ASSERT_EQUAL_UINT16(
-        strlen(text_array),
-        SdCard::FileWrite(src, text_array, strlen(text_array)));
+    CHECK_EQUAL(strlen(text_array),
+                SdCard::FileWrite(src, text_array, strlen(text_array)));
     SdCard::FileFlush(src);
     SdCard::FileSeek(src, 0);
     SdCard::FileClose(src);
@@ -45,23 +45,17 @@ void TestFatFsReadWrite() {
     uint32_t bytes_read, bytes_written;
     uint64_t total_bytes_copied = 0;
     while (true) {
-        try {
-            bytes_read = SdCard::FileRead(src, copy_buffer, copy_buffer_size);
-            if (bytes_read == 0) {
-                break;
-            }
-
-            bytes_written = SdCard::FileWrite(dst, copy_buffer, bytes_read);
-            if (bytes_written < bytes_read) {
-                Log_error0("SD Card full");
-                break;
-            }
-            total_bytes_copied += bytes_written;
-        } catch (etl::exception &e) {
-            TEST_ASSERT(false);
-            // Error or EOF
+        bytes_read = SdCard::FileRead(src, copy_buffer, copy_buffer_size);
+        if (bytes_read == 0) {
             break;
         }
+
+        bytes_written = SdCard::FileWrite(dst, copy_buffer, bytes_read);
+        if (bytes_written < bytes_read) {
+            Log_error0("SD Card full");
+            break;
+        }
+        total_bytes_copied += bytes_written;
     }
 
     SdCard::FileFlush(dst);
@@ -78,20 +72,14 @@ void TestFatFsReadWrite() {
 
     uint16_t index = 0;
     while (true) {
-        try {
-            uint32_t bytes_read =
-                SdCard::FileRead(dst, copy_buffer, copy_buffer_size);
-            if (bytes_read == 0) {
-                break;  // EOF
-            }
-            copy_buffer[bytes_read] = '\0';
-            TEST_ASSERT_EQUAL_STRING_LEN(text_array + index, copy_buffer,
-                                         bytes_read);
-            index += copy_buffer_size;
-        } catch (etl::exception &e) {
-            TEST_ASSERT(false);
-            break;
+        uint32_t bytes_read =
+            SdCard::FileRead(dst, copy_buffer, copy_buffer_size);
+        if (bytes_read == 0) {
+            break;  // EOF
         }
+        copy_buffer[bytes_read] = '\0';
+        STRNCMP_EQUAL(text_array + index, copy_buffer, bytes_read);
+        index += copy_buffer_size;
     }
 
     SdCard::FileClose(dst);

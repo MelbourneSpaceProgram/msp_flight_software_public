@@ -1,9 +1,11 @@
+#include <CppUTest/TestHarness.h>
 #include <math.h>
 #include <src/sensors/earth_sensor.h>
 #include <src/sensors/infrared_sensor.h>
-#include <test_runners/unity.h>
 
-void TestInfraredToAngle(void) {
+TEST_GROUP(EarthSensor){};
+
+TEST(EarthSensor, TestInfraredToAngle) {
     double side_normal_data[3][1] = {{1}, {0}, {0}};
     Matrix side_normal(side_normal_data);
     InfraredSensor test_sensor(side_normal);
@@ -13,17 +15,14 @@ void TestInfraredToAngle(void) {
     double expected_angle_3 = 2.973281695942479;
 
     test_sensor.SetInfraredReading(1.0);
-    TEST_ASSERT_DOUBLE_WITHIN(1e-6, expected_angle_1,
-                              test_sensor.GetAngleToNadir());
+    DOUBLES_EQUAL(expected_angle_1, test_sensor.GetAngleToNadir(), 0.001);
     test_sensor.SetInfraredReading(0.5);
-    TEST_ASSERT_DOUBLE_WITHIN(1e-6, expected_angle_2,
-                              test_sensor.GetAngleToNadir());
+    DOUBLES_EQUAL(expected_angle_2, test_sensor.GetAngleToNadir(), 0.001);
     test_sensor.SetInfraredReading(0.0);
-    TEST_ASSERT_DOUBLE_WITHIN(1e-6, expected_angle_3,
-                              test_sensor.GetAngleToNadir());
+    DOUBLES_EQUAL(expected_angle_3, test_sensor.GetAngleToNadir(), 0.001);
 }
 
-void TestCalculateNadirVector(void) {
+TEST(EarthSensor, TestCalculateNadirVector) {
     // Data obtained from MATLAB script code of the running algorithm
     double nadir_expected_data_1[3][1] = {
         {-0.404816393349314}, {-0.859347789667761}, {0.4033108072669962}};
@@ -42,10 +41,7 @@ void TestCalculateNadirVector(void) {
 
     earth_sensor.CalculateNadirVector();
     nadir_vector = earth_sensor.GetNadirVector();
-    TEST_ASSERT_DOUBLE_WITHIN(1e-4, nadir_expected_1.Get(0, 0),
-                              nadir_vector.Get(0, 0));
-    TEST_ASSERT_DOUBLE_WITHIN(1e-4, nadir_expected_1.Get(1, 0),
-                              nadir_vector.Get(1, 0));
-    TEST_ASSERT_DOUBLE_WITHIN(1e-4, nadir_expected_1.Get(2, 0),
-                              nadir_vector.Get(2, 0));
+    DOUBLES_EQUAL(nadir_expected_1.Get(0, 0), nadir_vector.Get(0, 0), 0.001);
+    DOUBLES_EQUAL(nadir_expected_1.Get(1, 0), nadir_vector.Get(1, 0), 0.001);
+    DOUBLES_EQUAL(nadir_expected_1.Get(2, 0), nadir_vector.Get(2, 0), 0.001);
 }

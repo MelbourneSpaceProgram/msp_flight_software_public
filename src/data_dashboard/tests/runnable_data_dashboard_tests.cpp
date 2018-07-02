@@ -1,3 +1,4 @@
+#include <CppUTest/TestHarness.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
 #include <src/board/debug_interface/debug_stream.h>
@@ -6,12 +7,10 @@
 #include <src/messages/SensorReading.pb.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
-#include <test_runners/unity.h>
 
-void TestTransmitMessage() {
-    if (!hil_enabled) {
-        TEST_IGNORE_MESSAGE("HIL test ignored");
-    }
+TEST_GROUP(HardwareInLoop){};
+
+IGNORE_TEST(HardwareInLoop, TransmitMessage) {
     DebugStream* debug_stream = DebugStream::GetInstance();
     byte buffer[SensorReading_size];
 
@@ -26,7 +25,7 @@ void TestTransmitMessage() {
     bool success = debug_stream->RequestMessageFromSimulator(
         kTestSensorReadingRequestCode, buffer, SensorReading_size);
     if (!success) {
-        TEST_IGNORE_MESSAGE("Debug stream could not perform request");
+        CHECK(false);
     }
 
     pb_istream_t stream = pb_istream_from_buffer(buffer, SensorReading_size);
@@ -34,8 +33,8 @@ void TestTransmitMessage() {
     SensorReading reading;
     pb_decode(&stream, SensorReading_fields, &reading);
 
-    TEST_ASSERT_EQUAL_DOUBLE(987654321, reading.value);
-    TEST_ASSERT_EQUAL_INT(554455445, reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(987654321, reading.value, 0.01);
+    CHECK_EQUAL(554455445, reading.timestamp_millis_unix_epoch);
 
     // Reset the test value on the DebugClient end.
     // Stateful tests are no fun.

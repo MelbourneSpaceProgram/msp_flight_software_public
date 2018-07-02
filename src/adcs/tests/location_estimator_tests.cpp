@@ -1,7 +1,9 @@
+#include <CppUTest/TestHarness.h>
 #include <src/adcs/state_estimators/location_estimator.h>
-#include <test_runners/unity.h>
 
-void TestUpdateLocation() {
+TEST_GROUP(LocationEstimator){};
+
+TEST(LocationEstimator, UpdateLocation) {
     /* TLE IN USE:
        1 00005U 58002B   00179.78495062  .00000023  00000-0  28098-4 0  4753
        2 00005  34.2682 348.7242 1859667 331.7664  19.3264 10.824191574 13667
@@ -35,10 +37,10 @@ void TestUpdateLocation() {
     double expected_lattitude_geodetic_degrees = -23.705347061214;    // degrees
     double expected_longitude_degrees = -81.146765103690;             // degrees
 
-    TEST_ASSERT_EQUAL_DOUBLE(expected_longitude_degrees,
-                             calculated_longitude_degrees);
-    TEST_ASSERT_EQUAL_DOUBLE(expected_lattitude_geodetic_degrees,
-                             calculated_lattitude_geodetic_degrees);
-    TEST_ASSERT_EQUAL_DOUBLE(expected_altitude_above_ellipsoid_km,
-                             calculated_altitude_above_ellipsoid_km);
+    DOUBLES_EQUAL(expected_longitude_degrees, calculated_longitude_degrees,
+                  0.001);
+    DOUBLES_EQUAL(expected_lattitude_geodetic_degrees,
+                  calculated_lattitude_geodetic_degrees, 0.001);
+    DOUBLES_EQUAL(expected_altitude_above_ellipsoid_km,
+                  calculated_altitude_above_ellipsoid_km, 0.001);
 }

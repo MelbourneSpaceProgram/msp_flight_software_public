@@ -1,3 +1,4 @@
+#include <CppUTest/TestHarness.h>
 #include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
@@ -5,12 +6,16 @@
 #include <src/config/unit_tests.h>
 #include <src/messages/SensorReading.pb.h>
 #include <src/util/message_codes.h>
-#include <test_runners/unity.h>
 
-void TestRequestMessageFromSimulator() {
-    if (!hil_enabled) {
-        TEST_IGNORE_MESSAGE("HIL test ignored");
-    }
+TEST_GROUP(DebugInterface) {
+    void setup() {
+        if (!hil_available) {
+            TEST_EXIT;
+        }
+    };
+};
+
+TEST(DebugInterface, TestRequestMessageFromSimulator) {
     DebugStream *debug_stream = DebugStream::GetInstance();
 
     uint8_t buffer[SensorReading_size];
@@ -18,7 +23,7 @@ void TestRequestMessageFromSimulator() {
     bool success = debug_stream->RequestMessageFromSimulator(
         kTestRequestCode, buffer, SensorReading_size);
     if (!success) {
-        TEST_IGNORE_MESSAGE("Debug stream could not perform request");
+        FAIL("Debug stream could not perform request");
     }
 
     pb_istream_t stream = pb_istream_from_buffer(buffer, SensorReading_size);
@@ -26,14 +31,11 @@ void TestRequestMessageFromSimulator() {
     SensorReading reading;
     pb_decode(&stream, SensorReading_fields, &reading);
 
-    TEST_ASSERT_EQUAL_DOUBLE(1234, reading.value);
-    TEST_ASSERT_EQUAL_INT(4321, reading.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(1234, reading.value, 1.0);
+    CHECK_EQUAL(4321, reading.timestamp_millis_unix_epoch);
 }
 
-void TestPostMessageToDebugClient() {
-    if (!hil_enabled) {
-        TEST_IGNORE_MESSAGE("HIL test ignored");
-    }
+TEST(DebugInterface, TestPostMessageToDebugClient) {
     DebugStream *debug_stream = DebugStream::GetInstance();
 
     SensorReading test_sensor_reading;
@@ -48,9 +50,7 @@ void TestPostMessageToDebugClient() {
     bool status;
     status = pb_encode(&stream, SensorReading_fields, &test_sensor_reading);
     if (!status) {
-        etl::exception e("TestPostMessageToDebugClient pb_encode failed",
-                         __FILE__, __LINE__);
-        throw e;
+        FAIL("TestPostMessageToDebugClient pb_encode failed");
     }
 
     debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
@@ -58,7 +58,7 @@ void TestPostMessageToDebugClient() {
     bool success = debug_stream->RequestMessageFromSimulator(
         kTestSensorReadingRequestCode, receive_buffer, SensorReading_size);
     if (!success) {
-        TEST_IGNORE_MESSAGE("Debug stream could not perform request");
+        FAIL("Debug stream could not perform request");
     }
 
     pb_istream_t receive_stream =
@@ -68,9 +68,9 @@ void TestPostMessageToDebugClient() {
     pb_decode(&receive_stream, SensorReading_fields,
               &test_sensor_reading_received);
 
-    TEST_ASSERT_EQUAL_DOUBLE(-999, test_sensor_reading_received.value);
-    TEST_ASSERT_EQUAL_INT(
-        123456789, test_sensor_reading_received.timestamp_millis_unix_epoch);
+    DOUBLES_EQUAL(-999, test_sensor_reading_received.value, 1);
+    CHECK_EQUAL(123456789,
+                test_sensor_reading_received.timestamp_millis_unix_epoch);
 
     // Reset the test value on the DebugClient end.
     // Stateful tests are no fun.
@@ -86,9 +86,7 @@ void TestPostMessageToDebugClient() {
     reset_status = pb_encode(&reset_stream, SensorReading_fields,
                              &reset_test_sensor_reading);
     if (!reset_status) {
-        etl::exception e("TestPostMessageToDebugClient pb_encode failed",
-                         __FILE__, __LINE__);
-        throw e;
+        FAIL("TestPostMessageToDebugClient pb_encode failed");
     }
     debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
                                            SensorReading_size, reset_buffer);
