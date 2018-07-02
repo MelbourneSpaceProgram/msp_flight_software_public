@@ -12,4 +12,8 @@ TestInitialiser* TestInitialiser::GetInstance() {
 
 fnptr TestInitialiser::GetRunnablePointer() { return &RunUnitTests; }
 
-void TestInitialiser::RunUnitTests() { master_tests_thread(); }
+void TestInitialiser::RunUnitTests() {
+    const char* av[] = {"exe", "-sg", "Lithium"};
+    int ac = 3;
+    RUN_ALL_TESTS(ac, av);
+}

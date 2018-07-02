@@ -17,7 +17,7 @@
 Lithium* Lithium::instance = NULL;
 
 Lithium::Lithium()
-    : lithium_config(), uart(UART_CMS_CDH), lithium_transmit_enabled(true) {
+    : lithium_config(), uart(TELECOMS), lithium_transmit_enabled(true) {
     uart.SetBaudRate(Uart::kBaud9600)
         ->SetReadMode(UART_MODE_BLOCKING)
         ->SetWriteMode(UART_MODE_BLOCKING)

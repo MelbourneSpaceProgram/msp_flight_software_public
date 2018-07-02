@@ -20,12 +20,16 @@ void I2c::InitBusses() {
         return;
     }
 
+    // Ensure the multiplexer is taken out of reset
+    GPIO_write(I2C_MUX_nRST, 1);
+
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
         if (I2c_busses[i] == NULL) {
             I2C_Params_init(&I2c_params[i]);
             I2c_params[i].transferMode = I2C_MODE_CALLBACK;
             I2c_params[i].transferCallbackFxn =
                 static_cast<I2C_CallbackFxn>(ManageI2cTimeout);
+            I2c_params[i].bitRate = I2C_400kHz;
 
             I2c_busses[i] = I2C_open(i, &I2c_params[i]);
             if (I2c_busses[i] == NULL) {

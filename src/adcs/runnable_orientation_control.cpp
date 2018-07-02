@@ -100,7 +100,7 @@ void RunnableOrientationControl::ControlOrientation() {
         }
         MagnetometerReading magnetometer_reading = magnetometer.GetReading();
 
-        if (hil_enabled) {
+        if (hil_available) {
             // Echo reading to data dashboard
             RunnableDataDashboard::TransmitMessage(
                 kMagnetometerReadingCode, MagnetometerReading_size,
@@ -141,12 +141,12 @@ void RunnableOrientationControl::ControlOrientation() {
             if (location_estimator.CheckForUpdatedTle()) {
                 tle_last_updated = SatelliteTimeSource::GetTime();
             }
-        } else if (hil_enabled) {
+        } else if (hil_available) {
             location_estimator.RequestTleFromDebugClient();
             tle_last_updated = SatelliteTimeSource::GetTime();
         }
 
-        if (hil_enabled || over_the_air_enabled) {
+        if (hil_available || over_the_air_enabled) {
             // Calculate position
             current_time = SatelliteTimeSource::GetTime();
             // TODO(rskew): Need to check if the returned time was valid

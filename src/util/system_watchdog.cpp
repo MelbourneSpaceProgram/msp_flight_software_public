@@ -3,7 +3,7 @@
 
 Watchdog_Handle SystemWatchdog::watchdog_handle = NULL;
 
-SystemWatchdog::SystemWatchdog(uint16_t index) {
+SystemWatchdog::SystemWatchdog(uint32_t index) {
     Watchdog_init();
     Watchdog_Params params;
 
