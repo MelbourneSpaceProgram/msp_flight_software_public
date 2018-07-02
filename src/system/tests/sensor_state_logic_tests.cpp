@@ -1,3 +1,4 @@
+#include <CppUTest/TestHarness.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/test_sensors/test_i2c_sensor.h>
 #include <src/system/sensor_state_machines/battery_charge_state_machine.h>
@@ -5,7 +6,6 @@
 #include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
-#include <test_runners/unity.h>
 #include <string>
 
 static const float kTwoEclipseCapacity = 0.2;
@@ -17,6 +17,8 @@ static const double kTempBatteryOperationalHigh = 40;
 static const double kHysteresisTemp = 1;
 
 static const double kTempTelecomsOperationalMax = 80;
+
+TEST_GROUP(SensorStateLogic){};
 
 StateId BatteryChargeStateCheck(double soc, StateId current_state) {
     switch (current_state) {
@@ -57,7 +59,7 @@ StateId TelecomsTempStateCheck(double temp, StateId current_state) {
     return current_state;
 }
 
-void TestBatteryChargeStateFlow(void) {
+TEST(SensorStateLogic, TestBatteryChargeStateFlow) {
     StateManager* state_manager = StateManager::GetStateManager();
     BatteryChargeStateMachine battery_charge_state_machine(state_manager);
 
@@ -73,7 +75,7 @@ void TestBatteryChargeStateFlow(void) {
         battery_soc_sensor.SetDummySensorData(dummy_soc_reading);
         battery_soc_sensor.TakeReading();
 
-        TEST_ASSERT_EQUAL_INT(
+        CHECK_EQUAL(
             BatteryChargeStateCheck(dummy_soc_reading, state_before_reading),
             battery_charge_state_machine.GetCurrentState());
         dummy_soc_reading += 0.01;
@@ -84,14 +86,14 @@ void TestBatteryChargeStateFlow(void) {
         battery_soc_sensor.SetDummySensorData(dummy_soc_reading);
         battery_soc_sensor.TakeReading();
 
-        TEST_ASSERT_EQUAL_INT(
+        CHECK_EQUAL(
             BatteryChargeStateCheck(dummy_soc_reading, state_before_reading),
             battery_charge_state_machine.GetCurrentState());
         dummy_soc_reading -= 0.01;
     }
 }
 
-void TestTelecomsTempStateFlow(void) {
+TEST(SensorStateLogic, TestTelecomsTempStateFlow) {
     StateManager* state_manager = StateManager::GetStateManager();
     TelecomsTempStateMachine telecoms_temp_state_machine(state_manager);
 
@@ -107,7 +109,7 @@ void TestTelecomsTempStateFlow(void) {
         telecoms_temp_sensor.SetDummySensorData(dummy_temp_reading);
         telecoms_temp_sensor.TakeReading();
 
-        TEST_ASSERT_EQUAL_INT(
+        CHECK_EQUAL(
             TelecomsTempStateCheck(dummy_temp_reading, state_before_reading),
             telecoms_temp_state_machine.GetCurrentState());
         dummy_temp_reading += 1;
@@ -118,7 +120,7 @@ void TestTelecomsTempStateFlow(void) {
         telecoms_temp_sensor.SetDummySensorData(dummy_temp_reading);
         telecoms_temp_sensor.TakeReading();
 
-        TEST_ASSERT_EQUAL_INT(
+        CHECK_EQUAL(
             TelecomsTempStateCheck(dummy_temp_reading, state_before_reading),
             telecoms_temp_state_machine.GetCurrentState());
         dummy_temp_reading -= 1;

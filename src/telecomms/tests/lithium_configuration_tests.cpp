@@ -1,19 +1,20 @@
+#include <CppUTest/TestHarness.h>
 #include <src/config/unit_tests.h>
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/lithium_function_config.h>
 #include <src/telecomms/lithium_utils.h>
-#include <test_runners/unity.h>
 
-void TestLithiumConfigurationSerialise() {
+TEST_GROUP(LithiumConfiguration){};
+
+IGNORE_TEST(LithiumConfiguration, TestLithiumConfigurationSerialise) {
     LithiumConfiguration config;
     SerialisedMessage serialised_config = config.Serialise();
-    TEST_ASSERT_EQUAL_UINT16(serialised_config.GetSize(),
-                             config.GetSerialisedSize());
+    CHECK_EQUAL(serialised_config.GetSize(), config.GetSerialisedSize());
     // TODO(dingbenjamin): Anything else worth testing that isn't covered by
     // deserialise?
 }
 
-void TestLithiumConfigurationDeserialise() {
+IGNORE_TEST(LithiumConfiguration, TestLithiumConfigurationDeserialise) {
     LithiumConfiguration config;
     config.SetInterfaceBaudRate(LithiumConfiguration::kBaud38400);
     config.SetRxFreq(1000);
@@ -29,46 +30,47 @@ void TestLithiumConfigurationDeserialise() {
     byte *config_bytes = serialised_config.GetBuffer();
 
     LithiumConfiguration deserialised_config(config_bytes);
-    TEST_ASSERT_EQUAL_UINT8(LithiumConfiguration::kBaud38400,
-                            deserialised_config.GetInterfaceBaudRate());
-    TEST_ASSERT_EQUAL_UINT32(1000, deserialised_config.GetRxFreq());
-    TEST_ASSERT_EQUAL_UINT32(200000, deserialised_config.GetTxFreq());
-    TEST_ASSERT_EQUAL_UINT8(LithiumConfiguration::kRfBaud19200,
-                            deserialised_config.GetRxRfBaudRate());
-    TEST_ASSERT_EQUAL_UINT8(LithiumConfiguration::kRfBaud9600,
-                            deserialised_config.GetTxRfBaudRate());
-    TEST_ASSERT_EQUAL_UINT8(LithiumConfiguration::kAfsk,
-                            deserialised_config.GetTxModulation());
-    TEST_ASSERT_EQUAL_UINT8(LithiumConfiguration::kBpsk,
-                            deserialised_config.GetRxModulation());
-    TEST_ASSERT_EQUAL_UINT8(0x01, deserialised_config.GetTxPostamble());
-    TEST_ASSERT_EQUAL_UINT8(0x01, deserialised_config.GetTxPreamble());
-    TEST_ASSERT_EQUAL_UINT8(190, deserialised_config.GetTxPowerAmpLevel());
+    CHECK_EQUAL(LithiumConfiguration::kBaud38400,
+                deserialised_config.GetInterfaceBaudRate());
+    CHECK_EQUAL(1000, deserialised_config.GetRxFreq());
+    CHECK_EQUAL(200000, deserialised_config.GetTxFreq());
+    CHECK_EQUAL(LithiumConfiguration::kRfBaud19200,
+                deserialised_config.GetRxRfBaudRate());
+    CHECK_EQUAL(LithiumConfiguration::kRfBaud9600,
+                deserialised_config.GetTxRfBaudRate());
+    CHECK_EQUAL(LithiumConfiguration::kAfsk,
+                deserialised_config.GetTxModulation());
+    CHECK_EQUAL(LithiumConfiguration::kBpsk,
+                deserialised_config.GetRxModulation());
+    CHECK_EQUAL(0x01, deserialised_config.GetTxPostamble());
+    CHECK_EQUAL(0x01, deserialised_config.GetTxPreamble());
+    CHECK_EQUAL(190, deserialised_config.GetTxPowerAmpLevel());
 }
 
-void TestFunctionConfigDeserialise() {
+IGNORE_TEST(LithiumConfiguration, TestFunctionConfigDeserialise) {
     LithiumConfiguration config;
     LithiumFunctionConfig *function_config = config.GetFunctionConfig();
-    TEST_ASSERT_EQUAL_UINT16(LithiumFunctionConfig::kExternalEventOffLogicLow,
-                             function_config->GetExternalEventFunction());
-    TEST_ASSERT_EQUAL_UINT16(LithiumFunctionConfig::kPin13OffLogicLow,
-                             function_config->GetConfig2Function());
-    TEST_ASSERT_EQUAL_UINT16(LithiumFunctionConfig::kPin14OffLogicLow,
-                             function_config->GetConfig1Function());
-    TEST_ASSERT_EQUAL_UINT16(LithiumFunctionConfig::kTelemetryPacketLoggingRate1Hz,
-                             function_config->GetTelemetryLoggingRate());
-    TEST_ASSERT(!function_config->IsRxCrcFunctionEnable());
-    TEST_ASSERT(!function_config->IsTxCrcFunctionEnable());
-    TEST_ASSERT(!function_config->IsOaFunctionEnable());
-    TEST_ASSERT(!function_config->IsOaFunctionEnable());
-    TEST_ASSERT(!function_config->IsCodeUploadFunctionEnable());
-    TEST_ASSERT(!function_config->IsRadioResetFunctionEnable());
-    TEST_ASSERT(!function_config->IsFactorySettingsFlag());
-    TEST_ASSERT(!function_config->IsAutoFrequencyControlEnable());
+    CHECK_EQUAL(LithiumFunctionConfig::kExternalEventOffLogicLow,
+                function_config->GetExternalEventFunction());
+    CHECK_EQUAL(LithiumFunctionConfig::kPin13OffLogicLow,
+                function_config->GetConfig2Function());
+    CHECK_EQUAL(LithiumFunctionConfig::kPin14OffLogicLow,
+                function_config->GetConfig1Function());
+    CHECK_EQUAL(LithiumFunctionConfig::kTelemetryPacketLoggingRate1Hz,
+                function_config->GetTelemetryLoggingRate());
+    CHECK(!function_config->IsRxCrcFunctionEnable());
+    CHECK(!function_config->IsTxCrcFunctionEnable());
+    CHECK(!function_config->IsOaFunctionEnable());
+    CHECK(!function_config->IsOaFunctionEnable());
+    CHECK(!function_config->IsCodeUploadFunctionEnable());
+    CHECK(!function_config->IsRadioResetFunctionEnable());
+    CHECK(!function_config->IsFactorySettingsFlag());
+    CHECK(!function_config->IsAutoFrequencyControlEnable());
 
     config.GetFunctionConfig()->SetExternalEventFunction(
         LithiumFunctionConfig::k2500MsToggle);
-    config.GetFunctionConfig()->SetConfig2Function(LithiumFunctionConfig::kTxRxSwitch);
+    config.GetFunctionConfig()->SetConfig2Function(
+        LithiumFunctionConfig::kTxRxSwitch);
     config.GetFunctionConfig()->SetConfig1Function(
         LithiumFunctionConfig::kDioOaPatternA);
     config.GetFunctionConfig()->SetTelemetryLoggingRate(
@@ -86,24 +88,20 @@ void TestFunctionConfigDeserialise() {
 
     LithiumFunctionConfig *deserialised_function_config =
         deserialised_config.GetFunctionConfig();
-    TEST_ASSERT_EQUAL_UINT16(
-        LithiumFunctionConfig::k2500MsToggle,
-        deserialised_function_config->GetExternalEventFunction());
-    TEST_ASSERT_EQUAL_UINT16(
-        LithiumFunctionConfig::kTxRxSwitch,
-        deserialised_function_config->GetConfig2Function());
-    TEST_ASSERT_EQUAL_UINT16(
-        LithiumFunctionConfig::kDioOaPatternA,
-        deserialised_function_config->GetConfig1Function());
-    TEST_ASSERT_EQUAL_UINT16(
-        LithiumFunctionConfig::kTelemetryPacketLoggingRate4Hz,
-        deserialised_function_config->GetTelemetryLoggingRate());
-    TEST_ASSERT(deserialised_function_config->IsRxCrcFunctionEnable());
-    TEST_ASSERT(deserialised_function_config->IsTxCrcFunctionEnable());
-    TEST_ASSERT(deserialised_function_config->IsOaFunctionEnable());
-    TEST_ASSERT(deserialised_function_config->IsOaFunctionEnable());
-    TEST_ASSERT(deserialised_function_config->IsCodeUploadFunctionEnable());
-    TEST_ASSERT(deserialised_function_config->IsRadioResetFunctionEnable());
-    TEST_ASSERT(!deserialised_function_config->IsFactorySettingsFlag());
-    TEST_ASSERT(deserialised_function_config->IsAutoFrequencyControlEnable());
+    CHECK_EQUAL(LithiumFunctionConfig::k2500MsToggle,
+                deserialised_function_config->GetExternalEventFunction());
+    CHECK_EQUAL(LithiumFunctionConfig::kTxRxSwitch,
+                deserialised_function_config->GetConfig2Function());
+    CHECK_EQUAL(LithiumFunctionConfig::kDioOaPatternA,
+                deserialised_function_config->GetConfig1Function());
+    CHECK_EQUAL(LithiumFunctionConfig::kTelemetryPacketLoggingRate4Hz,
+                deserialised_function_config->GetTelemetryLoggingRate());
+    CHECK(deserialised_function_config->IsRxCrcFunctionEnable());
+    CHECK(deserialised_function_config->IsTxCrcFunctionEnable());
+    CHECK(deserialised_function_config->IsOaFunctionEnable());
+    CHECK(deserialised_function_config->IsOaFunctionEnable());
+    CHECK(deserialised_function_config->IsCodeUploadFunctionEnable());
+    CHECK(deserialised_function_config->IsRadioResetFunctionEnable());
+    CHECK(!deserialised_function_config->IsFactorySettingsFlag());
+    CHECK(deserialised_function_config->IsAutoFrequencyControlEnable());
 }

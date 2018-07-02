@@ -1,17 +1,24 @@
+#include <CppUTest/TestHarness.h>
 #include <src/board/board.h>
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/io_expander/io_expander.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/config/unit_tests.h>
 #include <src/util/data_types.h>
-#include <test_runners/unity.h>
 
 static const byte kIoExpanderAddress = 0x22;
 
-void TestIoExpander(void) {
-    if (!io_expander_test_enabled) {
-        TEST_IGNORE_MESSAGE("IO Expander test ignored");
-    }
+TEST_GROUP(IoExpander) {
+    void setup() {
+        if (!i2c_available) {
+            TEST_EXIT;
+        }
+    };
+};
+
+// Test disabled as CDH no longer has an IO Expander
+// TODO(akremor): Find equivalent chip
+IGNORE_TEST(IoExpander, TestIoExpander) {
     // DANGER DANGER:
     //
     // This test affects actual hardware.
@@ -32,8 +39,8 @@ void TestIoExpander(void) {
         test_io_expander.GetDirection(safe_pin);
 
     // Check that the read direction is actually input
-    TEST_ASSERT_TRUE_MESSAGE(read_direction == I2cIoExpander::kIoInput,
-                             "GetDirection was not input after SetDirection");
+    CHECK_TEXT(read_direction == I2cIoExpander::kIoInput,
+               "GetDirection was not input after SetDirection");
 
     // TODO(crozone): Perform GetValue test as pin Input
 
@@ -42,18 +49,18 @@ void TestIoExpander(void) {
     read_direction = test_io_expander.GetDirection(safe_pin);
 
     // Check that the read direction is actually output
-    TEST_ASSERT_TRUE_MESSAGE(read_direction == I2cIoExpander::kIoOutput,
-                             "GetDirection was not input after SetDirection");
+    CHECK_TEXT(read_direction == I2cIoExpander::kIoOutput,
+               "GetDirection was not input after SetDirection");
 
     // SetPin and GetPin test as Hi
     test_io_expander.SetPin(safe_pin, true);
     bool read_value = test_io_expander.GetPin(safe_pin);
 
-    TEST_ASSERT_TRUE_MESSAGE(read_value, "GetPin was not Hi after SetPin");
+    CHECK_TEXT(read_value, "GetPin was not Hi after SetPin");
 
     // SetPin and GetPin test as Lo
     test_io_expander.SetPin(safe_pin, false);
     read_value = test_io_expander.GetPin(safe_pin);
 
-    TEST_ASSERT_FALSE_MESSAGE(read_value, "GetPin was not Lo after SetPin");
+    CHECK_FALSE_TEXT(read_value, "GetPin was not Lo after SetPin");
 }

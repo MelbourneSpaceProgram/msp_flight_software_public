@@ -1,8 +1,10 @@
+#include <CppUTest/TestHarness.h>
 #include <src/observers/specific_observers/test_observer.h>
 #include <src/sensors/test_sensors/test_int_sensor.h>
-#include <test_runners/unity.h>
 
-void TestGenericSensor(void) {
+TEST_GROUP(GenericSensor){};
+
+TEST(GenericSensor, TestGenericSensor) {
     TestObserver observer;
     TestIntSensor test_i2c_sensor;
 
@@ -13,5 +15,5 @@ void TestGenericSensor(void) {
     test_i2c_sensor.SetDummySensorData(dummy_reading);
     test_i2c_sensor.TakeReading();
 
-    TEST_ASSERT_EQUAL_UINT8(dummy_reading, observer.GetObservedReading());
+    CHECK_EQUAL(dummy_reading, observer.GetObservedReading());
 }

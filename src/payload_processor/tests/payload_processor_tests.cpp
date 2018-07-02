@@ -1,3 +1,4 @@
+#include <CppUTest/TestHarness.h>
 #include <external/nanopb/pb_encode.h>
 #include <external/sgp4/sgp4.h>
 #include <src/adcs/state_estimators/location_estimator.h>
@@ -7,11 +8,12 @@
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
-#include <test_runners/unity.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
-void TestPayloadProcessor(void) {
+TEST_GROUP(PayloadProcessor){};
+
+TEST(PayloadProcessor, TestPayloadProcessor) {
     byte payload[Lithium::kMaxReceivedSize] = {0};
 
     // Set the bytes necessary for 2 x test command
@@ -27,14 +29,11 @@ void TestPayloadProcessor(void) {
     payload[9] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    TEST_ASSERT(payload_processor.ParseAndExecuteCommands(payload));
+    CHECK(payload_processor.ParseAndExecuteCommands(payload));
 }
 
-void TestForceResetCommand(void) {
-    if (!force_reset_command_test_enabled) {
-        TEST_IGNORE_MESSAGE("Force reset command test ignored");
-    }
-
+// This test will trigger a reset so normally leave it off
+IGNORE_TEST(PayloadProcessor, TestForceResetCommand) {
     byte payload[Lithium::kMaxReceivedSize] = {0};
 
     payload[0] = 4;
@@ -43,12 +42,12 @@ void TestForceResetCommand(void) {
     payload[3] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    TEST_ASSERT(payload_processor.ParseAndExecuteCommands(payload));
-    TEST_FAIL_MESSAGE("Software reset failed.");  // reset has failed if program
-                                                  // reaches this line
+    CHECK(payload_processor.ParseAndExecuteCommands(payload));
+    FAIL("Software reset failed.");  // reset has failed if program
+                                     // reaches this line
 }
 
-void TestTleUpdateCommand(void) {
+TEST(PayloadProcessor, TestTleUpdateCommand) {
     Tle test_tle;
     // TLE test data (from sgp4_tests.cpp)
     test_tle.epoch = 00179.78495062;
@@ -99,15 +98,15 @@ void TestTleUpdateCommand(void) {
     test_location_estimator.CheckForUpdatedTle();
     elsetrec generated_satrec = test_location_estimator.GetSatrec();
 
-    TEST_ASSERT(generated_satrec.no_kozai ==
-                test_tle.mean_motion / Sgp4Utils::xpdotp);
-    TEST_ASSERT(generated_satrec.inclo ==
-                test_tle.inclination * Sgp4Utils::kDegreesToRadians);
-    TEST_ASSERT(generated_satrec.nodeo ==
-                test_tle.raan * Sgp4Utils::kDegreesToRadians);
-    TEST_ASSERT(generated_satrec.argpo ==
-                test_tle.argument_of_perigee * Sgp4Utils::kDegreesToRadians);
-    TEST_ASSERT(generated_satrec.mo ==
-                test_tle.mean_anomaly * Sgp4Utils::kDegreesToRadians);
-    TEST_ASSERT(generated_satrec.bstar == test_tle.bstar_drag);
+    CHECK(generated_satrec.no_kozai ==
+          test_tle.mean_motion / Sgp4Utils::xpdotp);
+    CHECK(generated_satrec.inclo ==
+          test_tle.inclination * Sgp4Utils::kDegreesToRadians);
+    CHECK(generated_satrec.nodeo ==
+          test_tle.raan * Sgp4Utils::kDegreesToRadians);
+    CHECK(generated_satrec.argpo ==
+          test_tle.argument_of_perigee * Sgp4Utils::kDegreesToRadians);
+    CHECK(generated_satrec.mo ==
+          test_tle.mean_anomaly * Sgp4Utils::kDegreesToRadians);
+    CHECK(generated_satrec.bstar == test_tle.bstar_drag);
 }

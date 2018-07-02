@@ -1,9 +1,11 @@
+#include <CppUTest/TestHarness.h>
 #include <math.h>
 #include <src/adcs/state_estimators/nadir_error_generator.h>
 #include <src/util/matrix.h>
-#include <test_runners/unity.h>
 
-void TestErrorQuaternionGenerator() {
+TEST_GROUP(NadirErrorGenerator){};
+
+TEST(NadirErrorGenerator, ErrorQuaternionGenerator) {
     double aData[4][1] = {{0.0603}, {0.8606}, {0.2338}, {0.3798}};
 
     double bData[4][1] = {{-0.5312}, {-0.5863}, {-0.9253}, {0.3267}};
@@ -19,8 +21,8 @@ void TestErrorQuaternionGenerator() {
     double quat3 = c.Get(2, 0);
     double quat4 = c.Get(3, 0);
 
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, 0.4803, quat1);
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, -0.3752, quat2);
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, 0.4419, quat3);
-    TEST_ASSERT_DOUBLE_WITHIN(0.01, 0.5782, quat4);
+    DOUBLES_EQUAL(0.4803, quat1, 0.01);
+    DOUBLES_EQUAL(-0.3752, quat2, 0.01);
+    DOUBLES_EQUAL(0.4419, quat3, 0.01);
+    DOUBLES_EQUAL(0.5782, quat4, 0.01);
 }

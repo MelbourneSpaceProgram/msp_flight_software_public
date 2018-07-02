@@ -1,3 +1,4 @@
+#include <CppUTest/TestHarness.h>
 #include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
@@ -9,14 +10,12 @@
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/runnable_cache_write_back.h>
 #include <stdio.h>
-#include <test_runners/unity.h>
+
+TEST_GROUP(CacheWriteBack){
+    void setup(){if (!sd_card_available || !i2c_available){TEST_EXIT}}};
 
 // WARNING: Test deletes SD file for CdhTemp1
-void TestCacheWriteBack() {
-    if (!write_back_test_enabled) {
-        TEST_IGNORE_MESSAGE("Hardware test ignored");
-    }
-
+TEST(CacheWriteBack, TestCacheWriteBack) {
     char filename[3];
     snprintf(filename, sizeof(filename), "%03d", kCdhTemp1);
 
@@ -38,13 +37,12 @@ void TestCacheWriteBack() {
     // Check the SD card for the same value as `temp`
     TemperatureReading temp_message =
         CircularBufferNanopb(TemperatureReading)::ReadMessage(filename);
-    TEST_ASSERT_EQUAL_FLOAT(temp_message.temp, temp);
+    DOUBLES_EQUAL(temp_message.temp, temp, 0.001);
 
     // Delete the file now that test is complete
     try {
         SdCard::FileDelete(filename);
     } catch (etl::exception e) {
-        TEST_ASSERT_MESSAGE(false,
-                            "Failed to delete file after write back test");
+        FAIL("Failed to delete file after write back test");
     }
 }

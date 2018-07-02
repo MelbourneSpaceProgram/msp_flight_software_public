@@ -1,4 +1,0 @@
-:unity:
-  :test_prefix: test|Test|spec|Spec|should|Should
-  :setup_name: SetUp
-  :teardown_name: TearDown
