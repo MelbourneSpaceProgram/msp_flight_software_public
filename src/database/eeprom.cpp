@@ -1,14 +1,20 @@
 #include <external/etl/exception.h>
 #include <src/board/spi/spi.h>
+#include <src/config/unit_tests.h>
 #include <src/database/eeprom.h>
 #include <src/database/hamming_coder.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/Log.h>
 
 Semaphore_Handle Eeprom::eeprom_in_use = NULL;
 
 void Eeprom::Init() {
+    if (!eeprom_available) {
+        Log_info0("EEPROM not available");
+        return;
+    }
     Semaphore_Params semaphore_params;
     Semaphore_Params_init(&semaphore_params);
     eeprom_in_use = Semaphore_create(1, &semaphore_params, NULL);
@@ -25,7 +31,7 @@ bool Eeprom::ReadStatusRegister(byte *status_register) {
     write_buffer[0] = (byte)kEepromReadStatus;
 
     bool status;
-    status = Spi::GetInstance()->PerformTransaction(
+    status = Spi::GetInstance().PerformTransaction(
         slave_select_index, read_buffer, write_buffer, 2);
     Task_sleep(5);
 
@@ -46,7 +52,7 @@ bool Eeprom::WriteStatusRegister(byte status_register) {
     write_buffer[0] = (byte)kEepromWriteStatus;
     write_buffer[1] = status_register;
 
-    status = status && Spi::GetInstance()->PerformWriteTransaction(
+    status = status && Spi::GetInstance().PerformWriteTransaction(
                            slave_select_index, write_buffer, 2);
     Task_sleep(5);
 
@@ -88,7 +94,7 @@ bool Eeprom::ReadData(uint16_t address, byte *read_buffer,
             transaction_length = real_read_buffer_length - i;
         }
 
-        status = status && Spi::GetInstance()->PerformTransaction(
+        status = status && Spi::GetInstance().PerformTransaction(
                                slave_select_index, read_buffer_2, write_buffer,
                                transaction_length + 3);
         Task_sleep(5);
@@ -137,7 +143,7 @@ bool Eeprom::WriteData(uint16_t address, byte *write_buffer,
 
         status = status && WriteEnable();
 
-        status = status && Spi::GetInstance()->PerformWriteTransaction(
+        status = status && Spi::GetInstance().PerformWriteTransaction(
                                slave_select_index, write_buffer_2,
                                transaction_length + 3);
         Task_sleep(5);
@@ -154,8 +160,8 @@ bool Eeprom::WriteEnable() {
     write_buffer[0] = (byte)kEepromWriteEnable;
 
     bool status;
-    status = Spi::GetInstance()->PerformWriteTransaction(slave_select_index,
-                                                         write_buffer, 1);
+    status = Spi::GetInstance().PerformWriteTransaction(slave_select_index,
+                                                        write_buffer, 1);
     Task_sleep(5);
 
     return status;
@@ -166,8 +172,8 @@ bool Eeprom::WriteDisable() {
     write_buffer[0] = (byte)kEepromWriteDisable;
 
     bool status;
-    status = Spi::GetInstance()->PerformWriteTransaction(slave_select_index,
-                                                         write_buffer, 1);
+    status = Spi::GetInstance().PerformWriteTransaction(slave_select_index,
+                                                        write_buffer, 1);
     Task_sleep(5);
 
     return status;

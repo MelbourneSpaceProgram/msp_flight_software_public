@@ -8,7 +8,7 @@
 
 class Spi {
    public:
-    static Spi *GetInstance();
+    static Spi& GetInstance();
     SPI_Handle GetHandle() const;
     SPI_Params GetSpiParams() const;
     bool PerformTransaction(uint32_t slave_select_index, byte *read_buffer,
@@ -20,7 +20,6 @@ class Spi {
                                  uint32_t write_buffer_length) const;
 
    private:
-    static Spi *instance;
     static const uint32_t kTimeoutMilliSeconds = 500;
     static const uint32_t kSpiIndex = NVM;
 

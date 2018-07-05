@@ -5,6 +5,9 @@
 extern "C" {
 #endif
 
+
+void initGeneral(void);
+
 typedef enum MSP_EXP432P401R_SDFatFSName {
     MSP_EXP432P401R_SDFatFS0 = 0,
 

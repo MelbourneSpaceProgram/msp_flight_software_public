@@ -24,7 +24,14 @@ const char text_array[] =
 
 const uint16_t copy_buffer_size = 128;
 
-TEST_GROUP(SdCard){void setup(){if (!sd_card_available){TEST_EXIT}}};
+TEST_GROUP(SdCard) {
+    void setup() {
+        if (!sd_card_available) {
+            TEST_EXIT;
+        }
+    };
+};
+
 TEST(SdCard, FatFsReadWrite) {
     File src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
                                                 SdCard::kFileReadMode |
