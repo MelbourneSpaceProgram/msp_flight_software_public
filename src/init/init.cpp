@@ -14,6 +14,7 @@
 // init tasks. Should be called once at system startup, and prior to the BIOS
 // starting.
 void PreBiosInit() {
+    initGeneral();
     GPIO_init();
     I2C_init();
     SPI_init();

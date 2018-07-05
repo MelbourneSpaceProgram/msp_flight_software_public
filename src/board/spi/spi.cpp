@@ -7,12 +7,8 @@
 #include <ti/sysbios/knl/Mailbox.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
-Spi *Spi::instance = NULL;
-
-Spi *Spi::GetInstance() {
-    if (instance == NULL) {
-        instance = new Spi();
-    }
+Spi &Spi::GetInstance() {
+    static Spi instance;
     return instance;
 }
 
@@ -28,8 +24,7 @@ Spi::Spi() {
     Semaphore_Params_init(&semaphore_params);
     transaction_complete = Semaphore_create(1, &semaphore_params, NULL);
     if (transaction_complete == NULL) {
-        throw etl::exception("Failed to create Semaphore.", __FILE__,
-                             __LINE__);
+        throw etl::exception("Failed to create Semaphore.", __FILE__, __LINE__);
     }
 
     Open();

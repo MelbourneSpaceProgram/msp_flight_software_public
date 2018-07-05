@@ -3,7 +3,6 @@
 #include <stdbool.h>
 
 #include <ti/drivers/Power.h>
-//#include <ti/drivers/power/PowerMSP432.h>
 
 #include <ti/devices/msp432e4/driverlib/driverlib.h>
 
@@ -105,7 +104,6 @@ const I2C_Config I2C_config[Board_I2CCOUNT] = {
      .hwAttrs = &i2cMSP432E4HWAttrs[I2C_BUS_D]}};
 
 const uint_least8_t I2C_count = Board_I2CCOUNT;
-
 
 /*
  *  =============================== PWM ===============================
@@ -224,6 +222,25 @@ const UDMAMSP432E4_HWAttrs udmaMSP432HWAttrs = {
 const UDMAMSP432E4_Config UDMAMSP432E4_config = {.object = &udmaMSP432Object,
                                                  .hwAttrs = &udmaMSP432HWAttrs};
 
+void initGeneral(void) {
+    /* Grant the DMA access to all FLASH memory */
+    FLASH_CTRL->PP |= FLASH_PP_DFA;
+
+    /* Region start address - match FLASH start address */
+    FLASH_CTRL->DMAST = 0x00000000;
+
+    /*
+     * Access to FLASH is granted to the DMA in 2KB regions.  The value
+     * assigned to DMASZ is the amount of 2KB regions to which the DMA will
+     * have access.  The value can be determined via the following:
+     *     2 * (num_regions + 1) KB
+     *
+     * To grant full access to entire 1MB of FLASH:
+     *     2 * (511 + 1) KB = 1024 KB (1 MB)
+     */
+    FLASH_CTRL->DMASZ = 511;
+}
+
 /*
  *  =============================== SPI ===============================
  */
@@ -243,8 +260,7 @@ const SPIMSP432E4DMA_HWAttrs spiMSP432E4DMAobjects[] = {
      .txDmaChannel = UDMA_CH25_SSI1TX,
      .minDmaTransferSize = 10,
      .clkPinMask = SPIMSP432E4_PB5_SSI1CLK,
-     .fssPinMask =
-         0,  // TODO(akremor): Is this an acceptable way of saying not in use?
+     .fssPinMask = SPIMSP432E4_PIN_NO_CONFIG,
      .xdat0PinMask = SPIMSP432E4_PE4_SSI1XDAT0,
      .xdat1PinMask = SPIMSP432E4_PE5_SSI1XDAT1}};
 
