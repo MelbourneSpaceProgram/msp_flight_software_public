@@ -50,7 +50,7 @@ MEMORY
 /* --stack_size=256                                                          */
 /* --library=rtsv7M4_T_le_eabi.lib                                           */
 
---stack_size=22500   /* C stack is also used for ISR stack */
+--stack_size=0x57e8   /* C stack is also used for ISR stack */
 
 HEAPSIZE = 0xC000;  /* Size of heap buffer used by HeapMem */
 
