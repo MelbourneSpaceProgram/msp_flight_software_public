@@ -120,17 +120,17 @@ void PostBiosInitialiser::InitOrientationControl() {
         4096, "OrientationControl", 7, new RunnableOrientationControl());
     Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
     Mailbox_Handle tle_update_command_mailbox_handle = Mailbox_create(
-       sizeof(Tle), 1, &LocationEstimator::tle_update_command_mailbox_params,
-       NULL);
+        sizeof(Tle), 1, &LocationEstimator::tle_update_command_mailbox_params,
+        NULL);
     if (tle_update_command_mailbox_handle == NULL) {
-       etl::exception e("Unable to create TLE update command mailbox",
-                        __FILE__, __LINE__);
-       throw e;
+        etl::exception e("Unable to create TLE update command mailbox",
+                         __FILE__, __LINE__);
+        throw e;
     }
     LocationEstimator::SetTleUpdateCommandMailboxHandle(
-       tle_update_command_mailbox_handle);
+        tle_update_command_mailbox_handle);
     TleUpdateCommand::SetTleUpdateCommandMailboxHandle(
-       tle_update_command_mailbox_handle);
+        tle_update_command_mailbox_handle);
 
     orientation_control_task->Init();
 }

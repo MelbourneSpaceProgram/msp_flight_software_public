@@ -2,54 +2,32 @@
 #define SRC_CONFIG_UNIT_TESTS_H_
 
 #include <stdbool.h>
-/*
 
-   Usage
+static const bool lithium_flash_test_enabled = false;
+static const bool measurable_test_enabled = false;
+static const bool i2c_enabled = true;  // TODO Shift to I2c available
+static const bool over_the_air_enabled =
+    false;  // Lithium not enabled. Rename to be lithium_available? TODO
+static const bool write_back_test_enabled = false;  // TODO Not yet tested
+static const bool current_sensor_test_enabled =
+    false;  // No current sensors on CDH alone TODO
+static const bool force_reset_command_test_enabled =
+    false;  // It will reset the satellite
+static const bool deployment_waits_are_instant = true;
 
-   To ignore a Unity test, add the following to the beginning of the test
-   method in [name_of_functionality]_tests.cpp:
-
-   if(![name_of_functionality]_test_enabled){
-       TEST_IGNORE_MESSAGE("some informative message")
-   }
-
-   It is also necessary add the following to this file:
-
-   extern bool [name_of_functionality]_test_enabled;
-
-   And the following to unit_tests.cpp:
-
-   bool [name_of_functionality]_test_enabled = false;
-
-   Please choose a default value that will not break the tests for others using
-   a LaunchPad without the necessary hardware attached.
-
- */
-
-extern bool satellite_configuration;
-extern bool spi_test_enabled;
-extern bool eeprom_test_enabled;
-extern bool i2c_test_enabled;
-extern bool lithium_test_enabled;
-extern bool lithium_flash_test_enabled;
-extern bool adc_test_enabled;
-extern bool i2c_enumeration_enabled;
-extern bool measurable_test_enabled;
-extern bool i2c_enabled;
-extern bool sd_test_enabled;
-extern bool over_the_air_enabled;
-extern bool write_back_test_enabled;
-extern bool current_sensor_test_enabled;
-extern bool force_reset_command_test_enabled;
-extern bool deployment_waits_are_instant;
-extern bool i2c_available;
-extern bool spi_available;
-extern bool sd_card_available;
-extern bool lithium_available;
-extern bool hil_available;
-extern bool imu_available;
-extern bool bms_available;
-extern bool antenna_available;
-extern bool ditl_mode;
+// Hardware available
+static const bool eeprom_available =
+    false;  // It is actually available but there is a resource conflict with
+            // the SD cards as they share the same bus
+static const bool i2c_available = true;
+static const bool spi_available = true;
+static const bool sd_card_available =
+    false;  // Not available until HW fix for swapped MOSI/MISO is implemented
+static const bool lithium_available = false;  // Lithium not responding?
+static const bool hil_available = false;
+static const bool imu_available = false;  // Bad cabling
+static const bool bms_available = false;  // TODO Crashed
+static const bool antenna_available = false;
+static const bool ditl_mode = false;
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
