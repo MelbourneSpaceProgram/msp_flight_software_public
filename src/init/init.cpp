@@ -1,10 +1,11 @@
 #include <src/board/board.h>
+#include <src/config/unit_tests.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/tasks/task_holder.h>
 #include <ti/drivers/GPIO.h>
-#include <ti/drivers/PWM.h>
 #include <ti/drivers/I2C.h>
+#include <ti/drivers/PWM.h>
 #include <ti/drivers/SDFatFS.h>
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/UART.h>
@@ -19,8 +20,11 @@ void PreBiosInit() {
     I2C_init();
     SPI_init();
     UART_init();
-    SDFatFS_init();
     PWM_init();
+
+    if (sd_card_available) {
+        SDFatFS_init();
+    }
 
     TaskHolder *post_bios_initialiser_task =
         new TaskHolder(1536, "Initialiser", 10, new PostBiosInitialiser());
