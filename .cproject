@@ -267,7 +267,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="linker.cmd" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -306,74 +306,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="18.1.2.LTS" valueType="string"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug.1477549483" name="Platform"/>
 							<builder buildPath="${BuildDirectory}" id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.builderDebug.734762094" keepEnvironmentInBuildfile="false" name="GNU Make" parallelBuildOn="true"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377" name="ARM Compiler">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.SILICON_VERSION.1214009929" name="Target processor version (--silicon_version, -mv)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.SILICON_VERSION.7M4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.CODE_STATE.103785421" name="Designate code state, 16-bit (thumb) or 32-bit (--code_state)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.CODE_STATE.16" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.FLOAT_SUPPORT.62545395" name="Specify floating point support (--float_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.FLOAT_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.FLOAT_SUPPORT.FPv4SPD16" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.LITTLE_ENDIAN.1736134003" name="Little endian code [See 'General' page to edit] (--little_endian, -me)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.INCLUDE_PATH.446592976" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.INCLUDE_PATH" valueType="includePath">
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INCLUDE_PATH}"/>
-									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/external/cpputest/include}"/>
-									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/external/nanopb}"/>
-									<listOptionValue builtIn="false" value="${PROJECT_ROOT}"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/source/third_party/CMSIS/Include"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/kernel/tirtos/packages/ti/sysbios/posix"/>
-									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
-								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER.802601175" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER" value="&quot;all&quot;" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER_SEVERITY.176278132" name="Set error category for ULP power rules (--advice:power_severity)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER_SEVERITY" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER_SEVERITY.suppress" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEFINE.764727197" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEFINE" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_SYMBOLS}"/>
-									<listOptionValue builtIn="false" value="TEST_CONFIGURATION"/>
-									<listOptionValue builtIn="false" value="__STDC_LIMIT_MACROS"/>
-									<listOptionValue builtIn="false" value="__MSP432E401Y__"/>
-									<listOptionValue builtIn="false" value="UNITY_INCLUDE_CONFIG_H"/>
-								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEBUGGING_MODEL.202811960" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.C_DIALECT.559817121" name="C Dialect" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.C_DIALECT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.C_DIALECT.C99" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.EXCEPTIONS.588152699" name="Enable C++ exception handling (--exceptions)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.EXCEPTIONS" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.RTTI.1356770455" name="Support C++ run-time type information (--rtti, -rtti)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.RTTI" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.PRINTF_SUPPORT.174415960" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.PRINTF_SUPPORT.nofloat" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WARNING.1368533302" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WARNING" valueType="stringList">
-									<listOptionValue builtIn="false" value="225"/>
-									<listOptionValue builtIn="false" value="255"/>
-								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WRAP.1578916282" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WRAP" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WRAP.off" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DISPLAY_ERROR_NUMBER.517323972" name="Emit diagnostic identifier numbers (--display_error_number, -pden)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.GEN_FUNC_SUBSECTIONS.1716688932" name="Place each function in a separate subsection (--gen_func_subsections, -ms)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.GEN_FUNC_SUBSECTIONS" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.GEN_FUNC_SUBSECTIONS.on" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OTHER_FLAGS.894144593" name="Other flags" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OTHER_FLAGS" valueType="stringList">
-									<listOptionValue builtIn="false" value=""/>
-								</option>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.631153934" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1028106750" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1155187241" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.2079563144" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656" name="ARM Linker">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.MAP_FILE.449269626" name="Link information (map) listed into &lt;file&gt; (--map_file, -m)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.MAP_FILE" value="&quot;${ProjName}.map&quot;" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.OUTPUT_FILE.314164379" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.OUTPUT_FILE" value="${ProjName}.out" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.LIBRARY.884819583" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.LIBRARY" valueType="libs">
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_LIBRARIES}"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/source/ti/display/lib/display.aem4f"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/source/ti/drivers/lib/drivers_msp432p4xx.aem4f"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/source/third_party/fatfs/lib/fatfs.aem4f"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/kernel/tirtos/packages/ti/dpl/lib/dpl_msp432p4xx.aem4f"/>
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432_SDK_INSTALL_DIR}/source/ti/devices/msp432p4xx/driverlib/ccs/msp432p4xx_driverlib.lib"/>
-									<listOptionValue builtIn="false" value="libc.a"/>
-								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.SEARCH_PATH.1663152479" name="Add &lt;dir&gt; to library search path (--search_path, -i)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.SEARCH_PATH" valueType="libPaths">
-									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_LIBRARY_PATH}"/>
-									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/lib"/>
-									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
-								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DIAG_WRAP.1693102148" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DIAG_WRAP" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DIAG_WRAP.off" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DISPLAY_ERROR_NUMBER.459369472" name="Emit diagnostic identifier numbers (--display_error_number)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.XML_LINK_INFO.297820681" name="Detailed link information data-base into &lt;file&gt; (--xml_link_info, -xml_link_info)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.XML_LINK_INFO" value="&quot;${ProjName}_linkInfo.xml&quot;" valueType="string"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__CMD_SRCS.445109635" name="Linker Command Files"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__CMD2_SRCS.71081466" name="Linker Command Files"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__GEN_CMDS.958062090" name="Generated Linker Command Files"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642" name="ARM Hex Utility"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool">
 								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH.1740593523" name="Package repositories (--xdcpath)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH" valueType="stringList">
 									<listOptionValue builtIn="false" value="${TARGET_CONTENT_BASE}"/>
@@ -393,16 +325,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1715442176" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1243126346" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1232681954" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.2088345420" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.289161815" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.204068864" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1147385559" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.112072100" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1977626429" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1739823134" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1071624446" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.305593651" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -411,15 +333,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1715442176.2038500812" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1715442176"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1243126346.316979490" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1243126346"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.784000742" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1232681954">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.149512909" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1195676868" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.690450084" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.995759227" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1479426767" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1314107082" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1739823134"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.2138470650" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1071624446"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1299275132" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.305593651"/>
 						</toolChain>
 					</folderInfo>
@@ -428,16 +341,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1418206260" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1300349982" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.518891433" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.828529609" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.117492280" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1068736909" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1196551638" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.462544842" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.73620959" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1697102811" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1313723274" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2019798798" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -446,16 +349,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1373522084" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.554613239" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.149382767" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1797536672" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.570366003" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1864113455" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.261782383" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1913442909" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.253106244" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.77140016" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1271570546" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1806462382" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -464,16 +357,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1456513566" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.569879204" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.822897711" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.376394057" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1356230559" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.2111309221" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1576953326" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1702427082" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.6253801" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1724565994" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1037474147" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.258250827" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -482,16 +365,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.1747878640" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.944720197" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1357102014" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1532568918" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.279508946" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.2080357704" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.191744847" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.2098886935" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.92585549" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1925190077" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1744076740" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1590395212" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -500,16 +373,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.113653162" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1496754317" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1389386576" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1663670598" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.893069766" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1930442408" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.894078628" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.330916376" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.98216519" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.35788111" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.501101517" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2137656221" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -518,16 +381,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.903688625" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1811494231" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1453695730" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1960656980" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.304008277" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.429763667" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.612466590" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1710612365" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.332808664" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1067590590" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.873366019" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1484365733" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -536,16 +389,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.960232663" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.1131843049" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.992541337" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1646150336" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1412443991" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.2050220691" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1614410278" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.165137332" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.302656727" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.607847520" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.451899328" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1121421751" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -554,16 +397,6 @@
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144.97831261" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.227738144"/>
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209.374380258" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1242726209"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.831536132" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.303831377">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1725043332" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1586509237" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.782340647" name="C Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.786792021" name="C++ Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1441972158" name="Assembly Sources"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.859685238" name="Assembly Sources"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1987248782" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.678861656"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.293751425" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.329770642"/>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.754659374" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2121072012"/>
 						</toolChain>
 					</folderInfo>
@@ -713,6 +546,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry excluding="linker.cmd|external/cpputest|MSP_EXP432P401R.cmd|CPPLINT.cfg|test|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="linker.cmd|external/cpputest|hello.cfg|msp432.lds|CPPLINT.cfg|MSP_EXP432P401R.cmd|test|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/adcs"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="external/cpputest/src/Platforms/armcc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="external/cpputest/src/CppUTest"/>
@@ -730,8 +565,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/tasks"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
-						<entry excluding="linker.cmd|external/cpputest|hello.cfg|MSP_EXP432P401R.cmd|CPPLINT.cfg|test|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="linker.cmd|external/cpputest|hello.cfg|msp432.lds|CPPLINT.cfg|MSP_EXP432P401R.cmd|test|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -752,8 +585,8 @@
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactExtension="out" artifactName="${ProjName}" buildProperties="" cleanCommand="${CG_CLEAN_CMD}" description="" errorParsers="org.eclipse.rtsc.xdctools.parsers.ErrorParser;org.eclipse.cdt.core.GmakeErrorParser;com.ti.ccstudio.errorparser.CoffErrorParser;com.ti.ccstudio.errorparser.AsmErrorParser;com.ti.ccstudio.errorparser.LinkErrorParser" id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910" name="Tests MSP432E" parent="com.ti.ccstudio.buildDefinitions.MSP432.Debug" preannouncebuildStep="" prebuildStep="">
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910." name="/" resourcePath="">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.239510577" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.19624400" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
 								<listOptionValue builtIn="false" value="DEVICE_CONFIGURATION_ID=MSP432E401Y"/>
 								<listOptionValue builtIn="false" value="DEVICE_ENDIANNESS=little"/>
 								<listOptionValue builtIn="false" value="OUTPUT_FORMAT=ELF"/>
@@ -768,15 +601,15 @@
 								<listOptionValue builtIn="false" value="PRODUCTS=com.ti.SIMPLELINK_MSP432E4_SDK:2.20.0.20;"/>
 								<listOptionValue builtIn="false" value="RTSC_MBS_VERSION=7.0.0"/>
 							</option>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="16.9.8.LTS" valueType="string"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug.475181542" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<builder buildPath="${BuildDirectory}" id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.builderDebug.1900541390" keepEnvironmentInBuildfile="false" name="GNU Make" parallelBuildOn="true" parallelizationNumber="optimal" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.builderDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.SILICON_VERSION.1142877258" name="Target processor version (--silicon_version, -mv)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.SILICON_VERSION.7M4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.CODE_STATE.794912265" name="Designate code state, 16-bit (thumb) or 32-bit (--code_state)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.CODE_STATE.16" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.FLOAT_SUPPORT.46876174" name="Specify floating point support (--float_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.FLOAT_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.FLOAT_SUPPORT.FPv4SPD16" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.LITTLE_ENDIAN.250160164" name="Little endian code [See 'General' page to edit] (--little_endian, -me)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.INCLUDE_PATH.2041578465" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.INCLUDE_PATH" valueType="includePath">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="18.1.2.LTS" valueType="string"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug.960288223" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<builder buildPath="${BuildDirectory}" id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.builderDebug.795448086" keepEnvironmentInBuildfile="false" name="GNU Make" parallelBuildOn="true" parallelizationNumber="optimal" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.builderDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.SILICON_VERSION.569280234" name="Target processor version (--silicon_version, -mv)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.SILICON_VERSION.7M4" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.CODE_STATE.1438926216" name="Designate code state, 16-bit (thumb) or 32-bit (--code_state)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.CODE_STATE.16" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.FLOAT_SUPPORT.592091363" name="Specify floating point support (--float_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.FLOAT_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.FLOAT_SUPPORT.FPv4SPD16" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.LITTLE_ENDIAN.136955197" name="Little endian code [See 'General' page to edit] (--little_endian, -me)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.INCLUDE_PATH.1344306933" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INCLUDE_PATH}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/external/cpputest/include}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/external/nanopb}"/>
@@ -784,39 +617,39 @@
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INSTALL_DIR}/source/third_party/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.ADVICE__POWER.2142611823" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.ADVICE__POWER" value="&quot;all&quot;" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.ADVICE__POWER_SEVERITY.183363289" name="Set error category for ULP power rules (--advice:power_severity)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.ADVICE__POWER_SEVERITY" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.ADVICE__POWER_SEVERITY.suppress" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DEFINE.1657283405" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DEFINE" valueType="definedSymbols">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER.858558876" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER" value="&quot;all&quot;" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER_SEVERITY.713344724" name="Set error category for ULP power rules (--advice:power_severity)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER_SEVERITY" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.ADVICE__POWER_SEVERITY.suppress" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEFINE.1710644443" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_SYMBOLS}"/>
 									<listOptionValue builtIn="false" value="__MSP432E401Y__"/>
 									<listOptionValue builtIn="false" value="DeviceFamily_MSP432E401Y"/>
 									<listOptionValue builtIn="false" value="TEST_CONFIGURATION"/>
 									<listOptionValue builtIn="false" value="__STDC_LIMIT_MACROS"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DEBUGGING_MODEL.274911598" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.C_DIALECT.1298975548" name="C Dialect" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.C_DIALECT" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.C_DIALECT.C99" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.EXCEPTIONS.2009518718" name="Enable C++ exception handling (--exceptions)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.EXCEPTIONS" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.RTTI.1550757417" name="Support C++ run-time type information (--rtti, -rtti)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.RTTI" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.PRINTF_SUPPORT.916478874" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.PRINTF_SUPPORT.nofloat" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DIAG_WARNING.533462453" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DIAG_WARNING" valueType="stringList">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEBUGGING_MODEL.1732556340" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.C_DIALECT.92669472" name="C Dialect" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.C_DIALECT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.C_DIALECT.C99" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.EXCEPTIONS.1441110902" name="Enable C++ exception handling (--exceptions)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.EXCEPTIONS" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.RTTI.1320585275" name="Support C++ run-time type information (--rtti, -rtti)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.RTTI" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.PRINTF_SUPPORT.672192264" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.PRINTF_SUPPORT.full" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WARNING.117448983" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WARNING" valueType="stringList">
 									<listOptionValue builtIn="false" value="225"/>
 									<listOptionValue builtIn="false" value="255"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DIAG_WRAP.464337830" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DIAG_WRAP" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DIAG_WRAP.off" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DISPLAY_ERROR_NUMBER.966126266" name="Emit diagnostic identifier numbers (--display_error_number, -pden)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.GEN_FUNC_SUBSECTIONS.928417385" name="Place each function in a separate subsection (--gen_func_subsections, -ms)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.GEN_FUNC_SUBSECTIONS" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.GEN_FUNC_SUBSECTIONS.on" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OTHER_FLAGS.1829803080" name="Other flags" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OTHER_FLAGS" valueType="stringList">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WRAP.1828878308" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WRAP" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DIAG_WRAP.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DISPLAY_ERROR_NUMBER.207534611" name="Emit diagnostic identifier numbers (--display_error_number, -pden)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.GEN_FUNC_SUBSECTIONS.1953804884" name="Place each function in a separate subsection (--gen_func_subsections, -ms)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.GEN_FUNC_SUBSECTIONS" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.GEN_FUNC_SUBSECTIONS.on" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OTHER_FLAGS.376918382" name="Other flags" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OTHER_FLAGS" valueType="stringList">
 									<listOptionValue builtIn="false" value=""/>
 								</option>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.2142622993" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.1813570350" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1730417130" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.379301939" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.506391260" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1373535093" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.630483092" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.2034603069" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.MAP_FILE.1887587310" name="Link information (map) listed into &lt;file&gt; (--map_file, -m)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.MAP_FILE" value="&quot;${ProjName}.map&quot;" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.OUTPUT_FILE.1604508078" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.OUTPUT_FILE" useByScannerDiscovery="false" value="${ProjName}.out" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.LIBRARY.1682374162" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.LIBRARY" valueType="libs">
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.MAP_FILE.710745229" name="Link information (map) listed into &lt;file&gt; (--map_file, -m)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.MAP_FILE" value="&quot;${ProjName}.map&quot;" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.OUTPUT_FILE.2022103973" name="Specify output file name (--output_file, -o)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.OUTPUT_FILE" value="${ProjName}.out" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.LIBRARY.1348837122" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.LIBRARY" valueType="libs">
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INSTALL_DIR}/source/ti/drivers/lib/drivers_msp432e4.aem4f"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_LIBRARIES}"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INSTALL_DIR}/source/ti/display/lib/display.aem4f"/>
@@ -825,210 +658,209 @@
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INSTALL_DIR}/source/ti/devices/msp432e4/driverlib/lib/ccs/m4f/msp432e4_driverlib.a"/>
 									<listOptionValue builtIn="false" value="libc.a"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.SEARCH_PATH.160651059" name="Add &lt;dir&gt; to library search path (--search_path, -i)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.SEARCH_PATH" valueType="libPaths">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.SEARCH_PATH.1165208381" name="Add &lt;dir&gt; to library search path (--search_path, -i)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.SEARCH_PATH" valueType="libPaths">
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_LIBRARY_PATH}"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/lib"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.DIAG_WRAP.509197648" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.DIAG_WRAP" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.DIAG_WRAP.off" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.DISPLAY_ERROR_NUMBER.660258505" name="Emit diagnostic identifier numbers (--display_error_number)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.XML_LINK_INFO.659970062" name="Detailed link information data-base into &lt;file&gt; (--xml_link_info, -xml_link_info)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.linkerID.XML_LINK_INFO" value="&quot;${ProjName}_linkInfo.xml&quot;" valueType="string"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exeLinker.inputType__CMD_SRCS.116126135" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exeLinker.inputType__CMD_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exeLinker.inputType__CMD2_SRCS.2025216832" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exeLinker.inputType__CMD2_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exeLinker.inputType__GEN_CMDS.1699659304" name="Generated Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exeLinker.inputType__GEN_CMDS"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DIAG_WRAP.2057417339" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DIAG_WRAP" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DIAG_WRAP.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DISPLAY_ERROR_NUMBER.2011696155" name="Emit diagnostic identifier numbers (--display_error_number)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.XML_LINK_INFO.467531619" name="Detailed link information data-base into &lt;file&gt; (--xml_link_info, -xml_link_info)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.linkerID.XML_LINK_INFO" value="&quot;${ProjName}_linkInfo.xml&quot;" valueType="string"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__CMD_SRCS.1969388708" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__CMD_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__CMD2_SRCS.1308106329" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__CMD2_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__GEN_CMDS.1427964897" name="Generated Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exeLinker.inputType__GEN_CMDS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool">
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH.153624099" name="Package repositories (--xdcpath)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH" valueType="stringList">
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool">
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH.2048213472" name="Package repositories (--xdcpath)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH" valueType="stringList">
 									<listOptionValue builtIn="false" value="${TARGET_CONTENT_BASE}"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_MSP432E4_SDK_INSTALL_DIR_REPOS}"/>
 								</option>
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.TARGET.1154704219" name="Target (-t)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.TARGET" value="ti.targets.arm.elf.M4F" valueType="string"/>
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM.99170590" name="Platform (-p)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM" value="ti.platforms.msp432:MSP432E401Y" valueType="string"/>
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM_RAW.1243035729" name="Platform (-p)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM_RAW" value="ti.platforms.msp432:$DeviceId$" valueType="string"/>
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.BUILD_PROFILE.329540122" name="Build-profile (-r)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.BUILD_PROFILE" value="debug" valueType="string"/>
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.CODEGEN_TOOL_DIR.1583107572" name="Compiler tools directory (-c)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.CODEGEN_TOOL_DIR" value="${CG_TOOL_ROOT}" valueType="string"/>
-								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.COMPILE_OPTIONS.546295942" name="Additional compiler options (--compileOptions)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.COMPILE_OPTIONS" value="&quot;${COMPILER_FLAGS} &quot;" valueType="string"/>
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.TARGET.960576454" name="Target (-t)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.TARGET" value="ti.targets.arm.elf.M4F" valueType="string"/>
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM.1145974670" name="Platform (-p)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM" value="ti.platforms.msp432:MSP432E401Y" valueType="string"/>
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM_RAW.1765886448" name="Platform (-p)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM_RAW" value="ti.platforms.msp432:$DeviceId$" valueType="string"/>
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.BUILD_PROFILE.1178658761" name="Build-profile (-r)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.BUILD_PROFILE" value="debug" valueType="string"/>
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.CODEGEN_TOOL_DIR.1593572207" name="Compiler tools directory (-c)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.CODEGEN_TOOL_DIR" value="${CG_TOOL_ROOT}" valueType="string"/>
+								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.COMPILE_OPTIONS.1536653128" name="Additional compiler options (--compileOptions)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.COMPILE_OPTIONS" value="&quot;${COMPILER_FLAGS} &quot;" valueType="string"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.external" name="external" resourcePath="external">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.1283889405" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.1084336320" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1715159011" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.572942144" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1167549646" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.247193591" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.2133378697" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.1447375487" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.335479000" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1665724193" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.1500291824" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.418675341" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.1037307542" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1154019077" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.650711743" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.979463360" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1831320884" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1542871914" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1855453880" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.390888865" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1800880521" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1504968807" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.748362869" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1181628857" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.111879906" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.652470160" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.external/sgp4" name="sgp4" resourcePath="external/sgp4">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.1725098212" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.1084336320.113402771" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.1084336320"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1715159011.1070654088" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1715159011"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1053735984" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.572942144">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1498476884" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.1266703126" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.762719835" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1477545865" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1654705001" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.2081424521" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.418675341.171445868" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.418675341"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.1037307542.715498049" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.1037307542"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.876141653" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1154019077">
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1320044691" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.350363454" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1140019672" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.649833528" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1154851625" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1800880521"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1192151593" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1504968807"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1250803204" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.748362869"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1183553237" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1181628857"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1469093039" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.111879906"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1769838360" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.652470160"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/system" name="system" resourcePath="src/system">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.758183681" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.616048884" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1296986240" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1812419120" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.2015504880" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.260353973" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.79582185" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.754081699" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.840875692" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1363464262" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.2089666583" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1987370616" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.17766528" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1178028610" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1458527583" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1787506297" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.7414565" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.981434829" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.145188805" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.2013473947" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.132968204" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.177786715" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.328500200" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.2025291041" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.6935412" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1626819772" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/util" name="util" resourcePath="src/util">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.2114251185" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.171543377" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1834343721" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1495555796" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.776843453" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.639313821" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.914189390" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.294154013" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.152021256" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1121567969" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.1507843223" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.971908086" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.1715363519" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.2054642581" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.997214484" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1907702912" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1215569770" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.933678509" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1368800519" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1905359451" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1569399059" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1989779702" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1523790392" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.206863179" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1936450810" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.630999237" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/debug_interface" name="debug_interface" resourcePath="src/debug_interface">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.1692345329" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.581345573" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.737843246" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.803924776" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.369336918" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.1143846180" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.433957680" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.403440786" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.2004207890" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1583146511" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.210556610" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1689090159" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.655522313" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1356781110" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1104103960" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1957887290" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.626342404" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.684010367" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1468431525" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1268561965" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.134019299" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1439185547" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.689454897" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.2087609861" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.181303259" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1003414463" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/data_dashboard" name="data_dashboard" resourcePath="src/data_dashboard">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.1140449261" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.120499731" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1254392674" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.329402583" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1634556802" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.1065178513" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.872691661" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.1973262537" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1809907814" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.871507674" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.2110140759" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1959064504" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.314698560" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.557907214" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1907543894" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1549580765" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1016092582" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.706329324" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1605446834" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.724917325" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.2126938102" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1599810947" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1381056443" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1382275888" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.43660854" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.472568470" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/uart" name="uart" resourcePath="src/uart">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.494260155" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.1747376331" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.597577377" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1453695394" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.801993531" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.652546594" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.1878264191" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.1720140088" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1609764716" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1280998051" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.840673922" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1049066036" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.526312713" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1441315020" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1622449150" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.473907662" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1817407703" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.1134112940" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1578423501" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.772238068" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.227696070" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.410563998" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1518863003" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.123015350" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.418382108" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1387161988" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/config" name="config" resourcePath="src/config">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.921719680" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.1196636284" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1243863644" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1313722423" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.810321895" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.1423291589" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.1774397632" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.1541700151" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1174282641" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.74942694" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.264362593" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.712982025" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.1923705474" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1207788143" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1783660749" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1919520783" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.2140613227" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.977671134" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.664523282" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1122826980" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.2147113860" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1772674519" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.370691580" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.615589543" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1416283246" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.366587848" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/adcs" name="adcs" resourcePath="src/adcs">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.487564904" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.1221207119" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.2030703002" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.361338057" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1809557461" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.1186782282" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.1064032449" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.991480665" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.1436279507" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.937437652" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.1551933847" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.491552966" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.2100053680" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.709712575" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1289772807" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.671438797" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1723606710" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.754398337" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.2117526840" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1604788993" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1611114879" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1342894582" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.547842032" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1218397939" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.950103038" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1022609830" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/tasks" name="tasks" resourcePath="src/tasks">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain.497487607" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053.584602373" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.76504053"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144.1284113787" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2145956144"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.2074460331" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.compilerDebug.1842641087">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.1072602319" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_LEVEL.4" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.1523973944" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS.1969849119" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS.597026772" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS.582386758" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS.1793372893" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.compiler.inputType__ASM2_SRCS"/>
+						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.1075893477" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1605954083" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.788085759" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
+							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1519476741" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.703541895" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1432543594" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.1044904451" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.755096624" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.1407560805" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.1304319382" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
 							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.215280405" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.exe.linkerDebug.1517150221"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1062186469" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_16.9.hex.1240216681"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1785009469" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2002588817"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1364421410" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
+							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.432461962" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
+							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.582798805" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
