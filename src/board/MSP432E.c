@@ -364,7 +364,7 @@ const WatchdogMSP432E4_HWAttrs watchdogMSP432E4HWAttrs[] = {
         .baseAddr = WATCHDOG0_BASE,
         .intNum = INT_WATCHDOG,
         .intPriority = ~0,
-        .reloadValue = 80000000  // TODO(akremor): This value
+        .reloadValue = 10 * 120000000  // 10 seconds at 120MHz system clock
     },
 };
 
