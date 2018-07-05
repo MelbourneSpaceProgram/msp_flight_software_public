@@ -1,5 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/board/board.h>
+#include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <string.h>
 #include <third_party/fatfs/ff.h>
@@ -12,6 +13,10 @@ SdHandle SdCard::handle = NULL;
 
 // TODO(dingbenjamin): Parameterize
 SdHandle SdCard::SdOpen() {
+    if (!sd_card_available) {
+        Log_info0("SdCard not available");
+    }
+
     handle = SDFatFS_open(0, kDriveNum);
     if (handle == NULL) {
         throw etl::exception("Error starting the SD card.", __FILE__, __LINE__);

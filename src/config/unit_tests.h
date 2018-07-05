@@ -20,9 +20,10 @@ static const bool eeprom_available =
     false;  // It is actually available but there is a resource conflict with
             // the SD cards as they share the same bus
 static const bool i2c_available = true;
-static const bool spi_available = true;
+static const bool spi_available = false;
 static const bool sd_card_available =
-    false;  // Not available until HW fix for swapped MOSI/MISO is implemented
+    false;  // Not available until HW fix for swapped MOSI/MISO is implemented.
+            // Also a hardware resourcing conflict.
 static const bool lithium_available = false;  // Lithium not responding?
 static const bool hil_available = false;
 static const bool imu_available = false;  // Bad cabling
