@@ -5,13 +5,11 @@
 TEST_GROUP(MemoryLeakTroubleshooter){};
 
 TEST(MemoryLeakTroubleshooter, TestMemoryLeak) {
-    MemoryTroubleshooter *memory_test = new MemoryTroubleshooter();
+    MemoryTroubleshooter memory_test;
 
     int *test = new int[100];
 
-    CHECK(memory_test->MemoryLeakTest());
+    CHECK(memory_test.MemoryLeakDetected());
     delete[] test;
-    CHECK_FALSE(memory_test->MemoryLeakTest());
-
-    delete memory_test;
+    CHECK_FALSE(memory_test.MemoryLeakDetected());
 }

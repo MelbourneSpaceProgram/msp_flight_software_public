@@ -7,13 +7,11 @@
 class MemoryTroubleshooter {
    public:
     MemoryTroubleshooter();
-    bool MemoryLeakTest();
-    ~MemoryTroubleshooter();
-    static const int kMemBuff = 40;
+    bool MemoryLeakDetected();
 
    private:
-    Memory_Stats *GetCurrMemStats();
-    Memory_Stats *init_mem_stats;
+    xdc_runtime_Memory_Size GetCurrentHeapUsage();
+    xdc_runtime_Memory_Size initial_heap_usage;
 };
 
 #endif  // SRC_UTIL_MEMORY_TROUBLESHOOTER_H_
