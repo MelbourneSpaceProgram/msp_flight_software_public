@@ -20,7 +20,12 @@ void I2c::InitBusses() {
         return;
     }
 
-    // Ensure the multiplexer is taken out of reset
+    // Ensure the multiplexer is power cycled to clear it out of any error
+    // conditions We could also do this by sending a reset command however a
+    // power cycle is easier. 1ms exceeds the minimum cycle time of 500ns per
+    // datasheet
+    GPIO_write(I2C_MUX_nRST, 0);
+    TaskUtils::SleepMilli(1);
     GPIO_write(I2C_MUX_nRST, 1);
 
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
