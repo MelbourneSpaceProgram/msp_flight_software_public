@@ -5,6 +5,8 @@
 
 static const byte kTestHardwareAddr = 0x76;
 
+// These tests require the CDH I2C multiplexer to be powered on. It is usually
+// powered on in the I2c::InitBusses call.
 TEST_GROUP(I2c) {
     void setup() {
         if (!i2c_available) {
@@ -29,6 +31,4 @@ TEST(I2c, TestI2cReadTransaction) {
     I2c test_i2c_bus(I2C_BUS_A);
     CHECK(test_i2c_bus.PerformReadTransaction(kTestHardwareAddr, &read_buffer,
                                               read_buffer_len));
-    // Relies on the state set by the TestI2cWriteTransaction test
-    CHECK_EQUAL(read_buffer, 0x00);
 }
