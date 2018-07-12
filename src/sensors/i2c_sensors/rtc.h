@@ -4,7 +4,6 @@
 #include <external/etl/map.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/util/data_types.h>
-#include <ti/sysbios/knl/Task.h>
 #include <time.h>
 #include <functional>
 

@@ -2,9 +2,7 @@
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
-#include <ti/drivers/GPIO.h>
-#include <ti/sysbios/knl/Clock.h>
+#include <xdc/runtime/Log.h>
 
 Antenna *Antenna::instance = NULL;
 
@@ -119,3 +117,19 @@ bool Antenna::IsHeatersOn() const {
 bool Antenna::IsInitialised() const { return initialised; }
 
 I2c *Antenna::GetBus() const { return bus; }
+
+void Antenna::DeployAntenna() {
+    if (!IsDoorsOpen()) {
+        Log_info0("Trying safe deploy");
+        SafeDeploy();
+    }
+    if (!IsDoorsOpen()) {
+        Log_info0("Trying force deploy");
+        ForceDeploy();
+    }
+    if (IsDoorsOpen()) {
+        Log_info0("Antenna deployed");
+    } else {
+        Log_error0("Antenna failed to deploy");
+    }
+}

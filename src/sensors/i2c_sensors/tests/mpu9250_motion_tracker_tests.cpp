@@ -6,8 +6,7 @@
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 
-static const uint8_t mpu9250_address = 104;  // assuming LSB is set to 0
-static const std::string mpu9250_id = "mpu9250";
+static const uint8_t mpu9250_address = 0x68;
 static const byte kMultiplexerAddress = 0x76;
 
 static const double avg_room_temperature = 25.00;
@@ -26,7 +25,7 @@ TEST(MotionTracker, TestGyroRead) {
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
 
     GyroscopeReading gyroscope_reading;
     test_imu.TakeGyroscopeReading(gyroscope_reading);
@@ -43,7 +42,7 @@ TEST(MotionTracker, TestMagnoRead) {
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
 
     MagnetometerReading magnetometer_reading;
     test_imu.TakeMagnetometerReading(magnetometer_reading);
@@ -60,7 +59,7 @@ TEST(MotionTracker, TestTempRead) {
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
 
     Mpu9250TemperatureReading temperature_reading;
     test_imu.TakeTemperatureReading(temperature_reading);
@@ -76,7 +75,7 @@ TEST(MotionTracker, TestAccelRead) {
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, mpu9250_id);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
 
     AccelerometerReading accelerometer_reading;
     test_imu.TakeAccelerometerReading(accelerometer_reading);

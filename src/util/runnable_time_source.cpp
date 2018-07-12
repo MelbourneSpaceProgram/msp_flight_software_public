@@ -2,7 +2,6 @@
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/sensors/i2c_sensors/rtc.h>
-#include <src/tasks/runnable.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
@@ -18,11 +17,6 @@ void RunnableTimeSource::UpdateSatelliteTime() {
     I2cMultiplexer multiplexer(&bus, 0x76);
     Rtc rtc(&bus, 0x69);
     while (1) {
-        // The task sleep lives here so we can use `continue` to handle the
-        // exception below If task sleep is at the bottom then the exception
-        // path will cause it to be skipped Effectively placing this code into
-        // an infinite loop
-
         multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
 
         RTime time;
