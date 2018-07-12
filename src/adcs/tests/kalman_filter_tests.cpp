@@ -4,9 +4,7 @@
 
 TEST_GROUP(KalmanFilter){};
 
-// This test is producing an uncaught exception somehow so it is disabled for
-// now.
-IGNORE_TEST(KalmanFilter, PredictAndUpdate) {
+TEST(KalmanFilter, PredictAndUpdate) {
     double r1_data[3][1] = {{0.3554}, {0.0734}, {-0.9318}};
     Matrix r1(r1_data);
     double r2_data[3][1] = {{0}, {0}, {1}};

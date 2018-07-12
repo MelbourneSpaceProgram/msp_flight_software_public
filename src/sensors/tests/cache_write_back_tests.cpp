@@ -12,7 +12,12 @@
 #include <stdio.h>
 
 TEST_GROUP(CacheWriteBack){
-    void setup(){if (!sd_card_available || !i2c_available){TEST_EXIT}}};
+    void setup(){
+        if (!sd_card_available || !i2c_available) {
+            TEST_EXIT;
+        }
+    };
+};
 
 // WARNING: Test deletes SD file for CdhTemp1
 TEST(CacheWriteBack, TestCacheWriteBack) {
@@ -32,7 +37,12 @@ TEST(CacheWriteBack, TestCacheWriteBack) {
 
     // The same value in `temp` should now be in the cache, so write the cache
     // to SD card
-    RunnableCacheWriteBack::WriteBackTemp(kCdhSysTemp);
+    try {
+        RunnableCacheWriteBack::WriteBackTemp(kCdhSysTemp);
+    } catch (etl::exception e) {
+        // Likely SD card not present
+        FAIL("Uncaught exception in test");
+    }
 
     // Check the SD card for the same value as `temp`
     TemperatureReading temp_message =

@@ -7,8 +7,7 @@
 
 TEST_GROUP(Database){};
 
-// TODO Test crashes
-IGNORE_TEST(Database, Hamming) {
+TEST(Database, Hamming) {
     HammingEncodedByte hamming_encoded_byte;
 
     // test ENCODING
@@ -45,9 +44,9 @@ IGNORE_TEST(Database, Hamming) {
     byte encoded_byte_array[4], decoded_byte_array[2];
     bool invalid_bytes[2];
 
-    HammingCoder::EncodeByteArray(encoded_byte_array, 2, byte_array, 4);
-    HammingCoder::DecodeByteArray(decoded_byte_array, 4, invalid_bytes,
-                                  encoded_byte_array, 2);
+    CHECK_THROWS(etl::exception, HammingCoder::EncodeByteArray(encoded_byte_array, 2, byte_array, 4));
+    CHECK_THROWS(etl::exception, HammingCoder::DecodeByteArray(decoded_byte_array, 4, invalid_bytes,
+                                  encoded_byte_array, 2));
 
     HammingCoder::EncodeByteArray(encoded_byte_array, 4, byte_array, 2);
     HammingCoder::DecodeByteArray(decoded_byte_array, 2, invalid_bytes,
@@ -56,6 +55,7 @@ IGNORE_TEST(Database, Hamming) {
     CHECK_EQUAL(byte_array[1], decoded_byte_array[1]);
 }
 
+// TODO(akremor): Test crashes
 IGNORE_TEST(Database, ReadWriteStatus) {
     byte status_register = 1 << 3;
     Eeprom::WriteStatusRegister(status_register);
@@ -64,6 +64,7 @@ IGNORE_TEST(Database, ReadWriteStatus) {
     CHECK_EQUAL(24, status_register);
 }
 
+// TODO(akremor): Test crashes
 IGNORE_TEST(Database, ReadWriteData) {
     byte write_buffer[345];
     uint16_t address = 1 << 10;

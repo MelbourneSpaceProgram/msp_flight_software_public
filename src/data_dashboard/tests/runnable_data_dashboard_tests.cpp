@@ -8,9 +8,15 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
-TEST_GROUP(HardwareInLoop){};
+TEST_GROUP(HardwareInLoop){
+    void setup() {
+        if (!hil_available) {
+            TEST_EXIT;
+        }
+    };
+};
 
-IGNORE_TEST(HardwareInLoop, TransmitMessage) {
+TEST(HardwareInLoop, TransmitMessage) {
     DebugStream* debug_stream = DebugStream::GetInstance();
     byte buffer[SensorReading_size];
 

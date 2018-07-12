@@ -10,7 +10,6 @@
 
 static const byte kTestHardwareAddr = 0x33;
 
-// TODO(akremor): Convert to Antenna available?
 TEST_GROUP(Antenna) {
     void setup() {
         if (!antenna_available) {

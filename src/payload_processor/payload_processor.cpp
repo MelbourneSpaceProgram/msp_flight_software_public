@@ -57,7 +57,6 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
         try {
             if (command != NULL) {
                 command_execution_successful = command->ExecuteCommand();
-                Log_info1("Executed command with code %d", command_code);
             }
         } catch (etl::exception e) {
             Log_error1("Unable to successfully execute command with code %d",

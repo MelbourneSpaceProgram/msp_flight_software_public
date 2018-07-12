@@ -32,8 +32,11 @@ TEST(PayloadProcessor, TestPayloadProcessor) {
     CHECK(payload_processor.ParseAndExecuteCommands(payload));
 }
 
-// This test will trigger a reset so normally leave it off
-IGNORE_TEST(PayloadProcessor, TestForceResetCommand) {
+TEST(PayloadProcessor, TestForceResetCommand) {
+    if (!force_reset_command_test_enabled) {
+        TEST_EXIT
+    }
+
     byte payload[Lithium::kMaxReceivedSize] = {0};
 
     payload[0] = 4;

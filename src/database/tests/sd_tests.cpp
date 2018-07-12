@@ -33,9 +33,16 @@ TEST_GROUP(SdCard) {
 };
 
 TEST(SdCard, FatFsReadWrite) {
-    File src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
-                                                SdCard::kFileReadMode |
-                                                SdCard::kFileCreateAlwaysMode);
+    File src;
+    try {
+        src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
+                                            SdCard::kFileReadMode |
+                                            SdCard::kFileCreateAlwaysMode);
+    } catch (etl::exception& e) {
+        // Likely SD card missing
+        FAIL("Uncaught exception in test");
+    }
+
     CHECK_EQUAL(strlen(text_array),
                 SdCard::FileWrite(src, text_array, strlen(text_array)));
     SdCard::FileFlush(src);
@@ -49,15 +56,14 @@ TEST(SdCard, FatFsReadWrite) {
     char copy_buffer[copy_buffer_size + 1];
 
     // Copy the contents from the src to the dst
-    uint32_t bytes_read, bytes_written;
     uint64_t total_bytes_copied = 0;
     while (true) {
-        bytes_read = SdCard::FileRead(src, copy_buffer, copy_buffer_size);
+        uint32_t bytes_read = SdCard::FileRead(src, copy_buffer, copy_buffer_size);
         if (bytes_read == 0) {
             break;
         }
 
-        bytes_written = SdCard::FileWrite(dst, copy_buffer, bytes_read);
+        uint32_t bytes_written = SdCard::FileWrite(dst, copy_buffer, bytes_read);
         if (bytes_written < bytes_read) {
             Log_error0("SD Card full");
             break;
