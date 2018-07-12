@@ -1,3 +1,4 @@
+#include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
 
@@ -13,9 +14,8 @@ const byte MPU9250MotionTracker::kAccelerometerFullScaleRanges[4] = {2, 4, 8,
 const uint16_t MPU9250MotionTracker::kAccelerometerSensitivityScaleFactors[4] =
     {16384, 8192, 4096, 2048};
 
-MPU9250MotionTracker::MPU9250MotionTracker(I2c *bus, byte address,
-                                           std::string id)
-    : bus(bus), address(address), id(id) {
+MPU9250MotionTracker::MPU9250MotionTracker(I2c *bus, byte address)
+    : bus(bus), address(address) {
     // default settings for the gyroscope/accelerometer
     SetGyroFullScaleSetting(kGyro250dps);
     SetAccelFullScaleSetting(kAccel2g);

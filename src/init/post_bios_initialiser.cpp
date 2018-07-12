@@ -152,23 +152,6 @@ void PostBiosInitialiser::InitSystemHealthCheck() {
     system_health_check_task->Init();
 }
 
-void PostBiosInitialiser::DeployAntenna() {
-    Antenna* antenna = Antenna::GetAntenna();
-    if (!antenna->IsDoorsOpen()) {
-        Log_info0("Trying safe deploy");
-        antenna->SafeDeploy();
-    }
-    if (!antenna->IsDoorsOpen()) {
-        Log_info0("Trying force deploy");
-        antenna->ForceDeploy();
-    }
-    if (antenna->IsDoorsOpen()) {
-        Log_info0("Antenna deployed");
-    } else {
-        Log_error0("Antenna failed to deploy");
-    }
-}
-
 void PostBiosInitialiser::InitHardware() {
     try {
         I2c::InitBusses();
@@ -241,7 +224,7 @@ void PostBiosInitialiser::PostBiosInit() {
         RunUnitTests();
 #endif
 
-#if defined ORBIT_CONFIGURATION
+#if defined ORBIT_CONFIGURATION || 1
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
         if (hil_available) {
@@ -265,7 +248,7 @@ void PostBiosInitialiser::PostBiosInit() {
 
         SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
         Log_info0("Antenna deploying, can take awhile");
-        DeployAntenna();
+        Antenna::GetAntenna()->DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
         InitBeacon();

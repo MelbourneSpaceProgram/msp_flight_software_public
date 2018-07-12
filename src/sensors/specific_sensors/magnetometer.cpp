@@ -10,8 +10,6 @@
 #include <src/sensors/generic_measurable.h>
 #include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/util/message_codes.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
 
 // Get readings from the hardware magnetometer and the simulation.
 // Use the simulation readings for the controller, but echo the hardware

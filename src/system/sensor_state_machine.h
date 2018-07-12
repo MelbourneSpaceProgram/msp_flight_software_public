@@ -4,9 +4,8 @@
 #include <src/observers/generic_observer.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_machine.h>
+#include <ti/sysbios/knl/Semaphore.h>
 #include <src/system/state_manager.h>
-
-class StateManager;
 
 template <typename T>
 class SensorStateMachine : public GenericObserver<T>, public StateMachine {

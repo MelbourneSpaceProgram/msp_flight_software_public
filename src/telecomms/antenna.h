@@ -25,6 +25,7 @@ class Antenna {
     bool IsHeatersOn() const;
     bool IsInitialised() const;
     I2c* GetBus() const;
+    void DeployAntenna();
 
    private:
     // I2C Address

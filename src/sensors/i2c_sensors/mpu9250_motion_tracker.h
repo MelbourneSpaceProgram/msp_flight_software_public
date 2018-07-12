@@ -3,9 +3,10 @@
 
 #include <external/etl/array.h>
 #include <external/etl/exception.h>
-#include <src/board/i2c/i2c.h>
+#include <src/util/data_types.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <string>
+
+class I2c;
 
 typedef struct _GyroscopeReading {
     double x;
@@ -55,7 +56,7 @@ enum MagnetometerOutputBitSetting { k14BitOutput = 0, k16BitOutput = 1 };
 
 class MPU9250MotionTracker {
    public:
-    MPU9250MotionTracker(I2c *bus, byte address, std::string id);
+    MPU9250MotionTracker(I2c *bus, byte address);
     void TakeGyroscopeReading(GyroscopeReading &gyroscope_reading);
     void TakeAccelerometerReading(AccelerometerReading &accelerometer_reading);
     void TakeTemperatureReading(Mpu9250TemperatureReading &temperature_reading);
@@ -123,7 +124,6 @@ class MPU9250MotionTracker {
 
     I2c *bus;
     uint8_t address;
-    std::string id;
 
     // temperature sensor constants from data sheet
     static const int16_t kMaxOperatingTemp = 85;

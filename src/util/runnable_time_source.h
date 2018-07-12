@@ -1,11 +1,7 @@
 #ifndef SRC_UTIL_RUNNABLE_TIME_SOURCE_H_
 #define SRC_UTIL_RUNNABLE_TIME_SOURCE_H_
 
-#include <ti/sysbios/heaps/HeapMem.h>
-#include <ti/sysbios/knl/Task.h>
-#include <xdc/runtime/Memory.h>
-#include <xdc/runtime/System.h>
-#include <xdc/std.h>
+#include <src/tasks/runnable.h>
 
 class RunnableTimeSource : public Runnable {
    public:
