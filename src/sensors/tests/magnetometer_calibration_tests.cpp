@@ -83,7 +83,7 @@ TEST(MagnetometerCalibration, TestComputeAggregatedReadings) {
     }
 }
 
-IGNORE_TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
+TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
     Matrix test_calibration_values(
         const_cast<double(&)[40][3]>(test_calibration_values_data));
 

@@ -31,9 +31,8 @@ static const bool spi_available = false;
 static const bool sd_card_available = true;
 static const bool lithium_available = false;  // Lithium not responding?
 static const bool hil_available = false;
-static const bool imu_available =
-    false;  // Causes a crash when reading the magnetometer adjust registers
-static const bool bms_available = false;  // TODO Crashed
+static const bool imu_available = false;
+static const bool bms_available = false;
 static const bool antenna_available = false;
 static const bool ditl_mode = false;
 

@@ -4,8 +4,7 @@
 
 TEST_GROUP(BDotEstimator){};
 
-// Test is crashing
-IGNORE_TEST(BDotEstimator, TestBDotEstimator) {
+TEST(BDotEstimator, TestBDotEstimator) {
     // test on known sequence
     BDotEstimator b_dot_estimator(1, 1000);
 
@@ -46,6 +45,6 @@ IGNORE_TEST(BDotEstimator, TestBDotEstimator) {
     double m32_data[3][2];
     Matrix m32(m32_data);
 
-    b_dot_estimator.Estimate(m32, output);
-    b_dot_estimator.Estimate(input, m32);
+    CHECK_THROWS(etl::exception, b_dot_estimator.Estimate(m32, output));
+    CHECK_THROWS(etl::exception, b_dot_estimator.Estimate(input, m32));
 }

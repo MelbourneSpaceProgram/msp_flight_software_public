@@ -5,10 +5,6 @@
 #include <src/sensors/measurable_id.h>
 #include <src/util/satellite_time_source.h>
 
-static const byte kMultiplexerAddress = 0x76;
-static const byte kTestRtcAddr = 0x69;
-static const uint64_t timestamp_tolerance = 1000;
-
 TEST_GROUP(MeasurableManager) {
     void setup() {
         if (!i2c_available) {
@@ -36,9 +32,5 @@ TEST(MeasurableManager, TestManagerRead) {
 
     DOUBLES_EQUAL(now.timestamp_millis_unix_epoch,
                   timestamp.timestamp_millis_unix_epoch, 10);
-    // TODO(akremor): Remove this. Only here because the above can return an
-    // undefined value which appears to cause a loop when the test assert is
-    // performed.
-    cdh_temp = 123;
-    DOUBLES_EQUAL(25.0, cdh_temp, 10);
+    DOUBLES_EQUAL(25, cdh_temp, 10);
 }

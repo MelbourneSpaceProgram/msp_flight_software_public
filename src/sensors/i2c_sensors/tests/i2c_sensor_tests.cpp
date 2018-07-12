@@ -18,12 +18,10 @@ TEST_GROUP(Adc) {
     };
 };
 
-// Test disabled as CDH no longer has an IO Expander
-// TODO(akremor): Find equivalent chip
-IGNORE_TEST(Adc, TestADC) {
+TEST(Adc, TestADC) {
     I2c test_i2c_bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
+    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
     Adc adc(&test_i2c_bus, test_adc_address);
 
     adc.SetOperationalStatus(kAdcConversion);

@@ -13,15 +13,21 @@ TEST_GROUP(CircularBuffer) {
 
 // Overfill the buffer and read all data back to ensure circularity
 TEST(CircularBuffer, WriteAndRead) {
-    char* file_name = "crclbuf.tst";
-    uint8_t n_messages = 4;
+    const char* file_name = "crclbuf.tst";
+
     try {
         SdCard::FileDelete(file_name);
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // File didn't exist, this is fine
     }
-    CircularBufferNanopb(MagnetometerReading)::Create(file_name, n_messages);
-    CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
+    try {
+        uint8_t n_messages = 4;
+        CircularBufferNanopb(MagnetometerReading)::Create(file_name, n_messages);
+        CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
+    } catch (etl::exception& e) {
+        // Likely SD card missing
+        FAIL("Uncaught exception in test");
+    }
 
     MagnetometerReading dummy_magnetometer_reading =
         MagnetometerReading_init_zero;

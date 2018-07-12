@@ -10,10 +10,6 @@
 
 static const byte kMultiplexerAddress = 0x76;
 static const byte kTempSensorAddress = 0x1A;
-static const byte kAdcAddress = 0x48;
-static const byte kAdcConversionRegisterLocation = 0x00;
-static const double kRoomTemperature = 25;
-static const double kAllowableError = 10;
 
 TEST_GROUP(Multiplexer) {
     void setup() {
@@ -37,5 +33,6 @@ TEST(Multiplexer, TestMultiplexer) {
     multiplexer.CloseAllChannels();
 
     // Since all channels are closed the reading should fail
+    Log_info0("An I2c measurable failed read message will be printed. This is expected and okay.");
     CHECK_FALSE(inaccessible_temp.TakeReading());
 }

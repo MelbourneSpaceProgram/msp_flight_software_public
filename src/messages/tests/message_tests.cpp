@@ -11,7 +11,7 @@ static const DebugMessageVersion kCurrentVersion = kV1;
 
 TEST_GROUP(Message){};
 
-IGNORE_TEST(Message, TestMessageSerialise) {
+TEST(Message, TestMessageSerialise) {
     for (int i = 0; i < 256; i++) {
         uint8_t data = static_cast<uint8_t>(i);
         TestMessage test_message(data);
@@ -24,7 +24,7 @@ IGNORE_TEST(Message, TestMessageSerialise) {
     }
 }
 
-IGNORE_TEST(Message, TempMessageSerialise) {
+TEST(Message, TempMessageSerialise) {
     for (int i = 0; i < 256; i++) {
         uint8_t sensor_id = static_cast<uint8_t>(i);
         uint8_t timestamp = static_cast<uint8_t>(255 - i);
@@ -41,8 +41,7 @@ IGNORE_TEST(Message, TempMessageSerialise) {
     }
 }
 
-// TODO(akremor): Appears to be throwing exception
-IGNORE_TEST(Message, ContainerMessageSerialise) {
+TEST(Message, ContainerMessageSerialise) {
     for (int i = 0; i < 256; i++) {
         uint8_t container_data = static_cast<uint8_t>(i);
         uint8_t inside_data = static_cast<uint8_t>(255 - i);
@@ -61,8 +60,8 @@ IGNORE_TEST(Message, ContainerMessageSerialise) {
         BYTES_EQUAL(inside_data, serial_message.GetBuffer()[5]);
     }
 }
-// TODO(akremor): Appears to be throwing exception
-IGNORE_TEST(Message, SerialisedMessageBuilder) {
+
+TEST(Message, SerialisedMessageBuilder) {
     byte buffer[10];
     SerialisedMessageBuilder builder(buffer, 10);
     CHECK_EQUAL(0, builder.GetSerialisedLength());

@@ -6,7 +6,7 @@
 
 TEST_GROUP(LithiumConfiguration){};
 
-IGNORE_TEST(LithiumConfiguration, TestLithiumConfigurationSerialise) {
+TEST(LithiumConfiguration, TestLithiumConfigurationSerialise) {
     LithiumConfiguration config;
     SerialisedMessage serialised_config = config.Serialise();
     CHECK_EQUAL(serialised_config.GetSize(), config.GetSerialisedSize());
@@ -14,7 +14,7 @@ IGNORE_TEST(LithiumConfiguration, TestLithiumConfigurationSerialise) {
     // deserialise?
 }
 
-IGNORE_TEST(LithiumConfiguration, TestLithiumConfigurationDeserialise) {
+TEST(LithiumConfiguration, TestLithiumConfigurationDeserialise) {
     LithiumConfiguration config;
     config.SetInterfaceBaudRate(LithiumConfiguration::kBaud38400);
     config.SetRxFreq(1000);
@@ -47,7 +47,7 @@ IGNORE_TEST(LithiumConfiguration, TestLithiumConfigurationDeserialise) {
     CHECK_EQUAL(190, deserialised_config.GetTxPowerAmpLevel());
 }
 
-IGNORE_TEST(LithiumConfiguration, TestFunctionConfigDeserialise) {
+TEST(LithiumConfiguration, TestFunctionConfigDeserialise) {
     LithiumConfiguration config;
     LithiumFunctionConfig *function_config = config.GetFunctionConfig();
     CHECK_EQUAL(LithiumFunctionConfig::kExternalEventOffLogicLow,
