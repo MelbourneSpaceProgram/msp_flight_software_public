@@ -31,6 +31,7 @@ class SdCard {
     static void FileFlush(File& f);
     static void FileSeek(File& f, uint32_t dest);
     static void FileDelete(const char* path);
+    static uint32_t FileSize(File &f);
 
    private:
     static const uint8_t kDriveNum = 0;

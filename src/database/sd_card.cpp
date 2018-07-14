@@ -85,3 +85,8 @@ void SdCard::FileDelete(const char *path) {
         throw etl::exception("Error deleting file", __FILE__, __LINE__);
     }
 }
+
+uint32_t SdCard::FileSize(File &f) {
+    FSIZE_t size = f_size(&f);
+    return static_cast<uint32_t>(size);
+}

@@ -67,10 +67,8 @@ TEST(SdCard, FatFsReadWrite) {
 
     SdCard::FileFlush(dst);
 
-    // TODO(akremor): Need to develop a fix for the below
-    // It is API version dependent which means it breaks some builds
-    // uint32_t filesize = src.fsize;
-    uint32_t filesize = 0;
+    // -1 required to account for the NULL terminator that is in the char array but not written to file
+    CHECK_EQUAL(sizeof(text_array) / sizeof(char) - 1, SdCard::FileSize(src));
 
     SdCard::FileClose(src);
     SdCard::FileClose(dst);
