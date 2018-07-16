@@ -3,6 +3,7 @@
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/config/stacks.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
 #include <src/database/sd_card.h>
@@ -69,15 +70,19 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
 }
 
 void PostBiosInitialiser::InitRadioListener() {
-    TaskHolder* radio_listener = new TaskHolder(1200, "RadioListener", 11,
-                                                new RunnableLithiumListener());
-    radio_listener->Init();
+    static byte stack[radio_listener_stack_size];
+    TaskHolder* radio_listener =
+        new TaskHolder(stack, radio_listener_stack_size, "RadioListener", 11,
+                       new RunnableLithiumListener());
+    radio_listener->Start();
 }
 
 void PostBiosInitialiser::RunUnitTests() {
+    static byte stack[unit_tests_stack_size];
     TaskHolder* test_task =
-        new TaskHolder(20000, "Unit Tests", 7, TestInitialiser::GetInstance());
-    test_task->Init();
+        new TaskHolder(stack, unit_tests_stack_size, "Unit Tests", 7,
+                       TestInitialiser::GetInstance());
+    test_task->Start();
 }
 
 void PostBiosInitialiser::InitStateManagement() {
@@ -86,26 +91,27 @@ void PostBiosInitialiser::InitStateManagement() {
 
     TaskHolder* state_management_task = new TaskHolder(
         1024, "StateManagement", 11, new RunnableStateManagement());
-    state_management_task->Init();
+    state_management_task->Start();
 }
 
 void PostBiosInitialiser::InitBeacon() {
-    TaskHolder* beacon_task =
-        new TaskHolder(1536, "Beacon", 12, new RunnableBeacon());
-    beacon_task->Init();
+    static byte stack[beacon_stack_size];
+    TaskHolder* beacon_task = new TaskHolder(stack, beacon_stack_size, "Beacon",
+                                             12, new RunnableBeacon());
+    beacon_task->Start();
 }
 
 void PostBiosInitialiser::InitPayloadProcessor() {
     TaskHolder* payload_processor_task = new TaskHolder(
         1536, "PayloadProcessor", 12, new RunnablePayloadProcessor());
-    payload_processor_task->Init();
+    payload_processor_task->Start();
 }
 
 void PostBiosInitialiser::InitDataDashboard() {
     // TODO(rskew) review priority
     TaskHolder* data_dashboard_task =
         new TaskHolder(4096, "DataDashboard", 5, new RunnableDataDashboard());
-    data_dashboard_task->Init();
+    data_dashboard_task->Start();
 }
 
 void PostBiosInitialiser::InitOrientationControl() {
@@ -132,7 +138,7 @@ void PostBiosInitialiser::InitOrientationControl() {
     TleUpdateCommand::SetTleUpdateCommandMailboxHandle(
         tle_update_command_mailbox_handle);
 
-    orientation_control_task->Init();
+    orientation_control_task->Start();
 }
 
 TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
@@ -143,13 +149,13 @@ TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
         // works with this little stack?
         1024, "PreDeploymentMagnetometerPoller", 5,
         new RunnablePreDeploymentMagnetometerPoller());
-    pre_deployment_magnetometer_poller_task->Init();
+    pre_deployment_magnetometer_poller_task->Start();
     return pre_deployment_magnetometer_poller_task;
 }
 void PostBiosInitialiser::InitSystemHealthCheck() {
     TaskHolder* system_health_check_task = new TaskHolder(
         1536, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
-    system_health_check_task->Init();
+    system_health_check_task->Start();
 }
 
 void PostBiosInitialiser::InitHardware() {
@@ -179,17 +185,19 @@ void PostBiosInitialiser::InitHardware() {
 }
 
 void PostBiosInitialiser::InitMemoryLogger() {
+    static byte stack[memory_logger_stack_size];
     TaskHolder* memory_logger_task =
-        new TaskHolder(1024, "MemoryLogger", 13, new RunnableMemoryLogger());
-    memory_logger_task->Init();
+        new TaskHolder(stack, memory_logger_stack_size, "MemoryLogger", 13,
+                       new RunnableMemoryLogger());
+    memory_logger_task->Start();
 }
 
 void PostBiosInitialiser::InitTimeSource() {
-    // Observed stack peak was 1200, so +300 for future changes and any
-    // pre-emption that may occur
+    static byte stack[time_source_stack_size];
     TaskHolder* time_source_task =
-        new TaskHolder(1500, "TimeSource", 13, new RunnableTimeSource());
-    time_source_task->Init();
+        new TaskHolder(stack, time_source_stack_size, "TimeSource", 13,
+                       new RunnableTimeSource());
+    time_source_task->Start();
 }
 
 void PostBiosInitialiser::PostBiosInit() {

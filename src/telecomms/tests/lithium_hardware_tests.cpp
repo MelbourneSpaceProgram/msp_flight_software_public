@@ -12,11 +12,13 @@
 #include <src/telecomms/msp_payloads/test_payload.h>
 #include <src/util/data_types.h>
 
-TEST_GROUP(Lithium){void setup(){if (!lithium_available){TEST_EXIT;
-}
-}
-}
-;
+TEST_GROUP(Lithium) {
+    void setup() {
+        if (!lithium_available) {
+            TEST_EXIT;
+        }
+    };
+};
 
 // RunnableLithiumListener MUST be initialised to pass these
 TEST(Lithium, TestNoOpHardware) {
