@@ -10,6 +10,7 @@
 #include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
+#include <ti/drivers/GPIO.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
@@ -18,6 +19,9 @@ Lithium* Lithium::instance = NULL;
 
 Lithium::Lithium()
     : lithium_config(), uart(TELECOMS), lithium_transmit_enabled(true) {
+    // Ensure Lithium is not in reset
+    GPIO_write(nCOMMS_RST, 1);
+
     uart.SetBaudRate(Uart::kBaud9600)
         ->SetReadMode(UART_MODE_BLOCKING)
         ->SetWriteMode(UART_MODE_BLOCKING)

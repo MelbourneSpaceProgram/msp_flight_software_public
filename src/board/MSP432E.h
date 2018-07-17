@@ -5,7 +5,6 @@
 extern "C" {
 #endif
 
-
 void initGeneral(void);
 
 typedef enum MSP_EXP432P401R_SDFatFSName {
@@ -38,7 +37,7 @@ typedef enum Board_GPIOName {
     ANT_OVERRIDE_1 = 12,
     ANT_OVERRIDE_2 = 13,
     COMMS_INT = 14,
-    COMMS_RST = 15,
+    nCOMMS_RST = 15,
     UNUSED_5 = 16,
     FS_X_DIR = 17,
     FS_Y_DIR = 18,
