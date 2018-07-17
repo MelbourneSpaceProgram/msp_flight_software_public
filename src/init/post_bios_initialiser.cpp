@@ -232,7 +232,7 @@ void PostBiosInitialiser::PostBiosInit() {
         RunUnitTests();
 #endif
 
-#if defined ORBIT_CONFIGURATION || 1
+#if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
         if (hil_available) {
