@@ -6,8 +6,7 @@
 int main(void) {
     System_printf("Built at: %s %s\n", __DATE__, __TIME__);
 #if defined GIT_INFO_PRESENT
-        System_printf("Branch: %s, Hash: %s\n", GIT_REFNAME, GIT_HASH);
-        System_printf("Authored at: %s\n", GIT_DATE);
+        System_printf("Branch: %s\n", TOSTRING(GIT_REFNAME));
 #endif
 
     PreBiosInit();
