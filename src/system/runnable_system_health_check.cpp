@@ -20,6 +20,7 @@
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
+#include <ti/drivers/GPIO.h>
 #include <ti/drivers/utils/RingBuf.h>
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/utils/Load.h>
@@ -222,6 +223,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
         }
         UartFlush();
         SystemWatchdog::ResetTimer();
+        GPIO_toggle(SYS_LED);
         TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
     }
 }

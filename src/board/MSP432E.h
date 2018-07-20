@@ -19,8 +19,6 @@ typedef enum MSP_EXP432P401R_SDName {
     MSP_EXP432P401R_SDCOUNT
 } MSP_EXP432P401R_SDName;
 
-// TODO(akremor): Pins to boot MCU
-// TODO(akremor): Power alert pins
 typedef enum Board_GPIOName {
     I2C_MUX_nRST = 0,
     RTC_INT = 1,
