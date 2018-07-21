@@ -14,8 +14,10 @@ const byte MPU9250MotionTracker::kAccelerometerFullScaleRanges[4] = {2, 4, 8,
 const uint16_t MPU9250MotionTracker::kAccelerometerSensitivityScaleFactors[4] =
     {16384, 8192, 4096, 2048};
 
-MPU9250MotionTracker::MPU9250MotionTracker(I2c *bus, byte address)
-    : bus(bus), address(address) {
+MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, int address,
+                                           const I2cMultiplexer* multiplexer,
+                                           I2cMultiplexer::MuxChannel channel)
+    : I2cSensor(bus, address, multiplexer, channel) {
     // default settings for the gyroscope/accelerometer
     SetGyroFullScaleSetting(kGyro250dps);
     SetAccelFullScaleSetting(kAccel2g);
@@ -29,8 +31,8 @@ MPU9250MotionTracker::MPU9250MotionTracker(I2c *bus, byte address)
     SetBypassMode(kBypassModeDisable);
 }
 
-void MPU9250MotionTracker::TakeGyroscopeReading(
-    GyroscopeReading &gyroscope_reading) {
+GyroscopeReading MPU9250MotionTracker::TakeGyroscopeReading() {
+    GyroscopeReading gyroscope_reading;
     SelectRegister(kGyroXOutHigh);
 
     etl::array<byte, 6> gyro_reading_bytes = ReadSixBytesFromCurrentRegister();
@@ -46,10 +48,12 @@ void MPU9250MotionTracker::TakeGyroscopeReading(
     gyroscope_reading.x = DecodeGyroReadingToSI(gyro_x_reading_bytes);
     gyroscope_reading.y = DecodeGyroReadingToSI(gyro_y_reading_bytes);
     gyroscope_reading.z = DecodeGyroReadingToSI(gyro_z_reading_bytes);
+
+    return gyroscope_reading;
 }
 
-void MPU9250MotionTracker::TakeAccelerometerReading(
-    AccelerometerReading &accelerometer_reading) {
+AccelerometerReading MPU9250MotionTracker::TakeAccelerometerReading() {
+    AccelerometerReading accelerometer_reading;
     SelectRegister(kAccelXOutHigh);
 
     etl::array<byte, 6> accel_reading_bytes = ReadSixBytesFromCurrentRegister();
@@ -65,17 +69,21 @@ void MPU9250MotionTracker::TakeAccelerometerReading(
     accelerometer_reading.x = DecodeAccelReadingToSI(accel_x_reading_bytes);
     accelerometer_reading.y = DecodeAccelReadingToSI(accel_y_reading_bytes);
     accelerometer_reading.z = DecodeAccelReadingToSI(accel_z_reading_bytes);
+
+    return accelerometer_reading;
 }
 
-void MPU9250MotionTracker::TakeTemperatureReading(
-    Mpu9250TemperatureReading &temperature_reading) {
+Mpu9250TemperatureReading MPU9250MotionTracker::TakeTemperatureReading() {
+    Mpu9250TemperatureReading temperature_reading;
     SelectRegister(kTempOutHigh);
     etl::array<byte, 2> temp_reading_bytes = ReadTwoBytesFromCurrentRegister();
     temperature_reading.temp = DecodeTempReadingToSI(temp_reading_bytes);
+
+    return temperature_reading;
 }
 
-void MPU9250MotionTracker::TakeMagnetometerReading(
-    MagnetometerReading &magnetometer_reading) {
+MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
+    MagnetometerReading magnetometer_reading;
     SetBypassMode(kBypassModeEnable);
     SelectMagnetometerRegister(kExtMagnoXOutHigh);
     byte magno_data[6];
@@ -105,6 +113,8 @@ void MPU9250MotionTracker::TakeMagnetometerReading(
     }
 
     SetBypassMode(kBypassModeDisable);
+
+    return magnetometer_reading;
 }
 
 void MPU9250MotionTracker::ReadMagnetometerAdjustmentValues() {

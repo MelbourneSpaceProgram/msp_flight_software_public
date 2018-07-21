@@ -3,9 +3,14 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/imu_accelerometer_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/imu_gyroscope_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/rtime_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
+#include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/measurable_id.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_manager.h>
@@ -90,10 +95,10 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
         static_cast<BatteryTempStateMachine *>(
             state_manager->GetStateMachine(kBatteryTempStateMachine));
 
-    battery_temp_state_machine->RegisterWithSensor(AddBmsBatteryTempMeasurable(
-        kPowerBmsBatteryTemp1, bms_bus_d));
-    battery_temp_state_machine->RegisterWithSensor(AddBmsBatteryTempMeasurable(
-        kPowerBmsBatteryTemp2, bms_bus_c));
+    battery_temp_state_machine->RegisterWithSensor(
+        AddBmsBatteryTempMeasurable(kPowerBmsBatteryTemp1, bms_bus_d));
+    battery_temp_state_machine->RegisterWithSensor(
+        AddBmsBatteryTempMeasurable(kPowerBmsBatteryTemp2, bms_bus_c));
 
     AddTemperature(kPowerTemp1, power_temp_1);
     AddTemperature(kPowerTemp2, power_temp_2);
@@ -125,6 +130,14 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddTemperature(kFsTemp1, fs_temp_1);
     AddTemperature(kFsTemp2, fs_temp_2);
     AddTemperature(kFsTemp3, fs_temp_3);
+
+    MPU9250MotionTracker *fs_imu = new MPU9250MotionTracker(
+        bus_a, 104, mux_a, I2cMultiplexer::kMuxChannel1);
+
+    AddImuGyrometerMeasurable(kFsImuGyro, fs_imu);
+    AddImuAcceleromterMeasurable(kFsImuAccelerometer, fs_imu);
+    AddImuTemperatureMeasurable(kFsImuTemperature, fs_imu);
+    AddImuMagnetometerMeasurable(kFsImuMagnetometer, fs_imu);
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
@@ -200,9 +213,35 @@ void I2cMeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {
     measurables[id] = temp;
 }
 
+void I2cMeasurableManager::AddImuGyrometerMeasurable(
+    MeasurableId id, MPU9250MotionTracker *imu_sensor) {
+    CheckValidId(id);
+    ImuGyroscopeMeasurable *gyro = new ImuGyroscopeMeasurable(imu_sensor);
+    measurables[id] = gyro;
+}
+
+void I2cMeasurableManager::AddImuAcceleromterMeasurable(
+    MeasurableId id, MPU9250MotionTracker *imu_sensor) {
+    CheckValidId(id);
+    ImuAccelerometerMeasurable *accelerometer =
+        new ImuAccelerometerMeasurable(imu_sensor);
+    measurables[id] = accelerometer;
+}
+void I2cMeasurableManager::AddImuTemperatureMeasurable(
+    MeasurableId id, MPU9250MotionTracker *imu_sensor) {
+    CheckValidId(id);
+    ImuTemperatureMeasurable *temp = new ImuTemperatureMeasurable(imu_sensor);
+    measurables[id] = temp;
+}
+void I2cMeasurableManager::AddImuMagnetometerMeasurable(
+    MeasurableId id, MPU9250MotionTracker *imu_sensor) {
+    CheckValidId(id);
+    ImuMagnetometerMeasurable *magnetometer =
+        new ImuMagnetometerMeasurable(imu_sensor);
+    measurables[id] = magnetometer;
+}
 BmsBatteryTemperatureMeasurable *
-I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id,
-                                                  Bms *bms) {
+I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsBatteryTemperatureMeasurable *temp =
         new BmsBatteryTemperatureMeasurable(bms);
