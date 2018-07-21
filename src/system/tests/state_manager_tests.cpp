@@ -11,7 +11,6 @@ TEST_GROUP(StateManager){};
 
 TEST(StateManager, TestStateManager) {
     StateManager* state_manager = StateManager::GetStateManager();
-    state_manager->CreateStateMachines();
     BatteryChargeStateMachine* battery_charge_state_machine =
         static_cast<BatteryChargeStateMachine*>(
             state_manager->GetStateMachine(kBatteryChargeStateMachine));
@@ -29,7 +28,7 @@ TEST(StateManager, TestStateManager) {
 
     state_manager->ProcessStateChanges();
 
-    CHECK_EQUAL(kBatteryChargeCriticalLow,
+    CHECK_EQUAL(kPowerEverythingOff,
                 power_state_machine->GetCurrentState());
 
     state_manager->DeleteInstance();
