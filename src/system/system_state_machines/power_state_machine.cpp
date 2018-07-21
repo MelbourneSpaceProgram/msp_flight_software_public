@@ -18,11 +18,12 @@ void PowerStateMachine::CheckUpstreamStates() {
     StateId battery_charge = battery_charge_state_machine->GetCurrentState();
     StateId battery_temp = battery_temp_state_machine->GetCurrentState();
 
-    if (battery_temp == kBatteryTempCriticalHigh) {
+    if (battery_temp == kBatteryTempCriticalHigh ||
+        battery_charge == kBatteryChargeCriticalLow) {
         SetState(kPowerEverythingOff);
         Log_warning0("Power State: Power off.");
 
-    }  else if (battery_temp == kBatteryTempNominal) {
+    } else if (battery_temp == kBatteryTempNominal) {
         SetState(kPowerNominal);
         Log_warning0("Power State: Nominal.");
 
