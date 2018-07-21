@@ -5,6 +5,7 @@
 #include <external/etl/exception.h>
 #include <src/util/data_types.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/sensors/i2c_sensors/i2c_sensor.h>
 
 class I2c;
 
@@ -54,13 +55,15 @@ enum MagnetometerOperationMode {
 
 enum MagnetometerOutputBitSetting { k14BitOutput = 0, k16BitOutput = 1 };
 
-class MPU9250MotionTracker {
+class MPU9250MotionTracker : public I2cSensor {
    public:
-    MPU9250MotionTracker(I2c *bus, byte address);
-    void TakeGyroscopeReading(GyroscopeReading &gyroscope_reading);
-    void TakeAccelerometerReading(AccelerometerReading &accelerometer_reading);
-    void TakeTemperatureReading(Mpu9250TemperatureReading &temperature_reading);
-    void TakeMagnetometerReading(MagnetometerReading &magnetometer_reading);
+    MPU9250MotionTracker(
+        const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
+        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
+    GyroscopeReading TakeGyroscopeReading();
+    AccelerometerReading TakeAccelerometerReading();
+    Mpu9250TemperatureReading TakeTemperatureReading();
+    MagnetometerReading TakeMagnetometerReading();
 
     void SetGyroFullScaleSetting(GyroFullScaleValue gyro_full_scale_value);
     void SetAccelFullScaleSetting(AccelFullScaleValue accel_full_scale_value);
@@ -121,9 +124,6 @@ class MPU9250MotionTracker {
     double ConvertBinaryTempReadingToSI(int16_t binary_reading);
     double ConvertBinaryMagnoReadingToSI(int16_t magno_reading,
                                          byte magno_adjust_value);
-
-    I2c *bus;
-    uint8_t address;
 
     // temperature sensor constants from data sheet
     static const int16_t kMaxOperatingTemp = 85;

@@ -23,12 +23,14 @@ TEST_GROUP(MotionTracker) {
 TEST(MotionTracker, TestGyroRead) {
     I2c test_i2c_bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
+                                  I2cMultiplexer::kMuxChannel1);
 
     GyroscopeReading gyroscope_reading;
-    test_imu.TakeGyroscopeReading(gyroscope_reading);
+
+    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
+    gyroscope_reading = test_imu.TakeGyroscopeReading();
     multiplexer.CloseAllChannels();
 
     CHECK(gyroscope_reading.x != 0.0);
@@ -40,12 +42,14 @@ TEST(MotionTracker, TestMagnoRead) {
     I2c test_i2c_bus(I2C_BUS_A);
 
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
+                                  I2cMultiplexer::kMuxChannel1);
 
     MagnetometerReading magnetometer_reading;
-    test_imu.TakeMagnetometerReading(magnetometer_reading);
+
+    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
+    magnetometer_reading = test_imu.TakeMagnetometerReading();
     multiplexer.CloseAllChannels();
 
     CHECK(magnetometer_reading.x != 0.0);
@@ -57,14 +61,16 @@ TEST(MotionTracker, TestTempRead) {
     I2c test_i2c_bus(I2C_BUS_A);
 
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
+                                  I2cMultiplexer::kMuxChannel1);
 
     Mpu9250TemperatureReading temperature_reading;
-    test_imu.TakeTemperatureReading(temperature_reading);
 
+    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
+    temperature_reading = test_imu.TakeTemperatureReading();
     multiplexer.CloseAllChannels();
+
     DOUBLES_EQUAL(avg_room_temperature, temperature_reading.temp,
                   temp_tolerance);
 }
@@ -73,12 +79,14 @@ TEST(MotionTracker, TestAccelRead) {
     I2c test_i2c_bus(I2C_BUS_A);
 
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address);
+    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
+                                  I2cMultiplexer::kMuxChannel1);
 
     AccelerometerReading accelerometer_reading;
-    test_imu.TakeAccelerometerReading(accelerometer_reading);
+
+    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
+    accelerometer_reading = test_imu.TakeAccelerometerReading();
     multiplexer.CloseAllChannels();
 
     CHECK(accelerometer_reading.x != 0.0);

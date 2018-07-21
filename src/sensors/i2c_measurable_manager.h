@@ -12,6 +12,7 @@ class Measurable;
 class Rtc;
 class MCP9808;
 class Bms;
+class MPU9250MotionTracker;
 class BmsBatteryTemperatureMeasurable;
 
 class I2cMeasurableManager {
@@ -103,6 +104,14 @@ class I2cMeasurableManager {
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
         MeasurableId id, Bms *temp_sensor);
+    void AddImuGyrometerMeasurable(MeasurableId id,
+                                   MPU9250MotionTracker *imu_sensor);
+    void AddImuAcceleromterMeasurable(MeasurableId id,
+                                      MPU9250MotionTracker *imu_sensor);
+    void AddImuTemperatureMeasurable(MeasurableId id,
+                                     MPU9250MotionTracker *imu_sensor);
+    void AddImuMagnetometerMeasurable(MeasurableId id,
+                                      MPU9250MotionTracker *imu_sensor);
     void CheckValidId(MeasurableId id);
 
     static I2cMeasurableManager *instance;
