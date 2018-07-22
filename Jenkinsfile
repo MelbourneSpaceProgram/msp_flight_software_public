@@ -55,11 +55,12 @@ pipeline {
             steps {
                 sh '''
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    docker run -td --name ${docker_name} ccs7_final_image_v1
-                    docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/tmp/code
-                    docker exec -t $docker_name tar -xf /tmp/code/CDH_software.tar.gz -C /tmp/code/
-                    docker exec -t $docker_name /opt/ti/ccsv7/eclipse/eclipse -noSplash -data /opt/CDH_Software/workspace/ -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "TIRTOS Build"
-		    docker cp $docker_name:"/tmp/code/TIRTOS Build/MSP.out" ${WORKSPACE}/MSP.out 
+                    sudo docker run -td --name ${docker_name} ccsv8_msp432e
+                    sudo docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/root/
+		    sudo docker exec -t $docker_name mkdir /root/flight_software
+                    sudo docker exec -t $docker_name tar -xf /root/CDH_software.tar.gz -C /root/flight_software/
+                    sudo docker exec -t $docker_name /opt/ti/ccsv8/eclipse/eclipse -noSplash -data /root/ws -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "Tests MSP432E"
+		    sudo docker cp $docker_name:"/root/flight_software/Tests MSP432E/MSP.out" ${WORKSPACE}/MSP.out 
 		    '''
 		    stash includes: 'MSP.out', name: 'flight_software_binary'
     	    }
@@ -67,7 +68,7 @@ pipeline {
                 always {
 		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
                     sh '''
-                      docker rm -f ${docker_name}
+                      sudo docker rm -f ${docker_name}
                     '''
                 }
             }
