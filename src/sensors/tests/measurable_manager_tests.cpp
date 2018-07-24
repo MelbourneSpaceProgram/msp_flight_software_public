@@ -22,14 +22,14 @@ TEST(MeasurableManager, TestManagerRead) {
     // Manager needs to be already initialised in PostBiosInit
 
     TemperatureMeasurable *measurable = dynamic_cast<TemperatureMeasurable *>(
-        manager->GetMeasurable<double>(kCdhTemp1));
+        manager->GetMeasurable<double>(kCdhSysTemp));
 
     CHECK(measurable != NULL);
 
     Time now = SatelliteTimeSource::GetTime();
     CHECK(now.is_valid);
 
-    double cdh_temp = manager->ReadI2cMeasurable<double>(kCdhTemp1, 0);
+    double cdh_temp = manager->ReadI2cMeasurable<double>(kCdhSysTemp, 0);
 
     Time timestamp = measurable->GetTimestamp();
     CHECK(timestamp.is_valid)

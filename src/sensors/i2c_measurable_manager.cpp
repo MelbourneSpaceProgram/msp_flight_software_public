@@ -120,16 +120,16 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     Adc *fs_adc_3 = new Adc(bus_a, 0x4A, mux_a, I2cMultiplexer::kMuxChannel1);
     Adc *fs_adc_4 = new Adc(bus_a, 0x4B, mux_a, I2cMultiplexer::kMuxChannel1);
 
-    MCP9808 *fs_temp_1 =
+    MCP9808 *fs_temp_hb_x =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel1);
-    MCP9808 *fs_temp_2 =
+    MCP9808 *fs_temp_hb_y =
         new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel1);
-    MCP9808 *fs_temp_3 =
+    MCP9808 *fs_temp_hb_z =
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel1);
 
-    AddTemperature(kFsTemp1, fs_temp_1);
-    AddTemperature(kFsTemp2, fs_temp_2);
-    AddTemperature(kFsTemp3, fs_temp_3);
+    AddTemperature(kFsTempHbX, fs_temp_hb_x);
+    AddTemperature(kFsTempHbY, fs_temp_hb_z);
+    AddTemperature(kFsTempHbZ, fs_temp_hb_z);
 
     MPU9250MotionTracker *fs_imu = new MPU9250MotionTracker(
         bus_a, 104, mux_a, I2cMultiplexer::kMuxChannel1);
@@ -168,7 +168,7 @@ void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
 
     MCP9808 *cdh_temp_1 =
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
-    AddTemperature(kCdhTemp1, cdh_temp_1);
+    AddTemperature(kCdhSysTemp, cdh_temp_1);
 }
 
 void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {

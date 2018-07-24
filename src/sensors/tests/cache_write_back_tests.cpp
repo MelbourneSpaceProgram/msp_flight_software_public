@@ -17,7 +17,7 @@ TEST_GROUP(CacheWriteBack){
 // WARNING: Test deletes SD file for CdhTemp1
 TEST(CacheWriteBack, TestCacheWriteBack) {
     char filename[3];
-    snprintf(filename, sizeof(filename), "%03d", kCdhTemp1);
+    snprintf(filename, sizeof(filename), "%03d", kCdhSysTemp);
 
     I2cMeasurableManager *manager = I2cMeasurableManager::GetInstance();
 
@@ -28,11 +28,11 @@ TEST(CacheWriteBack, TestCacheWriteBack) {
     }
 
     // Populate the cache with a new reading
-    float temp = manager->ReadI2cMeasurable<double>(kCdhTemp1, 0);
+    float temp = manager->ReadI2cMeasurable<double>(kCdhSysTemp, 0);
 
     // The same value in `temp` should now be in the cache, so write the cache
     // to SD card
-    RunnableCacheWriteBack::WriteBackTemp(kCdhTemp1);
+    RunnableCacheWriteBack::WriteBackTemp(kCdhSysTemp);
 
     // Check the SD card for the same value as `temp`
     TemperatureReading temp_message =
