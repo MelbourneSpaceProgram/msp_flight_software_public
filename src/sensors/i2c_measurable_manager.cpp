@@ -84,9 +84,6 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     MCP9808 *power_temp_2 =
         new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel2);
 
-    Bms *bus_d_bms = new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
-    Bms *bus_c_bms = new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
-
     Bms *bms_bus_d = new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
     Bms *bms_bus_c = new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
 
@@ -108,10 +105,6 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     // TODO(dingbenjamin): Implement
-    // IMU A0x68
-    // SCP D0x21
-    // SCP B0x21
-    // IMU B0x68
     // Rad B0x20
     // Current Sensors
 
@@ -162,14 +155,6 @@ void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
 }
 
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
-    // TODO(dingbenjamin): Implement
-    // RTC A0x69
-    // SCP D0x22
-    // Current Sensors
-
-    Adc *cdh_adc_1 = new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel0);
-    Adc *cdh_adc_2 = new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel0);
-
     Rtc *rtc = new Rtc(bus_a, 0x69, mux_a, I2cMultiplexer::kMuxChannel0);
     RTimeMeasurable *rtime_measurable = new RTimeMeasurable(rtc);
     measurables[kCdhRtc] = rtime_measurable;
@@ -181,24 +166,55 @@ void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
 
 void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
     // TODO(dingbenjamin): Implement
-    // Temp 1 C0x19
-    // Temp 2 C0x1A
     // IR 1 C0x5B
     // IR 2 C0x5C
     // Rad ??
     // Current Sensors
 
-    // TODO(dingbenjamin): Confirm mux line
-    Adc *solar_adc_1 =
-        new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel7);
+    MCP9808 *solar_panel_1_temp_1 =
+        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel4);
+    MCP9808 *solar_panel_1_temp_2 =
+        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel4);
 
-    MCP9808 *solar_temp_1 =
-        new MCP9808(bus_a, 0x19, mux_c, I2cMultiplexer::kMuxChannel7);
-    MCP9808 *solar_temp_2 =
-        new MCP9808(bus_a, 0x1A, mux_c, I2cMultiplexer::kMuxChannel7);
+    AddTemperature(kPowerPanel1Temp1, solar_panel_1_temp_1);
+    AddTemperature(kPowerPanel1Temp2, solar_panel_1_temp_2);
 
-    AddTemperature(kSolarTemp1, solar_temp_1);
-    AddTemperature(kSolarTemp2, solar_temp_2);
+    MCP9808 *solar_panel_2_temp_1 =
+        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel5);
+    MCP9808 *solar_panel_2_temp_2 =
+        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel5);
+
+    AddTemperature(kPowerPanel2Temp1, solar_panel_2_temp_1);
+    AddTemperature(kPowerPanel2Temp2, solar_panel_2_temp_2);
+
+    MCP9808 *solar_panel_3_temp_1 =
+        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel6);
+    MCP9808 *solar_panel_3_temp_2 =
+        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel6);
+
+    AddTemperature(kPowerPanel3Temp1, solar_panel_3_temp_1);
+    AddTemperature(kPowerPanel3Temp2, solar_panel_3_temp_2);
+
+    MCP9808 *solar_panel_4_temp_1 =
+        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel7);
+    MCP9808 *solar_panel_4_temp_2 =
+        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel7);
+
+    AddTemperature(kPowerPanel4Temp1, solar_panel_4_temp_1);
+    AddTemperature(kPowerPanel4Temp2, solar_panel_4_temp_2);
+
+    MCP9808 *solar_panel_5_temp_1 =
+        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel3);
+    MCP9808 *solar_panel_5_temp_2 =
+        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel3);
+
+    AddTemperature(kPowerPanel5Temp1, solar_panel_5_temp_1);
+    AddTemperature(kPowerPanel5Temp2, solar_panel_5_temp_2);
+
+    MCP9808 *solar_panel_6_temp_1 =
+        new MCP9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel2);
+
+    AddTemperature(kPowerPanel6Temp1, solar_panel_6_temp_1);
 }
 
 void I2cMeasurableManager::AddVoltage(MeasurableId id, Adc *adc,
