@@ -131,13 +131,21 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddTemperature(kFsTempHbY, fs_temp_hb_z);
     AddTemperature(kFsTempHbZ, fs_temp_hb_z);
 
-    MPU9250MotionTracker *fs_imu = new MPU9250MotionTracker(
-        bus_a, 104, mux_a, I2cMultiplexer::kMuxChannel1);
+    MPU9250MotionTracker *fs_imu_1 = new MPU9250MotionTracker(
+        bus_a, 0x68, mux_a, I2cMultiplexer::kMuxChannel1);
 
-    AddImuGyrometerMeasurable(kFsImuGyro, fs_imu);
-    AddImuAcceleromterMeasurable(kFsImuAccelerometer, fs_imu);
-    AddImuTemperatureMeasurable(kFsImuTemperature, fs_imu);
-    AddImuMagnetometerMeasurable(kFsImuMagnetometer, fs_imu);
+    AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_1);
+    AddImuAcceleromterMeasurable(kFsImuAccelerometer1, fs_imu_1);
+    AddImuTemperatureMeasurable(kFsImuTemperature1, fs_imu_1);
+    AddImuMagnetometerMeasurable(kFsImuMagnetometer1, fs_imu_1);
+
+    MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(
+        bus_c, 0x68);
+
+    AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
+    AddImuAcceleromterMeasurable(kFsImuAccelerometer2, fs_imu_2);
+    AddImuTemperatureMeasurable(kFsImuTemperature2, fs_imu_2);
+    AddImuMagnetometerMeasurable(kFsImuMagnetometer2, fs_imu_2);
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
