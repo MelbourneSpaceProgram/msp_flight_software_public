@@ -24,8 +24,10 @@ void I2c::InitBusses() {
     // conditions We could also do this by sending a reset command however a
     // power cycle is easier. 1ms exceeds the minimum cycle time of 500ns per
     // datasheet
+    Log_info0("I2c mux a power-down");
     GPIO_write(I2C_MUX_nRST, 0);
     TaskUtils::SleepMilli(1);
+    Log_info0("I2c mux a power-up");
     GPIO_write(I2C_MUX_nRST, 1);
 
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
@@ -98,6 +100,23 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
                  TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
 
     Mailbox_delete(&i2c_mailbox);
+
+    if (log_i2c) {
+        if (write_buffer_length) {
+            Log_info3("I2c: %c-W0x%02x length %d", this->GetBusLabel(), address,
+                      write_buffer_length);
+            for (uint16_t i = 0; i < write_buffer_length; i++) {
+                Log_info1("W: 0x%02x", write_buffer[i]);
+            }
+        }
+        if (read_buffer_length) {
+            Log_info3("I2c: %c-R0x%02x length %d", this->GetBusLabel(), address,
+                      read_buffer_length);
+            for (uint16_t i = 0; i < read_buffer_length; i++) {
+                Log_info1("R: 0x%02x", read_buffer[i]);
+            }
+        }
+    }
 
     if (transfer_outcome == false) {
         I2C_cancel(handle);

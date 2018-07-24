@@ -12,12 +12,13 @@
 #include <src/sensors/i2c_sensors/measurables/ina211_current_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/ina212_current_measurable.h>
 
-TEST_GROUP(CurrentSensor){
-    void setup(){if (!current_sensor_test_enabled){TEST_EXIT;
-}
-}
-}
-;
+TEST_GROUP(CurrentSensor) {
+    void setup() {
+        if (!current_sensor_test_enabled) {
+            TEST_EXIT;
+        }
+    };
+};
 
 TEST(CurrentSensor, INA169) {
     double kRsResistance = 2.2;

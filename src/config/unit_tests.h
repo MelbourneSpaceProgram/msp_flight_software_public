@@ -31,5 +31,6 @@ static const bool antenna_available = false;
 static const bool ditl_mode = false;
 
 static const bool enumerate_i2c_devices = false;
+static const bool log_i2c = false;
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
