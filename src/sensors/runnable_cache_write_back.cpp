@@ -19,7 +19,7 @@ void RunnableCacheWriteBack::WriteBack() {
         // TODO(dingbenjamin): Implement remaining measurables
 
         // CDH
-        WriteBackTemp(kCdhTemp1);
+        WriteBackTemp(kCdhSysTemp);
 
         TaskUtils::SleepMilli(kWriteBackPeriod);
     }
