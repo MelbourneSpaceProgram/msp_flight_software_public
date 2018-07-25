@@ -3,7 +3,13 @@
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 
-TEST_GROUP(CircularBuffer){void setup(){if (!sd_card_available){TEST_EXIT}}};
+TEST_GROUP(CircularBuffer) {
+    void setup() {
+        if (!sd_card_available) {
+            TEST_EXIT
+        }
+    };
+};
 
 // Overfill the buffer and read all data back to ensure circularity
 TEST(CircularBuffer, WriteAndRead) {

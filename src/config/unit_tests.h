@@ -3,6 +3,13 @@
 
 #include <stdbool.h>
 
+static const bool eps_board_available = false;
+static const bool cdh_board_available = true;
+static const bool fs_board_available = false;
+static const bool panel_board_available = false;
+
+// TODO(akremor): Begin deprecating these once we are comfortable with hardware
+// stability
 static const bool lithium_flash_test_enabled = false;
 static const bool measurable_test_enabled = false;
 static const bool i2c_enabled = true;  // TODO Shift to I2c available
