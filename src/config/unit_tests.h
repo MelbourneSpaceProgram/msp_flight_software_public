@@ -21,13 +21,15 @@ static const bool eeprom_available =
             // the SD cards as they share the same bus
 static const bool i2c_available = true;
 static const bool spi_available = false;
-static const bool sd_card_available =
-    true;
+static const bool sd_card_available = true;
 static const bool lithium_available = false;  // Lithium not responding?
 static const bool hil_available = false;
-static const bool imu_available = false; // Causes a crash when reading the magnetometer adjust registers
+static const bool imu_available =
+    false;  // Causes a crash when reading the magnetometer adjust registers
 static const bool bms_available = false;  // TODO Crashed
 static const bool antenna_available = false;
 static const bool ditl_mode = false;
+
+static const bool enumerate_i2c_devices = false;
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
