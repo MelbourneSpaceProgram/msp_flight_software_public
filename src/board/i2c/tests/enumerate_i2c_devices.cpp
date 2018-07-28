@@ -29,7 +29,7 @@ TEST_GROUP(I2cDeviceEnumeration) {
     };
 };
 
-TEST(I2cDeviceEnumeration, checkBusA_CDH) {
+TEST(I2cDeviceEnumeration, CheckBusACdh) {
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -38,7 +38,7 @@ TEST(I2cDeviceEnumeration, checkBusA_CDH) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusA_FS) {
+TEST(I2cDeviceEnumeration, CheckBusAFs) {
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -47,7 +47,7 @@ TEST(I2cDeviceEnumeration, checkBusA_FS) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusA_EPS) {
+TEST(I2cDeviceEnumeration, CheckBusAEps) {
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -56,16 +56,16 @@ TEST(I2cDeviceEnumeration, checkBusA_EPS) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusA_COM) {
+TEST(I2cDeviceEnumeration, CheckBusACom) {
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
-    byte expected_addresses[] = {0x18, 0x19, 0x48, 0x49, 0x4A};
+    byte expected_addresses[] = {0x18, 0x19, 0x48, 0x49};
     CheckForDevices(bus_a, &bus_a_multiplexer, I2cMultiplexer::kMuxChannel3,
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusB_FS) {
+TEST(I2cDeviceEnumeration, CheckBusBFs) {
     I2c bus(I2C_BUS_B);
     CHECK(bus.GetHandle() != NULL);
     byte expected_addresses[] = {0x20, 0x68};
@@ -73,7 +73,7 @@ TEST(I2cDeviceEnumeration, checkBusB_FS) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_FS) {
+TEST(I2cDeviceEnumeration, CheckBusCFs) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -82,7 +82,7 @@ TEST(I2cDeviceEnumeration, checkBusC_FS) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_EPS) {
+TEST(I2cDeviceEnumeration, CheckBusCEps) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     byte expected_addresses[] = {0x68};
@@ -90,7 +90,15 @@ TEST(I2cDeviceEnumeration, checkBusC_EPS) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_UTIL) {
+TEST(I2cDeviceEnumeration, CheckBusDEps) {
+    I2c bus(I2C_BUS_D);
+    CHECK(bus.GetHandle() != NULL);
+    byte expected_addresses[] = {0x68};
+    CheckForDevices(bus, NULL, I2cMultiplexer::kMuxNoChannel,
+                    expected_addresses, sizeof(expected_addresses));
+};
+
+TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -99,56 +107,56 @@ TEST(I2cDeviceEnumeration, checkBusC_UTIL) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_Panel1) {
+TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
-    byte expected_addresses[] = {0x19, 0x1A, 0x48};
+    byte expected_addresses[] = {0x19, 0x1A, 0x29, 0x48};
     CheckForDevices(bus, &multiplexer, I2cMultiplexer::kMuxChannel4,
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_Panel2) {
+TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
-    byte expected_addresses[] = {0x19, 0x1A, 0x48};
+    byte expected_addresses[] = {0x19, 0x1A, 0x29, 0x48};
     CheckForDevices(bus, &multiplexer, I2cMultiplexer::kMuxChannel5,
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_Panel3) {
+TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
-    byte expected_addresses[] = {0x19, 0x1A, 0x48};
+    byte expected_addresses[] = {0x19, 0x1A, 0x29, 0x48};
     CheckForDevices(bus, &multiplexer, I2cMultiplexer::kMuxChannel6,
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_Panel4) {
+TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
-    byte expected_addresses[] = {0x19, 0x1A, 0x48};
+    byte expected_addresses[] = {0x19, 0x1A, 0x29, 0x48};
     CheckForDevices(bus, &multiplexer, I2cMultiplexer::kMuxChannel7,
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_Panel5) {
+TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
-    byte expected_addresses[] = {0x19, 0x1A, 0x48};
+    byte expected_addresses[] = {0x19, 0x1A, 0x29, 0x48};
     CheckForDevices(bus, &multiplexer, I2cMultiplexer::kMuxChannel3,
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, checkBusC_Panel6) {
+TEST(I2cDeviceEnumeration, CheckBusCPanel6) {
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
-    byte expected_addresses[] = {0x19, 0x4B};
+    byte expected_addresses[] = {0x19, 0x29, 0x4B};
     CheckForDevices(bus, &multiplexer, I2cMultiplexer::kMuxChannel2,
                     expected_addresses, sizeof(expected_addresses));
 };
