@@ -3,6 +3,7 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/current_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_accelerometer_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_gyroscope_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
@@ -46,16 +47,22 @@ void I2cMeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
 }
 
 void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
-    // TODO(dingbenjamin): Implement
-    // SCP D0x26
-    // Current Sensors
-
     Adc *comms_adc_1 =
         new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel3);
+    comms_adc_1->SetGainAmplifierLevel(kAdc4v096);
     Adc *comms_adc_2 =
         new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel3);
-    Adc *comms_adc_3 =
-        new Adc(bus_a, 0x4A, mux_a, I2cMultiplexer::kMuxChannel3);
+    comms_adc_2->SetGainAmplifierLevel(kAdc4v096);
+
+    AddVoltage(kCommsRegulator1InputVoltage, comms_adc_1, kAdcP2NGnd, 2.0);
+    AddVoltage(kCommsRegulator1OutputVoltage, comms_adc_1, kAdcP3NGnd, 3.0);
+    AddCurrent(kCommsRegulator1InputCurrent, comms_adc_1, kAdcP0NGnd, 1, 0);
+    AddCurrent(kCommsRegulator1OutputCurrent, comms_adc_1, kAdcP1NGnd, 1, 0);
+
+    AddVoltage(kCommsRegulator2InputVoltage, comms_adc_2, kAdcP2NGnd, 2.0);
+    AddVoltage(kCommsRegulator2OutputVoltage, comms_adc_2, kAdcP3NGnd, 3.0);
+    AddCurrent(kCommsRegulator2InputCurrent, comms_adc_2, kAdcP0NGnd, 1, 0);
+    AddCurrent(kCommsRegulator2OutputCurrent, comms_adc_2, kAdcP1NGnd, 1, 0);
 
     MCP9808 *comms_temp_1 =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
@@ -67,17 +74,28 @@ void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
 }
 
 void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
-    // SCP D0x20
-    // BMS 1 D0x68
-    // BMS 2 C0x68
-    // Current Sensors
-
     Adc *power_adc_1 =
         new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel2);
+    power_adc_1->SetGainAmplifierLevel(kAdc2v048);
     Adc *power_adc_2 =
         new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel2);
+    power_adc_2->SetGainAmplifierLevel(kAdc2v048);
     Adc *power_adc_3 =
         new Adc(bus_a, 0x4A, mux_a, I2cMultiplexer::kMuxChannel2);
+    power_adc_3->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kEpsBatVoltage1, power_adc_1, kAdcP0NGnd, 3.0);
+    AddVoltage(kEpsBoostOutVoltage1, power_adc_1, kAdcP1NGnd, 3.0);
+    AddCurrent(kPowerBoostInCurrent1, power_adc_1, kAdcP2NGnd, 5.0 / 3, 0);
+    AddCurrent(kPowerLoadCurrent1, power_adc_1, kAdcP3NGnd, 5.0 / 3, 0);
+
+    AddVoltage(kEpsBatVoltage2, power_adc_2, kAdcP0NGnd, 3.0);
+    AddVoltage(kEpsBoostOutVoltage2, power_adc_2, kAdcP1NGnd, 3.0);
+    AddCurrent(kPowerBoostInCurrent2, power_adc_2, kAdcP2NGnd, 5.0 / 3, 0);
+    AddCurrent(kPowerLoadCurrent2, power_adc_2, kAdcP3NGnd, 5.0 / 3, 0);
+
+    AddVoltage(kEps5VRail1, power_adc_3, kAdcP0NGnd, 3.0);
+    AddVoltage(kEps5VRail2, power_adc_3, kAdcP1NGnd, 3.0);
 
     MCP9808 *power_temp_1 =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel2);
@@ -104,14 +122,24 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
-    // TODO(dingbenjamin): Implement
-    // Rad B0x20
-    // Current Sensors
+    Adc *fs_adc_x = new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel1);
+    fs_adc_x->SetGainAmplifierLevel(kAdc4v096);
+    Adc *fs_adc_y = new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel1);
+    fs_adc_y->SetGainAmplifierLevel(kAdc4v096);
+    Adc *fs_adc_z = new Adc(bus_a, 0x4B, mux_a, I2cMultiplexer::kMuxChannel1);
+    fs_adc_z->SetGainAmplifierLevel(kAdc4v096);
 
-    Adc *fs_adc_1 = new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel1);
-    Adc *fs_adc_2 = new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel1);
-    Adc *fs_adc_3 = new Adc(bus_a, 0x4A, mux_a, I2cMultiplexer::kMuxChannel1);
-    Adc *fs_adc_4 = new Adc(bus_a, 0x4B, mux_a, I2cMultiplexer::kMuxChannel1);
+    AddVoltage(kFsMagTorqAX, fs_adc_x, kAdcP1NGnd, 2);
+    AddVoltage(kFsMagTorqBX, fs_adc_x, kAdcP2NGnd, 2);
+    AddVoltage(kFsMagTorqAY, fs_adc_y, kAdcP1NGnd, 2);
+    AddVoltage(kFsMagTorqBY, fs_adc_y, kAdcP2NGnd, 2);
+    AddVoltage(kFsMagTorqAZ, fs_adc_z, kAdcP1NGnd, 2);
+    AddVoltage(kFsMagTorqBZ, fs_adc_z, kAdcP2NGnd, 2);
+
+    AddCurrent(kFsTorquerCurrentX, fs_adc_x, kAdcP0NGnd, 1, 0);
+    AddCurrent(kFsTorquerCurrentTotal, fs_adc_x, kAdcP3NGnd, 1, 0);
+    AddCurrent(kFsTorquerCurrentY, fs_adc_y, kAdcP0NGnd, 1, 0);
+    AddCurrent(kFsTorquerCurrentZ, fs_adc_z, kAdcP0NGnd, 1, 0);
 
     MCP9808 *fs_temp_hb_x =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel1);
@@ -132,8 +160,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddImuTemperatureMeasurable(kFsImuTemperature1, fs_imu_1);
     AddImuMagnetometerMeasurable(kFsImuMagnetometer1, fs_imu_1);
 
-    MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(
-        bus_c, 0x68);
+    MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_c, 0x68);
 
     AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
     AddImuAcceleromterMeasurable(kFsImuAccelerometer2, fs_imu_2);
@@ -142,16 +169,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
-    // TODO(dingbenjamin): Implement
-    // Temp 5 C0x1C
-    // Current Sensors
-
-    // TODO(dingbenjamin): Confirm mux line
-    Adc *util_adc_2 = new Adc(bus_c, 0x49, mux_c, I2cMultiplexer::kMuxChannel1);
-
-    MCP9808 *util_temp_1 =
-        new MCP9808(bus_a, 0x1C, mux_c, I2cMultiplexer::kMuxChannel1);
-    AddTemperature(kUtilTemp1, util_temp_1);
+    Adc *util_adc_1 = new Adc(bus_c, 0x49, mux_c, I2cMultiplexer::kMuxChannel1);
 }
 
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
@@ -165,12 +183,6 @@ void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
 }
 
 void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
-    // TODO(dingbenjamin): Implement
-    // IR 1 C0x5B
-    // IR 2 C0x5C
-    // Rad ??
-    // Current Sensors
-
     MCP9808 *solar_panel_1_temp_1 =
         new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel4);
     MCP9808 *solar_panel_1_temp_2 =
@@ -215,13 +227,77 @@ void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
         new MCP9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel2);
 
     AddTemperature(kPowerPanel6Temp1, solar_panel_6_temp_1);
+
+    Adc *solar_adc_6 =
+        new Adc(bus_c, 0x4B, mux_c, I2cMultiplexer::kMuxChannel2);
+    solar_adc_6->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kPowerTopPanelVoltage, solar_adc_6, kAdcP0NGnd, 3.0);
+    AddVoltage(kPowerTopSolarVoltage, solar_adc_6, kAdcP1NGnd, 3.0);
+    AddCurrent(kPowerTopPanelCurrent, solar_adc_6, kAdcP1NGnd, 5.0 / 3, 0);
+    AddCurrent(kPowerTopSolarCurrent, solar_adc_6, kAdcP3NGnd, 5.0 / 3, 0);
+
+    Adc *solar_adc_1 =
+        new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel4);
+    solar_adc_1->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kPowerPanelVoltage1, solar_adc_1, kAdcP0NGnd, 3.0);
+    AddVoltage(kPowerSolarVoltage1, solar_adc_1, kAdcP2NGnd, 3.0);
+    AddCurrent(kPowerPanelCurrent1, solar_adc_1, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kPowerSolarCurrent1, solar_adc_1, kAdcP3NGnd, 0.285714, 0);
+
+    Adc *solar_adc_2 =
+        new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel5);
+    solar_adc_2->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kPowerPanelVoltage2, solar_adc_2, kAdcP0NGnd, 3.0);
+    AddVoltage(kPowerSolarVoltage2, solar_adc_2, kAdcP2NGnd, 3.0);
+    AddCurrent(kPowerPanelCurrent2, solar_adc_2, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kPowerSolarCurrent2, solar_adc_2, kAdcP3NGnd, 0.285714, 0);
+
+    Adc *solar_adc_3 =
+        new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel6);
+    solar_adc_3->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kPowerPanelVoltage3, solar_adc_3, kAdcP0NGnd, 3.0);
+    AddVoltage(kPowerSolarVoltage3, solar_adc_3, kAdcP2NGnd, 3.0);
+    AddCurrent(kPowerPanelCurrent3, solar_adc_3, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kPowerSolarCurrent3, solar_adc_3, kAdcP3NGnd, 0.285714, 0);
+
+    Adc *solar_adc_4 =
+        new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel7);
+    solar_adc_4->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kPowerPanelVoltage4, solar_adc_4, kAdcP0NGnd, 3.0);
+    AddVoltage(kPowerSolarVoltage4, solar_adc_4, kAdcP2NGnd, 3.0);
+    AddCurrent(kPowerPanelCurrent4, solar_adc_4, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kPowerSolarCurrent4, solar_adc_4, kAdcP3NGnd, 0.285714, 0);
+
+    Adc *solar_adc_5 =
+        new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel3);
+    solar_adc_5->SetGainAmplifierLevel(kAdc2v048);
+
+    AddVoltage(kPowerPanelVoltage5, solar_adc_5, kAdcP0NGnd, 3.0);
+    AddVoltage(kPowerSolarVoltage5, solar_adc_5, kAdcP2NGnd, 3.0);
+    AddCurrent(kPowerPanelCurrent5, solar_adc_5, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kPowerSolarCurrent5, solar_adc_5, kAdcP3NGnd, 0.285714, 0);
 }
 
 void I2cMeasurableManager::AddVoltage(MeasurableId id, Adc *adc,
-                                      AdcMuxMode line) {
+                                      AdcMuxMode line, float scaling_factor) {
     CheckValidId(id);
-    VoltageMeasurable *voltage = new VoltageMeasurable(adc, line);
+    VoltageMeasurable *voltage =
+        new VoltageMeasurable(adc, line, scaling_factor);
     measurables[id] = voltage;
+}
+
+void I2cMeasurableManager::AddCurrent(MeasurableId id, Adc *adc,
+                                      AdcMuxMode line, float scaling_factor,
+                                      float zero_bias_point) {
+    CheckValidId(id);
+    CurrentMeasurable *current =
+        new CurrentMeasurable(adc, line, scaling_factor, zero_bias_point);
+    measurables[id] = current;
 }
 
 void I2cMeasurableManager::AddTemperature(MeasurableId id,
