@@ -92,11 +92,10 @@ double Adc::TakeI2cReading(void) {
 
 double Adc::ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer) {
     // extract full 16-bit reading from the read_buffer
-    uint16_t binary_reading;
-    binary_reading = ((static_cast<uint16_t>(read_buffer.at(0))) << 8) |
-                     static_cast<uint16_t>(read_buffer.at(1));
+    int16_t binary_reading = ((static_cast<uint16_t>(read_buffer.at(0))) << 8) |
+                             static_cast<uint16_t>(read_buffer.at(1));
     // convert reading to voltage (as per datasheet)
-    return 1.0 * binary_reading * gain_amplifier_full_scale_range /
+    return 2.0 * binary_reading * gain_amplifier_full_scale_range /
            (1 << kAdcRegisterNumBits);
 }
 
