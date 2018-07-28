@@ -32,7 +32,7 @@ void TestInitialiser::RunUnitTests() {
     // const char* test_args[] = {"exe", "-xg", "NameOfTestGroup"};
 
     // Run only this test
-    // const char* test_args[] = {"exe", "-sn", "NameOfTestGroup"};
+    // const char* test_args[] = {"exe", "-sn", "NameOfTest"};
 
     // Run everything but this test
     // const char* test_args[] = {"exe", "-xn", "NameOfTest"};
