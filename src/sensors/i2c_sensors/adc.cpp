@@ -27,7 +27,7 @@ Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
     }
 }
 
-void Adc::SetConfiguration() {
+bool Adc::SetConfiguration() {
     byte package[3];
 
     package[0] = Adc::kAdcConfigurationRegisterLocation;
@@ -49,8 +49,11 @@ void Adc::SetConfiguration() {
     MuxSelect();
     if (!bus->PerformWriteTransaction(address, package, 3)) {
         SetFailed(true);
+        MuxDeselect();
+        return false;
     }
     MuxDeselect();
+    return true;
 }
 
 bool Adc::ReadConversionRegister(etl::array<byte, 2>& read_buffer) {
@@ -120,83 +123,84 @@ AdcOperationalStatus Adc::GetOperationalStatus() const {
     return operational_status;
 }
 
-void Adc::SetOperationalStatus(AdcOperationalStatus operational_status) {
+bool Adc::SetOperationalStatus(AdcOperationalStatus operational_status) {
     this->operational_status = operational_status;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcMuxMode Adc::GetMuxMode() const { return mux_mode; }
 
-void Adc::SetMuxMode(AdcMuxMode mux_mode) {
+bool Adc::SetMuxMode(AdcMuxMode mux_mode) {
     this->mux_mode = mux_mode;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcGainAmplifierLevel Adc::GetGainAmplifierLevel() const {
     return gain_amplifier_level;
 }
 
-void Adc::SetGainAmplifierLevel(AdcGainAmplifierLevel gain_amplifier_level) {
+bool Adc::SetGainAmplifierLevel(AdcGainAmplifierLevel gain_amplifier_level) {
     this->gain_amplifier_level = gain_amplifier_level;
     SetAdcGainAmplifierFullScaleRange();
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcOperatingMode Adc::GetOperatingMode() const { return operating_mode; }
 
-void Adc::SetOperatingMode(AdcOperatingMode operating_mode) {
+bool Adc::SetOperatingMode(AdcOperatingMode operating_mode) {
     this->operating_mode = operating_mode;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcDataRate Adc::GetDataRate() const { return data_rate; }
 
-void Adc::SetDataRate(AdcDataRate data_rate) {
+bool Adc::SetDataRate(AdcDataRate data_rate) {
     this->data_rate = data_rate;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcComparatorMode Adc::GetComparatorMode() const { return comparator_mode; }
 
-void Adc::SetComparatorMode(AdcComparatorMode comparator_mode) {
+bool Adc::SetComparatorMode(AdcComparatorMode comparator_mode) {
     this->comparator_mode = comparator_mode;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcComparatorPolarity Adc::GetComparatorPolarity() const {
     return comparator_polarity;
 }
 
-void Adc::SetComparatorPolarity(AdcComparatorPolarity comparator_polarity) {
+bool Adc::SetComparatorPolarity(AdcComparatorPolarity comparator_polarity) {
     this->comparator_polarity = comparator_polarity;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcLatchingComparatorMode Adc::GetLatchingComparatorMode() const {
     return latching_comparator;
 }
 
-void Adc::SetLatchingComparatorMode(
+bool Adc::SetLatchingComparatorMode(
     AdcLatchingComparatorMode latching_comparator) {
     this->latching_comparator = latching_comparator;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 AdcComparatorQueueMode Adc::GetComparatorQueue() const {
     return comparator_queue;
 }
 
-void Adc::SetComparatorQueue(AdcComparatorQueueMode comparator_queue) {
+bool Adc::SetComparatorQueue(AdcComparatorQueueMode comparator_queue) {
     this->comparator_queue = comparator_queue;
-    SetConfiguration();
+    return SetConfiguration();
 }
 
 double Adc::GetAdcGainAmplifierFullScaleRange() const {
     return gain_amplifier_full_scale_range;
 }
 
-void Adc::SetAdcGainAmplifierFullScaleRange() {
+bool Adc::SetAdcGainAmplifierFullScaleRange() {
     gain_amplifier_full_scale_range =
         AdcGainAmplifierFullScaleRangeVoltages[static_cast<uint8_t>(
             gain_amplifier_level)];
+    return SetConfiguration();
 }

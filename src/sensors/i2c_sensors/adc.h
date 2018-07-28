@@ -71,27 +71,27 @@ class Adc : public I2cSensor {
 
     // Getter and setter methods.
     AdcOperationalStatus GetOperationalStatus() const;
-    void SetOperationalStatus(AdcOperationalStatus operational_status);
+    bool SetOperationalStatus(AdcOperationalStatus operational_status);
     AdcMuxMode GetMuxMode() const;
-    void SetMuxMode(AdcMuxMode mux_mode);
+    bool SetMuxMode(AdcMuxMode mux_mode);
     AdcGainAmplifierLevel GetGainAmplifierLevel() const;
-    void SetGainAmplifierLevel(AdcGainAmplifierLevel gain_amplifier);
+    bool SetGainAmplifierLevel(AdcGainAmplifierLevel gain_amplifier);
     AdcOperatingMode GetOperatingMode() const;
-    void SetOperatingMode(AdcOperatingMode operating_mode);
+    bool SetOperatingMode(AdcOperatingMode operating_mode);
     AdcDataRate GetDataRate() const;
-    void SetDataRate(AdcDataRate data_rate);
+    bool SetDataRate(AdcDataRate data_rate);
     AdcComparatorMode GetComparatorMode() const;
-    void SetComparatorMode(AdcComparatorMode comparator_mode);
+    bool SetComparatorMode(AdcComparatorMode comparator_mode);
     AdcComparatorPolarity GetComparatorPolarity() const;
-    void SetComparatorPolarity(AdcComparatorPolarity comparator_polarity);
+    bool SetComparatorPolarity(AdcComparatorPolarity comparator_polarity);
     AdcLatchingComparatorMode GetLatchingComparatorMode() const;
-    void SetLatchingComparatorMode(
+    bool SetLatchingComparatorMode(
         AdcLatchingComparatorMode latching_comparator);
     AdcComparatorQueueMode GetComparatorQueue() const;
-    void SetComparatorQueue(AdcComparatorQueueMode comparator_queue);
+    bool SetComparatorQueue(AdcComparatorQueueMode comparator_queue);
 
     double GetAdcGainAmplifierFullScaleRange() const;
-    void SetAdcGainAmplifierFullScaleRange();
+    bool SetAdcGainAmplifierFullScaleRange();
 
    private:
     static const uint8_t kAdcNumInputs = 4;
@@ -157,7 +157,7 @@ class Adc : public I2cSensor {
     bool ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
     void SelectRegister(byte register_address_pointer);
     double ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer);
-    void SetConfiguration();
+    bool SetConfiguration();
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_ADC_H_
