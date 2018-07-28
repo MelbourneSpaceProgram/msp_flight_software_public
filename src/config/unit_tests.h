@@ -7,6 +7,7 @@ static const bool eps_board_available = false;
 static const bool cdh_board_available = true;
 static const bool fs_board_available = false;
 static const bool panel_board_available = false;
+static const bool tcom_board_available = false;
 
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability
@@ -15,7 +16,7 @@ static const bool measurable_test_enabled = false;
 static const bool i2c_enabled = true;  // TODO Shift to I2c available
 static const bool over_the_air_enabled =
     false;  // Lithium not enabled. Rename to be lithium_available? TODO
-static const bool write_back_test_enabled = true;
+static const bool write_back_test_enabled = false;
 static const bool current_sensor_test_enabled =
     false;  // No current sensors on CDH alone TODO
 static const bool force_reset_command_test_enabled =
@@ -28,7 +29,7 @@ static const bool eeprom_available =
             // the SD cards as they share the same bus
 static const bool i2c_available = true;
 static const bool spi_available = false;
-static const bool sd_card_available = true;
+static const bool sd_card_available = false;
 static const bool lithium_available = false;  // Lithium not responding?
 static const bool hil_available = false;
 static const bool imu_available = false;
