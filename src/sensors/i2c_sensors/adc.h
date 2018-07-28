@@ -119,7 +119,7 @@ class Adc : public I2cSensor {
 
     // Amounts to shift bits to store states in the configuration register.
     static const uint8_t kAdcOperationalStatusBitShift = 7;
-    static const uint8_t kAdcInputStateBitShift = 6;
+    static const uint8_t kAdcInputStateBitShift = 4;
     static const uint8_t kAdcGainAmplifierBitShift = 1;
     static const uint8_t kAdcOperatingModeBitShift = 0;
     static const uint8_t kAdcDataRateBitShift = 7;
