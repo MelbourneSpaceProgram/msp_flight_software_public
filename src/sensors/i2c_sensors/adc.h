@@ -5,7 +5,6 @@
 #include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/util/data_types.h>
-#include <string>
 
 enum AdcOperationalStatus { kAdcNoConversion = 0, kAdcConversion = 1 };
 
@@ -107,7 +106,7 @@ class Adc : public I2cSensor {
     static const AdcGainAmplifierLevel kAdcDefaultGainAmplifierLevel =
         kAdc2v048;
     static const AdcOperatingMode kAdcDefaultOperatingMode = kAdcSingleShot;
-    static const AdcDataRate kAdcDefaultDataRate = kAdc16Sps;
+    static const AdcDataRate kAdcDefaultDataRate = kAdc860Sps;
     static const AdcComparatorMode kAdcDefaultComparatorMode =
         kAdcTraditionalComparator;
     static const AdcComparatorPolarity kAdcDefaultComparatorPolarity =
