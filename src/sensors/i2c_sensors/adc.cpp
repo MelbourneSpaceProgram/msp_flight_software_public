@@ -1,4 +1,5 @@
 #include <src/sensors/i2c_sensors/adc.h>
+#include <src/util/task_utils.h>
 
 const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage6v144, kAdcVoltage4v096, kAdcVoltage2v048,
@@ -16,8 +17,12 @@ Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
       comparator_polarity(kAdcDefaultComparatorPolarity),
       latching_comparator(kAdcDefaultLatchingComparator),
       comparator_queue(kAdcDefaultComparatorQueue) {
+    MuxSelect();
+
     SetAdcGainAmplifierFullScaleRange();
     SetConfiguration();
+
+    MuxDeselect();
 }
 
 void Adc::SetConfiguration() {
@@ -39,11 +44,16 @@ void Adc::SetConfiguration() {
          << kAdcLatchingComparatorBitShift) +
         (static_cast<byte>(comparator_queue) << kAdcComparatorQueueBitShift);
 
+    MuxSelect();
+
     bus->PerformWriteTransaction(address, package, 3);
+
+    MuxDeselect();
 }
 
 bool Adc::ReadConversionRegister(etl::array<byte, 2>& read_buffer) {
     SelectRegister(kAdcConversionRegisterLocation);
+    TaskUtils::SleepMilli(10); // Ensure we give the ADC sufficient time to sample
     return ReadFromCurrentRegister(read_buffer);
 }
 
@@ -63,7 +73,10 @@ bool Adc::ReadHiThreshRegister(etl::array<byte, 2>& read_buffer) {
 }
 
 void Adc::SelectRegister(byte register_address) {
+    MuxSelect();
     bus->PerformWriteTransaction(address, &register_address, 1);
+
+    MuxDeselect();
 }
 
 double Adc::TakeI2cReading(void) {
@@ -89,15 +102,15 @@ double Adc::ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer) {
 
 bool Adc::ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer) {
     // TODO(dingbenjamin): Remove i2c buffer once i2c driver changed to use etl
-    byte i2c_buffer[2];
-    i2c_buffer[0] = read_buffer.at(0);
-    i2c_buffer[1] = read_buffer.at(1);
-
+    byte i2c_buffer[2] = {0};
+    MuxSelect();
     if (bus->PerformReadTransaction(address, i2c_buffer, 2)) {
         read_buffer.at(0) = i2c_buffer[0];
         read_buffer.at(1) = i2c_buffer[1];
+        MuxDeselect();
         return true;
     } else {
+        MuxDeselect();
         return false;
     }
 }
