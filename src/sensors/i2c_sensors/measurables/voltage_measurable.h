@@ -6,10 +6,11 @@
 
 class VoltageMeasurable : public I2cMeasurable<double> {
    public:
-    VoltageMeasurable(Adc *adc, AdcMuxMode adc_line);
+    VoltageMeasurable(Adc *adc, AdcMuxMode adc_line, float scaling_factor);
     double TakeI2cReading();
 
    private:
+    float scaling_factor;
     AdcMuxMode adc_line;
 };
 

@@ -99,7 +99,7 @@ class I2cMeasurableManager {
     void InitCdh(const I2cMultiplexer *mux_a);
     void InitSolarPanels(const I2cMultiplexer *mux_c);
 
-    void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line);
+    void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line, float scaling_factor);
     void AddTemperature(MeasurableId id, MCP9808 *temp_sensor);
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
