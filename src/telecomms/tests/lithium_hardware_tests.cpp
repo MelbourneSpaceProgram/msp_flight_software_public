@@ -2,6 +2,7 @@
 #include <external/etl/array.h>
 #include <src/config/unit_tests.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/lithium_command.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
@@ -39,7 +40,7 @@ TEST(Lithium, TestTransmitAckHardware) {
 
 TEST(Lithium, TestWriteFlashHardware) {
     if (!lithium_flash_test_enabled) {
-        TEST_EXIT
+        TEST_EXIT;
     }
     etl::array<byte, LithiumMd5::kNumMd5Bytes> md5_bytes = {
         0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
@@ -47,4 +48,9 @@ TEST(Lithium, TestWriteFlashHardware) {
     LithiumMd5 md5_message(&md5_bytes);
     WriteFlashCommand flash_command(&md5_message);
     CHECK(Lithium::GetInstance()->DoCommand(&flash_command));
+}
+
+TEST(Lithium, TestFastPaHardware) {
+    FastPaCommand fast_pa_command(5);
+    CHECK(Lithium::GetInstance()->DoCommand(&fast_pa_command));
 }

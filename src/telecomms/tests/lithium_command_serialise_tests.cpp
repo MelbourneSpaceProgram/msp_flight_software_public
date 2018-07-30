@@ -1,5 +1,6 @@
 #include <CppUTest/TestHarness.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
@@ -120,7 +121,7 @@ TEST(LithiumCommandSerialise, TestTransmitTestPayloadSerialisation) {
 }
 
 TEST(LithiumCommandSerialise, TestWriteFlashSerialisation) {
-    byte command_buffer[16 + 8];
+    byte command_buffer[16 + 8 + 2];
 
     etl::array<byte, LithiumMd5::kNumMd5Bytes> md5_bytes = {
         0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
@@ -160,4 +161,32 @@ TEST(LithiumCommandSerialise, TestWriteFlashSerialisation) {
     // Tail checksum
     CHECK_EQUAL(0x80, serial_buffer[8 + 16]);
     CHECK_EQUAL(0x48, serial_buffer[8 + 16 + 1]);
+}
+
+TEST(LithiumCommandSerialise, TestFastPaSerialisation) {
+    // Header + Payload + Tail
+    byte serial_buffer[8 + 1 + 2];
+    uint8_t test_pa_level = 92;
+    FastPaCommand test_pa_command(test_pa_level);
+
+    SerialisedMessage serial_command =
+        test_pa_command.SerialiseTo(serial_buffer);
+
+    // Size
+    CHECK_EQUAL(8 + 1 + 2, serial_command.GetSize());
+    CHECK_EQUAL(8 + 1 + 2, test_pa_command.GetSerialisedSize());
+    // Sync chars
+    CHECK_EQUAL(static_cast<uint8_t>('H'), serial_buffer[0]);
+    CHECK_EQUAL(static_cast<uint8_t>('e'), serial_buffer[1]);
+    // Command direction
+    CHECK_EQUAL(0x10, serial_buffer[2]);
+    // Command code
+    CHECK_EQUAL(0x20, serial_buffer[3]);
+    // Payload size
+    CHECK_EQUAL(0x00, serial_buffer[4]);
+    CHECK_EQUAL(0x01, serial_buffer[5]);
+    // TODO(dingbenjamin): Header checksum
+    // Payload
+    CHECK_EQUAL(92, serial_buffer[8]);
+    // TODO(dingbenjamin): Tail checksum
 }

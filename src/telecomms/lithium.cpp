@@ -2,6 +2,7 @@
 #include <src/board/board.h>
 #include <src/messages/serialised_message.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/lithium_command.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
