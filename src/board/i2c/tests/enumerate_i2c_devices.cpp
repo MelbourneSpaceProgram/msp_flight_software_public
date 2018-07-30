@@ -23,13 +23,17 @@ static void CheckForDevices(I2c& bus, I2cMultiplexer* multiplexer,
 
 TEST_GROUP(I2cDeviceEnumeration) {
     void setup() {
-        if (!i2c_available || !enumerate_i2c_devices) {
+        if (!i2c_available) {
             TEST_EXIT;
         }
     };
 };
 
 TEST(I2cDeviceEnumeration, CheckBusACdh) {
+    if (!cdh_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -39,6 +43,10 @@ TEST(I2cDeviceEnumeration, CheckBusACdh) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusAFs) {
+    if (!fs_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -48,6 +56,10 @@ TEST(I2cDeviceEnumeration, CheckBusAFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusAEps) {
+    if (!eps_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -57,6 +69,10 @@ TEST(I2cDeviceEnumeration, CheckBusAEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusACom) {
+    if (!tcom_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus_a(I2C_BUS_A);
     CHECK(bus_a.GetHandle() != NULL);
     I2cMultiplexer bus_a_multiplexer(&bus_a, 0x76);
@@ -66,6 +82,10 @@ TEST(I2cDeviceEnumeration, CheckBusACom) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusBFs) {
+    if (!fs_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_B);
     CHECK(bus.GetHandle() != NULL);
     byte expected_addresses[] = {0x20, 0x68};
@@ -74,6 +94,10 @@ TEST(I2cDeviceEnumeration, CheckBusBFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCFs) {
+    if (!fs_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -83,6 +107,10 @@ TEST(I2cDeviceEnumeration, CheckBusCFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCEps) {
+    if (!eps_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     byte expected_addresses[] = {0x68};
@@ -91,6 +119,10 @@ TEST(I2cDeviceEnumeration, CheckBusCEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusDEps) {
+    if (!eps_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_D);
     CHECK(bus.GetHandle() != NULL);
     byte expected_addresses[] = {0x68};
@@ -99,6 +131,10 @@ TEST(I2cDeviceEnumeration, CheckBusDEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
+    if (!utilities_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -108,6 +144,10 @@ TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
+    if (!panel_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -117,6 +157,10 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
+    if (!panel_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -126,6 +170,10 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
+    if (!panel_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -135,6 +183,10 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
+    if (!panel_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -144,6 +196,10 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
+    if (!panel_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);
@@ -153,6 +209,10 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel6) {
+    if (!panel_board_available) {
+        TEST_EXIT;
+    }
+
     I2c bus(I2C_BUS_C);
     CHECK(bus.GetHandle() != NULL);
     I2cMultiplexer multiplexer(&bus, 0x71);

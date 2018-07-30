@@ -14,7 +14,7 @@
 
 TEST_GROUP(Lithium) {
     void setup() {
-        if (!lithium_available) {
+        if (!tcom_board_available) {
             TEST_EXIT
         }
     };

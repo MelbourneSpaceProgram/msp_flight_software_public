@@ -12,7 +12,7 @@ static const byte kMultiplexerAddress = 0x76;
 
 TEST_GROUP(Adc) {
     void setup() {
-        if (!i2c_available) {
+        if (!i2c_available || !fs_board_available) {
             TEST_EXIT;
         }
     };

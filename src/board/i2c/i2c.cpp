@@ -15,7 +15,7 @@ I2C_Params I2c::I2c_params[] = {{I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL}};
 
 void I2c::InitBusses() {
-    if (!i2c_enabled) {
+    if (!i2c_available) {
         Log_info0("I2C has been disabled in unit_tests.cpp");
         return;
     }
@@ -54,7 +54,7 @@ void I2c::Open() {
     handle = I2c_busses[index];
     i2c_params = I2c_params[index];
     if (handle == NULL) {
-        if (i2c_enabled) {
+        if (i2c_available) {
             Log_error0("Attempting to use an uninitialised I2C bus");
         }
     }
@@ -68,7 +68,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
                              uint16_t read_buffer_length, byte* write_buffer,
                              uint16_t write_buffer_length) const {
     if (handle == NULL) {
-        if (i2c_enabled) {
+        if (i2c_available) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return false;
@@ -129,7 +129,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
                                   uint16_t write_buffer_length) const {
     if (handle == NULL) {
-        if (i2c_enabled) {
+        if (i2c_available) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return false;
@@ -141,7 +141,7 @@ bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
 bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
                                  uint16_t read_buffer_length) const {
     if (handle == NULL) {
-        if (i2c_enabled) {
+        if (i2c_available) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return false;
@@ -153,13 +153,13 @@ bool I2c::PerformReadTransaction(byte address, byte* read_buffer,
 void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
                            bool success) {
     if (handle == NULL) {
-        if (i2c_enabled) {
+        if (i2c_available) {
             Log_error0("Attempting to use uninitialised I2C bus");
         }
         return;
     }
     if (i2c_transaction == NULL) {
-        if (i2c_enabled) {
+        if (i2c_available) {
             Log_error0("I2c transaction is NULL");
         }
         return;

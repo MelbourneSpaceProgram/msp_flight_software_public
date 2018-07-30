@@ -20,13 +20,6 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, int address,
                                            I2cMultiplexer::MuxChannel channel)
     : I2cSensor(bus, address, multiplexer, channel) {
 
-    // TODO(akremor): Temporary addition of conditional here. Perhaps better suited at a higher level?
-    // Will give it some thought
-
-    if (!imu_available){
-        return;
-    }
-
     MuxSelect();
     // default settings for the gyroscope/accelerometer
     SetGyroFullScaleSetting(kGyro250dps);

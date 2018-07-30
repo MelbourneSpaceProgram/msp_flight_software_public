@@ -14,7 +14,7 @@ static const double temp_tolerance = 15.00;
 
 TEST_GROUP(MotionTracker) {
     void setup() {
-        if (!imu_available) {
+        if (!i2c_available || !fs_board_available) {
             TEST_EXIT;
         }
     };
