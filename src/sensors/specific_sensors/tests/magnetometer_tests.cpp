@@ -5,7 +5,7 @@
 
 TEST_GROUP(Magnetometer) {
     void setup() {
-        if (!imu_available || !hil_available) {
+        if (!fs_board_available || !hil_available) {
             TEST_EXIT;
         }
     };

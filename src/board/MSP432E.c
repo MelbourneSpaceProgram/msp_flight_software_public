@@ -1,11 +1,10 @@
 #include <src/board/MSP432E.h>
-#include <src/config/unit_tests.h>
-#include <stdbool.h>
-
 #include <ti/drivers/Power.h>
-
 #include <ti/devices/msp432e4/driverlib/driverlib.h>
 
+/*
+ *  =============================== GPIO ===============================
+ */
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/gpio/GPIOMSP432E4.h>
 /*

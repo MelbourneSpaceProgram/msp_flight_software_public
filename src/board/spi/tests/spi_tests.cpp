@@ -4,11 +4,6 @@
 #include <src/config/unit_tests.h>
 
 TEST_GROUP(Spi) {
-    void setup() {
-        if (!spi_available) {
-            TEST_EXIT;
-        }
-    };
 };
 
 TEST(Spi, TestSpiWriteTransaction) {

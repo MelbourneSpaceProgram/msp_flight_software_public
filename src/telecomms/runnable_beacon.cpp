@@ -5,6 +5,7 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
+#include <src/config/satellite.h>
 
 RunnableBeacon::RunnableBeacon() {}
 
@@ -34,6 +35,6 @@ void RunnableBeacon::Beacon() {
         } else {
             Log_info0("Beacon is disabled, did not transmit");
         }
-        TaskUtils::SleepMilli(2000);
+        TaskUtils::SleepMilli(nominal_beacon_period_ms);
     }
 }

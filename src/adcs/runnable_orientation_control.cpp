@@ -137,7 +137,7 @@ void RunnableOrientationControl::ControlOrientation() {
             torque_output.Get(1, 0) * torque_boost,
             torque_output.Get(2, 0) * torque_boost);
 
-        if (over_the_air_enabled) {
+        if (tcom_board_available) {
             if (location_estimator.CheckForUpdatedTle()) {
                 tle_last_updated = SatelliteTimeSource::GetTime();
             }
@@ -146,7 +146,7 @@ void RunnableOrientationControl::ControlOrientation() {
             tle_last_updated = SatelliteTimeSource::GetTime();
         }
 
-        if (hil_available || over_the_air_enabled) {
+        if (hil_available || tcom_board_available) {
             // Calculate position
             current_time = SatelliteTimeSource::GetTime();
             // TODO(rskew): Need to check if the returned time was valid
