@@ -15,7 +15,7 @@
 TEST_GROUP(Lithium) {
     void setup() {
         if (!lithium_available) {
-            TEST_EXIT;
+            TEST_EXIT
         }
     };
 };

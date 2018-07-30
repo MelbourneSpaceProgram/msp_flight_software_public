@@ -64,17 +64,28 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
                                       serial_command.GetSize())) {
         return false;
     }
-    byte ack_buffer[kLithiumHeaderSize];
-    // TODO(dingbenjamin): Increase mailbox robustness to out of syncness
-    Mailbox_pend(command_response_mailbox_handle, &ack_buffer,
-                 kWaitForAckMilli * 1000 / Clock_tickPeriod);
+    byte ack_buffer[kLithiumHeaderSize] = {NULL};
+    if (!Mailbox_pend(command_response_mailbox_handle, &ack_buffer,
+                      kWaitForAckMilli * 1000 / Clock_tickPeriod)) {
+        // Timed out waiting for a response
+        return false;
+    }
     // TODO(dingbenjamin): Figure out why this is needed
     Task_sleep(kInterCommandTimeMilli * 1000 / Clock_tickPeriod);
     if (LithiumUtils::IsValidHeader(ack_buffer) &&
         LithiumUtils::GetCommandCode(ack_buffer) == command->GetCommandCode() &&
         LithiumUtils::IsAck(ack_buffer)) {
         return true;
+    } else if (LithiumUtils::IsValidHeader(ack_buffer) &&
+               LithiumUtils::GetCommandCode(ack_buffer) ==
+                   command->GetCommandCode() &&
+               LithiumUtils::IsNack(ack_buffer)) {
+        // TODO(dingbenjamin): Received Nack, write code to back off and try
+        // again
+        return false;
     } else {
+        // TODO(dingbenjamin): There is something wrong with the received
+        // header, write code to reset the lithium
         return false;
     }
 }

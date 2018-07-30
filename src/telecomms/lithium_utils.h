@@ -7,6 +7,7 @@ class LithiumUtils {
    public:
     static bool IsValidHeader(const byte* header);
     static bool IsAck(const byte* header);
+    static bool IsNack(const byte* header);
     static uint16_t GetPayloadSize(const byte* header);
     static void CalcChecksum(byte* checksum, const byte* data,
                              const uint16_t data_size);
