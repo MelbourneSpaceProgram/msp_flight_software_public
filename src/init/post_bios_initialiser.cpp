@@ -220,6 +220,11 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitSingletons(bus_a, bus_b, bus_c, bus_d);
 
+        InitRadioListener();
+        Log_info0("Radio receiver started");
+        InitPayloadProcessor();
+        Log_info0("Payload processor started");
+
         // The satellite now runs either the unit tests or the in-orbit
         // configuration for memory reasons.
         // To swap between the two configurations:
@@ -248,11 +253,6 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("Starting beacon delay timer");
         SatelliteTimeSource::RealTimeWait(kBeaconDelaySeconds);
         Log_info0("Beacon delay timer finished");
-
-        InitRadioListener();
-        Log_info0("Radio receiver started");
-        InitPayloadProcessor();
-        Log_info0("Payload processor started");
 
         SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
         Log_info0("Antenna deploying, can take awhile");
