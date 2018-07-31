@@ -14,7 +14,6 @@ class WriteFlashCommand : public LithiumCommand {
 
    private:
     LithiumMd5 *md5_message;
-    static const byte kWriteFlashCommandCode = 0x08;
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_COMMANDS_WRITE_FLASH_COMMAND_H_

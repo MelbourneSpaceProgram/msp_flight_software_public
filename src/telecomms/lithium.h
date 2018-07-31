@@ -2,6 +2,11 @@
 #define SRC_TELECOMMS_LITHIUM_H_
 
 #include <src/board/uart/uart.h>
+#include <src/telecomms/lithium_commands/get_configuration_command.h>
+#include <src/telecomms/lithium_commands/lithium_command.h>
+#include <src/telecomms/lithium_commands/no_op_command.h>
+#include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_configuration.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
