@@ -59,7 +59,6 @@ enum MeasurableId {
     kUtilAdc2,
     kUtilTemp1,
     kCdhSysTemp,
-    kCdhRtc,
     // Panels
     kPowerPanel1Temp1,
     kPowerPanel1Temp2,

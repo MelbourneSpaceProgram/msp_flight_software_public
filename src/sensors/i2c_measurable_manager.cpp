@@ -8,7 +8,6 @@
 #include <src/sensors/i2c_sensors/measurables/imu_gyroscope_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
-#include <src/sensors/i2c_sensors/measurables/rtime_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
@@ -173,10 +172,6 @@ void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
 }
 
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
-    Rtc *rtc = new Rtc(bus_a, 0x69, mux_a, I2cMultiplexer::kMuxChannel0);
-    RTimeMeasurable *rtime_measurable = new RTimeMeasurable(rtc);
-    measurables[kCdhRtc] = rtime_measurable;
-
     MCP9808 *cdh_temp_1 =
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
     AddTemperature(kCdhSysTemp, cdh_temp_1);
