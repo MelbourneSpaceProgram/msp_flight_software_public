@@ -63,19 +63,17 @@ TEST(FsCheckout, CanSenseMagTorqZVoltage) {
 }
 
 TEST(FsCheckout, Imu1) {
-    Mpu9250TemperatureReading temperature =
-        i2c_measurable_manager->ReadI2cMeasurable<Mpu9250TemperatureReading>(
-            kFsImuTemperature1, 0);
+    double temperature = i2c_measurable_manager->ReadI2cMeasurable<double>(
+        kFsImuTemperature1, 0);
 
-    DOUBLES_EQUAL(25, temperature.temp, 10);
+    DOUBLES_EQUAL(25, temperature, 10);
 }
 
 TEST(FsCheckout, Imu2) {
-    Mpu9250TemperatureReading temperature =
-        i2c_measurable_manager->ReadI2cMeasurable<Mpu9250TemperatureReading>(
-            kFsImuTemperature2, 0);
+    double temperature = i2c_measurable_manager->ReadI2cMeasurable<double>(
+        kFsImuTemperature2, 0);
 
-    DOUBLES_EQUAL(25, temperature.temp, 10);
+    DOUBLES_EQUAL(25, temperature, 10);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentX) {
