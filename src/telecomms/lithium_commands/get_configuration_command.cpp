@@ -1,6 +1,5 @@
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
-
-const byte GetConfigurationCommand::kGetConfigurationCommandCode;
+#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 
 GetConfigurationCommand::GetConfigurationCommand()
     : LithiumCommand(kGetConfigurationCommandCode, NULL) {}
