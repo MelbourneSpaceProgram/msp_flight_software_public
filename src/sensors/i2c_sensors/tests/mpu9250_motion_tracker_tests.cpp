@@ -65,14 +65,13 @@ TEST(MotionTracker, TestTempRead) {
     MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
                                   I2cMultiplexer::kMuxChannel1);
 
-    Mpu9250TemperatureReading temperature_reading;
+    double temperature_reading;
 
     multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
     temperature_reading = test_imu.TakeTemperatureReading();
     multiplexer.CloseAllChannels();
 
-    DOUBLES_EQUAL(avg_room_temperature, temperature_reading.temp,
-                  temp_tolerance);
+    DOUBLES_EQUAL(avg_room_temperature, temperature_reading, temp_tolerance);
 }
 
 TEST(MotionTracker, TestAccelRead) {

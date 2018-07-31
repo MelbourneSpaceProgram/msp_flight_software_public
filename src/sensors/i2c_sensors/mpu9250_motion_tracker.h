@@ -3,9 +3,9 @@
 
 #include <external/etl/array.h>
 #include <external/etl/exception.h>
-#include <src/util/data_types.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/util/data_types.h>
 
 class I2c;
 
@@ -20,10 +20,6 @@ typedef struct _AccelerometerReading {
     double y;
     double z;
 } AccelerometerReading;
-
-typedef struct _Mpu9250TemperatureReading {
-    double temp;
-} Mpu9250TemperatureReading;
 
 // data types for the gyroscope/accelerometer chip
 enum GyroFullScaleValue {
@@ -62,7 +58,7 @@ class MPU9250MotionTracker : public I2cSensor {
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
     GyroscopeReading TakeGyroscopeReading();
     AccelerometerReading TakeAccelerometerReading();
-    Mpu9250TemperatureReading TakeTemperatureReading();
+    double TakeTemperatureReading();
     MagnetometerReading TakeMagnetometerReading();
 
     void SetGyroFullScaleSetting(GyroFullScaleValue gyro_full_scale_value);

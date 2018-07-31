@@ -4,14 +4,13 @@
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 
-class ImuTemperatureMeasurable
-    : public I2cMeasurable<Mpu9250TemperatureReading> {
+class ImuTemperatureMeasurable : public I2cMeasurable<double> {
    public:
     explicit ImuTemperatureMeasurable(MPU9250MotionTracker* imu_sensor);
-    Mpu9250TemperatureReading TakeDirectI2cReading();
+    double TakeDirectI2cReading();
 
    private:
-    static const Mpu9250TemperatureReading kFailedImuTemperatureReading;
+    static const double kFailedImuTemperatureReading = -9999;
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_MEASURABLES_IMU_TEMPERATURE_MEASURABLE_H_
