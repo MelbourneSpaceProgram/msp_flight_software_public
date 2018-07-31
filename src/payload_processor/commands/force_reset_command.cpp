@@ -1,11 +1,9 @@
 #include <src/payload_processor/commands/force_reset_command.h>
-// TODO #include <ti/devices/msp432p4xx/driverlib/reset.h>
+#include <ti/devices/msp432e4/driverlib/sysctl.h>
 
 ForceResetCommand::ForceResetCommand() : Command(kForceResetCommandLength) {}
 
 bool ForceResetCommand::ExecuteCommand() {
-    //ResetCtl_initiateHardResetWithSource(
-    //    RESET_SRC_0);  // choice of reset flag 0 is arbitrary
-    // TODO
+    SysCtlReset();
     return true;
 }
