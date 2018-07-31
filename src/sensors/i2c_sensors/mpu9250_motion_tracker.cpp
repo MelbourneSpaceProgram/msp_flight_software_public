@@ -1,7 +1,7 @@
 #include <src/board/i2c/i2c.h>
+#include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
-#include <src/config/unit_tests.h>
 
 const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
     250, 500, 1000, 2000};
@@ -19,21 +19,29 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, int address,
                                            const I2cMultiplexer* multiplexer,
                                            I2cMultiplexer::MuxChannel channel)
     : I2cSensor(bus, address, multiplexer, channel) {
+    if (!fs_board_available) {
+        SetFailed(true);
+        return;
+    }
 
-    MuxSelect();
-    // default settings for the gyroscope/accelerometer
-    SetGyroFullScaleSetting(kGyro250dps);
-    SetAccelFullScaleSetting(kAccel2g);
+    try {
+        MuxSelect();
+        // default settings for the gyroscope/accelerometer
+        SetGyroFullScaleSetting(kGyro250dps);
+        SetAccelFullScaleSetting(kAccel2g);
 
-    // default settings for the magnetometer
-    SetBypassMode(kBypassModeEnable);
-    SetMagnetometerOperationMode(kMagnoContinuousMeasurement1);
-    SetMagnetometerOutputBitSetting(k14BitOutput);
-    SelectMagnetometerRegister(kMagnoAdjustX);
-    ReadMagnetometerAdjustmentValues();
-    SetBypassMode(kBypassModeDisable);
+        // default settings for the magnetometer
+        SetBypassMode(kBypassModeEnable);
+        SetMagnetometerOperationMode(kMagnoContinuousMeasurement1);
+        SetMagnetometerOutputBitSetting(k14BitOutput);
+        SelectMagnetometerRegister(kMagnoAdjustX);
+        ReadMagnetometerAdjustmentValues();
+        SetBypassMode(kBypassModeDisable);
 
-    MuxDeselect();
+        MuxDeselect();
+    } catch (etl::exception& e) {
+        SetFailed(true);
+    }
 }
 
 GyroscopeReading MPU9250MotionTracker::TakeGyroscopeReading() {

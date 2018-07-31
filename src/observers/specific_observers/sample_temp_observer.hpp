@@ -3,7 +3,7 @@
 
 #include <src/observers/generic_observer.h>
 
-class TestI2cSensor;
+class TestI2cMeasurable;
 
 /**
   SampleTempObserver class.
@@ -11,7 +11,7 @@ class TestI2cSensor;
   This describes a simple observer that changes the colour of an LED 
   depending upon the temperature reading.
 */
-class SampleTempObserver : public GenericObserver<TestI2cSensor> {
+class SampleTempObserver : public GenericObserver<TestI2cMeasurable> {
 public:
   /**
     This function is called by the subject, i.e. the sensor, when a

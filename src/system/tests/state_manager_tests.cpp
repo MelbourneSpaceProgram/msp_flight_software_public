@@ -1,6 +1,6 @@
 #include <CppUTest/TestHarness.h>
 #include <src/config/unit_tests.h>
-#include <src/sensors/test_sensors/test_i2c_sensor.h>
+#include <src/sensors/test_sensors/test_i2c_measurable.h>
 #include <src/system/sensor_state_machines/battery_charge_state_machine.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
@@ -18,7 +18,7 @@ TEST(StateManager, TestStateManager) {
     PowerStateMachine* power_state_machine = static_cast<PowerStateMachine*>(
         state_manager->GetStateMachine(kPowerStateMachine));
 
-    TestI2cSensor battery_charge_sensor;
+    TestI2cMeasurable battery_charge_sensor;
     battery_charge_state_machine->RegisterWithSensor(&battery_charge_sensor);
 
     // A reading of SOC = 0 should put power state machine into state

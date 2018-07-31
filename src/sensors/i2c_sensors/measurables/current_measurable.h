@@ -6,10 +6,12 @@
 
 class CurrentMeasurable : public I2cMeasurable<double> {
    public:
-    CurrentMeasurable(Adc *adc, AdcMuxMode adc_line, float scaling_factor, float zero_bias_point);
-    double TakeI2cReading();
+    CurrentMeasurable(Adc *adc, AdcMuxMode adc_line, float scaling_factor,
+                      float zero_bias_point);
+    double TakeDirectI2cReading();
 
    private:
+    static const double kFailedCurrentReading = -9999;
     float scaling_factor;
     float zero_bias_point;
     AdcMuxMode adc_line;

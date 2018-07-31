@@ -62,8 +62,6 @@ class Adc : public I2cSensor {
     Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
-    void SetConfiguration();
-
     bool ReadConversionRegister(etl::array<byte, 2>& read_buffer);
     bool ReadConfigurationRegister(etl::array<byte, 2>& read_buffer);
     bool ReadLoThreshRegister(etl::array<byte, 2>& read_buffer);
@@ -159,6 +157,7 @@ class Adc : public I2cSensor {
     bool ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
     void SelectRegister(byte register_address_pointer);
     double ConvertReadingToVoltage(etl::array<byte, 2>& read_buffer);
+    void SetConfiguration();
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_ADC_H_

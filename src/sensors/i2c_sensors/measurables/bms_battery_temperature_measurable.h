@@ -7,7 +7,10 @@
 class BmsBatteryTemperatureMeasurable : public I2cMeasurable<double> {
    public:
     explicit BmsBatteryTemperatureMeasurable(Bms* temp_sensor);
-    double TakeI2cReading();
+    double TakeDirectI2cReading();
+
+   private:
+    static const double kFailedBmsBatteryTemperatureReading = -9999;
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_BMS_BATTERY_TEMPERATURE_MEASURABLE_H_

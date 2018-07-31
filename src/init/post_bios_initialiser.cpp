@@ -161,25 +161,25 @@ void PostBiosInitialiser::InitSystemHealthCheck() {
 void PostBiosInitialiser::InitHardware() {
     try {
         I2c::InitBusses();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         Eeprom::Init();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         MagnetorquerControl::Initialize();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         SdCard::SdOpen();
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 }
@@ -276,7 +276,7 @@ void PostBiosInitialiser::PostBiosInit() {
         // sufficient run-time memory.
         // pre_deployment_magnetometer_poller_task->~TaskHolder();
 #endif
-    } catch (etl::exception e) {
+    } catch (etl::exception& e) {
         System_printf("EXCEPTION OCCURRED\n");
         System_printf("File: %s, line %d\n", e.file_name(), e.line_number());
         std::string message = e.what();

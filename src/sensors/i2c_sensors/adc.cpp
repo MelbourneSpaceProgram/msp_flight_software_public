@@ -17,12 +17,14 @@ Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
       comparator_polarity(kAdcDefaultComparatorPolarity),
       latching_comparator(kAdcDefaultLatchingComparator),
       comparator_queue(kAdcDefaultComparatorQueue) {
-    MuxSelect();
-
-    SetAdcGainAmplifierFullScaleRange();
-    SetConfiguration();
-
-    MuxDeselect();
+    try {
+        MuxSelect();
+        SetAdcGainAmplifierFullScaleRange();
+        SetConfiguration();
+        MuxDeselect();
+    } catch (etl::exception& e) {
+        SetFailed(true);
+    }
 }
 
 void Adc::SetConfiguration() {
@@ -45,9 +47,9 @@ void Adc::SetConfiguration() {
         (static_cast<byte>(comparator_queue) << kAdcComparatorQueueBitShift);
 
     MuxSelect();
-
-    bus->PerformWriteTransaction(address, package, 3);
-
+    if (!bus->PerformWriteTransaction(address, package, 3)) {
+        SetFailed(true);
+    }
     MuxDeselect();
 }
 
