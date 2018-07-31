@@ -3,23 +3,13 @@
 
 #include <external/etl/array.h>
 #include <external/etl/exception.h>
+#include <src/messages/AccelerometerReading.pb.h>
+#include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/i2c_sensor.h>
 #include <src/util/data_types.h>
 
 class I2c;
-
-typedef struct _GyroscopeReading {
-    double x;
-    double y;
-    double z;
-} GyroscopeReading;
-
-typedef struct _AccelerometerReading {
-    double x;
-    double y;
-    double z;
-} AccelerometerReading;
 
 // data types for the gyroscope/accelerometer chip
 enum GyroFullScaleValue {
