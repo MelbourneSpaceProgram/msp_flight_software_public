@@ -2,7 +2,7 @@
 
 const AccelerometerReading
     ImuAccelerometerMeasurable::kFailedAccelerometerReading = {-9999, -9999,
-                                                               -9999};
+                                                               -9999, 0};
 
 ImuAccelerometerMeasurable::ImuAccelerometerMeasurable(
     MPU9250MotionTracker* imu_sensor)

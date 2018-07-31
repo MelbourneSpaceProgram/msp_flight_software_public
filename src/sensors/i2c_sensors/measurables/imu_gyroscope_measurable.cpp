@@ -1,7 +1,7 @@
 #include <src/sensors/i2c_sensors/measurables/imu_gyroscope_measurable.h>
 
 const GyroscopeReading ImuGyroscopeMeasurable::kFailedGyroscopeReading = {
-    -9999, -9999, -9999};
+    -9999, -9999, -9999, 0};
 
 ImuGyroscopeMeasurable::ImuGyroscopeMeasurable(MPU9250MotionTracker* imu_sensor)
     : I2cMeasurable<GyroscopeReading>(imu_sensor, kFailedGyroscopeReading) {}

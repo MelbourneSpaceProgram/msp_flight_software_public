@@ -1,5 +1,7 @@
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
+#include <src/messages/AccelerometerReading.pb.h>
+#include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
 
