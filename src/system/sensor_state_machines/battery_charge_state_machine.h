@@ -3,12 +3,12 @@
 
 #include <src/system/sensor_state_machine.h>
 
-class TestI2cSensor;
+class TestI2cMeasurable;
 
 // TODO(wschuetz) Set correct type for sensor state machine when known
 // Changes required at forward declaration, constructor, Update() and
 // .cpp include
-class BatteryChargeStateMachine : public SensorStateMachine<TestI2cSensor> {
+class BatteryChargeStateMachine : public SensorStateMachine<TestI2cMeasurable> {
    public:
     explicit BatteryChargeStateMachine(StateManager* state_manager);
     void Update();

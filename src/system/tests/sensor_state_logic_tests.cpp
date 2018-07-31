@@ -1,6 +1,6 @@
 #include <CppUTest/TestHarness.h>
 #include <src/config/unit_tests.h>
-#include <src/sensors/test_sensors/test_i2c_sensor.h>
+#include <src/sensors/test_sensors/test_i2c_measurable.h>
 #include <src/system/sensor_state_machines/battery_charge_state_machine.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
@@ -63,7 +63,7 @@ TEST(SensorStateLogic, TestBatteryChargeStateFlow) {
     StateManager* state_manager = StateManager::GetStateManager();
     BatteryChargeStateMachine battery_charge_state_machine(state_manager);
 
-    TestI2cSensor battery_soc_sensor;
+    TestI2cMeasurable battery_soc_sensor;
     battery_charge_state_machine.RegisterWithSensor(&battery_soc_sensor);
 
     double kMaxSoc = 1;
@@ -97,7 +97,7 @@ TEST(SensorStateLogic, TestTelecomsTempStateFlow) {
     StateManager* state_manager = StateManager::GetStateManager();
     TelecomsTempStateMachine telecoms_temp_state_machine(state_manager);
 
-    TestI2cSensor telecoms_temp_sensor;
+    TestI2cMeasurable telecoms_temp_sensor;
     telecoms_temp_state_machine.RegisterWithSensor(&telecoms_temp_sensor);
 
     double kMaxTemp = kTempTelecomsOperationalMax + 10;

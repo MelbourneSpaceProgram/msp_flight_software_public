@@ -62,7 +62,7 @@ class I2cMeasurableManager {
 
             // TODO(dingbenjamin): Account for error if no reading exists yet
             return i2c_measurable->GetReading();
-        } catch (etl::exception e) {
+        } catch (etl::exception &e) {
             // TODO(dingbenjamin): Handle the exception
             // Possible exceptions are bad cast or nonexistent sensor
             throw e;
@@ -82,7 +82,7 @@ class I2cMeasurableManager {
                 throw e;
             }
             return i2c_measurable->GetTimestamp();
-        } catch (etl::exception e) {
+        } catch (etl::exception &e) {
             // TODO(dingbenjamin): Handle the exception
             // Possible exceptions are bad cast or nonexistent sensor
             throw e;

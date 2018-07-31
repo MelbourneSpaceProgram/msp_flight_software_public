@@ -3,10 +3,10 @@
 
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 
-class TestI2cSensor : public I2cMeasurable<double> {
+class TestI2cMeasurable : public I2cMeasurable<double> {
    public:
-    explicit TestI2cSensor();
-    double TakeI2cReading();
+    explicit TestI2cMeasurable();
+    double TakeDirectI2cReading();
     void SetDummySensorData(double dummy_data);
 
    private:

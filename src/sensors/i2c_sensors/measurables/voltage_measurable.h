@@ -7,9 +7,10 @@
 class VoltageMeasurable : public I2cMeasurable<double> {
    public:
     VoltageMeasurable(Adc *adc, AdcMuxMode adc_line, float scaling_factor);
-    double TakeI2cReading();
+    double TakeDirectI2cReading();
 
    private:
+    static const double kFailedVoltageReading = -9999;
     float scaling_factor;
     AdcMuxMode adc_line;
 };
