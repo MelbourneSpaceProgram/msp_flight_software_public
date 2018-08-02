@@ -4,7 +4,7 @@
 
 Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
-    : I2cSensor(bus, address, multiplexer, channel) {
+    : I2cDevice(bus, address, multiplexer, channel) {
     SetConfiguration();
 }
 
@@ -14,67 +14,67 @@ void Bms::SetConfiguration() {
     package[0] = Bms::kUVCLRegisterLocation;
     package[1] = Bms::kUVCLRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kVChargeRegisterLocation;
     package[1] = Bms::kVChargeRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kIChargeRegisterLocation;
     package[1] = Bms::kIChargeRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kReChargeThresholdRegisterLocation;
     package[1] = Bms::kReChargeThresholdLRegisterValue;
     package[2] = Bms::kReChargeThresholdURegisterValue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kMaxCVTimeRegisterLocation;
     package[1] = Bms::kMaxCVTimeRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kCXJeitaEnableRegisterLocation;
     package[1] = Bms::kCXJeitaEnableRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kCXThresholdRegisterLocation;
     package[1] = Bms::kCXThresholdRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kJeitaT1RegisterLocation;
     package[1] = Bms::kJeitaT1ConfiqurationLBValue;
     package[2] = Bms::kJeitaT1ConfiqurationUBValue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kIChargeJeita5to6RegisterLocation;
     package[1] = Bms::kIChargeJeita5to6ConfigurationValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kIChargeJeita2to4RegisterLocation;
     package[1] = Bms::kIChargeJeita2to4ConfigurationLBValue;
     package[2] = Bms::kIChargeJeita2to4ConfigurationUBValue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kCoulomConfigRegisterLocation;
     package[1] = Bms::kCoulomConfigRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kQCountInitialRegisterLocation;
     package[1] = Bms::kQCountInitialRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 
     package[0] = Bms::kPrescaleFactorRegisterLocation;
     package[1] = Bms::kPrescaleFactorRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
-    bus->PerformWriteTransaction(address, package, 3);
+    PerformWriteTransaction(address, package, 3);
 }
 
 // Read 2-byte from BMS Registers
@@ -89,12 +89,12 @@ uint16_t Bms::GetConfiguration(byte register_location,
 }
 
 void Bms::SelectRegister(byte register_address) {
-    bus->PerformWriteTransaction(address, &register_address, 1);
+    PerformWriteTransaction(address, &register_address, 1);
 }
 
 void Bms::ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer) {
     byte i2c_buffer[2];
-    if (bus->PerformReadTransaction(address, i2c_buffer, 2)) {
+    if (PerformReadTransaction(address, i2c_buffer, 2)) {
         read_buffer.at(0) = i2c_buffer[0];
         read_buffer.at(1) = i2c_buffer[1];
     }

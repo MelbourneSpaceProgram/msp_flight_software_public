@@ -6,7 +6,7 @@
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/data_types.h>
 
 class I2c;
@@ -41,7 +41,7 @@ enum MagnetometerOperationMode {
 
 enum MagnetometerOutputBitSetting { k14BitOutput = 0, k16BitOutput = 1 };
 
-class MPU9250MotionTracker : public I2cSensor {
+class MPU9250MotionTracker : public I2cDevice {
    public:
     MPU9250MotionTracker(
         const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,

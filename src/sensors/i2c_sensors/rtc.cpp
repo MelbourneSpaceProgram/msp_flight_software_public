@@ -3,7 +3,7 @@
 
 Rtc::Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
-    : I2cSensor(bus, address, multiplexer, channel) {
+    : I2cDevice(bus, address, multiplexer, channel) {
     Rtc::bit_mask_map[kTimeRegisterSec] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterMin] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterHour] = kLowest6BitMask;
@@ -45,7 +45,7 @@ byte Rtc::GetUnitTime(byte time_register, byte read_buffer[]) {
         bit_mask = kLowest8BitMask;
     }
 
-    bus->PerformTransaction(address, read_buffer, kReadBufLen, write_buffer, 1);
+    PerformTransaction(address, read_buffer, kReadBufLen, write_buffer, 1);
     return BCDToBinary(read_buffer[0] & bit_mask);
 }
 

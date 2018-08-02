@@ -4,7 +4,7 @@
 #include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/sensors/measurable.h>
 #include <src/sensors/reading.h>
 #include <src/util/satellite_time_source.h>
@@ -13,7 +13,7 @@
 template <typename R>
 class I2cMeasurable : public Reading<R>, public Measurable {
    public:
-    I2cMeasurable(I2cSensor* sensor, R failure_reading)
+    I2cMeasurable(I2cDevice* sensor, R failure_reading)
         : sensor(sensor), failure_reading(failure_reading) {}
     virtual ~I2cMeasurable() {}
 
@@ -25,15 +25,12 @@ class I2cMeasurable : public Reading<R>, public Measurable {
             return false;
         }
         try {
-            if (sensor != NULL) sensor->MuxSelect();
             this->reading =
                 TakeDirectI2cReading();  // Throws exception on failure
-            if (sensor != NULL) sensor->MuxDeselect();
             this->timestamp = SatelliteTimeSource::GetTime();
             this->NotifyObservers();
             return true;
         } catch (etl::exception e) {
-            if (sensor != NULL) sensor->MuxDeselect();
             this->reading = failure_reading;
             try {
                 this->timestamp = SatelliteTimeSource::GetTime();
@@ -51,7 +48,7 @@ class I2cMeasurable : public Reading<R>, public Measurable {
     virtual R TakeDirectI2cReading() = 0;
 
    protected:
-    I2cSensor* sensor;
+    I2cDevice* sensor;
 
    private:
     R failure_reading;

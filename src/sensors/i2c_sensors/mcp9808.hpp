@@ -1,7 +1,7 @@
 #ifndef SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
 #define SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
 
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 #include <string>
 
 /**
@@ -9,7 +9,7 @@
 
   This describes a single MCP9808 sensor.
 */
-class MCP9808 : public I2cSensor {
+class MCP9808 : public I2cDevice {
    public:
     /**
       MCP9808 constructor.
@@ -25,7 +25,7 @@ class MCP9808 : public I2cSensor {
     /**
       Method that causes the MCP9808 to take a reading. The value is then
       stored in the reading variable, and all observers are notified.
-      This is an implementation of the virtual function in I2CSensor.
+      This is an implementation of the virtual function in I2cDevice.
 
       @return The sensor reading.
     */

@@ -3,7 +3,7 @@
 
 #include <external/etl/array.h>
 #include <src/board/i2c/i2c.h>
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/data_types.h>
 
 enum AdcOperationalStatus { kAdcNoConversion = 0, kAdcConversion = 1 };
@@ -57,7 +57,7 @@ enum AdcMuxMode {
     kAdcP3NGnd = 0b111
 };
 
-class Adc : public I2cSensor {
+class Adc : public I2cDevice {
    public:
     Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
