@@ -20,14 +20,13 @@ const uint16_t MPU9250MotionTracker::kAccelerometerSensitivityScaleFactors[4] =
 MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, int address,
                                            const I2cMultiplexer* multiplexer,
                                            I2cMultiplexer::MuxChannel channel)
-    : I2cSensor(bus, address, multiplexer, channel) {
+    : I2cDevice(bus, address, multiplexer, channel) {
     if (!fs_board_available) {
         SetFailed(true);
         return;
     }
 
     try {
-        MuxSelect();
         // default settings for the gyroscope/accelerometer
         SetGyroFullScaleSetting(kGyro250dps);
         SetAccelFullScaleSetting(kAccel2g);
@@ -39,8 +38,6 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, int address,
         SelectMagnetometerRegister(kMagnoAdjustX);
         ReadMagnetometerAdjustmentValues();
         SetBypassMode(kBypassModeDisable);
-
-        MuxDeselect();
     } catch (etl::exception& e) {
         SetFailed(true);
     }
@@ -102,7 +99,7 @@ MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
     SetBypassMode(kBypassModeEnable);
     SelectMagnetometerRegister(kExtMagnoXOutHigh);
     byte magno_data[6];
-    bool magno_data_read = bus->PerformReadTransaction(
+    bool magno_data_read = PerformReadTransaction(
         kInternalMagnetometerAddress, magno_data, 6);
     if (magno_data_read) {
         etl::array<byte, 2> magno_x_reading_bytes, magno_y_reading_bytes,
@@ -141,7 +138,7 @@ void MPU9250MotionTracker::ReadMagnetometerAdjustmentValues() {
 
     // read fuse ROM registers
     byte magno_data_adjust_values[3];
-    bool magno_data_adjust_values_read = bus->PerformReadTransaction(
+    bool magno_data_adjust_values_read = PerformReadTransaction(
         kInternalMagnetometerAddress, magno_data_adjust_values, 3);
 
     if (magno_data_adjust_values_read) {
@@ -162,13 +159,13 @@ void MPU9250MotionTracker::ReadMagnetometerAdjustmentValues() {
 }
 
 void MPU9250MotionTracker::SelectRegister(byte register_address) {
-    bus->PerformWriteTransaction(address, &register_address, 1);
+    PerformWriteTransaction(address, &register_address, 1);
 }
 
 etl::array<byte, 6> MPU9250MotionTracker::ReadSixBytesFromCurrentRegister() {
     byte i2c_buffer[6];
     etl::array<byte, 6> read_buffer;
-    if (bus->PerformReadTransaction(address, i2c_buffer, 6)) {
+    if (PerformReadTransaction(address, i2c_buffer, 6)) {
         int i;
         for (i = 0; i < 6; i++) {
             read_buffer[i] = i2c_buffer[i];
@@ -183,7 +180,7 @@ etl::array<byte, 6> MPU9250MotionTracker::ReadSixBytesFromCurrentRegister() {
 etl::array<byte, 2> MPU9250MotionTracker::ReadTwoBytesFromCurrentRegister() {
     byte i2c_buffer[2];
     etl::array<byte, 2> read_buffer;
-    if (bus->PerformReadTransaction(address, i2c_buffer, 2)) {
+    if (PerformReadTransaction(address, i2c_buffer, 2)) {
         int i;
         for (i = 0; i < 2; i++) {
             read_buffer[i] = i2c_buffer[i];
@@ -262,14 +259,14 @@ void MPU9250MotionTracker::SetGyroConfiguration() {
     byte package[2];
     package[0] = kGyroConfigRegister;
     package[1] = (gyro_full_scale_setting << 4);
-    bus->PerformWriteTransaction(address, package, 2);
+    PerformWriteTransaction(address, package, 2);
 }
 
 void MPU9250MotionTracker::SetAccelConfiguration() {
     byte package[2];
     package[0] = kAccelConfigRegister1;
     package[1] = (accel_full_scale_setting << 4);
-    bus->PerformWriteTransaction(address, package, 2);
+    PerformWriteTransaction(address, package, 2);
 }
 
 void MPU9250MotionTracker::SetGyroFullScaleSetting(
@@ -296,12 +293,12 @@ void MPU9250MotionTracker::SetBypassMode(BypassMode bypass_mode) {
     byte package[2];
     package[0] = kBypassEnable;
     package[1] = (bypass_mode << 1);
-    bus->PerformWriteTransaction(address, package, 2);
+    PerformWriteTransaction(address, package, 2);
 }
 
 void MPU9250MotionTracker::SelectMagnetometerRegister(
     byte magnetometer_register_address) {
-    bus->PerformWriteTransaction(kInternalMagnetometerAddress,
+    PerformWriteTransaction(kInternalMagnetometerAddress,
                                  &magnetometer_register_address, 1);
 }
 
@@ -328,5 +325,5 @@ void MPU9250MotionTracker::ConfigureMagnetometer() {
     package[0] = 0x0A;  // TODO(hugorilla) Chnage this!
     package[1] =
         (magnetometer_output_bit_setting << 4) | magnetometer_operation_mode;
-    bus->PerformWriteTransaction(kInternalMagnetometerAddress, package, 2);
+    PerformWriteTransaction(kInternalMagnetometerAddress, package, 2);
 }

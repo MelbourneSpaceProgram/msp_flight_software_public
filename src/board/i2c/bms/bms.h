@@ -2,13 +2,13 @@
 #define SRC_BOARD_I2C_BMS_BMS_H_
 
 #include <external/etl/array.h>
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/data_types.h>
 #include <string>
 
 class I2c;
 
-class Bms : public I2cSensor {
+class Bms : public I2cDevice {
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);

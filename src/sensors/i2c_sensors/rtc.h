@@ -2,14 +2,14 @@
 #define SRC_SENSORS_I2C_SENSORS_RTC_H_
 
 #include <external/etl/map.h>
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/data_types.h>
 #include <time.h>
 #include <functional>
 
 typedef etl::map<byte, byte, 6, std::less<uint8_t> > RTCMaskMap;
 
-class Rtc : public I2cSensor {
+class Rtc : public I2cDevice {
    public:
     Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);

@@ -3,9 +3,9 @@
 
 #include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/adc.h>
-#include <src/sensors/i2c_sensors/i2c_sensor.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 
-class CurrentSensor : public I2cSensor {
+class CurrentSensor : public I2cDevice {
    public:
     CurrentSensor(Adc* adc, AdcMuxMode adc_line);
     double TakeCurrentReading();
