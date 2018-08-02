@@ -22,6 +22,11 @@ bool PayloadProcessor::ParseAndExecuteCommands(byte* payload) {
             // Command not found. Without a command, the rest of the payload
             // cannot be parsed.
             return false;
+        } else {
+            Lithium::command_success_count =
+                Lithium::command_success_count == 255
+                    ? 0
+                    : Lithium::command_success_count + 1;
         }
     }
     return true;

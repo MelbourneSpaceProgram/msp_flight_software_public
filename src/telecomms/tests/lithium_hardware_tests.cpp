@@ -34,7 +34,7 @@ TEST(Lithium, TestGetConfigHardware) {
 
 TEST(Lithium, TestTransmitAckHardware) {
     TestPayload test_payload;
-    TransmitCommand transmit_command(&test_payload, 0x67, 0x61, 0x62);
+    TransmitCommand transmit_command(&test_payload);
     CHECK(Lithium::GetInstance()->DoCommand(&transmit_command));
 }
 

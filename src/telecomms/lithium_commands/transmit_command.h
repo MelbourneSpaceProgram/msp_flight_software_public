@@ -7,8 +7,7 @@
 
 class TransmitCommand : public LithiumCommand {
    public:
-    TransmitCommand(TransmitPayload *payload, uint8_t tx_count,
-                    uint8_t total_rx_count, uint8_t valid_rx_count);
+    explicit TransmitCommand(TransmitPayload *payload);
     virtual ~TransmitCommand() {}
     uint16_t GetLithiumPayloadSize() const;
     uint16_t GetReplyPayloadSize() const;
