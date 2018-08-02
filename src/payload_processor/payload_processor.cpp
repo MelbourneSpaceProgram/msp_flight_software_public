@@ -7,6 +7,8 @@
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
 
+PayloadProcessor::PayloadProcessor() {}
+
 bool PayloadProcessor::ParseAndExecuteCommands(byte* payload) {
     byte current_index = 0;
 
