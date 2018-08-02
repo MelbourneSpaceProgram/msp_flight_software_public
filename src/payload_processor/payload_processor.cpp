@@ -1,5 +1,6 @@
 #include <src/payload_processor/commands/command.h>
 #include <src/payload_processor/commands/force_reset_command.h>
+#include <src/payload_processor/commands/lithium_beacon_period_command.h>
 #include <src/payload_processor/commands/lithium_enable_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
@@ -59,6 +60,10 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
                 ForceResetCommand force_reset_command;
                 command = &force_reset_command;
                 break;
+            case kLithiumBeaconPeriodCommand:
+                LithiumBeaconPeriodCommand beacon_period_command(
+                    payload + kCommandCodeLength);
+                command = &beacon_period_command;
         }
 
         try {

@@ -7,6 +7,8 @@
 #include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
 
+uint32_t RunnableBeacon::beacon_period_ms = kNominalBeaconPeriodMs;
+
 RunnableBeacon::RunnableBeacon() {}
 
 fnptr RunnableBeacon::GetRunnablePointer() { return &Beacon; }
@@ -32,6 +34,8 @@ void RunnableBeacon::Beacon() {
         } else {
             Log_info0("Beacon is disabled, did not transmit");
         }
-        TaskUtils::SleepMilli(nominal_beacon_period_ms);
+        TaskUtils::SleepMilli(beacon_period_ms);
     }
 }
+
+uint32_t RunnableBeacon::GetBeaconPeriodMs() { return beacon_period_ms; }

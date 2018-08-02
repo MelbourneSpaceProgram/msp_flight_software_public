@@ -2,12 +2,15 @@
 #include <external/nanopb/pb_encode.h>
 #include <external/sgp4/sgp4.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/Tle.pb.h>
+#include <src/payload_processor/commands/lithium_beacon_period_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/runnable_beacon.h>
 #include <src/util/nanopb_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
@@ -41,7 +44,7 @@ TEST(PayloadProcessor, TestForceResetCommand) {
     byte payload[Lithium::kMaxReceivedSize] = {0};
 
     payload[0] = 4;
-    payload[1] = 0;  // 0x04 indicates a tle update command
+    payload[1] = 0;  // 0x04 indicates a force reset command
     payload[2] = PayloadProcessor::GetEndTerminator();
     payload[3] = PayloadProcessor::GetEndTerminator();
 
@@ -111,4 +114,37 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     CHECK(generated_satrec.mo ==
           test_tle.mean_anomaly * Sgp4Utils::kDegreesToRadians);
     CHECK(generated_satrec.bstar == test_tle.bstar_drag);
+}
+
+TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
+    // Generate a fake lithium beacon period command
+    byte buffer[Lithium::kMaxReceivedSize] = {0};
+
+    // Set command code - 5 indicates a beacon period command
+    buffer[0] = 5;
+    buffer[1] = 0;
+
+    // Set nanopb message
+    LithiumBeaconPeriod injected_beacon_period = {5000};
+    NanopbEncode(LithiumBeaconPeriod)(
+        buffer + PayloadProcessor::GetCommandCodeLength(),
+        injected_beacon_period);
+
+    // Set end terminators
+    buffer[PayloadProcessor::GetCommandCodeLength() +
+           LithiumBeaconPeriod_size] = PayloadProcessor::GetEndTerminator();
+    buffer[PayloadProcessor::GetCommandCodeLength() + LithiumBeaconPeriod_size +
+           1] = PayloadProcessor::GetEndTerminator();
+
+    PayloadProcessor payload_processor;
+    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), 5000);
+
+    // Reset to nominal
+    injected_beacon_period = {kNominalBeaconPeriodMs};
+    NanopbEncode(LithiumBeaconPeriod)(
+        buffer + PayloadProcessor::GetCommandCodeLength(),
+        injected_beacon_period);
+    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), kNominalBeaconPeriodMs);
 }
