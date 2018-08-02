@@ -20,9 +20,6 @@ void RunnableBeacon::Beacon() {
         BeaconPayload beacon;
 
         // TODO(dingbenjamin): Implement remaining beacon fields
-        // Cast the double reading to a 8 bit unsigned int
-        beacon.SetCdhRegTemp1(static_cast<byte>(
-            manager->ReadI2cMeasurable<double>(kCdhSysTemp, 0)));
 
         // Avoid building the packet if transmit is disabled
         if (lithium->IsTransmitEnabled()) {
