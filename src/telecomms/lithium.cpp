@@ -5,6 +5,7 @@
 #include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/lithium_command.h>
+#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
@@ -17,6 +18,9 @@
 #include <xdc/runtime/Log.h>
 
 Lithium* Lithium::instance = NULL;
+uint8_t Lithium::tx_count = 0;
+uint8_t Lithium::rx_count = 0;
+uint8_t Lithium::command_success_count = 0;
 
 Lithium::Lithium()
     : lithium_config(), uart(TELECOMS), lithium_transmit_enabled(true) {
@@ -76,6 +80,9 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
     if (LithiumUtils::IsValidHeader(ack_buffer) &&
         LithiumUtils::GetCommandCode(ack_buffer) == command->GetCommandCode() &&
         LithiumUtils::IsAck(ack_buffer)) {
+        if (command->GetCommandCode() == kTransmitCommandCode) {
+            tx_count = tx_count == 255 ? 0 : tx_count + 1;
+        }
         return true;
     } else if (LithiumUtils::IsValidHeader(ack_buffer) &&
                LithiumUtils::GetCommandCode(ack_buffer) ==
@@ -96,6 +103,14 @@ Lithium* Lithium::GetInstance() {
         instance = new Lithium();
     }
     return instance;
+}
+
+uint8_t Lithium::GetTxCounter() { return Lithium::tx_count; }
+
+uint8_t Lithium::GetRxCounter() { return Lithium::rx_count; }
+
+uint8_t Lithium::GetCommandSuccessCounter() {
+    return Lithium::command_success_count;
 }
 
 const LithiumConfiguration& Lithium::GetLithiumConfig() const {

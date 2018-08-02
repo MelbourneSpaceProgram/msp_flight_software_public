@@ -77,7 +77,7 @@ TEST(LithiumCommandSerialise, TestGetConfigurationSerialisation) {
 
 TEST(LithiumCommandSerialise, TestTransmitTestPayloadSerialisation) {
     TestPayload test_payload;
-    TransmitCommand transmit_command(&test_payload, 0x67, 0x61, 0x62);
+    TransmitCommand transmit_command(&test_payload);
     // 8 + 4 + 56 + 2 is Lithium header + MSP header + Message size + Tail
     byte command_buffer[8 + 4 + 56 + 2];
     SerialisedMessage serial_command =
@@ -103,12 +103,10 @@ TEST(LithiumCommandSerialise, TestTransmitTestPayloadSerialisation) {
     // Header checksum
     CHECK_EQUAL(0x4f, serial_buffer[6]);
     CHECK_EQUAL(0x85, serial_buffer[7]);
-    // TX count
-    CHECK_EQUAL(0x67, serial_buffer[8]);
-    // Total RX count
-    CHECK_EQUAL(0x61, serial_buffer[9]);
-    // Valid RX count
-    CHECK_EQUAL(0x62, serial_buffer[10]);
+    // MSP header
+    CHECK_EQUAL(Lithium::GetTxCounter(), serial_buffer[8]);
+    CHECK_EQUAL(Lithium::GetRxCounter(), serial_buffer[9]);
+    CHECK_EQUAL(Lithium::GetCommandSuccessCounter(), serial_buffer[10]);
     // Payload code
     CHECK_EQUAL(0x69, serial_buffer[11]);
     // Payload: +8 is for the Lithium header, +4 is for the MSP header
@@ -116,8 +114,7 @@ TEST(LithiumCommandSerialise, TestTransmitTestPayloadSerialisation) {
     // Check the carriage return
     CHECK_EQUAL(0x0d, serial_buffer[67]);
     // Tail checksum
-    CHECK_EQUAL(0xbf, serial_buffer[68]);
-    CHECK_EQUAL(0xb0, serial_buffer[69]);
+    // TODO(dingbenjamin): Calculate correct tail checksum and assert it
 }
 
 TEST(LithiumCommandSerialise, TestWriteFlashSerialisation) {

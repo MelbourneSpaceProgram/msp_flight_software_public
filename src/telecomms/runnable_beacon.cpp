@@ -1,3 +1,4 @@
+#include <src/config/satellite.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
@@ -5,7 +6,6 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
-#include <src/config/satellite.h>
 
 RunnableBeacon::RunnableBeacon() {}
 
@@ -26,7 +26,7 @@ void RunnableBeacon::Beacon() {
 
         // Avoid building the packet if transmit is disabled
         if (lithium->IsTransmitEnabled()) {
-            TransmitCommand transmit_command(&beacon, tx_count++, 0, 0);
+            TransmitCommand transmit_command(&beacon);
             if (lithium->DoCommand(&transmit_command)) {
                 Log_info0("Beacon transmission succeeded");
             } else {

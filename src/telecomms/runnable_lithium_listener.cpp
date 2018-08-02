@@ -1,6 +1,7 @@
 #include <external/etl/exception.h>
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/telecomms/runnable_lithium_listener.h>
@@ -54,6 +55,9 @@ void RunnableLithiumListener::Receive() {
             Mailbox_post(response_mailbox_handle, read_buffer,
                          BIOS_WAIT_FOREVER);  // TODO(akremor): Maybe don't
                                               // wait forever?
+        } else {
+            Lithium::rx_count =
+                Lithium::rx_count == 255 ? 0 : Lithium::rx_count + 1;
         }
 
         if (payload_size != 0) {
