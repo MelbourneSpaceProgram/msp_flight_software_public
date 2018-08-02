@@ -12,7 +12,6 @@ class FastPaCommand : public LithiumCommand {
     uint16_t GetReplyPayloadSize() const;
 
    private:
-    static const byte kFastPaCommandCode = 0x20;
     FastPaLevel fast_power_amp_level;
 };
 
