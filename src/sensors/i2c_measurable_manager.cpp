@@ -135,10 +135,10 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddVoltage(kFsMagTorqAZ, fs_adc_z, kAdcP1NGnd, 2);
     AddVoltage(kFsMagTorqBZ, fs_adc_z, kAdcP2NGnd, 2);
 
-    AddCurrent(kFsTorquerCurrentX, fs_adc_x, kAdcP0NGnd, 1, 0);
-    AddCurrent(kFsTorquerCurrentTotal, fs_adc_x, kAdcP3NGnd, 1, 0);
-    AddCurrent(kFsTorquerCurrentY, fs_adc_y, kAdcP0NGnd, 1, 0);
-    AddCurrent(kFsTorquerCurrentZ, fs_adc_z, kAdcP0NGnd, 1, 0);
+    AddCurrent(kFsTorquerCurrentX, fs_adc_x, kAdcP0NGnd, 0.1, 1.65);
+    AddCurrent(kFsTorquerCurrentTotal, fs_adc_x, kAdcP3NGnd, 1.0/7.5, 0);
+    AddCurrent(kFsTorquerCurrentY, fs_adc_y, kAdcP0NGnd, 0.1, 1.65);
+    AddCurrent(kFsTorquerCurrentZ, fs_adc_z, kAdcP0NGnd, 0.1, 1.65);
 
     MCP9808 *fs_temp_hb_x =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel1);
@@ -148,7 +148,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel1);
 
     AddTemperature(kFsTempHbX, fs_temp_hb_x);
-    AddTemperature(kFsTempHbY, fs_temp_hb_z);
+    AddTemperature(kFsTempHbY, fs_temp_hb_y);
     AddTemperature(kFsTempHbZ, fs_temp_hb_z);
 
     MPU9250MotionTracker *fs_imu_1 = new MPU9250MotionTracker(
@@ -159,7 +159,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddImuTemperatureMeasurable(kFsImuTemperature1, fs_imu_1);
     AddImuMagnetometerMeasurable(kFsImuMagnetometer1, fs_imu_1);
 
-    MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_c, 0x68);
+    MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
     AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
     AddImuAcceleromterMeasurable(kFsImuAccelerometer2, fs_imu_2);
