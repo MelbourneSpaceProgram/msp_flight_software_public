@@ -52,7 +52,7 @@ MEMORY
 
 --stack_size=0x57e8   /* C stack is also used for ISR stack */
 
-HEAPSIZE = 0xF000;  /* Size of heap buffer used by HeapMem */
+HEAPSIZE = 0xFF00;  /* Size of heap buffer used by HeapMem */
 
 /* Section allocation in memory */
 
