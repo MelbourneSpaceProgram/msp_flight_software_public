@@ -57,10 +57,10 @@ pipeline {
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
                     sudo docker run -td --name ${docker_name} ccsv8_msp432e
                     sudo docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/root/
-		    sudo docker exec -t $docker_name mkdir /root/flight_software
+		            sudo docker exec -t $docker_name mkdir /root/flight_software
                     sudo docker exec -t $docker_name tar -xf /root/CDH_software.tar.gz -C /root/flight_software/
                     sudo docker exec -t $docker_name /opt/ti/ccsv8/eclipse/eclipse -noSplash -data /root/ws -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "Tests MSP432E"
-		    sudo docker cp $docker_name:"/root/flight_software/Tests MSP432E/MSP.out" ${WORKSPACE}/MSP.out 
+		            sudo docker cp $docker_name:"/root/flight_software/Tests MSP432E/MSP.out" ${WORKSPACE}/MSP.out 
 		    '''
 		    stash includes: 'MSP.out', name: 'flight_software_binary'
     	    }
