@@ -11,18 +11,8 @@ Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
 void Bms::SetConfiguration() {
     byte package[3];
 
-    package[0] = Bms::kUVCLRegisterLocation;
-    package[1] = Bms::kUVCLRegisterValue;
-    package[2] = Bms::kEmptybuffervalue;
-    PerformWriteTransaction(address, package, 3);
-
     package[0] = Bms::kVChargeRegisterLocation;
     package[1] = Bms::kVChargeRegisterValue;
-    package[2] = Bms::kEmptybuffervalue;
-    PerformWriteTransaction(address, package, 3);
-
-    package[0] = Bms::kIChargeRegisterLocation;
-    package[1] = Bms::kIChargeRegisterValue;
     package[2] = Bms::kEmptybuffervalue;
     PerformWriteTransaction(address, package, 3);
 
