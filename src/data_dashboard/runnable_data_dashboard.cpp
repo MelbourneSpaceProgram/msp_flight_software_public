@@ -6,7 +6,6 @@
 #include <src/messages/SensorReading.pb.h>
 #include <src/messages/StateMachineStateReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
-#include <src/sensors/specific_sensors/magnetometer.h>
 #include <src/system/state_definitions.h>
 #include <src/system/system_state_machines/adcs_state_machine.h>
 #include <src/util/message_codes.h>

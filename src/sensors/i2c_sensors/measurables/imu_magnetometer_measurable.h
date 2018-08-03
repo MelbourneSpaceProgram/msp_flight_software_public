@@ -8,6 +8,7 @@ class ImuMagnetometerMeasurable : public I2cMeasurable<MagnetometerReading> {
    public:
     explicit ImuMagnetometerMeasurable(MPU9250MotionTracker* imu_sensor);
     MagnetometerReading TakeDirectI2cReading();
+    MagnetometerReading TakeSimulationReading();
 
    private:
     static const MagnetometerReading kFailedMagnetometerReading;

@@ -13,7 +13,8 @@
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
-#include <src/sensors/specific_sensors/magnetometer.h>
+#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_id.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
 #include <src/system/system_state_machines/power_state_machine.h>
@@ -65,11 +66,12 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    Magnetometer magnetometer;
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
+    I2cMeasurableManager* measurable_manager =
+        I2cMeasurableManager::GetInstance();
 
     Time tle_last_updated;
     Time current_time;
@@ -93,12 +95,10 @@ void RunnableOrientationControl::ControlOrientation() {
         MagnetorquerControl::Degauss();
 
         // Read Magnetometer
-        // TODO(rskew) handle false return value
-        bool success = magnetometer.TakeReading();
-        if (!success) {
-            continue;
-        }
-        MagnetometerReading magnetometer_reading = magnetometer.GetReading();
+        // TODO (rskew) fuse readings from both magnetometers giving redundancy
+        MagnetometerReading magnetometer_reading =
+            measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
+                kFsImuMagnetometer2, 0);
 
         if (hil_available) {
             // Echo reading to data dashboard
