@@ -16,7 +16,7 @@ fnptr RunnableLithiumListener::GetRunnablePointer() {
 }
 
 void RunnableLithiumListener::Receive() {
-    byte read_buffer[Lithium::kMaxReceivedSize];
+    byte read_buffer[Lithium::kMaxReceivedUartSize];
     while (1) {
         // Grab sync characters (first two bytes of header/packet) one char at a
         // time Not two at a time so we can 'burn off' additional characters and
@@ -46,33 +46,37 @@ void RunnableLithiumListener::Receive() {
         }
 
         uint16_t payload_size = LithiumUtils::GetPayloadSize(read_buffer);
+        uint8_t command_code = LithiumUtils::GetCommandCode(read_buffer);
 
-        if (LithiumUtils::GetCommandCode(read_buffer) != kReceivedDataCode) {
-            // Post first 8 bytes of read_buffer to writer task
-            // TODO(dingbenjamin): Wrap mailbox posting in a function
-            Mailbox_Handle response_mailbox_handle =
-                Lithium::GetInstance()->GetCommandResponseMailbox();
-            Mailbox_post(response_mailbox_handle, read_buffer,
-                         BIOS_WAIT_FOREVER);  // TODO(akremor): Maybe don't
-                                              // wait forever?
-        } else {
-            Lithium::rx_count =
-                Lithium::rx_count == 255 ? 0 : Lithium::rx_count + 1;
-        }
-
-        if (payload_size != 0) {
-            // A non-zero payload implies there is a payload to be received
-
-            // Read the payload bytes into the remainder of the buffer
+        // Post first 8 bytes of read_buffer to header mailbox
+        Mailbox_post(Lithium::GetInstance()->GetHeaderMailbox(), read_buffer,
+                     BIOS_WAIT_FOREVER);
+        if (payload_size > 0 &&
+            payload_size <= Lithium::kMaxReceivedUplinkSize) {
+            // TODO(dingbenjamin): Check tail checksum over payload
             Lithium::GetInstance()->GetUart()->PerformReadTransaction(
-                read_buffer + Lithium::kLithiumHeaderSize,
-                payload_size + Lithium::kLithiumTailSize);
+                read_buffer + Lithium::kLithiumHeaderSize, payload_size);
 
-            // Post to message handler task
-            Mailbox_Handle payload_mailbox_handle =
-                Lithium::GetInstance()->GetMessageMailbox();
-            Mailbox_post(payload_mailbox_handle, read_buffer,
+            Mailbox_Handle mailbox;
+            if (command_code == kReceivedDataCode) {
+                if (payload_size > Lithium::kMaxReceivedUplinkSize) {
+                    Log_error0("Incoming packet too large, ignored");
+                }
+                Lithium::rx_count =
+                    Lithium::rx_count == 255 ? 0 : Lithium::rx_count + 1;
+                mailbox = Lithium::GetInstance()->GetUplinkMailbox();
+            } else {
+                if (payload_size > Lithium::kMaxReceivedLithiumResponseSize) {
+                    Log_error0("Incoming lithium response too large, ignored");
+                }
+                mailbox = Lithium::GetInstance()->GetCommandResponseMailbox();
+            }
+
+            // Post payload/uplink to appropriate mailbox
+            Mailbox_post(mailbox, read_buffer + Lithium::kLithiumHeaderSize,
                          BIOS_WAIT_FOREVER);
+        } else if (payload_size > Lithium::kMaxReceivedUartSize) {
+            Log_error0("Incoming uplink too large, ignored");
         }
     }
 }

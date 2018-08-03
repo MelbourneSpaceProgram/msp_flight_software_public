@@ -13,9 +13,9 @@ fnptr RunnablePayloadProcessor::GetRunnablePointer() {
 
 void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
     PayloadProcessor payload_processor;
-    byte lithium_payload[Lithium::kMaxReceivedSize];
+    byte lithium_payload[Lithium::kMaxReceivedUplinkSize];
     Mailbox_Handle payload_mailbox_handle =
-        Lithium::GetInstance()->GetMessageMailbox();
+        Lithium::GetInstance()->GetUplinkMailbox();
 
     while (1) {
         Mailbox_pend(payload_mailbox_handle, &lithium_payload,

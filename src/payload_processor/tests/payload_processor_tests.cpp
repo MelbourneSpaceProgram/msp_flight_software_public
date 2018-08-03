@@ -18,7 +18,7 @@
 TEST_GROUP(PayloadProcessor){};
 
 TEST(PayloadProcessor, TestPayloadProcessor) {
-    byte payload[Lithium::kMaxReceivedSize] = {0};
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
 
     // Set the bytes necessary for 2 x test command
     payload[0] = 1;
@@ -41,7 +41,7 @@ TEST(PayloadProcessor, TestForceResetCommand) {
         TEST_EXIT
     }
 
-    byte payload[Lithium::kMaxReceivedSize] = {0};
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
 
     payload[0] = 4;
     payload[1] = 0;  // 0x04 indicates a force reset command
@@ -66,7 +66,7 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     test_tle.mean_anomaly = 19.3264;
     test_tle.bstar_drag = 0.000028098;
 
-    uint8_t buffer[Lithium::kMaxReceivedSize] = {0};
+    uint8_t buffer[Lithium::kMaxReceivedUplinkSize] = {0};
     buffer[0] = 3;  // 3 indicates tle update command
     buffer[1] = 0;
     buffer[PayloadProcessor::GetCommandCodeLength() + Tle_size] =
@@ -118,7 +118,7 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
 
 TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
     // Generate a fake lithium beacon period command
-    byte buffer[Lithium::kMaxReceivedSize] = {0};
+    byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
 
     // Set command code - 5 indicates a beacon period command
     buffer[0] = 5;
