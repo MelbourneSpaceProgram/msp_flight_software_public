@@ -12,12 +12,6 @@ class TaskHolder {
     // with dynamic memory).
     TaskHolder(uint16_t stack_size, const char *name, int priority,
                Runnable *runnable);
-    // Uses user-provided memory to hold the task stack. Does not handle
-    // deletion of this memory region; it is left up to the user when/if the
-    // TaskHolder is deleted. Typically use for things that don't need to be
-    // deleted.
-    TaskHolder(byte *task_stack, uint16_t stack_size, const char *name,
-               int priority, Runnable *runnable);
     ~TaskHolder();
     Task_Handle GetTaskHandle() const;
     void Start();

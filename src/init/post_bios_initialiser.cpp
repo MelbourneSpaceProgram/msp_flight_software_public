@@ -70,18 +70,15 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
 }
 
 void PostBiosInitialiser::InitRadioListener() {
-    static byte stack[radio_listener_stack_size];
     TaskHolder* radio_listener =
-        new TaskHolder(stack, radio_listener_stack_size, "RadioListener", 11,
+        new TaskHolder(radio_listener_stack_size, "RadioListener", 11,
                        new RunnableLithiumListener());
     radio_listener->Start();
 }
 
 void PostBiosInitialiser::RunUnitTests() {
-    static byte stack[unit_tests_stack_size];
-    TaskHolder* test_task =
-        new TaskHolder(stack, unit_tests_stack_size, "Unit Tests", 7,
-                       TestInitialiser::GetInstance());
+    TaskHolder* test_task = new TaskHolder(unit_tests_stack_size, "Unit Tests",
+                                           7, TestInitialiser::GetInstance());
     test_task->Start();
 }
 
@@ -95,9 +92,8 @@ void PostBiosInitialiser::InitStateManagement() {
 }
 
 void PostBiosInitialiser::InitBeacon() {
-    static byte stack[beacon_stack_size];
-    TaskHolder* beacon_task = new TaskHolder(stack, beacon_stack_size, "Beacon",
-                                             12, new RunnableBeacon());
+    TaskHolder* beacon_task =
+        new TaskHolder(beacon_stack_size, "Beacon", 12, new RunnableBeacon());
     beacon_task->Start();
 }
 
@@ -185,17 +181,15 @@ void PostBiosInitialiser::InitHardware() {
 }
 
 void PostBiosInitialiser::InitMemoryLogger() {
-    static byte stack[memory_logger_stack_size];
     TaskHolder* memory_logger_task =
-        new TaskHolder(stack, memory_logger_stack_size, "MemoryLogger", 13,
+        new TaskHolder(memory_logger_stack_size, "MemoryLogger", 13,
                        new RunnableMemoryLogger());
     memory_logger_task->Start();
 }
 
 void PostBiosInitialiser::InitTimeSource() {
-    static byte stack[time_source_stack_size];
     TaskHolder* time_source_task =
-        new TaskHolder(stack, time_source_stack_size, "TimeSource", 13,
+        new TaskHolder(time_source_stack_size, "TimeSource", 13,
                        new RunnableTimeSource());
     time_source_task->Start();
 }
