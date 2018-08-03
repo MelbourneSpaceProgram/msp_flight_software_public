@@ -4,7 +4,8 @@
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <src/sensors/specific_sensors/magnetometer.h>
+#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_id.h>
 #include <src/util/message_codes.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
@@ -31,7 +32,9 @@ void RunnablePreDeploymentMagnetometerPoller::
 
 void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    Magnetometer magnetometer;
+
+    I2cMeasurableManager* measurable_manager =
+        I2cMeasurableManager::GetInstance();
 
     MagnetorquerControl::Degauss();
 
@@ -50,10 +53,9 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
 
         // Poll magnetometer, which internally writes new readings
         // to a persistant buffer backed by a file on the SD card.
-        // TODO(rskew) handle false return value
-        bool success = magnetometer.TakeReading();
-        if (!success) {
-            continue;
-        }
+        measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
+            kFsImuMagnetometer1, 0);
+        measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
+            kFsImuMagnetometer2, 0);
     }
 }
