@@ -13,7 +13,7 @@ PayloadProcessor::PayloadProcessor() {}
 bool PayloadProcessor::ParseAndExecuteCommands(byte* payload) {
     byte current_index = 0;
 
-    while (current_index < Lithium::kMaxReceivedSize &&
+    while (current_index < Lithium::kMaxReceivedUplinkSize &&
            !(payload[current_index] == kEndTerminator &&
              payload[current_index + 1] == kEndTerminator)) {
         bool command_execution_successful =

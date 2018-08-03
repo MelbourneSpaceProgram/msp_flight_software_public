@@ -4,6 +4,7 @@
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
 #include <src/util/data_types.h>
+#include <external/etl/exception.h>
 
 #define NanopbEncode(NanopbMessageType)                              \
     NanopbUtils::Encode<NanopbMessageType, NanopbMessageType##_size, \

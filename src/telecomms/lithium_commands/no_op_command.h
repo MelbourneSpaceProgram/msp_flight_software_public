@@ -7,7 +7,7 @@ class NoOpCommand : public LithiumCommand {
    public:
     NoOpCommand();
     uint16_t GetLithiumPayloadSize() const;
-    const byte &GetCommandCode() const;
+    const byte& GetCommandCode() const;
     uint16_t GetReplyPayloadSize() const;
 };
 

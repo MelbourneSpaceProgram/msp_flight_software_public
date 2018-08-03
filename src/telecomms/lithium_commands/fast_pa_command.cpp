@@ -9,7 +9,7 @@ uint16_t FastPaCommand::GetLithiumPayloadSize() const {
     return sizeof(uint8_t);
 }
 
-const byte &FastPaCommand::GetCommandCode() const {
+const byte& FastPaCommand::GetCommandCode() const {
     return kFastSetPaCommandCode;
 }
 

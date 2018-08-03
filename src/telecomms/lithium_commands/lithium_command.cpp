@@ -5,6 +5,8 @@
 LithiumCommand::LithiumCommand(byte command_code, Message *lithium_payload)
     : lithium_payload(lithium_payload), command_code(command_code) {}
 
+LithiumCommand::~LithiumCommand() {}
+
 SerialisedMessage LithiumCommand::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
     BuildHeader(&builder);
@@ -66,3 +68,5 @@ uint16_t LithiumCommand::GetSerialisedSize() const {
                Lithium::kLithiumTailSize;
     }
 }
+
+void *LithiumCommand::GetReplyBuffer() { return NULL; }

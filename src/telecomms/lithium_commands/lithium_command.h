@@ -5,12 +5,16 @@
 #include <src/messages/serialised_message_builder.h>
 #include <src/util/data_types.h>
 
-class LithiumCommand : Message {
+class Lithium;
+
+class LithiumCommand : public Message {
+    friend class Lithium;  // Lithium needs to populate the reply buffer
    public:
-    virtual ~LithiumCommand() {}
+    virtual ~LithiumCommand();
     virtual uint16_t GetLithiumPayloadSize() const = 0;
     virtual const byte &GetCommandCode() const = 0;
     virtual uint16_t GetReplyPayloadSize() const = 0;
+    virtual void *GetReplyBuffer();
     SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
