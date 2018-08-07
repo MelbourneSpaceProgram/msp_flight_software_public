@@ -3,6 +3,7 @@
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/config/satellite.h>
 #include <src/config/stacks.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
@@ -20,6 +21,7 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
@@ -150,7 +152,7 @@ TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
 }
 void PostBiosInitialiser::InitSystemHealthCheck() {
     TaskHolder* system_health_check_task = new TaskHolder(
-        1536, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
+        4096, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
     system_health_check_task->Start();
 }
 
@@ -188,9 +190,8 @@ void PostBiosInitialiser::InitMemoryLogger() {
 }
 
 void PostBiosInitialiser::InitTimeSource() {
-    TaskHolder* time_source_task =
-        new TaskHolder(time_source_stack_size, "TimeSource", 13,
-                       new RunnableTimeSource());
+    TaskHolder* time_source_task = new TaskHolder(
+        time_source_stack_size, "TimeSource", 13, new RunnableTimeSource());
     time_source_task->Start();
 }
 
@@ -241,6 +242,9 @@ void PostBiosInitialiser::PostBiosInit() {
         TaskHolder* pre_deployment_magnetometer_poller_task =
             InitPreDeploymentMagnetometerPoller();
 
+        FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
+        Lithium::GetInstance()->DoCommand(&fast_pa_command);
+
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
@@ -256,8 +260,17 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         Log_info0("Beacon started");
 
-        InitOrientationControl();
-        Log_info0("Orientation control started");
+        if (kRunMagnetorquersAtConstantPower) {
+            // Rather than start orientation control, just blast the
+            // magnetorquers
+            MagnetorquerControl::SetMagnetorquersPowerFraction(
+                kMagnetorquerPowerFractionX, kMagnetorquerPowerFractionY,
+                kMagnetorquerPowerFractionZ);
+            Log_info0("Magnetorquers set to constant power");
+        } else {
+            InitOrientationControl();
+            Log_info0("Orientation control started");
+        }
 
         InitSystemHealthCheck();
         Log_info0("System healthcheck started");
