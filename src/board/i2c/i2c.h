@@ -5,6 +5,7 @@
 #include <src/board/board.h>
 #include <src/util/data_types.h>
 #include <ti/drivers/I2C.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 
 class I2c {
    public:
@@ -88,6 +89,9 @@ class I2c {
 
     char GetBusLabel() const;
     static void InitBusses();
+
+    static GateMutexPri_Handle i2c_mutex;
+    static GateMutexPri_Params mutex_params;
 
    private:
     /**

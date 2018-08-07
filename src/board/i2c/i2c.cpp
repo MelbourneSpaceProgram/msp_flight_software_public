@@ -5,6 +5,7 @@
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
+#include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 #include <xdc/runtime/Log.h>
 
@@ -14,10 +15,19 @@ I2C_Params I2c::I2c_params[] = {{I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_100kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL}};
 
+GateMutexPri_Params I2c::mutex_params = {NULL};
+GateMutexPri_Handle I2c::i2c_mutex = NULL;
+
 void I2c::InitBusses() {
     if (!i2c_available) {
         Log_info0("I2C has been disabled in unit_tests.cpp");
         return;
+    }
+
+    GateMutexPri_Params_init(&mutex_params);
+    i2c_mutex = GateMutexPri_create(&mutex_params, NULL);
+    if (i2c_mutex == NULL) {
+        throw etl::exception("Failed to create mutex.", __FILE__, __LINE__);
     }
 
     // Ensure the multiplexer is power cycled to clear it out of any error
@@ -92,6 +102,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     i2c_transaction.readCount = read_buffer_length;
     i2c_transaction.arg = i2c_mailbox;
 
+    IArg key = GateMutexPri_enter(i2c_mutex);
     I2C_transfer(handle, &i2c_transaction);
 
     // Wait for callback to post the status of the I2C or timeout
@@ -120,9 +131,11 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
     if (transfer_outcome == false) {
         I2C_cancel(handle);
+        GateMutexPri_leave(i2c_mutex, key);
         return false;
     }
 
+    GateMutexPri_leave(i2c_mutex, key);
     return true;
 }
 
@@ -170,7 +183,11 @@ void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
         Mailbox_Handle mailbox_handle =
             static_cast<Mailbox_Handle>(i2c_transaction->arg);
         bool transfer_outcome = success;
-        Mailbox_post(mailbox_handle, &transfer_outcome, 0);
+        if (mailbox_handle != NULL) {
+            Mailbox_post(mailbox_handle, &transfer_outcome, 0);
+        } else {
+            Log_warning0("Mailbox handle couldn't be casted");
+        }
     }
 }
 
