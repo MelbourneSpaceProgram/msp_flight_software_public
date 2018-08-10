@@ -300,15 +300,15 @@ def testLoop(debug_serial_port, logger, mc):
                         struct.unpack('>d',
                                       mc.get("Simulation_TLE_Argument_Perigee"))[0]
                 else:
-                    # TODO (rskew) use better default values
-                    tle.mean_motion = 0
-                    tle.mean_anomaly = 0
-                    tle.inclination = 0
-                    tle.raan = 0
-                    tle.bstar_drag = 0
-                    tle.epoch = 0
-                    tle.eccentricity_1e7 = 0
-                    tle.argument_of_perigee = 0
+                    # same TLE values as used in src/adcs/tests/sgp4_tests.cpp
+                    tle.epoch = 00179.78495062
+                    tle.mean_motion = 10.824191574
+                    tle.eccentricity_1e7 = 1859667
+                    tle.inclination = 34.2682
+                    tle.raan = 348.7242
+                    tle.argument_of_perigee = 331.7664
+                    tle.mean_anomaly = 19.3264
+                    tle.bstar_drag = 0.000028098
 
                 logger.info("Sending message: " + str(tle))
                 serialised_message = tle.SerializeToString()
