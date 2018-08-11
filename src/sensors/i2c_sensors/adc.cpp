@@ -44,10 +44,12 @@ bool Adc::SetConfiguration() {
          << kAdcLatchingComparatorBitShift) +
         (static_cast<byte>(comparator_queue) << kAdcComparatorQueueBitShift);
 
-    if (PerformWriteTransaction(address, package, 3)) {
+    if (!PerformWriteTransaction(address, package, 3)) {
         SetFailed(true);
         return false;
     }
+    
+    return true;
 }
 
 bool Adc::ReadConversionRegister(etl::array<byte, 2>& read_buffer) {
