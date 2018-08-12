@@ -9,7 +9,9 @@ AdcsStateMachine::AdcsStateMachine(
     StateManager* state_manager, PowerStateMachine* power_state_machine,
     TleStateMachine* tle_state_machine,
     DetumbledStateMachine* detumbled_state_machine)
-    : SystemStateMachine(state_manager, kAdcsOff),
+    // Boot into detumble mode
+    // TODO (rskew) verify states and state changes at boot
+    : SystemStateMachine(state_manager, kAdcsDetumbling),
       power_state_machine(power_state_machine),
       tle_state_machine(tle_state_machine),
       detumbled_state_machine(detumbled_state_machine) {}
