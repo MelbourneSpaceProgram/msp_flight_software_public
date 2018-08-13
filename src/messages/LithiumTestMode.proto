@@ -1,0 +1,3 @@
+message LithiumTestMode {
+   required fixed64 test_mode_id = 1;
+}
