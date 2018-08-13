@@ -41,6 +41,16 @@ void Bms::SetConfiguration() {
     package[2] = Bms::kJeitaT1ConfiqurationUBValue;
     PerformWriteTransaction(address, package, 3);
 
+    package[0] = Bms::kVChargeJeita5to6RegisterLocation;
+    package[1] = Bms::kVChargeJeita5to6ConfigurationLBValue;
+    package[2] = Bms::kVChargeJeita5to6ConfigurationUBValue;
+    PerformWriteTransaction(address, package, 3);
+
+    package[0] = Bms::kVChargeJeita2to4RegisterLocation;
+    package[1] = Bms::kVChargeJeita2to4ConfigurationLBValue;
+    package[2] = Bms::kVChargeJeita2to4ConfigurationUBValue;
+    PerformWriteTransaction(address, package, 3);
+
     package[0] = Bms::kIChargeJeita5to6RegisterLocation;
     package[1] = Bms::kIChargeJeita5to6ConfigurationLBValue;
     package[2] = Bms::kIChargeJeita5to6ConfigurationUBValue;
