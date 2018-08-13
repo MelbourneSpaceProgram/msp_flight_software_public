@@ -90,10 +90,11 @@ class Bms : public I2cDevice {
     static const byte kVChargeJeita5to6RegisterLocation = 0x25;
     static const byte kVChargeJeita2to4RegisterLocation = 0x26;
     static const byte kIChargeJeita5to6RegisterLocation = 0x27;
-    static const byte kIChargeJeita5to6ConfigurationValue = 0xE7;
+    static const byte kIChargeJeita5to6ConfigurationLBValue = 0xFF;
+    static const byte kIChargeJeita5to6ConfigurationUBValue = 0x03;
     static const byte kIChargeJeita2to4RegisterLocation = 0x28;
-    static const byte kIChargeJeita2to4ConfigurationLBValue = 0xE7;
-    static const byte kIChargeJeita2to4ConfigurationUBValue = 0x1C;
+    static const byte kIChargeJeita2to4ConfigurationLBValue = 0xFF;
+    static const byte kIChargeJeita2to4ConfigurationUBValue = 0x7F;
     static const double kVchargeDivisionFactor = 80.0;
     static const double kVchargeAdditionFactor = 3.4125;
     static const double kIchargeAdditionFactor = 1.0;
