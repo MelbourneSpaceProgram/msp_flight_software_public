@@ -6,6 +6,7 @@ import sys
 import datetime
 import serial.tools.list_ports
 import MagnetometerReading_pb2
+import PwmOutputReading_pb2
 import SensorReading_pb2
 import StateMachineStateReading_pb2
 import TorqueOutputReading_pb2
@@ -222,6 +223,20 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>d',torque_output_reading.y))
                 mc.set("Simulation_Torque_Z",
                        struct.pack('>d',torque_output_reading.z))
+
+
+            elif message_code == \
+                message_codes["pwm_output_reading_code"]:
+
+                pwm_output_reading = PwmOutputReading_pb2.PwmOutputReading()
+                pwm_output_reading.ParseFromString(payload)
+                logger.info("Received message data: " + str(pwm_output_reading))
+                mc.set("Satellite_PWM_X",
+                       struct.pack('>d',pwm_output_reading.x))
+                mc.set("Satellite_PWM_Y",
+                       struct.pack('>d',pwm_output_reading.y))
+                mc.set("Satellite_PWM_Z",
+                       struct.pack('>d',pwm_output_reading.z))
 
 
             elif message_code == \

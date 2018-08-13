@@ -119,23 +119,17 @@ void RunnableOrientationControl::ControlOrientation() {
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
 
         // Run controller
-        double torque_output_data[3][1];
-        Matrix torque_output(torque_output_data);
-        BDotController::Control(geomag, b_dot_estimate, torque_output);
+        double pwm_output_data[3][1];
+        Matrix pwm_output(pwm_output_data);
+        BDotController::Control(geomag, b_dot_estimate, pwm_output);
 
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]
 
-        //
-        // TODO(crozone):
-        //
-        // Verify that torque_boost here is correct for driver input range.
-        float torque_boost = 100.0f;
-
         MagnetorquerControl::SetMagnetorquersPowerFraction(
-            torque_output.Get(0, 0) * torque_boost,
-            torque_output.Get(1, 0) * torque_boost,
-            torque_output.Get(2, 0) * torque_boost);
+            pwm_output.Get(0, 0),
+            pwm_output.Get(1, 0),
+            pwm_output.Get(2, 0));
 
         if (tcom_board_available) {
             if (location_estimator.CheckForUpdatedTle()) {
