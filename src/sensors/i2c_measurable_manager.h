@@ -105,6 +105,7 @@ class I2cMeasurableManager {
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
         MeasurableId id, Bms *temp_sensor);
+    void AddBmsReadingsMeasurable(MeasurableId id, Bms *bms);
     void AddImuGyrometerMeasurable(MeasurableId id,
                                    MPU9250MotionTracker *imu_sensor);
     void AddImuAcceleromterMeasurable(MeasurableId id,

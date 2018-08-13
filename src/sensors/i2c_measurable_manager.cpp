@@ -1,6 +1,7 @@
 #include <src/board/i2c/bms/bms.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/adc.h>
+#include <src/sensors/i2c_sensors/measurables/bms_readings_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/current_measurable.h>
@@ -118,6 +119,8 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     AddTemperature(kPowerTemp2, power_temp_2);
     AddBmsDieTempMeasurable(kPowerBmsDieTemp1, bms_bus_d);
     AddBmsDieTempMeasurable(kPowerBmsDieTemp2, bms_bus_c);
+    AddBmsReadingsMeasurable(kPowerBmsReadings1, bms_bus_d);
+    AddBmsReadingsMeasurable(kPowerBmsReadings2, bms_bus_c);
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -305,6 +308,12 @@ void I2cMeasurableManager::AddTemperature(MeasurableId id,
 void I2cMeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsDieTemperatureMeasurable *temp = new BmsDieTemperatureMeasurable(bms);
+    measurables[id] = temp;
+}
+
+void I2cMeasurableManager::AddBmsReadingsMeasurable(MeasurableId id, Bms *bms) {
+    CheckValidId(id);
+    BmsReadingsMeasurable *temp = new BmsReadingsMeasurable(bms);
     measurables[id] = temp;
 }
 

@@ -20,6 +20,8 @@ enum MeasurableId {
     kPowerBoostInCurrent2,
     kPowerTemp1,
     kPowerTemp2,
+    kPowerBmsReadings1,
+    kPowerBmsReadings2,
     kPowerBmsDieTemp1,
     kPowerBmsDieTemp2,
     kPowerBmsBatteryTemp1,

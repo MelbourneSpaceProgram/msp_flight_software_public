@@ -1,0 +1,22 @@
+message BmsReadings {
+	required double battery_voltage = 1;
+	required double battery_current = 2;
+	required double system_voltage = 3;
+	required double input_voltage = 4;
+	required double input_current = 5;
+	required double die_temperature = 6;
+	required double battery_temperature = 7;
+	required uint32 jeita_region = 8;
+	required uint32 system_status = 9;
+	required uint32 charger_state = 10;
+	required uint32 charge_indicator = 11;
+	required double recharge_threshold  = 12;
+	required uint32 charger_config = 13;
+	required uint32 c_x_threshold = 14;
+	required uint32 v_charge_setting = 15;
+	required uint32 i_charge_target = 16;
+	required uint32 configuration = 17;
+	required uint32 q_count = 18;
+	required uint32 q_count_scale_factor = 19;
+	required bool telemetry_valid = 20;
+}

@@ -25,7 +25,7 @@ TEST(Bms, TestBms) {
 
     CHECK_EQUAL(Bms::kUVCLRegisterValue,
                 bms.GetConfiguration(0x16, read_buffer));
-    CHECK_EQUAL(Bms::kVChargeRegisterValue,
+    CHECK_EQUAL(Bms::kVChargeSettingRegisterValue,
                 bms.GetConfiguration(0x1B, read_buffer));
     CHECK_EQUAL(Bms::kIChargeRegisterValue,
                 bms.GetConfiguration(0x1A, read_buffer));

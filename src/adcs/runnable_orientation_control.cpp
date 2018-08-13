@@ -96,6 +96,7 @@ void RunnableOrientationControl::ControlOrientation() {
 
         // Read Magnetometer
         // TODO (rskew) fuse readings from both magnetometers giving redundancy
+        // TODO(rskew) handle exception from magnetometer overflow
         MagnetometerReading magnetometer_reading =
             measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
                 kFsImuMagnetometer2, 0);
