@@ -5,5 +5,5 @@ BmsDieTemperatureMeasurable::BmsDieTemperatureMeasurable(Bms* temp_sensor)
 
 double BmsDieTemperatureMeasurable::TakeDirectI2cReading() {
     Bms* temp_sensor = static_cast<Bms*>(I2cMeasurable::sensor);
-    return temp_sensor->TakeI2cDieTempReading();
+    return temp_sensor->GetDieTemp();
 }

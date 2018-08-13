@@ -2,6 +2,7 @@
 #define SRC_BOARD_I2C_BMS_BMS_H_
 
 #include <external/etl/array.h>
+#include <src/messages/BmsReadings.pb.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/data_types.h>
 #include <string>
@@ -23,7 +24,23 @@ class Bms : public I2cDevice {
         kError
     };
 
+    enum ChargerStates {
+        kBigShortFault = 0x0001,
+        kBatMissingFault = 0x0002,
+        kMaxChargeTimeFault = 0x0004,
+        kCOverXTerm = 0x0008,
+        kTimerTerm = 0x0010,
+        KNtcPause = 0x0020,
+        kCcCvCharge = 0x0040,
+        kPrecharge = 0x0080,
+        kChargerSuspended = 0x0100,
+        kAbsorbCharge = 0x0200,
+        kEqualizeCharge = 0x0400
+    };
+
     enum SystemStatus { kChargeEnable, kChargeDisable, kOther };
+
+    // TODO(hugorilla): implement this (if needed)
     uint16_t GetNTCRatio(byte register_location,
                          etl::array<byte, 2>& read_buffer);
 
@@ -32,20 +49,54 @@ class Bms : public I2cDevice {
     void SelectRegister(byte register_address);
     void ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
 
-    Bms::ChargeStatus GetChargeStatus(etl::array<byte, 2>& read_buffer);
+    BmsReadings GetBmsReadings();
+
+    double GetBatteryVoltage();
+    double ConvertToBatteryVoltage(etl::array<byte, 2>& read_buffer);
+    double GetBatteryCurrent();
+    double ConvertToBatteryCurrent(etl::array<byte, 2>& read_buffer);
+    double GetSystemVoltage();
+    double ConvertToSystemVoltage(etl::array<byte, 2>& read_buffer);
+    double GetInputVoltage();
+    double ConvertToInputVoltage(etl::array<byte, 2>& read_buffer);
+    double GetInputCurrent();
+    double ConvertToInputCurrent(etl::array<byte, 2>& read_buffer);
+    double GetDieTemp();
+    double ConvertToDieTemperature(etl::array<byte, 2>& read_buffer);
+    double GetBatteryTemp();
+    double ConvertToBatteryTemperature(etl::array<byte, 2>& read_buffer);
+    uint16_t GetJeitaRegion();
+    uint16_t ConvertToJeitaRegion(etl::array<byte, 2>& read_buffer);
     Bms::SystemStatus GetSystemStatus(etl::array<byte, 2>& read_buffer);
+    Bms::ChargerStates GetChargerState();
+    Bms::ChargerStates ConvertToChargerState(etl::array<byte, 2>& read_buffer);
+    Bms::ChargeStatus GetChargeStatus(etl::array<byte, 2>& read_buffer);
+    double GetRechargeThreshold();
+    double ConvertToRechargeThreshold(etl::array<byte, 2>& read_buffer);
+    uint16_t GetChargerConfig();
+    uint16_t ConvertToChargerConfig(etl::array<byte, 2>& read_buffer);
+    uint16_t GetCXThreshold();
+    uint16_t ConvertToCXThreshold(etl::array<byte, 2>& read_buffer);
+    uint16_t GetChargeVoltageSetting();
+    uint16_t ConvertToChargeVoltageSetting(etl::array<byte, 2>& read_buffer);
+    uint16_t GetChargeCurrentTarget();
+    uint16_t ConvertToChargeCurrentTarget(etl::array<byte, 2>& read_buffer);
+    uint16_t GetConfiguration();
+    uint16_t GetQCount();
+    uint16_t ConvertToQCount(etl::array<byte, 2>& read_buffer);
+    uint16_t GetQCountPrescaleFactor();
+    uint16_t ConvertToQCountPrescaleFactor(etl::array<byte, 2>& read_buffer);
     bool GetTelemetryValid(etl::array<byte, 2>& read_buffer);
-    double TakeI2cDieTempReading();
-    double ConvertToDieTemperature(etl::array<byte, 2> read_buffer);
-    double TakeI2cBatteryTempReading();
-    double ConvertToBatteryTemperature(etl::array<byte, 2> read_buffer);
+
     uint16_t GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer);
     double GetVChargeDEC(etl::array<byte, 2>& read_buffer);
     double GetIChargeDEC(etl::array<byte, 2>& read_buffer);
 
     static const byte kUVCLRegisterValue = 0x8D;
-    static const byte kVChargeRegisterValue = 0x0F;
+    static const byte kVChargeSettingRegisterValue = 0x0F;
     static const byte kIChargeRegisterValue = 0x07;
+
+    // TODO(hugorilla): Check these values against the data sheet
     static const byte kReChargeThresholdLRegisterValue = 0x0C;
     static const byte kReChargeThresholdURegisterValue = 0x43;
 
@@ -58,11 +109,15 @@ class Bms : public I2cDevice {
     static const uint16_t kChargeStatusBitMask = 0x000F;
     static const uint16_t kChargeStatusNotCharging = 0x0000;
     static const uint16_t kChargeEnableBitMask = 0x2000;
+    static const uint16_t kJeitaRegionBitMask = 0x0007;
+    static const uint16_t kChargerConfigBitMask = 0x0007;
+    static const uint16_t kChargeVoltageSettingBitMask = 0x001F;
+    static const uint16_t kChargeCurrentTargetBitMask = 0x000F;
 
     static const byte kEmptybuffervalue = 0x00;
     static const byte kUVCLRegisterLocation = 0x16;
-    static const byte kVChargeRegisterLocation = 0x1B;
-    static const byte kIChargeRegisterLocation = 0x1A;
+    static const byte kVChargeSettingRegisterLocation = 0x1B;
+    static const byte kIChargeTargetRegisterLocation = 0x1A;
     static const byte kVChargeDACRegisterLocation = 0x45;
     static const byte kIChargeDACRegisterLocation = 0x44;
     static const byte kReChargeThresholdRegisterLocation = 0x2E;
@@ -79,7 +134,10 @@ class Bms : public I2cDevice {
     // CHARGING TERMINATION
     static const byte kMaxCVTimeRegisterLocation = 0x1D;
     static const byte kMaxCVTimeRegisterValue = 0x00;
+
+    // check this register value
     static const byte kCXJeitaEnableRegisterLocation = 0x29;
+
     static const byte kCXJeitaEnableRegisterValue = 0x05;
     static const byte kCXThresholdRegisterLocation = 0x1C;
     static const byte kCXThresholdRegisterValue = 0x88;
@@ -105,12 +163,14 @@ class Bms : public I2cDevice {
     static const double kIchargeMultiplicationFactor = 0.125;
 
     //%COULOMB Counting
-    static const byte kCoulomConfigRegisterLocation = 0x14;
-    static const byte kCoulomConfigRegisterValue = 0x14;
-    static const byte kQCountInitialRegisterLocation = 0x13;
-    static const byte kQCountInitialRegisterValue = 0x00;
-    static const byte kPrescaleFactorRegisterLocation = 0x12;
-    static const byte kPrescaleFactorRegisterValue = 0x03;
+    // TODO(hugorilla): update kCoulumbConfigRegisterLocation - it's just the
+    // config registser, so this could get confusing
+    static const byte kCoulombConfigRegisterLocation = 0x14;
+    static const byte kCoulombConfigRegisterInitialValue = 0x14;
+    static const byte kQCountRegisterLocation = 0x13;
+    static const byte kQCountRegisterInitialValue = 0x00;
+    static const byte kQCountPrescaleFactorRegisterLocation = 0x12;
+    static const byte kQCountPrescaleFactorRegisterInitialValue = 0x03;
 
     static const byte kDieTempRegister = 0x3F;
     static const uint16_t kDieTempOffset = 12010;
@@ -124,6 +184,24 @@ class Bms : public I2cDevice {
     static const double kConversionCoefficientB = 0.00026265;
     static const double kConversionCoefficientC = 0.00000011875;
     static const double kKelvinToCelciusOffset = 273.15;
+
+    // HUGO'S CONSTANTS (should probably be renamed by someone who knows BMS
+    // terminology better!)
+    static const byte kChargerStateRegisterLocation = 0x34;
+    static const byte kChargerConfigRegisterLocation = 0x29;
+    static const byte kConfigurationBitsRegisterLocation = 0x14;
+
+    static const double kRSnsbResistance = 0.033;
+    static const double kRSnsiResistance = 0.002;
+
+    static const double kLithiumBatteryVoltageConversionFactor = 0.000192264;
+    static const double kBatteryCurrentConversionFactor =
+        0.00000146487 / kRSnsbResistance;
+    static const double kSystemVoltageConversionFactor = 0.001648;
+    static const double kInputVoltageConversionFactor = 0.001648;
+    static const double kInputCurrentConversionFactor =
+        0.00000146487 / kRSnsbResistance;
+    static const double kRechargeThresholdConversionFactor = 0.000192264;
 };
 
 #endif  // SRC_BOARD_I2C_BMS_BMS_H_

@@ -6,5 +6,5 @@ BmsBatteryTemperatureMeasurable::BmsBatteryTemperatureMeasurable(
 
 double BmsBatteryTemperatureMeasurable::TakeDirectI2cReading() {
     Bms* temp_sensor = static_cast<Bms*>(I2cMeasurable::sensor);
-    return temp_sensor->TakeI2cBatteryTempReading();
+    return temp_sensor->GetBatteryTemp();
 }
