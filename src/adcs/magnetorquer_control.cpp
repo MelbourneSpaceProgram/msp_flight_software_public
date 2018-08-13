@@ -6,7 +6,7 @@
 #include <ti/drivers/PWM.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
-#include <src/messages/TorqueOutputReading.pb.h>
+#include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
@@ -85,15 +85,15 @@ void MagnetorquerControl::InitializePwm() {
 
 void MagnetorquerControl::PushDebugMessage(float x, float y, float z) {
     // Send torque output to simulation.
-    TorqueOutputReading torque_output_reading = TorqueOutputReading_init_zero;
+    PwmOutputReading pwm_output_reading = PwmOutputReading_init_zero;
 
-    torque_output_reading.x = x;
-    torque_output_reading.y = y;
-    torque_output_reading.z = z;
+    pwm_output_reading.x = x;
+    pwm_output_reading.y = y;
+    pwm_output_reading.z = z;
 
     RunnableDataDashboard::TransmitMessage(
-        kTorqueOutputReadingCode, TorqueOutputReading_size,
-        TorqueOutputReading_fields, &torque_output_reading);
+        kPwmOutputReadingCode, PwmOutputReading_size,
+        PwmOutputReading_fields, &pwm_output_reading);
 }
 
 void MagnetorquerControl::SetPolarity(MagnetorquerAxis axis, bool positive) {
