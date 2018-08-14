@@ -1,5 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/board/board.h>
+#include <src/config/satellite.h>
 #include <src/messages/serialised_message.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/fast_pa_command.h>
@@ -14,9 +15,6 @@
 #include <src/util/data_types.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Clock.h>
-#include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
 
 Lithium* Lithium::instance = NULL;
@@ -63,9 +61,16 @@ Lithium::Lithium()
                          __LINE__);
         throw e;
     }
+
+    SetTransmitEnabled(!kLithiumTransmitOnlyWhenGroundCommanded);
+
+    FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
+    DoCommand(&fast_pa_command);
 }
 
 bool Lithium::DoCommand(LithiumCommand* command) const {
+    // TODO(akremor): The location of this conditional isn't accurate given its
+    // naming
     if (!lithium_transmit_enabled) {
         Log_info0("Attempted to transmit, but transmit disabled");
         return false;

@@ -241,9 +241,6 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitPreDeploymentMagnetometerPoller();
 
-        FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
-        Lithium::GetInstance()->DoCommand(&fast_pa_command);
-
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
         // similar, we don't want the timers to be operating each time
