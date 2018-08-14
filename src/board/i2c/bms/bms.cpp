@@ -158,6 +158,7 @@ BmsReadings Bms::GetBmsReadings() {
     bms_readings.q_count_scale_factor = GetQCountPrescaleFactor();
     // TODO(hugorilla) Update this method
     bms_readings.telemetry_valid = GetTelemetryValid(read_buffer);
+    return bms_readings;
 }
 
 double Bms::GetBatteryVoltage() {

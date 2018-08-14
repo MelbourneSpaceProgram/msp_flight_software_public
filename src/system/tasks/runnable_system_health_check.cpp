@@ -106,6 +106,10 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                                           &NanopbUtils::NanopbVoltage);
         LogToUart(double, VoltageReading)(kEps5VRail2,
                                           &NanopbUtils::NanopbVoltage);
+        LogToUart(BmsReadings, BmsReadings)(kPowerBmsReadings1,
+                                            &NanopbUtils::NanopbBms);
+        LogToUart(BmsReadings, BmsReadings)(kPowerBmsReadings2,
+                                            &NanopbUtils::NanopbBms);
 
         // Flight Systems
         LogToUart(double, CurrentReading)(kFsTorquerCurrentX,
