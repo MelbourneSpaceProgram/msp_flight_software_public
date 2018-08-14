@@ -2,7 +2,7 @@
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <src/util/matrix.h>
 #include <src/util/physical_constants.h>
-#include <src/adcs/magnetorquer_driver>
+#include <src/adcs/magnetorquer_driver.h>
 
 void BDotController::Control(const Matrix &b, const Matrix &b_dot,
                              Matrix &pwm_output) {
