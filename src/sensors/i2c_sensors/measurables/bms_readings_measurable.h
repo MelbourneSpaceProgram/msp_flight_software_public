@@ -14,4 +14,4 @@ class BmsReadingsMeasurable : public I2cMeasurable<BmsReadings> {
     static const BmsReadings kFailedBmsReadings;
 };
 
-#endif // I2C_SENSORS_MEASURABLES_BMS_READINGS_MEASURABLE_H_
+#endif  // I2C_SENSORS_MEASURABLES_BMS_READINGS_MEASURABLE_H_
