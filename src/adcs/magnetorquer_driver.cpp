@@ -1,6 +1,6 @@
 #include <external/etl/exception.h>
 #include <math.h>
-#include <src/adcs/magnetorquer_control.h>
+#include <src/adcs/magnetorquer_driver.h>
 #include <src/board/board.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/PWM.h>

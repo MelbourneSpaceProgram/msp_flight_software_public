@@ -1,4 +1,4 @@
-#include <src/adcs/magnetorquer_control.h>
+#include <src/adcs/magnetorquer_driver.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>

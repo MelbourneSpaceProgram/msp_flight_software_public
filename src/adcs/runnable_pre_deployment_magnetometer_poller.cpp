@@ -1,5 +1,5 @@
 #include <external/nanopb/pb_decode.h>
-#include <src/adcs/magnetorquer_control.h>
+#include <src/adcs/magnetorquer_driver.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>

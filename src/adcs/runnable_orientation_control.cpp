@@ -1,7 +1,7 @@
 #include <external/nanopb/pb_decode.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
-#include <src/adcs/magnetorquer_control.h>
+#include <src/adcs/magnetorquer_driver.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>

@@ -2,6 +2,7 @@
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <src/util/matrix.h>
 #include <src/util/physical_constants.h>
+#include <src/adcs/magnetorquer_driver>
 
 void BDotController::Control(const Matrix &b, const Matrix &b_dot,
                              Matrix &pwm_output) {
@@ -18,4 +19,10 @@ void BDotController::Control(const Matrix &b, const Matrix &b_dot,
         pwm_output.Set(
             i, 0, -(static_cast<double>(sign)));
     }
+    MagnetorquerControl::SetMagnetorquersPowerFraction(
+                                                        pwm_output.Get(0,0)
+                                                       ,pwm_output.Get(1,0)
+                                                       ,pwm_output.Get(2,0));
+
+
 }
