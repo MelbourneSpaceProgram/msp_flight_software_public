@@ -5,6 +5,7 @@
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
 #include <src/messages/AccelerometerReading.pb.h>
+#include <src/messages/BmsReadings.pb.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
@@ -57,6 +58,7 @@ class NanopbUtils {
     static AccelerometerReading NanopbAccelerometer(AccelerometerReading accel,
                                                     Time time);
     static GyroscopeReading NanopbGyroscope(GyroscopeReading gyro, Time time);
+    static BmsReadings NanopbBms(BmsReadings bms, Time time);
     // TODO(dingbenjamin): Decide whether to return nanopb values directly from
     // measurables
     static MagnetometerReading NanopbMagnetometer(MagnetometerReading mag,

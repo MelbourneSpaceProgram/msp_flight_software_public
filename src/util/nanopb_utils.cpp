@@ -36,3 +36,9 @@ MagnetometerReading NanopbUtils::NanopbMagnetometer(MagnetometerReading mag,
     mag.timestamp_millis_unix_epoch = time.timestamp_millis_unix_epoch;
     return mag;
 }
+
+BmsReadings NanopbUtils::NanopbBms(BmsReadings bms, Time time) {
+    // TODO(akremor): Check if we want to add time to the BMS reading
+    // bms.timestamp_millis_unix_epoch = time.timestamp_millis_unix_epoch;
+    return bms;
+}
