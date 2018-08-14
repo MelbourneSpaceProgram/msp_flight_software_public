@@ -1,6 +1,7 @@
 #include <src/board/i2c/bms/bms.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/adc.h>
+#include <src/sensors/i2c_sensors/mcp9808.h>
 #include <src/sensors/i2c_sensors/measurables/bms_readings_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
@@ -15,7 +16,6 @@
 #include <src/sensors/measurable_id.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_manager.h>
-#include <src/sensors/i2c_sensors/mcp9808.hpp>
 
 I2cMeasurableManager *I2cMeasurableManager::instance = NULL;
 

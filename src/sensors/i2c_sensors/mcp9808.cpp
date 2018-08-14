@@ -1,6 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
-#include <src/sensors/i2c_sensors/mcp9808.hpp>
+#include <src/sensors/i2c_sensors/mcp9808.h>
 #include <string>
 
 const int MCP9808::TEMP_REGISTER = 0x05;

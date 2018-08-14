@@ -1,5 +1,4 @@
 #include <src/config/satellite.h>
-#include <src/sensors/i2c_measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/msp_payloads/beacon_payload.h>
@@ -15,7 +14,6 @@ fnptr RunnableBeacon::GetRunnablePointer() { return &Beacon; }
 
 void RunnableBeacon::Beacon() {
     Lithium *lithium = Lithium::GetInstance();
-    I2cMeasurableManager *manager = I2cMeasurableManager::GetInstance();
     uint8_t tx_count = 0;
 
     while (1) {
