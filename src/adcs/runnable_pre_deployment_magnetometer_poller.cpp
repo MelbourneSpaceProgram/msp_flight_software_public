@@ -10,6 +10,7 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/Log.h>
 
 Semaphore_Handle RunnablePreDeploymentMagnetometerPoller::
     kill_task_on_orientation_control_begin_semaphore;
@@ -45,14 +46,16 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
         // multiple tasks controlling the magnetorquers.
         // Semaphore_pend returns false when it times out and true
         // when the semaphore is set.
-        bool orientation_control_begin = Semaphore_pend(
+        bool orientation_control_has_begun = Semaphore_pend(
             kill_task_on_orientation_control_begin_semaphore, BIOS_NO_WAIT);
-        if (orientation_control_begin) {
+        if (orientation_control_has_begun) {
+            Log_info0("Exiting pre-deployment magnetometer poller.");
             Task_exit();
         }
 
-        // Poll magnetometer, which internally writes new readings
-        // to a persistant buffer backed by a file on the SD card.
+        // Poll magnetometers, which internally write new readings
+        // to persistant buffers backed by files on the SD card
+        // for the sake of calibration
         measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
             kFsImuMagnetometer1, 0);
         measurable_manager->ReadI2cMeasurable<MagnetometerReading>(

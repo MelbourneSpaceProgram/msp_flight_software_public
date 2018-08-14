@@ -21,7 +21,7 @@ class PostBiosInitialiser : public Runnable {
     static void InitDataDashboard();
     static void InitOrientationControl();
     static void InitSystemHealthCheck();
-    static TaskHolder* InitPreDeploymentMagnetometerPoller();
+    static void InitPreDeploymentMagnetometerPoller();
     static void InitBeacon();
     static void RunUnitTests();
     static void InitHardware();

@@ -139,7 +139,7 @@ void PostBiosInitialiser::InitOrientationControl() {
     orientation_control_task->Start();
 }
 
-TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
+void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
     RunnablePreDeploymentMagnetometerPoller::
         SetupKillTaskOnOrientationControlBeginSemaphore();
     // TODO(rskew) review priority
@@ -148,8 +148,8 @@ TaskHolder* PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
         1024, "PreDeploymentMagnetometerPoller", 5,
         new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Start();
-    return pre_deployment_magnetometer_poller_task;
 }
+
 void PostBiosInitialiser::InitSystemHealthCheck() {
     TaskHolder* system_health_check_task = new TaskHolder(
         4096, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
@@ -239,8 +239,7 @@ void PostBiosInitialiser::PostBiosInit() {
             InitDataDashboard();
         }
 
-        TaskHolder* pre_deployment_magnetometer_poller_task =
-            InitPreDeploymentMagnetometerPoller();
+        InitPreDeploymentMagnetometerPoller();
 
         FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
         Lithium::GetInstance()->DoCommand(&fast_pa_command);
@@ -276,12 +275,6 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("System healthcheck started");
 
         Log_info0("System start up complete");
-        // TODO(rskew): Ensure all relevant resources are deleted by the pre-mag
-        // task before we delete taskholder We may not want to enable this as it
-        // makes memory verification harder. If we only ever alloc once and
-        // never dealloc it can be easier to determine if we do or do not have
-        // sufficient run-time memory.
-        // pre_deployment_magnetometer_poller_task->~TaskHolder();
 #endif
     } catch (etl::exception& e) {
         System_printf("EXCEPTION OCCURRED\n");
