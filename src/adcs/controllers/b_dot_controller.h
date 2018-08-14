@@ -5,8 +5,8 @@ class Matrix;
 
 class BDotController {
    public:
-    static void Control(const Matrix &b, const Matrix &b_dot,
-                        Matrix &torque_output);
+    static void ComputeControl(const Matrix &b, const Matrix &b_dot,
+                               Matrix &signed_pwm_output);
 };
 
 #endif  // SRC_ADCS_CONTROLLERS_B_DOT_CONTROLLER_H_

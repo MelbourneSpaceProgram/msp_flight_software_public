@@ -3,9 +3,9 @@
 #include <src/util/matrix.h>
 #include <src/util/physical_constants.h>
 
-void BDotController::Control(const Matrix &b, const Matrix &b_dot,
-                             Matrix &pwm_output) {
-    if (!b_dot.SameSize(b) || !b_dot.SameSize(pwm_output) ||
+void BDotController::ComputeControl(const Matrix &b, const Matrix &b_dot,
+                                    Matrix &signed_pwm_output) {
+    if (!b_dot.SameSize(b) || !b_dot.SameSize(signed_pwm_output) ||
         b_dot.GetNRows() != geomagnetic_field_vector_nrows ||
         b_dot.GetNColumns() != geomagnetic_field_vector_ncolumns) {
         etl::exception e("BDotController::Control arguments not 3x1", __FILE__,
@@ -14,8 +14,7 @@ void BDotController::Control(const Matrix &b, const Matrix &b_dot,
     }
     // Calculate the magnetic dipole to produce
     for (uint8_t i = 0; i < 3; i++) {
-        int sign = ((b_dot.Get(i, 0) > 0) - (b_dot.Get(i, 0) < 0));
-        pwm_output.Set(
-            i, 0, -(static_cast<double>(sign)));
+        int sign = ((b_dot.Get(i, 0) > 0) - (b_dot.Get(i, 0) <= 0));
+        signed_pwm_output.Set(i, 0, -(static_cast<double>(sign)));
     }
 }
