@@ -44,7 +44,7 @@ enum MagnetometerOutputBitSetting { k14BitOutput = 0, k16BitOutput = 1 };
 class MPU9250MotionTracker : public I2cDevice {
    public:
     MPU9250MotionTracker(
-        const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
+        const I2c* bus, uint8_t address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
     GyroscopeReading TakeGyroscopeReading();
     AccelerometerReading TakeAccelerometerReading();
@@ -87,6 +87,7 @@ class MPU9250MotionTracker : public I2cDevice {
     void ConfigureMagnetometer();
     void SelectMagnetometerRegister(byte magnetometer_register_address);
     void ReadMagnetometerAdjustmentValues();
+    etl::array<byte, 7> MPU9250MotionTracker::ReadSevenBytesFromMagnoRegister();
     MagnetometerOperationMode magnetometer_operation_mode;
     MagnetometerOutputBitSetting magnetometer_output_bit_setting;
     byte magno_x_adjust;
@@ -117,7 +118,9 @@ class MPU9250MotionTracker : public I2cDevice {
     static const double kTempSensitivity = 333.87;  // LSBs per degree Celsius
     static const byte kRoomTempOffset = 21;
 
+    // magnetometer constants
     static const byte kInternalMagnetometerAddress = 12;
+    static const byte kMagnetometerOverflowBitMask = 0x08;
 
     // register locations of the gyroscope and accelerometer configuration
     static const byte kGyroConfigRegister = 0x1b;

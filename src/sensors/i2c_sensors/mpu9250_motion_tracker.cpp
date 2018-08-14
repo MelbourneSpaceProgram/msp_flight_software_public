@@ -4,6 +4,7 @@
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
+#include <external/etl/exception.h>
 
 const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
     250, 500, 1000, 2000};
@@ -17,7 +18,7 @@ const byte MPU9250MotionTracker::kAccelerometerFullScaleRanges[4] = {2, 4, 8,
 const uint16_t MPU9250MotionTracker::kAccelerometerSensitivityScaleFactors[4] =
     {16384, 8192, 4096, 2048};
 
-MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, int address,
+MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
                                            const I2cMultiplexer* multiplexer,
                                            I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {
@@ -98,31 +99,31 @@ MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
     MagnetometerReading magnetometer_reading;
     SetBypassMode(kBypassModeEnable);
     SelectMagnetometerRegister(kExtMagnoXOutHigh);
-    byte magno_data[6];
-    bool magno_data_read = PerformReadTransaction(
-        kInternalMagnetometerAddress, magno_data, 6);
-    if (magno_data_read) {
-        etl::array<byte, 2> magno_x_reading_bytes, magno_y_reading_bytes,
-            magno_z_reading_bytes;
-        // data is stored in Little Endian format
-        magno_x_reading_bytes[0] = magno_data[1];
-        magno_x_reading_bytes[1] = magno_data[0];
-        magno_y_reading_bytes[0] = magno_data[3];
-        magno_y_reading_bytes[1] = magno_data[2];
-        magno_z_reading_bytes[0] = magno_data[5];
-        magno_z_reading_bytes[1] = magno_data[4];
-        // adjust the magnetometer readings
-        magnetometer_reading.x =
-            DecodeMagnoReadingToSI(magno_x_reading_bytes, magno_x_adjust);
-        magnetometer_reading.y =
-            DecodeMagnoReadingToSI(magno_y_reading_bytes, magno_y_adjust);
-        magnetometer_reading.z =
-            DecodeMagnoReadingToSI(magno_z_reading_bytes, magno_z_adjust);
-    } else {
-        etl::exception e("Unable to read from magnetometer", __FILE__,
-                         __LINE__);
+
+    etl::array<byte, 2> magno_x_reading_bytes, magno_y_reading_bytes,
+        magno_z_reading_bytes;
+    etl::array<byte, 7> magno_data = ReadSevenBytesFromMagnoRegister();
+
+    if(magno_data.at(6) & kMagnetometerOverflowBitMask) {
+        etl::exception e("Magnetometer overflow", __FILE__, __LINE__);
         throw e;
     }
+
+    // data is stored in Little Endian format
+    magno_x_reading_bytes[0] = magno_data[1];
+    magno_x_reading_bytes[1] = magno_data[0];
+    magno_y_reading_bytes[0] = magno_data[3];
+    magno_y_reading_bytes[1] = magno_data[2];
+    magno_z_reading_bytes[0] = magno_data[5];
+    magno_z_reading_bytes[1] = magno_data[4];
+
+    // adjust the magnetometer readings
+    magnetometer_reading.x =
+        DecodeMagnoReadingToSI(magno_x_reading_bytes, magno_x_adjust);
+    magnetometer_reading.y =
+        DecodeMagnoReadingToSI(magno_y_reading_bytes, magno_y_adjust);
+    magnetometer_reading.z =
+        DecodeMagnoReadingToSI(magno_z_reading_bytes, magno_z_adjust);
 
     SetBypassMode(kBypassModeDisable);
 
@@ -162,11 +163,26 @@ void MPU9250MotionTracker::SelectRegister(byte register_address) {
     PerformWriteTransaction(address, &register_address, 1);
 }
 
+etl::array<byte, 7> MPU9250MotionTracker::ReadSevenBytesFromMagnoRegister() {
+    byte i2c_buffer[7];
+    etl::array<byte, 7> read_buffer;
+    if (PerformReadTransaction(kInternalMagnetometerAddress, i2c_buffer, 7)) {
+        uint16_t i;
+        for (i = 0; i < 7; i++) {
+            read_buffer.at(i) = i2c_buffer[i];
+        }
+    } else {
+        etl::exception e("Unable to read from register", __FILE__, __LINE__);
+        throw e;
+    }
+    return read_buffer;
+}
+
 etl::array<byte, 6> MPU9250MotionTracker::ReadSixBytesFromCurrentRegister() {
     byte i2c_buffer[6];
     etl::array<byte, 6> read_buffer;
     if (PerformReadTransaction(address, i2c_buffer, 6)) {
-        int i;
+        uint16_t i;
         for (i = 0; i < 6; i++) {
             read_buffer[i] = i2c_buffer[i];
         }
@@ -181,7 +197,7 @@ etl::array<byte, 2> MPU9250MotionTracker::ReadTwoBytesFromCurrentRegister() {
     byte i2c_buffer[2];
     etl::array<byte, 2> read_buffer;
     if (PerformReadTransaction(address, i2c_buffer, 2)) {
-        int i;
+        uint16_t i;
         for (i = 0; i < 2; i++) {
             read_buffer[i] = i2c_buffer[i];
         }
@@ -299,7 +315,7 @@ void MPU9250MotionTracker::SetBypassMode(BypassMode bypass_mode) {
 void MPU9250MotionTracker::SelectMagnetometerRegister(
     byte magnetometer_register_address) {
     PerformWriteTransaction(kInternalMagnetometerAddress,
-                                 &magnetometer_register_address, 1);
+                            &magnetometer_register_address, 1);
 }
 
 void MPU9250MotionTracker::SetMagnetometerOperationMode(
