@@ -3,7 +3,7 @@
 
 #include <src/util/data_types.h>
 
-static const bool kLithiumTransmitOnlyWhenGroundCommanded = true;
+static const bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 static const uint32_t kNominalBeaconPeriodMs = 2000;   // In milliseconds
 static const uint8_t kNominalLithiumPowerLevel = 150;  // Scaled between 0-255
 
