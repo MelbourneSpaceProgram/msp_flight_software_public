@@ -1,8 +1,8 @@
 #ifndef SRC_SENSORS_I2C_SENSORS_I2C_DEVICE_H_
 #define SRC_SENSORS_I2C_SENSORS_I2C_DEVICE_H_
 
-#include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/board/i2c/i2c.h>
+#include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 
 class I2c;
 
@@ -22,10 +22,10 @@ class I2cDevice {
     bool PerformWriteTransaction(byte address, byte* write_buffer,
                                  uint16_t write_buffer_length) const;
     bool PerformReadTransaction(byte address, byte* write_buffer,
-                                 uint16_t write_buffer_length) const;
+                                uint16_t write_buffer_length) const;
     bool PerformTransaction(byte address, byte* read_buffer,
-                                 uint16_t read_buffer_length, byte* write_buffer,
-                                 uint16_t write_buffer_length) const;
+                            uint16_t read_buffer_length, byte* write_buffer,
+                            uint16_t write_buffer_length) const;
     const I2c* GetI2cBus() const;
 
    protected:
