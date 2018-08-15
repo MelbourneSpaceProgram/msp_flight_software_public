@@ -19,6 +19,7 @@ class PayloadProcessor {
         kTleUpdateCommand = 3,
         kForceResetCommand = 4,
         kLithiumBeaconPeriodCommand = 5,
+        kLithiumFastPaCommand = 7,
         kCommandsLength
     };
     static const byte kCommandCodeLength = 2;
