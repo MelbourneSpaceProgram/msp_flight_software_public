@@ -37,29 +37,34 @@ I2cMultiplexer::MuxChannel I2cDevice::GetMultiplexerChannel() const {
 }
 
 bool I2cDevice::PerformWriteTransaction(byte address, byte* write_buffer,
-                             uint16_t write_buffer_length) const{
-          bool success;
-          MuxSelect();
-          success = bus->PerformWriteTransaction(address, write_buffer, write_buffer_length);
-          MuxDeselect();
-          return success;
-;}
+                                        uint16_t write_buffer_length) const {
+    bool success;
+    MuxSelect();
+    success = bus->PerformWriteTransaction(address, write_buffer,
+                                           write_buffer_length);
+    MuxDeselect();
+    return success;
+    ;
+}
 
 bool I2cDevice::PerformReadTransaction(byte address, byte* write_buffer,
-                             uint16_t write_buffer_length) const{
-     bool success;
-     MuxSelect();
-     success = bus->PerformReadTransaction(address, write_buffer, write_buffer_length);
-     MuxDeselect();
-     return success;
+                                       uint16_t write_buffer_length) const {
+    bool success;
+    MuxSelect();
+    success =
+        bus->PerformReadTransaction(address, write_buffer, write_buffer_length);
+    MuxDeselect();
+    return success;
 }
 
 bool I2cDevice::PerformTransaction(byte address, byte* read_buffer,
-                             uint16_t read_buffer_length, byte* write_buffer,
-                             uint16_t write_buffer_length) const {
-     bool success;
-     MuxSelect();
-     success = bus->PerformTransaction(address, read_buffer, read_buffer_length, write_buffer, write_buffer_length);
-     MuxDeselect();
-     return success;
+                                   uint16_t read_buffer_length,
+                                   byte* write_buffer,
+                                   uint16_t write_buffer_length) const {
+    bool success;
+    MuxSelect();
+    success = bus->PerformTransaction(address, read_buffer, read_buffer_length,
+                                      write_buffer, write_buffer_length);
+    MuxDeselect();
+    return success;
 }
