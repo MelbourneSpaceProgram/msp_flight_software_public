@@ -23,8 +23,8 @@ static const bool eeprom_available =
             // the SD cards as they share the same bus
 static const bool i2c_available = true;
 static const bool sd_card_available = false;
-static const bool hil_available = false;
-static const bool bms_available = false;
+static const bool hil_available = true;
+static const bool bms_available = true;
 static const bool antenna_available = false;
 static const bool ditl_mode = false;
 

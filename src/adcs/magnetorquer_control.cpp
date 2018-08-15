@@ -2,12 +2,12 @@
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
-#include <ti/drivers/GPIO.h>
-#include <ti/drivers/PWM.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/PWM.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
@@ -92,8 +92,8 @@ void MagnetorquerControl::PushDebugMessage(float x, float y, float z) {
     pwm_output_reading.z = z;
 
     RunnableDataDashboard::TransmitMessage(
-        kPwmOutputReadingCode, PwmOutputReading_size,
-        PwmOutputReading_fields, &pwm_output_reading);
+        kPwmOutputReadingCode, PwmOutputReading_size, PwmOutputReading_fields,
+        &pwm_output_reading);
 }
 
 void MagnetorquerControl::SetPolarity(MagnetorquerAxis axis, bool positive) {
@@ -144,9 +144,13 @@ void MagnetorquerControl::Degauss() {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
         // Wait for timer
-        // TODO(rskew): It is possible for this to be null due to how the semaphore is initialised. I (akremor) have temporarily modded it so the code doesn't break but we need to revisit the creation of the semaphore. Perhaps dependency injection.
-        // There is a race condition because this check can be called before the semaphore has been initialised.
-        if (degaussing_timer_semaphore){
+        // TODO(rskew): It is possible for this to be null due to how the
+        // semaphore is initialised. I (akremor) have temporarily modded it so
+        // the code doesn't break but we need to revisit the creation of the
+        // semaphore. Perhaps dependency injection. There is a race condition
+        // because this check can be called before the semaphore has been
+        // initialised.
+        if (degaussing_timer_semaphore) {
             Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
             // Negative power
             SetMagnetorquersPowerFraction(-power, -power, -power);

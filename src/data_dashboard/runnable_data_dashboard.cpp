@@ -52,13 +52,13 @@ void RunnableDataDashboard::DataDashboard() {
         TransmitMessage(kMagnetorquerXCurrentReadingCode, SensorReading_size,
                         SensorReading_fields, &magnetorquer_x_current_reading);
 
-        StateMachineStateReading adcs_system_state_reading =
-            StateMachineStateReading_init_zero;
-        adcs_system_state_reading.state = (uint32_t)kAdcsNominal;
+        //StateMachineStateReading adcs_system_state_reading =
+        //    StateMachineStateReading_init_zero;
+        //adcs_system_state_reading.state = (int32_t)kAdcsNominal;
 
-        TransmitMessage(
-            kAdcsSystemStateReadingCode, StateMachineStateReading_size,
-            StateMachineStateReading_fields, &adcs_system_state_reading);
+        //TransmitMessage(
+        //    kAdcsSystemStateReadingCode, StateMachineStateReading_size,
+        //    StateMachineStateReading_fields, &adcs_system_state_reading);
 
         Task_sleep(100);
     }

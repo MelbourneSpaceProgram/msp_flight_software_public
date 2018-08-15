@@ -36,10 +36,16 @@ if __name__ == "__main__":
         #    struct.pack('>d',3))
 
         if mc.get("Simulation_Magnetometer_X"):
-            print("Magnetometer data being fed in:")
+            print("Magnetometer data being fed in from the simulation:")
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_X"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0])
+
+        if mc.get("Magnetometer_X"):
+            print("Magnetometer data being read, from hardware and simulation:")
+            print(struct.unpack('>d', mc.get("Magnetometer_X"))[0])
+            print(struct.unpack('>d', mc.get("Magnetometer_Y"))[0])
+            print(struct.unpack('>d', mc.get("Magnetometer_Z"))[0])
 
         if mc.get("Simulation_Torque_X"):
             print("Torque output from flight computer:")
@@ -47,7 +53,7 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Simulation_Torque_Y"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Torque_Z"))[0])
 
-        if mc.get("Satellite PWM_X"):
+        if mc.get("Satellite_PWM_X"):
             print("PWM output from flight computer:")
             print(struct.unpack('>d', mc.get("Satellite_PWM_X"))[0])
             print(struct.unpack('>d', mc.get("Satellite_PWM_Y"))[0])
