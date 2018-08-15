@@ -26,7 +26,7 @@ void SatelliteTimeSource::SetTime(RTime time) {
 Time SatelliteTimeSource::GetTime() {
     if (i2c_available) {
         if (!satellite_time.is_valid) {
-            //Log_error0("Satellite time is not valid");
+            // Log_error0("Satellite time is not valid");
         }
     } else {
         satellite_time.is_valid = false;
@@ -49,6 +49,7 @@ void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
         return;
     }
 
+    // TODO(akremor / daniel632)
     uint32_t delay_ms = delay_seconds * kMillisecondsInSecond;
 
     Time init_time = SatelliteTimeSource::GetTime();

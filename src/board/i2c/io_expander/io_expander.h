@@ -45,10 +45,12 @@ class I2cIoExpander {
 
     IoDirection GetDirection(IoPin pin);
     void SetDirection(IoPin pin, IoDirection direction);
+    void RangeSetDirection(uint8_t first, uint8_t last, IoDirection direction);
     bool GetPin(IoPin pin);
     void SetPin(IoPin pin, bool value);
     IoPolarity GetPolarity(IoPin pin);
     void SetPolarity(IoPin pin, IoPolarity polarity);
+    uint16_t RangeIoPinsToInt(uint8_t first, uint8_t last);
 
    private:
     const I2c* bus;

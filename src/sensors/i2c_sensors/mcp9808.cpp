@@ -3,8 +3,6 @@
 #include <src/sensors/i2c_sensors/mcp9808.hpp>
 #include <string>
 
-const int MCP9808::TEMP_REGISTER = 0x05;
-
 MCP9808::MCP9808(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
                  I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {}

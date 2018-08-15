@@ -46,6 +46,14 @@ void I2cIoExpander::SetDirection(I2cIoExpander::IoPin pin,
     DeselectMultiplexerLine();
 }
 
+// Sets IO pins in the range from first to last (inclusive), to direction
+void I2cIoExpander::RangeSetDirection(uint8_t first, uint8_t last,
+                                      IoDirection direction) {
+    for (uint8_t i = first; i <= last; i++) {
+        SetDirection(static_cast<IoPin>(i), direction);
+    }
+}
+
 bool I2cIoExpander::GetPin(I2cIoExpander::IoPin pin) {
     SelectMultiplexerLine();
 
@@ -109,6 +117,19 @@ void I2cIoExpander::SetPolarity(I2cIoExpander::IoPin pin,
     DeselectMultiplexerLine();
 }
 
+// Converts all IO pins (from first to last) to an uint16_t
+uint16_t I2cIoExpander::RangeIoPinsToInt(uint8_t first, uint8_t last) {
+    uint16_t output = 0;
+
+    for (uint8_t i = first; i <= last; i++) {
+        if (GetPin(static_cast<I2cIoExpander::IoPin>(i))) {
+            output |= 1 << i;
+        }
+    }
+
+    return output;
+}
+
 void I2cIoExpander::SelectMultiplexerLine() {
     if (multiplexer != NULL) {
         multiplexer->OpenChannel(channel);
@@ -123,8 +144,17 @@ void I2cIoExpander::DeselectMultiplexerLine() {
 
 uint8_t I2cIoExpander::ReadFromRegister(byte register_address) {
     uint8_t current_value = 0x00;
-    bus->PerformWriteTransaction(address, &register_address, 1);
-    bus->PerformReadTransaction(address, &current_value, 1);
+    bool write = bus->PerformWriteTransaction(address, &register_address, 1);
+    bool read = bus->PerformReadTransaction(address, &current_value, 1);
+
+    if (!write) {
+        throw etl::exception("Invalid write", __FILE__, __LINE__);
+    }
+
+    if (!read) {
+        throw etl::exception("Invalid read", __FILE__, __LINE__);
+    }
+
     return current_value;
 }
 
@@ -132,7 +162,11 @@ void I2cIoExpander::WriteToRegister(byte register_address, byte value) {
     byte bytes[2];
     bytes[0] = register_address;
     bytes[1] = value;
-    bus->PerformWriteTransaction(address, bytes, 2);
+    bool write = bus->PerformWriteTransaction(address, bytes, 2);
+
+    if (!write) {
+        throw etl::exception("Invalid write", __FILE__, __LINE__);
+    }
 }
 
 uint8_t I2cIoExpander::GetRegisterMask(I2cIoExpander::IoPin pin) {
