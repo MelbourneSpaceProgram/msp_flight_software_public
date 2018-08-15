@@ -15,9 +15,9 @@
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
+#include <src/system/runnable_state_management.h>
+#include <src/system/runnable_system_health_check.h>
 #include <src/system/state_manager.h>
-#include <src/system/tasks/runnable_state_management.h>
-#include <src/system/tasks/runnable_system_health_check.h>
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>

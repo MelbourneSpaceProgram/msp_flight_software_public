@@ -1,7 +1,7 @@
+#include <src/system/runnable_state_management.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_machine.h>
 #include <src/system/state_manager.h>
-#include <src/system/tasks/runnable_state_management.h>
 #include <src/util/system_watchdog.h>
 
 RunnableStateManagement::RunnableStateManagement() {}
