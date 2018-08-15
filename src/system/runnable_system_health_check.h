@@ -1,11 +1,13 @@
 #ifndef SRC_SYSTEM_RUNNABLE_SYSTEM_HEALTH_CHECK_H_
 #define SRC_SYSTEM_RUNNABLE_SYSTEM_HEALTH_CHECK_H_
 
+#include <external/etl/exception.h>
 #include <src/board/uart/uart.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/tasks/runnable.h>
 #include <src/util/nanopb_utils.h>
+#include <xdc/runtime/Log.h>
 
 #define LogToUart(RawType, NanopbMessageType)                                  \
     RunnableSystemHealthCheck::LogMeasurableToUart<RawType, NanopbMessageType, \
@@ -45,7 +47,11 @@ class RunnableSystemHealthCheck : public Runnable {
 
         assert(NanopbMessageType_size <= 255);
         byte buffer[255];
-        NanopbEncode(NanopbMessageType)(buffer, pb_reading);
+        try {
+            NanopbEncode(NanopbMessageType)(buffer, pb_reading);
+        } catch (etl::exception& e) {
+            Log_error1("Nanopb encode failed for measurable id %d", id);
+        }
 
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
