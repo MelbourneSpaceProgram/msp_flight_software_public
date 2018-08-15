@@ -135,13 +135,15 @@ void RunnableOrientationControl::ControlOrientation() {
         if (tcom_board_available) {
             if (location_estimator.CheckForUpdatedTle()) {
                 tle_last_updated = SatelliteTimeSource::GetTime();
+                // TODO (rskew) notify tle state machine
             }
         } else if (hil_available) {
             location_estimator.RequestTleFromDebugClient();
             tle_last_updated = SatelliteTimeSource::GetTime();
+            // TODO (rskew) notify tle state machine
         }
 
-        if (hil_available || tcom_board_available) {
+        if (adcs_state == kAdcsNominal) {
             // Calculate position
             current_time = SatelliteTimeSource::GetTime();
             // TODO(rskew): Need to check if the returned time was valid
