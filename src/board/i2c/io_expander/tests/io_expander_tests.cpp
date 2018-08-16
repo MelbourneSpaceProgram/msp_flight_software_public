@@ -7,6 +7,7 @@
 #include <src/util/data_types.h>
 
 static const byte kIoExpanderAddress = 0x22;
+static const byte kIoExpanderAddressNew = 0x20;
 
 TEST_GROUP(IoExpander) {
     void setup() {
@@ -15,6 +16,100 @@ TEST_GROUP(IoExpander) {
         }
     };
 };
+
+// Test RangeSetDirection with direction set to input
+TEST(IoExpander, TestRangeSetDirectionInput) {
+    // Pins being tested
+    I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
+    I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
+
+    // Open the IO Expander on Bus D, address 0x20
+    I2c bus(I2C_BUS_D);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+
+    // Testing - RangeSetDirection test as input
+    test_io_expander.RangeSetDirection(first_pin, second_pin,
+                                       I2cIoExpander::kIoInput);
+    I2cIoExpander::IoDirection read_direction_1 =
+        test_io_expander.GetDirection(first_pin);
+    I2cIoExpander::IoDirection read_direction_2 =
+        test_io_expander.GetDirection(second_pin);
+
+    // Check that the read directions are actually input
+    CHECK_TEXT(read_direction_1 == I2cIoExpander::kIoInput &&
+                   read_direction_2 == I2cIoExpander::kIoInput,
+               "RangeSetDirection not setting input pins to input.");
+}
+
+// Test RangeSetDirection with direction set to output
+TEST(IoExpander, TestRangeSetDirectionOutput) {
+    // Pins being tested
+    I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
+    I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
+
+    // Open the IO Expander on Bus D, address 0x20
+    I2c bus(I2C_BUS_D);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+
+    // Testing - RangeSetDirection test as output
+    test_io_expander.RangeSetDirection(first_pin, second_pin,
+                                       I2cIoExpander::kIoOutput);
+    I2cIoExpander::IoDirection read_direction_1 =
+        test_io_expander.GetDirection(first_pin);
+    I2cIoExpander::IoDirection read_direction_2 =
+        test_io_expander.GetDirection(second_pin);
+
+    // Check that the read directions are actually output
+    CHECK_TEXT(read_direction_1 == I2cIoExpander::kIoOutput &&
+                   read_direction_2 == I2cIoExpander::kIoOutput,
+               "RangeSetDirection not setting input pins to output.");
+}
+
+TEST(IoExpander, TestRangeIoPinsToInt) {
+    // Pins being tested
+    I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
+    I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
+
+    // Open the IO Expander on Bus D, address 0x20
+    I2c bus(I2C_BUS_D);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+
+    // Testing
+    uint16_t expected = 2;
+
+    test_io_expander.RangeSetDirection(first_pin, second_pin,
+                                       I2cIoExpander::kIoOutput);
+    test_io_expander.SetPin(first_pin, false);
+    test_io_expander.SetPin(second_pin, true);
+    uint16_t output = test_io_expander.RangeIoPinsToInt(first_pin, second_pin);
+
+    CHECK_TEXT(output == expected,
+               "RangeIoPinsToInt not returning correct int representation.");
+}
+
+// Testing RangeIoPinsToInt again, with an actual output != expected
+TEST(IoExpander, TestRangeIoPinsToInt2) {
+    // Pins being tested
+    I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
+    I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
+
+    // Open the IO Expander on Bus D, address 0x20
+    I2c bus(I2C_BUS_D);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+
+    // Testing
+    uint16_t expected = 2;
+
+    // using an actual output of 3
+    test_io_expander.RangeSetDirection(first_pin, second_pin,
+                                       I2cIoExpander::kIoOutput);
+    test_io_expander.SetPin(first_pin, true);
+    test_io_expander.SetPin(second_pin, true);
+    uint16_t output = test_io_expander.RangeIoPinsToInt(first_pin, second_pin);
+
+    CHECK_TEXT(output != expected,
+               "RangeIoPinsToInt returning incorrect int representation.");
+}
 
 // Test disabled as CDH no longer has an IO Expander
 // TODO(akremor): Find equivalent chip
