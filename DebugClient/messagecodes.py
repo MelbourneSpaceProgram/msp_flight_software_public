@@ -13,4 +13,5 @@ message_codes = {
     "tle_request_code": 0x0C,
     "location_reading_code": 0x0D,
     "pwm_output_reading_code": 0x0E,
+    "b_dot_estimate_code": 0x0F,
 }

@@ -264,6 +264,23 @@ def testLoop(debug_serial_port, logger, mc):
 
 
             elif message_code == \
+                message_codes["b_dot_estimate_code"]:
+                logger.info("Message code: b_dot_estimate_code")
+                # Magnetometer Reading from the Satellite
+
+                b_dot_estimate = BDotEstimate_pb2.BDotEstimate()
+                b_dot_estimate.ParseFromString(payload)
+                logger.info("Message data: " + str(b_dot_estimate))
+                mc.set("B_Dot_Estimate_X",
+                       struct.pack('>d',b_dot_estimate.x))
+                mc.set("B_Dot_Estimate_Y",
+                       struct.pack('>d',b_dot_estimate.y))
+                mc.set("B_Dot_Estimate_Z",
+                       struct.pack('>d',b_dot_estimate.z))
+
+
+
+            elif message_code == \
                 message_codes["test_sensor_reading_code"]:
                 logger.info("Message code: test_sensor_reading_code")
                 # Test Sensor Reading, store it for the test reading request

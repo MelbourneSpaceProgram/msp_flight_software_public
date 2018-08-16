@@ -59,6 +59,12 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Satellite_PWM_Y"))[0])
             print(struct.unpack('>d', mc.get("Satellite_PWM_Z"))[0])
 
+        if mc.get("B_Dot_Estimate_X"):
+            print("B Dot estimate from flight computer:")
+            print(struct.unpack('>d', mc.get("B_Dot_Estimate_X"))[0])
+            print(struct.unpack('>d', mc.get("B_Dot_Estimate_Y"))[0])
+            print(struct.unpack('>d', mc.get("B_Dot_Estimate_Z"))[0])
+
         #if mc.get("Simulation_IR_X_Pos"):
         #    print("Infrared output from simulation:")
         #    print(struct.unpack('>d', mc.get("Simulation_IR_X_Pos"))[0])
