@@ -12,6 +12,7 @@
 #include <src/init/init.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/BDotEstimate.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/measurable_id.h>
@@ -66,7 +67,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    BDotEstimator b_dot_estimator(50, 4000);
+    BDotEstimator b_dot_estimator(1000, 10);
     LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
@@ -145,6 +146,18 @@ void RunnableOrientationControl::ControlOrientation() {
         double b_dot_estimate_data[3][1];
         Matrix b_dot_estimate(b_dot_estimate_data);
         b_dot_estimator.Estimate(geomag, b_dot_estimate);
+
+        if (hil_available) {
+          // Echo estimate to data dashboard
+          BDotEstimate b_dot_estimate_message;
+          b_dot_estimate_message.x = b_dot_estimate.Get(0,0);
+          b_dot_estimate_message.y = b_dot_estimate.Get(1,0);
+          b_dot_estimate_message.z = b_dot_estimate.Get(2,0);
+          RunnableDataDashboard::TransmitMessage(
+             kBDotEstimateCode, BDotEstimate_size,
+             BDotEstimate_fields, &b_dot_estimate_message);
+        }
+
 
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
 

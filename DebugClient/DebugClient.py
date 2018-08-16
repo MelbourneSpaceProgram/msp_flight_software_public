@@ -5,6 +5,7 @@ import serial
 import sys
 import datetime
 import serial.tools.list_ports
+import BDotEstimate_pb2
 import MagnetometerReading_pb2
 import PwmOutputReading_pb2
 import SensorReading_pb2
