@@ -236,7 +236,7 @@ void PostBiosInitialiser::PostBiosInit() {
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
         if (hil_available) {
-            InitDataDashboard();
+            //InitDataDashboard();
         }
 
         InitPreDeploymentMagnetometerPoller();

@@ -1,12 +1,12 @@
 #ifndef SRC_CONFIG_UNIT_TESTS_H_
 #define SRC_CONFIG_UNIT_TESTS_H_
 
-static const bool eps_board_available = true;
-static const bool cdh_board_available = true;
-static const bool fs_board_available = true;
-static const bool panel_board_available = true;
-static const bool tcom_board_available = true;
-static const bool utilities_board_available = true;
+static const bool eps_board_available = false;
+static const bool cdh_board_available = false;
+static const bool fs_board_available = false;
+static const bool panel_board_available = false;
+static const bool tcom_board_available = false;
+static const bool utilities_board_available = false;
 
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability
@@ -21,10 +21,10 @@ static const bool deployment_waits_are_instant = true;
 static const bool eeprom_available =
     false;  // It is actually available but there is a resource conflict with
             // the SD cards as they share the same bus
-static const bool i2c_available = true;
+static const bool i2c_available = false;
 static const bool sd_card_available = false;
 static const bool hil_available = true;
-static const bool bms_available = true;
+static const bool bms_available = false;
 static const bool antenna_available = false;
 static const bool ditl_mode = false;
 

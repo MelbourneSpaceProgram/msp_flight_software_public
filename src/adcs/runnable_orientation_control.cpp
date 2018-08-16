@@ -98,8 +98,37 @@ void RunnableOrientationControl::ControlOrientation() {
         // TODO (rskew) fuse readings from both magnetometers giving redundancy
         // TODO(rskew) handle exception from magnetometer overflow
         MagnetometerReading magnetometer_reading =
-            measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
-                kFsImuMagnetometer2, 0);
+            MagnetometerReading_init_zero;
+        if (i2c_available) {
+            magnetometer_reading =
+                measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
+                    kFsImuMagnetometer2, 0);
+        } else if (hil_available) {
+            // TODO (rskew) Need a different measurable that can still work
+            // if i2c is disabled.
+            DebugStream* debug_stream = DebugStream::GetInstance();
+            uint8_t buffer[MagnetometerReading_size];
+
+            bool success = debug_stream->RequestMessageFromSimulator(
+                kMagnetometerReadingRequestCode, buffer,
+                MagnetometerReading_size);
+
+            if (success) {
+                pb_istream_t stream =
+                    pb_istream_from_buffer(buffer, MagnetometerReading_size);
+
+                bool status = pb_decode(&stream, MagnetometerReading_fields,
+                                        &magnetometer_reading);
+                if (!status) {
+                    etl::exception e("pb_decode failed", __FILE__, __LINE__);
+                    throw e;
+                }
+            } else {
+                etl::exception e("Failed to request message from simulator",
+                                 __FILE__, __LINE__);
+                throw e;
+            }
+        }
 
         if (hil_available) {
             // Echo reading to data dashboard
@@ -138,7 +167,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 // TODO (rskew) notify tle state machine
             }
         } else if (hil_available) {
-            location_estimator.RequestTleFromDebugClient();
+            // location_estimator.RequestTleFromDebugClient();
             tle_last_updated = SatelliteTimeSource::GetTime();
             // TODO (rskew) notify tle state machine
         }

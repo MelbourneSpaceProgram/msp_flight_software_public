@@ -11,7 +11,7 @@
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 
-Uart RunnableSystemHealthCheck::debug_uart(UMBILICAL_CONSOLE);
+Uart RunnableSystemHealthCheck::debug_uart(UMBILICAL_SIM);
 
 RunnableSystemHealthCheck::RunnableSystemHealthCheck() {
     debug_uart.SetBaudRate(Uart::kBaud115200)

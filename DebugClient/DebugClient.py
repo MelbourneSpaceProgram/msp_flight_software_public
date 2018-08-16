@@ -132,6 +132,7 @@ def testLoop(debug_serial_port, logger, mc):
             # TODO(akremor): Integrate this with request codes
             if message_code == \
                 message_codes["magnetometer_reading_request_code"]:
+                logger.info("Message code: magnetometer_reading_request_code")
                 magnetometer_reading = \
                     MagnetometerReading_pb2.MagnetometerReading()
                 if mc.get("Simulation_Magnetometer_X") != None:
@@ -156,7 +157,8 @@ def testLoop(debug_serial_port, logger, mc):
 
 
             elif message_code == \
-                 message_codes["bms1_input_current_reading_code"]:
+                message_codes["bms1_input_current_reading_code"]:
+                logger.info("Message code: bms1_input_current_reading_code")
                 bms1_input_current_reading = SensorReading_pb2.SensorReading()
                 bms1_input_current_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
@@ -168,6 +170,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["bms1_input_voltage_reading_code"]:
+                logger.info("Message code: bms1_input_voltage_reading_code")
                 bms1_input_voltage_reading = SensorReading_pb2.SensorReading()
                 bms1_input_voltage_reading.ParseFromString(payload)
                 logger.info("Received message data: " + \
@@ -179,6 +182,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["primary_mcu_regulator_current_reading_code"]:
+                logger.info("Message code: primary_mcu_regulator_current_reading_code")
                 primary_mcu_regulator_current_reading = \
                     SensorReading_pb2.SensorReading()
                 primary_mcu_regulator_current_reading.ParseFromString(payload)
@@ -191,6 +195,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["magnetorquer_x_current_reading_code"]:
+                logger.info("Message code: magnetorquer_x_current_reading_code")
                 magnetorquer_x_current_reading = \
                     SensorReading_pb2.SensorReading()
                 magnetorquer_x_current_reading.ParseFromString(payload)
@@ -202,6 +207,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["adcs_system_state_reading_code"]:
+                logger.info("Message code: adcs_system_state_reading_code")
                 adcs_system_state_reading = \
                     StateMachineStateReading_pb2.StateMachineStateReading()
                 adcs_system_state_reading.ParseFromString(payload)
@@ -213,6 +219,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["torque_output_reading_code"]:
+                logger.info("Message code: torque_output_reading_code")
 
                 torque_output_reading = TorqueOutputReading_pb2.TorqueOutputReading()
                 torque_output_reading.ParseFromString(payload)
@@ -227,6 +234,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["pwm_output_reading_code"]:
+                logger.info("Message code: pwm_output_reading_code")
 
                 pwm_output_reading = PwmOutputReading_pb2.PwmOutputReading()
                 pwm_output_reading.ParseFromString(payload)
@@ -241,6 +249,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["magnetometer_reading_code"]:
+                logger.info("Message code: magnetometer_reading_code")
                 # Magnetometer Reading from the Satellite
 
                 magnetometer_reading = MagnetometerReading_pb2.MagnetometerReading()
@@ -256,6 +265,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["test_sensor_reading_code"]:
+                logger.info("Message code: test_sensor_reading_code")
                 # Test Sensor Reading, store it for the test reading request
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
@@ -268,6 +278,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["test_sensor_reading_linked_request_code"]:
+                logger.info("Message code: test_sensor_reading_linked_request_code")
                 # Follow-up test request, send stored data
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
@@ -280,6 +291,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["test_sensor_reading_request_code"]:
+                logger.info("Message code: test_sensor_reading_request_code")
                 # Test request, send known data
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
@@ -291,6 +303,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["tle_request_code"]:
+                logger.info("Message code: tle_request_code")
 
                 tle = Tle_pb2.Tle()
                 if mc.get("Simulation_TLE_Mean_Motion") != None:
@@ -336,6 +349,7 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["location_reading_code"]:
+                logger.info("Message code: location_reading_code")
 
                 location_reading = LocationReading_pb2.LocationReading()
                 location_reading.ParseFromString(payload)

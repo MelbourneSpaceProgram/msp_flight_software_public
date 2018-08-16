@@ -20,6 +20,8 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
 // Fuse the hardware and simulation readings for the controller, and
 // echo readings to the DebugClient.
 MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
+    reading = kFailedMagnetometerReading;
+
     if (i2c_available) {
         MPU9250MotionTracker* imu_sensor =
             static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
@@ -32,21 +34,24 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     }
 
     if (hil_available) {
-        // Echo reading to data dashboard
-        RunnableDataDashboard::TransmitMessage(
-            kMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &reading);
-    }
-
-    if (hil_available) {
         // The simulation should give readings in Tesla
         MagnetometerReading simulation_reading = TakeSimulationReading();
         // Combine readings.
         // The static hardware reading will be calibrated out, and the
         // true hardware noise will be added to the simulated reading.
-        reading.x = reading.x + simulation_reading.x;
-        reading.y = reading.y + simulation_reading.y;
-        reading.z = reading.z + simulation_reading.z;
+        // reading.x = reading.x + simulation_reading.x;
+        // reading.y = reading.y + simulation_reading.y;
+        // reading.z = reading.z + simulation_reading.z;
+        reading.x = simulation_reading.x;
+        reading.y = simulation_reading.y;
+        reading.z = simulation_reading.z;
+    }
+
+    if (hil_available) {
+        // Echo reading to data dashboard
+        RunnableDataDashboard::TransmitMessage(
+            kMagnetometerReadingCode, MagnetometerReading_size,
+            MagnetometerReading_fields, &reading);
     }
 
     // TODO (rskew) write to circular buffer for calibration
