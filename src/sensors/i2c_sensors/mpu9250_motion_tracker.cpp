@@ -1,10 +1,10 @@
+#include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
-#include <external/etl/exception.h>
 
 const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
     250, 500, 1000, 2000};
@@ -104,7 +104,7 @@ MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
         magno_z_reading_bytes;
     etl::array<byte, 7> magno_data = ReadSevenBytesFromMagnoRegister();
 
-    if(magno_data.at(6) & kMagnetometerOverflowBitMask) {
+    if (magno_data.at(6) & kMagnetometerOverflowBitMask) {
         etl::exception e("Magnetometer overflow", __FILE__, __LINE__);
         throw e;
     }
@@ -119,11 +119,11 @@ MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
 
     // adjust the magnetometer readings
     magnetometer_reading.x =
-        DecodeMagnoReadingToSI(magno_x_reading_bytes, magno_x_adjust);
+        DecodeMagnoReadingToMicroTesla(magno_x_reading_bytes, magno_x_adjust);
     magnetometer_reading.y =
-        DecodeMagnoReadingToSI(magno_y_reading_bytes, magno_y_adjust);
+        DecodeMagnoReadingToMicroTesla(magno_y_reading_bytes, magno_y_adjust);
     magnetometer_reading.z =
-        DecodeMagnoReadingToSI(magno_z_reading_bytes, magno_z_adjust);
+        DecodeMagnoReadingToMicroTesla(magno_z_reading_bytes, magno_z_adjust);
 
     SetBypassMode(kBypassModeDisable);
 
@@ -229,13 +229,13 @@ double MPU9250MotionTracker::DecodeTempReadingToSI(
     return ConvertBinaryTempReadingToSI(binary_temp_reading);
 }
 
-double MPU9250MotionTracker::DecodeMagnoReadingToSI(
+double MPU9250MotionTracker::DecodeMagnoReadingToMicroTesla(
     etl::array<byte, 2> two_byte_magno_reading, byte magno_adjust_value) {
     int16_t binary_magno_reading;
     binary_magno_reading =
         ConvertTwoByteReadingToBinaryReading(two_byte_magno_reading);
-    return ConvertBinaryMagnoReadingToSI(binary_magno_reading,
-                                         magno_adjust_value);
+    return ConvertBinaryMagnoReadingToMicroTesla(binary_magno_reading,
+                                                 magno_adjust_value);
 }
 
 int16_t MPU9250MotionTracker::ConvertTwoByteReadingToBinaryReading(
@@ -260,10 +260,11 @@ double MPU9250MotionTracker::ConvertBinaryTempReadingToSI(
     return ((binary_reading - kRoomTempOffset) / kTempSensitivity) + 21;
 }
 
-double MPU9250MotionTracker::ConvertBinaryMagnoReadingToSI(
+double MPU9250MotionTracker::ConvertBinaryMagnoReadingToMicroTesla(
     int16_t magno_reading, byte magno_adjust_value) {
     double scaled_magno_reading, adjusted_magno_reading;
-    scaled_magno_reading = 1.0 * magno_reading * kMaxMeasurableFluxDensity /
+    scaled_magno_reading = 1.0 * magno_reading *
+                           kMaxMeasurableFluxDensityMicroTesla /
                            magnetometer_measurement_range;
     adjusted_magno_reading =
         scaled_magno_reading *

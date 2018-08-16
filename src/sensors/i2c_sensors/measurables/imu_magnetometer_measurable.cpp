@@ -20,9 +20,16 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
 // Fuse the hardware and simulation readings for the controller, and
 // echo readings to the DebugClient.
 MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
-    MPU9250MotionTracker* imu_sensor =
-        static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
-    reading = imu_sensor->TakeMagnetometerReading();
+    if (i2c_available) {
+        MPU9250MotionTracker* imu_sensor =
+            static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
+        // IMU returns readings in microTesla
+        reading = imu_sensor->TakeMagnetometerReading();
+        // Convert microTesla to Tesla
+        reading.x = reading.x * 1e-6;
+        reading.z = reading.x * 1e-6;
+        reading.y = reading.x * 1e-6;
+    }
 
     if (hil_available) {
         // Echo reading to data dashboard
@@ -32,6 +39,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     }
 
     if (hil_available) {
+        // The simulation should give readings in Tesla
         MagnetometerReading simulation_reading = TakeSimulationReading();
         // Combine readings.
         // The static hardware reading will be calibrated out, and the

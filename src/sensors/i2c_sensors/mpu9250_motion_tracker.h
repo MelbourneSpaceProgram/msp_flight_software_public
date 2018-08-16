@@ -97,21 +97,21 @@ class MPU9250MotionTracker : public I2cDevice {
     int16_t magnetometer_measurement_range;
     static const int16_t k14BitOutputMeasurementRange = 8190;
     static const int16_t k16BitOutputMeasurementRange = 32760;
-    static const int16_t kMaxMeasurableFluxDensity = 4912;
+    static const int16_t kMaxMeasurableFluxDensityMicroTesla = 4912;
 
     // methods for converting byte readings to values in SI units
     double DecodeGyroReadingToSI(etl::array<byte, 2> two_byte_gyro_reading);
     double DecodeAccelReadingToSI(etl::array<byte, 2> two_byte_accel_reading);
     double DecodeTempReadingToSI(etl::array<byte, 2> two_byte_temp_reading);
-    double DecodeMagnoReadingToSI(etl::array<byte, 2> two_byte_magno_reading,
-                                  byte magno_adjust_value);
+    double DecodeMagnoReadingToMicroTesla(
+        etl::array<byte, 2> two_byte_magno_reading, byte magno_adjust_value);
     int16_t ConvertTwoByteReadingToBinaryReading(
         etl::array<byte, 2> two_byte_array);
     double ConvertBinaryGyroReadingToSI(int16_t binary_reading);
     double ConvertBinaryAccelReadingToSI(int16_t binary_reading);
     double ConvertBinaryTempReadingToSI(int16_t binary_reading);
-    double ConvertBinaryMagnoReadingToSI(int16_t magno_reading,
-                                         byte magno_adjust_value);
+    double ConvertBinaryMagnoReadingToMicroTesla(int16_t magno_reading,
+                                                 byte magno_adjust_value);
 
     // temperature sensor constants from data sheet
     static const int16_t kMaxOperatingTemp = 85;
