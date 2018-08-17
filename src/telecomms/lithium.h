@@ -27,6 +27,7 @@ class Lithium {
         kMaxReceivedUartSize - kLithiumHeaderSize - kLithiumTailSize;
     static const uint16_t kMaxReceivedLithiumResponseSize = 50;
     static const uint16_t kReceivedPacketSize = 265;
+    static const uint16_t kMaxDownlinkSize = 255;
 
     static const byte kSyncCharOne = 0x48;
     static const byte kSyncCharTwo = 0x65;

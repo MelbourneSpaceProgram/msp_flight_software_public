@@ -11,6 +11,7 @@ TransmitPacket::TransmitPacket(TransmitPayload *transmit_payload)
 
 SerialisedMessage TransmitPacket::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
+
     builder.AddData<uint8_t>(tx_count)
         .AddData<uint8_t>(rx_count)
         .AddData<uint8_t>(command_success_count)

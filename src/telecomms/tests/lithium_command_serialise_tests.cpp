@@ -108,7 +108,7 @@ TEST(LithiumCommandSerialise, TestTransmitTestPayloadSerialisation) {
     CHECK_EQUAL(Lithium::GetRxCounter(), serial_buffer[9]);
     CHECK_EQUAL(Lithium::GetCommandSuccessCounter(), serial_buffer[10]);
     // Payload code
-    CHECK_EQUAL(0x69, serial_buffer[11]);
+    CHECK_EQUAL(0x04, serial_buffer[11]);
     // Payload: +8 is for the Lithium header, +4 is for the MSP header
     MEMCMP_EQUAL(test_message, serial_buffer + 8 + 4, 55);
     // Check the carriage return

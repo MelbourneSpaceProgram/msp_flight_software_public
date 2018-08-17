@@ -10,8 +10,6 @@ class PayloadProcessor {
     static byte GetCommandCodeLength();
     static byte GetEndTerminator();
 
-   private:
-    bool ParseNextCommandAndExecute(byte& index, byte* payload);
     enum Commands {
         kNoCommand = 0,
         kEchoCommand = 1,
@@ -19,9 +17,14 @@ class PayloadProcessor {
         kTleUpdateCommand = 3,
         kForceResetCommand = 4,
         kLithiumBeaconPeriodCommand = 5,
+        kScienceCommand = 6,
         kLithiumFastPaCommand = 7,
+        kLithiumTestCommand = 8,
         kCommandsLength
     };
+
+   private:
+    bool ParseNextCommandAndExecute(byte& index, byte* payload);
     static const byte kCommandCodeLength = 2;
     static const uint8_t kEndTerminator = 0;
 };

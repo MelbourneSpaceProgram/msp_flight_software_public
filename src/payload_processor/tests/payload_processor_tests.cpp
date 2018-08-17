@@ -116,6 +116,23 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     CHECK(generated_satrec.bstar == test_tle.bstar_drag);
 }
 
+TEST(PayloadProcessor, TestLithiumTestCommand) {
+    if (!tcom_board_available) {
+        TEST_EXIT
+    }
+
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+
+    payload[0] = static_cast<uint8_t>(PayloadProcessor::kLithiumTestCommand);
+    payload[1] = 0;  // 0x08 indicates a Lithium Test command
+    payload[2] = PayloadProcessor::GetEndTerminator();
+    payload[3] = PayloadProcessor::GetEndTerminator();
+
+    PayloadProcessor payload_processor;
+    CHECK(payload_processor.ParseAndExecuteCommands(payload));
+    // Should also verify on the ground that 10 packets have been received
+}
+
 TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
     // Generate a fake lithium beacon period command
     byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
