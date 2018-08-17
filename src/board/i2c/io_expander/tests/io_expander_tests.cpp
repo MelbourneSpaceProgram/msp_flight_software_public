@@ -6,8 +6,7 @@
 #include <src/config/unit_tests.h>
 #include <src/util/data_types.h>
 
-static const byte kIoExpanderAddress = 0x22;
-static const byte kIoExpanderAddressNew = 0x20;
+static const byte kIoExpanderAddress = 0x20;
 
 TEST_GROUP(IoExpander) {
     void setup() {
@@ -23,11 +22,10 @@ TEST(IoExpander, TestRangeSetDirectionInput) {
     I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
     I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
 
-    // Open the IO Expander on Bus D, address 0x20
     I2c bus(I2C_BUS_D);
-    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
 
-    // Testing - RangeSetDirection test as input
+    // Testing
     test_io_expander.RangeSetDirection(first_pin, second_pin,
                                        I2cIoExpander::kIoInput);
     I2cIoExpander::IoDirection read_direction_1 =
@@ -35,7 +33,7 @@ TEST(IoExpander, TestRangeSetDirectionInput) {
     I2cIoExpander::IoDirection read_direction_2 =
         test_io_expander.GetDirection(second_pin);
 
-    // Check that the read directions are actually input
+    // Check that the read directions are set to input
     CHECK_TEXT(read_direction_1 == I2cIoExpander::kIoInput &&
                    read_direction_2 == I2cIoExpander::kIoInput,
                "RangeSetDirection not setting input pins to input.");
@@ -47,11 +45,10 @@ TEST(IoExpander, TestRangeSetDirectionOutput) {
     I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
     I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
 
-    // Open the IO Expander on Bus D, address 0x20
     I2c bus(I2C_BUS_D);
-    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
 
-    // Testing - RangeSetDirection test as output
+    // Testing
     test_io_expander.RangeSetDirection(first_pin, second_pin,
                                        I2cIoExpander::kIoOutput);
     I2cIoExpander::IoDirection read_direction_1 =
@@ -59,7 +56,7 @@ TEST(IoExpander, TestRangeSetDirectionOutput) {
     I2cIoExpander::IoDirection read_direction_2 =
         test_io_expander.GetDirection(second_pin);
 
-    // Check that the read directions are actually output
+    // Check that the read directions are set to output
     CHECK_TEXT(read_direction_1 == I2cIoExpander::kIoOutput &&
                    read_direction_2 == I2cIoExpander::kIoOutput,
                "RangeSetDirection not setting input pins to output.");
@@ -70,9 +67,8 @@ TEST(IoExpander, TestRangeIoPinsToInt) {
     I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
     I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
 
-    // Open the IO Expander on Bus D, address 0x20
     I2c bus(I2C_BUS_D);
-    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
 
     // Testing
     uint16_t expected = 2;
@@ -81,10 +77,11 @@ TEST(IoExpander, TestRangeIoPinsToInt) {
                                        I2cIoExpander::kIoOutput);
     test_io_expander.SetPin(first_pin, false);
     test_io_expander.SetPin(second_pin, true);
-    uint16_t output = test_io_expander.RangeIoPinsToInt(first_pin, second_pin);
+    uint16_t actual = test_io_expander.RangeIoPinsToInt(first_pin, second_pin);
 
-    CHECK_TEXT(output == expected,
-               "RangeIoPinsToInt not returning correct int representation.");
+    CHECK_EQUAL_TEXT(
+        expected, actual,
+        "RangeIoPinsToInt not returning correct int representation.");
 }
 
 // Testing RangeIoPinsToInt again, with an actual output != expected
@@ -93,14 +90,13 @@ TEST(IoExpander, TestRangeIoPinsToInt2) {
     I2cIoExpander::IoPin first_pin = I2cIoExpander::kIoPin0;
     I2cIoExpander::IoPin second_pin = I2cIoExpander::kIoPin1;
 
-    // Open the IO Expander on Bus D, address 0x20
     I2c bus(I2C_BUS_D);
-    I2cIoExpander test_io_expander(&bus, kIoExpanderAddressNew);
+    I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
 
     // Testing
     uint16_t expected = 2;
 
-    // using an actual output of 3
+    // using an actual output of 3 (i.e. 11 in binary)
     test_io_expander.RangeSetDirection(first_pin, second_pin,
                                        I2cIoExpander::kIoOutput);
     test_io_expander.SetPin(first_pin, true);

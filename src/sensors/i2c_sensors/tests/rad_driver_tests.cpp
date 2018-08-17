@@ -11,7 +11,8 @@
  * For the exposure / sensor values, the procedure detailed in the doc should be
  * followed (to attain similar data).
  *
- * TODO(daniel632): Get more accurate tolerance values (I have guessed them)
+ * TODO(daniel632): Get more accurate tolerance values (They're educated
+ * guesses)
  *
  */
 
@@ -25,19 +26,13 @@ static const int kRadAddress = 0x20;
 
 TEST_GROUP(RadDriver) {
     void setup() {
-        // TODO(daniel632): Is this applicable (as I am not testing i2c
-        // directly)?
         if (!i2c_available || !fs_board_available) {
             TEST_EXIT;
         }
     };
 };
 
-// TODO(daniel632): Ignoring these tests for now, need to test with rad sensors
-// connected and in proper environments.
-
-// Test (rad_driver's) radiation reader in a "normal", room
-// environment.
+// Test (rad_driver's) radiation reader in a "normal", room environment.
 TEST(RadDriver, TestRoomRead) {
     I2c test_i2c_bus(I2C_BUS_B);
     RadDriver test_rad_driver(&test_i2c_bus, kRadAddress);

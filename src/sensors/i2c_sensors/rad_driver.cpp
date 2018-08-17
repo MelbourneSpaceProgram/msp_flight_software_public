@@ -1,9 +1,3 @@
-/*
- * rad_driver.cpp
- * I2C Radiation Driver
- *
- */
-
 #include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/rad_driver.h>
