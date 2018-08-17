@@ -5,6 +5,7 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/adcs/kalman_filter.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
@@ -77,6 +78,19 @@ void RunnableOrientationControl::ControlOrientation() {
     Time current_time;
     double time_since_tle_updated_millis;
 
+    // Initialise EKF
+    double geomagnetic_reference_NED_data[3][1] = {{0.3554},{0.0734},{-0.9318}};
+    Matrix geomagnetic_reference_NED(geomagnetic_reference_NED_data);
+    double nadir_reference_NED_data[3][1] = {{0},{0},{1}};
+    Matrix nadir_reference_NED(nadir_reference_NED_data);
+    KalmanFilter kalman_filter(kControlLoopPeriodMicros * 0.001,
+                               geomagnetic_reference_NED,
+                               nadir_reference_NED,
+                               ekf_process_noise_tuning,
+                               ekf_sensor_noise_tuning,
+                               ekf_initial_covariance,
+                               ekf_initial_quaternion_estimate);
+
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
@@ -118,6 +132,23 @@ void RunnableOrientationControl::ControlOrientation() {
         b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
+
+        // Run Extended Kalman Filter
+        // TODO (rskew) wire up sensors
+        double omega_data[3][1] = {{0},{0},{0}};
+        Matrix omega(omega_data);
+        // Convention for y matrix: Magnetic field vector in the body frame
+        // concatenated with the Earth Sensor reading in the body frame
+        double y_data[6][1] = {{-0.3660},{-0.5753},{-0.7315},{0.5844},{0.2708},{0.765}};
+        Matrix y(y_data);
+        kalman_filter.Predict(omega);
+        kalman_filter.Update(y);
+
+        Log_warning4("Kalman Filter estimate: %f, %f, %f, %f\n",
+                     floatToArg(kalman_filter.q_estimate.Get(0,0)),
+                     floatToArg(kalman_filter.q_estimate.Get(1,0)),
+                     floatToArg(kalman_filter.q_estimate.Get(2,0)),
+                     floatToArg(kalman_filter.q_estimate.Get(3,0)));
 
         // Run controller
         double signed_pwm_output_data[3][1];

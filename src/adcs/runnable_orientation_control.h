@@ -13,7 +13,7 @@ class RunnableOrientationControl : public Runnable {
     static void OrientationControlTimerISR(
         UArg orientation_control_timer_semaphore);
 
-    static const uint32_t kControlLoopPeriodMicros = 1000000;
+    static const uint32_t kControlLoopPeriodMicros = 50000;
 
    private:
     static void ControlOrientation();
