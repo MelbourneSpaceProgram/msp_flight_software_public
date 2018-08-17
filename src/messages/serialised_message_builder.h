@@ -20,6 +20,7 @@ class SerialisedMessageBuilder {
     SerialisedMessage Build();
     SerialisedMessageBuilder& AddMessage(const Message* message);
     void PadZeroes();
+    void PadOnes();
 
     template <class T>
     SerialisedMessageBuilder& AddData(const T data) {
@@ -29,7 +30,7 @@ class SerialisedMessageBuilder {
             throw e;
         } else {
             memcpy(serialised_message_buffer + serialised_length, &data,
-                        sizeof(T));
+                   sizeof(T));
             serialised_length += sizeof(T);
         }
         return *this;

@@ -36,6 +36,10 @@ enum DebugMessageType {
 // folder
 enum DebugMessageVersion { kV1 = 0 };
 
-enum PayloadType { kMspTestPayloadCode = 4, kBeaconPayloadCode = 5 };
+enum PayloadType {
+    kMspTestPayloadCode = 4,
+    kBeaconPayloadCode = 5,
+    kTestOnesPayloadCode = 6
+};
 
 #endif  // SRC_UTIL_MESSAGE_CODES_H_

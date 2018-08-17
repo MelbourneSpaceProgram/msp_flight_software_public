@@ -41,6 +41,12 @@ void SerialisedMessageBuilder::PadZeroes() {
     }
 }
 
+void SerialisedMessageBuilder::PadOnes() {
+    for (uint16_t i = serialised_length; i < buffer_size; i++) {
+        AddData<byte>(0xFF);
+    }
+}
+
 uint16_t SerialisedMessageBuilder::GetSerialisedLength() const {
     return serialised_length;
 }
