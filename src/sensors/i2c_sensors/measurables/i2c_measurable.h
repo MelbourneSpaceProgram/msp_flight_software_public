@@ -18,8 +18,8 @@ class I2cMeasurable : public Reading<R>, public Measurable {
     virtual ~I2cMeasurable() {}
 
     bool TakeReading() {
-        // Sensor can be NULL if it is actually not a real sensor (ie a mocked software sensor)
-        // Assume mocked software sensors cannot fail.
+        // Sensor can be NULL if it is actually not a real sensor (ie a mocked
+        // software sensor) Assume mocked software sensors cannot fail.
         if (sensor != NULL && sensor->IsFailed()) {
             this->reading = failure_reading;
             return false;
@@ -38,9 +38,11 @@ class I2cMeasurable : public Reading<R>, public Measurable {
                 this->timestamp = {0, false};
             }
             if (i2c_available) {
-                Log_error2("Failed to read from sensor 0x%02x on bus %c",
-                           sensor->GetI2cAddress(),
-                           sensor->GetI2cBus()->GetBusLabel());
+                Log_error3(
+                    "Failed to read from sensor 0x%02x on bus %c (mux line "
+                    "0x%02x)",
+                    sensor->GetI2cAddress(), sensor->GetI2cBus()->GetBusLabel(),
+                    sensor->GetMultiplexerChannel());
             }
             return false;
         }
