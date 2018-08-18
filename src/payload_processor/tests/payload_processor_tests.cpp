@@ -11,6 +11,7 @@
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
+#include <src/util/message_codes.h>
 #include <src/util/nanopb_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
@@ -123,7 +124,7 @@ TEST(PayloadProcessor, TestLithiumTestCommand) {
 
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
 
-    payload[0] = static_cast<uint8_t>(PayloadProcessor::kLithiumTestCommand);
+    payload[0] = static_cast<uint8_t>(kLithiumTestCommand);
     payload[1] = 0;  // 0x08 indicates a Lithium Test command
     payload[2] = PayloadProcessor::GetEndTerminator();
     payload[3] = PayloadProcessor::GetEndTerminator();

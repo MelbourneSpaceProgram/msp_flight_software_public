@@ -42,4 +42,17 @@ enum PayloadType {
     kTestOnesPayloadCode = 6
 };
 
+enum Commands {
+    kNoCommand = 0,
+    kEchoCommand = 1,
+    kLithiumEnableCommand = 2,
+    kTleUpdateCommand = 3,
+    kForceResetCommand = 4,
+    kLithiumBeaconPeriodCommand = 5,
+    kScienceCommand = 6,
+    kLithiumFastPaCommand = 7,
+    kLithiumTestCommand = 8,
+    kCommandsLength
+};
+
 #endif  // SRC_UTIL_MESSAGE_CODES_H_
