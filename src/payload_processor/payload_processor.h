@@ -2,6 +2,7 @@
 #define SRC_PAYLOAD_PROCESSOR_PAYLOAD_PROCESSOR_H_
 
 #include <src/util/data_types.h>
+#include <src/util/message_codes.h>
 
 class PayloadProcessor {
    public:
@@ -9,19 +10,6 @@ class PayloadProcessor {
     bool ParseAndExecuteCommands(byte* payload);
     static byte GetCommandCodeLength();
     static byte GetEndTerminator();
-
-    enum Commands {
-        kNoCommand = 0,
-        kEchoCommand = 1,
-        kLithiumEnableCommand = 2,
-        kTleUpdateCommand = 3,
-        kForceResetCommand = 4,
-        kLithiumBeaconPeriodCommand = 5,
-        kScienceCommand = 6,
-        kLithiumFastPaCommand = 7,
-        kLithiumTestCommand = 8,
-        kCommandsLength
-    };
 
    private:
     bool ParseNextCommandAndExecute(byte& index, byte* payload);
