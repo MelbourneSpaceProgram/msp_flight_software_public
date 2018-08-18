@@ -2,12 +2,8 @@
 
 I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
                      const I2cMultiplexer* multiplexer,
-                     I2cMultiplexer::MuxChannel channel, bool failed)
-    : bus(bus),
-      address(address),
-      multiplexer(multiplexer),
-      channel(channel),
-      failed(failed) {}
+                     I2cMultiplexer::MuxChannel channel)
+    : bus(bus), address(address), multiplexer(multiplexer), channel(channel) {}
 
 void I2cDevice::MuxSelect() const {
     if (multiplexer != NULL) {
@@ -24,9 +20,6 @@ void I2cDevice::MuxDeselect() const {
 const I2c* I2cDevice::GetI2cBus() const { return bus; }
 
 uint8_t I2cDevice::GetI2cAddress() const { return address; }
-
-bool I2cDevice::IsFailed() const { return failed; }
-void I2cDevice::SetFailed(bool failed) { this->failed = failed; }
 
 const I2cMultiplexer* I2cDevice::GetI2cMultiplexer() const {
     return multiplexer;

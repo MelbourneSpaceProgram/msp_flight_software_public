@@ -21,7 +21,7 @@ Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
         SetAdcGainAmplifierFullScaleRange();
         SetConfiguration();
     } catch (etl::exception& e) {
-        SetFailed(true);
+        // TODO(dingbenjamin): Not sure what we can really do about this
     }
 }
 
@@ -45,16 +45,16 @@ bool Adc::SetConfiguration() {
         (static_cast<byte>(comparator_queue) << kAdcComparatorQueueBitShift);
 
     if (!PerformWriteTransaction(address, package, 3)) {
-        SetFailed(true);
         return false;
     }
-    
+
     return true;
 }
 
 bool Adc::ReadConversionRegister(etl::array<byte, 2>& read_buffer) {
     SelectRegister(kAdcConversionRegisterLocation);
-    TaskUtils::SleepMilli(10); // Ensure we give the ADC sufficient time to sample
+    TaskUtils::SleepMilli(
+        10);  // Ensure we give the ADC sufficient time to sample
     return ReadFromCurrentRegister(read_buffer);
 }
 

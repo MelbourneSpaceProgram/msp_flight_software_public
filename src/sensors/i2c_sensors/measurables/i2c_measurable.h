@@ -18,12 +18,6 @@ class I2cMeasurable : public Reading<R>, public Measurable {
     virtual ~I2cMeasurable() {}
 
     bool TakeReading() {
-        // Sensor can be NULL if it is actually not a real sensor (ie a mocked
-        // software sensor) Assume mocked software sensors cannot fail.
-        if (sensor != NULL && sensor->IsFailed()) {
-            this->reading = failure_reading;
-            return false;
-        }
         try {
             this->reading =
                 TakeDirectI2cReading();  // Throws exception on failure
