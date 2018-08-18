@@ -1,4 +1,5 @@
 #include <src/board/i2c/i2c.h>
+#include <src/config/satellite.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
 #include <src/util/satellite_time_source.h>
@@ -20,6 +21,7 @@ Antenna::Antenna() {
 }
 
 bool Antenna::SafeDeploy() const {
+    if (!kDeployAntenna) return false;
     if (TryAlgorithm(Antenna::kCommandAllDoorsAlgorithm1)) {
         return true;
     }
@@ -46,6 +48,8 @@ bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
 }
 
 bool Antenna::ForceDeploy() const {
+    if (!kDeployAntenna) return false;
+
     I2cIoExpander io_expander(bus, kAntennaOverRideIoExpanderAddress);
 
     // Perform manual override of primary burners
