@@ -11,11 +11,9 @@ class I2cDevice {
     I2cDevice(
         const I2c* bus, uint8_t address,
         const I2cMultiplexer* multiplexer = NULL,
-        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel,
-        bool failed = false);
+        I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
     uint8_t GetI2cAddress() const;
-    bool IsFailed() const;
     const I2cMultiplexer* GetI2cMultiplexer() const;
     I2cMultiplexer::MuxChannel GetMultiplexerChannel() const;
 
@@ -30,7 +28,6 @@ class I2cDevice {
 
    protected:
     uint8_t address;
-    void SetFailed(bool failed);
 
    private:
     const I2cMultiplexer* multiplexer;

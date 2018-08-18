@@ -1,10 +1,10 @@
+#include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
-#include <external/etl/exception.h>
 
 const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
     250, 500, 1000, 2000};
@@ -23,7 +23,6 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
                                            I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {
     if (!fs_board_available) {
-        SetFailed(true);
         return;
     }
 
@@ -40,7 +39,7 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
         ReadMagnetometerAdjustmentValues();
         SetBypassMode(kBypassModeDisable);
     } catch (etl::exception& e) {
-        SetFailed(true);
+        // TODO(dingbenjamin): Not sure what we can really do
     }
 }
 
@@ -104,7 +103,7 @@ MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
         magno_z_reading_bytes;
     etl::array<byte, 7> magno_data = ReadSevenBytesFromMagnoRegister();
 
-    if(magno_data.at(6) & kMagnetometerOverflowBitMask) {
+    if (magno_data.at(6) & kMagnetometerOverflowBitMask) {
         etl::exception e("Magnetometer overflow", __FILE__, __LINE__);
         throw e;
     }
