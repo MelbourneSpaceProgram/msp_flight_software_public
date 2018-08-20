@@ -44,7 +44,6 @@ bool I2cDevice::PerformWriteTransaction(byte address, byte* write_buffer,
                                            write_buffer_length);
     MuxDeselect();
     return success;
-    ;
 }
 
 bool I2cDevice::PerformReadTransaction(byte address, byte* write_buffer,
