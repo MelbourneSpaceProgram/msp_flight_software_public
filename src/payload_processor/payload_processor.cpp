@@ -1,8 +1,8 @@
-#include <src/payload_processor/commands/lithium_set_pa_command.h>
 #include <src/payload_processor/commands/command.h>
 #include <src/payload_processor/commands/force_reset_command.h>
 #include <src/payload_processor/commands/lithium_beacon_period_command.h>
 #include <src/payload_processor/commands/lithium_enable_command.h>
+#include <src/payload_processor/commands/lithium_set_pa_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
@@ -65,10 +65,16 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
                 LithiumBeaconPeriodCommand beacon_period_command(
                     payload + kCommandCodeLength);
                 command = &beacon_period_command;
+                break;
             case kLithiumFastPaCommand:
                 LithiumSetPaCommand set_pa_command(payload +
                                                    kCommandCodeLength);
                 command = &set_pa_command;
+                break;
+            default:
+                Log_error1("Received command with unknown ID: %d",
+                           command_code);
+                return false;
         }
 
         try {
