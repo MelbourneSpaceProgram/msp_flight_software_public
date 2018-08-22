@@ -79,23 +79,23 @@ TEST(FsCheckout, Imu2) {
 TEST(FsCheckout, CanSenseFsTorquerCurrentX) {
     double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
         kFsTorquerCurrentX, 0);
-    DOUBLES_EQUAL(0.75, current, 0.75);
+    DOUBLES_EQUAL(0.75, current, 0.76);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentTotal) {
     double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
         kFsTorquerCurrentTotal, 0);
-    DOUBLES_EQUAL(2, current, 2);
+    DOUBLES_EQUAL(2, current, 2.01);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentY) {
     double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
         kFsTorquerCurrentY, 0);
-    DOUBLES_EQUAL(0.75, current, 0.75);
+    DOUBLES_EQUAL(0.75, current, 0.76);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentZ) {
     double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
         kFsTorquerCurrentZ, 0);
-    DOUBLES_EQUAL(0.75, current, 0.75);
+    DOUBLES_EQUAL(0.75, current, 0.76);
 }
