@@ -241,13 +241,17 @@ def testLoop(debug_serial_port, logger, mc):
 
             elif message_code == \
                 message_codes["magnetometer_reading_code"]:
-                # Magnetometer Reading Echo
+                # Magnetometer Reading From The Satellite
 
-                magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
-                magnetometer_reading_echo.ParseFromString(payload)
-                logger.info("Message data: " + str(magnetometer_reading_echo))
+                satellite_magnetometer_reading = MagnetometerReading_pb2.MagnetometerReading()
+                satellite_magnetometer_reading.ParseFromString(payload)
+                logger.info("Message data: " + str(satellite_magnetometer_reading))
                 mc.set("Magnetometer_X",
-                       struct.pack('>d',magnetometer_reading_echo.x))
+                       struct.pack('>d',satellite_magnetometer_reading.x))
+                mc.set("Magnetometer_Y",
+                       struct.pack('>d',satellite_magnetometer_reading.y))
+                mc.set("Magnetometer_Z",
+                       struct.pack('>d',satellite_magnetometer_reading.z))
 
 
             elif message_code == \

@@ -1,12 +1,12 @@
 #ifndef SRC_CONFIG_UNIT_TESTS_H_
 #define SRC_CONFIG_UNIT_TESTS_H_
 
-static const bool eps_board_available = true;
+static const bool eps_board_available = false;
 static const bool cdh_board_available = true;
 static const bool fs_board_available = true;
-static const bool panel_board_available = true;
-static const bool tcom_board_available = true;
-static const bool utilities_board_available = true;
+static const bool panel_board_available = false;
+static const bool tcom_board_available = false;
+static const bool utilities_board_available = false;
 
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability
@@ -54,6 +54,6 @@ static const bool log_i2c = false;
 // Run everything but this test
 // static const char* test_args[] = {"exe", "-xn", "NameOfTest"};
 
-static const char* test_args[] = {"exe"};
+static const char* test_args[] = {"exe", "-v", "-sg", "I2cDeviceEnumeration"};
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_

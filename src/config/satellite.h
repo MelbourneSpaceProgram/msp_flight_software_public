@@ -11,7 +11,7 @@ static const uint8_t kNominalLithiumPowerLevel = 150;  // Scaled between 0-255
 // DO NOT TURN ON UNTIL LAUNCH
 static bool kDeployAntenna = false;
 // Will disable orientation control if true
-static bool kRunMagnetorquersAtConstantPower = true;
+static bool kRunMagnetorquersAtConstantPower = false;
 // float value in range [-1, 1]
 static float kMagnetorquerPowerFractionX = 1.0;
 static float kMagnetorquerPowerFractionY = 1.0;

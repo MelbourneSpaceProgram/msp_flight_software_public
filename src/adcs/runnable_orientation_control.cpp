@@ -67,7 +67,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    BDotEstimator b_dot_estimator(50, 4000);
+    BDotEstimator b_dot_estimator(50, 4);
     LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
@@ -114,6 +114,10 @@ void RunnableOrientationControl::ControlOrientation() {
         MagnetometerReading magnetometer_reading =
             measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
                 kFsImuMagno2, 0);
+        Log_warning3("Magnetometer Reading: %f, %f, %f\n",
+                     floatToArg(magnetometer_reading.x),
+                     floatToArg(magnetometer_reading.y),
+                     floatToArg(magnetometer_reading.z));
 
         if (hil_available) {
             // Echo magnetometer reading to data dashboard
