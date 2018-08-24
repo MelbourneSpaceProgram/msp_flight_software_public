@@ -12,8 +12,6 @@ static const float kTwoEclipseCapacity = 0.2;
 static const float kThreePassCapacity = 0.4;
 static const float kHysteresis = 0.02;
 
-static const double kTempBatteryOperationalLow = 5;
-static const double kTempBatteryOperationalHigh = 40;
 static const double kHysteresisTemp = 1;
 
 static const double kTempTelecomsOperationalMax = 80;

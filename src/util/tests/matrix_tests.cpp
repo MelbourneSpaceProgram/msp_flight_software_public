@@ -60,7 +60,7 @@ TEST(Matrix, TestCopyConstructor) {
     CHECK(m22_A.IsEqual(m22_B));
 
     // TODO
-    //CHECK_THROWS(etl::exception, Matrix m32(m22_A, m32_data));
+    // CHECK_THROWS(etl::exception, Matrix m32(m22_A, m32_data));
 }
 
 TEST(Matrix, TestSlice) {
@@ -217,7 +217,6 @@ TEST(Matrix, TestVectorNorm) {
 
     DOUBLES_EQUAL(5.47722557505, Matrix::VectorNorm(m41), 0.001);
 
-    bool failed = false;
     double m33_data[3][3];
     Matrix m33(m33_data);
     CHECK_THROWS(etl::exception, Matrix::VectorNorm(m33));

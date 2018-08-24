@@ -14,7 +14,6 @@ fnptr RunnableBeacon::GetRunnablePointer() { return &Beacon; }
 
 void RunnableBeacon::Beacon() {
     Lithium *lithium = Lithium::GetInstance();
-    uint8_t tx_count = 0;
 
     while (1) {
         BeaconPayload beacon;

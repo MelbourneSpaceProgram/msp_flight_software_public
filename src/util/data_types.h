@@ -18,4 +18,7 @@ typedef struct time {
     uint16_t year;
 } RTime;
 
+static const double kInvalidDouble = -9999.0;
+static const uint16_t kInvalidPositiveInteger = 9999;
+
 #endif  // SRC_UTIL_DATA_TYPES_H_
