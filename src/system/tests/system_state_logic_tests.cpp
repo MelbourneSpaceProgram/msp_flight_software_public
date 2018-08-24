@@ -11,7 +11,6 @@
 #include <src/system/system_state_machines/telecoms_state_machine.h>
 
 static const uint8_t kNumBatteryChargeStates = 3;
-static const uint8_t kNumBatteryTempStates = 3;
 static const uint8_t kNumTelecomsTempStates = 2;
 static const uint8_t kNumTleStates = 2;
 static const uint8_t kNumDetumbledStates = 2;

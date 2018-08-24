@@ -100,6 +100,7 @@ uint16_t Bms::GetJeitaRegionVCharge(etl::array<byte, 2>& read_buffer) {
             static_cast<uint16_t>(read_buffer.at(0));
         return jeita_region_binary_reading;
     }
+    return kInvalidPositiveInteger;
 }
 // VCharge Dec
 double Bms::GetVChargeDEC(etl::array<byte, 2>& read_buffer) {
@@ -168,6 +169,7 @@ double Bms::GetBatteryVoltage() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToBatteryVoltage(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToBatteryVoltage(etl::array<byte, 2>& read_buffer) {
@@ -183,6 +185,7 @@ double Bms::GetBatteryCurrent() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToBatteryCurrent(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToBatteryCurrent(etl::array<byte, 2>& read_buffer) {
@@ -198,6 +201,7 @@ double Bms::GetSystemVoltage() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToSystemVoltage(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToSystemVoltage(etl::array<byte, 2>& read_buffer) {
@@ -213,6 +217,7 @@ double Bms::GetInputVoltage() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToInputVoltage(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToInputVoltage(etl::array<byte, 2>& read_buffer) {
@@ -228,6 +233,7 @@ double Bms::GetInputCurrent() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToInputCurrent(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToInputCurrent(etl::array<byte, 2>& read_buffer) {
@@ -242,6 +248,7 @@ double Bms::GetDieTemp() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToDieTemperature(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToDieTemperature(etl::array<byte, 2>& read_buffer) {
@@ -258,6 +265,7 @@ double Bms::GetBatteryTemp() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToBatteryTemperature(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToBatteryTemperature(etl::array<byte, 2>& read_buffer) {
@@ -279,6 +287,7 @@ uint16_t Bms::GetJeitaRegion() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToJeitaRegion(read_buffer);
     }
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToJeitaRegion(etl::array<byte, 2>& read_buffer) {
@@ -302,9 +311,8 @@ Bms::SystemStatus Bms::GetSystemStatus(etl::array<byte, 2>& read_buffer) {
         else if ((system_status_binary_reading & kChargeEnableBitMask) !=
                  kChargeEnableBitMask)
             return kChargeDisable;
-        else
-            return kOther;
     }
+    return kOther;
 }
 
 Bms::ChargerStates Bms::GetChargerState() {
@@ -314,6 +322,7 @@ Bms::ChargerStates Bms::GetChargerState() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToChargerState(read_buffer);
     }
+    return kInvalidChargerState;
 }
 
 Bms::ChargerStates Bms::ConvertToChargerState(
@@ -345,9 +354,8 @@ Bms::ChargeStatus Bms::GetChargeStatus(etl::array<byte, 2>& read_buffer) {
         else if ((charge_status_binary_reading & kChargeStatusBitMask) ==
                  kChargeStatusNotCharging)
             return kNotCharging;
-        else
-            return kError;
     }
+    return kError;
 }
 
 double Bms::GetRechargeThreshold() {
@@ -357,6 +365,7 @@ double Bms::GetRechargeThreshold() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToRechargeThreshold(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 double Bms::ConvertToRechargeThreshold(etl::array<byte, 2>& read_buffer) {
@@ -372,6 +381,7 @@ uint16_t Bms::GetChargerConfig() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToChargerConfig(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 uint16_t Bms::ConvertToChargerConfig(etl::array<byte, 2>& read_buffer) {
@@ -387,11 +397,12 @@ uint16_t Bms::GetCXThreshold() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToCXThreshold(read_buffer);
     }
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToCXThreshold(etl::array<byte, 2>& read_buffer) {
-    // TODO(hugorilla): determine whether this is stored in two's complement;
-    // the data sheet isn't clear
+    // TODO(hugorilla): determine whether this is stored in two's
+    // complement; the data sheet isn't clear
     int16_t c_x_threshold_register =
         (read_buffer.at(1) << 8) | read_buffer.at(0);
     return c_x_threshold_register;
@@ -404,6 +415,7 @@ uint16_t Bms::GetChargeVoltageSetting() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToChargeVoltageSetting(read_buffer);
     }
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToChargeVoltageSetting(etl::array<byte, 2>& read_buffer) {
@@ -419,6 +431,7 @@ uint16_t Bms::GetChargeCurrentTarget() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToChargeCurrentTarget(read_buffer);
     }
+    return kInvalidDouble;
 }
 
 uint16_t Bms::ConvertToChargeCurrentTarget(etl::array<byte, 2>& read_buffer) {
@@ -446,6 +459,7 @@ uint16_t Bms::GetQCount() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToQCount(read_buffer);
     }
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToQCount(etl::array<byte, 2>& read_buffer) {
@@ -460,6 +474,7 @@ uint16_t Bms::GetQCountPrescaleFactor() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToQCountPrescaleFactor(read_buffer);
     }
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToQCountPrescaleFactor(etl::array<byte, 2>& read_buffer) {

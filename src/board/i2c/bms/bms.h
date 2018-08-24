@@ -35,7 +35,8 @@ class Bms : public I2cDevice {
         kPrecharge = 0x0080,
         kChargerSuspended = 0x0100,
         kAbsorbCharge = 0x0200,
-        kEqualizeCharge = 0x0400
+        kEqualizeCharge = 0x0400,
+        kInvalidChargerState = 0xffff
     };
 
     enum SystemStatus { kChargeEnable, kChargeDisable, kOther };

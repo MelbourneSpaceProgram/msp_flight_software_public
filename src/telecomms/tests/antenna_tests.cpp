@@ -21,7 +21,6 @@ TEST_GROUP(Antenna) {
 TEST(Antenna, TestSafeDeploy) {
     static uint8_t test_count = 2;
     byte initial_state = 0x00;
-    byte expected_final_state = 0xFF;
     byte test_number[2] = {0xF0, 0xF1};
     byte reset = 0xff;
 

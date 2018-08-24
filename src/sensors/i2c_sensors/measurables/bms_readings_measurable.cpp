@@ -2,8 +2,9 @@
 
 // TODO(hugorilla): work out how to put this in the .proto file
 const BmsReadings BmsReadingsMeasurable::kFailedBmsReadings = {
-    -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999,
-    -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, 0};
+    -9999.0, -9999.0, -9999.0, -9999.0, -9999.0, -9999.0, -9999.0,
+    9999,    9999,    9999,    9999,    -9999.0, 9999,    9999,
+    9999,    9999,    9999,    9999,    -9999.0, false};
 
 BmsReadingsMeasurable::BmsReadingsMeasurable(Bms* bms)
     : I2cMeasurable<BmsReadings>(bms, kFailedBmsReadings) {}
