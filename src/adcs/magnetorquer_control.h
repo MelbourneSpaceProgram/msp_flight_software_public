@@ -27,7 +27,7 @@ class MagnetorquerControl {
     static void SetupDegaussingPolaritySwitchTimer();
     static void DegaussingTimerISR(UArg degaussing_timer_semaphore);
 
-    static const uint32_t kDegaussingSwitchPeriodMicros = 100000;
+    static const uint32_t kDegaussingSwitchPeriodMicros = 10000;
 
    private:
     typedef enum MagnetorquerAxis {
