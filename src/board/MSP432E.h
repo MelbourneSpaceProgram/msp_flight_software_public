@@ -39,9 +39,9 @@ typedef enum Board_GPIOName {
     COMMS_INT = 14,
     nCOMMS_RST = 15,
     UNUSED_5 = 16,
-    FS_X_DIR = 17,
-    FS_Y_DIR = 18,
-    FS_Z_DIR = 19,
+    FS_A_DIR = 17,
+    FS_B_DIR = 18,
+    FS_C_DIR = 19,
     Board_GPIOCOUNT
 } Board_GPIOName;
 

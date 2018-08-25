@@ -31,9 +31,9 @@ class MagnetorquerControl {
 
    private:
     typedef enum MagnetorquerAxis {
-        kMagnetorquerAxisX = 0x00,
-        kMagnetorquerAxisY = 0x01,
-        kMagnetorquerAxisZ = 0x02
+        kMagnetorquerAxisA = 0x00,
+        kMagnetorquerAxisB = 0x01,
+        kMagnetorquerAxisC = 0x02
     } MagnetorquerAxis;
 
     static void InitializePwm();
@@ -43,9 +43,9 @@ class MagnetorquerControl {
                              float magnitude);
     static void PushDebugMessage(float x, float y, float z);
 
-    static PWM_Handle pwm_handle_axis_x;
-    static PWM_Handle pwm_handle_axis_y;
-    static PWM_Handle pwm_handle_axis_z;
+    static PWM_Handle pwm_handle_axis_a;
+    static PWM_Handle pwm_handle_axis_b;
+    static PWM_Handle pwm_handle_axis_c;
 
     // PWM Period in microseconds.
     //
@@ -55,13 +55,13 @@ class MagnetorquerControl {
     // With a period of 100uS, we have a duty resolution of 1/1200 of a period.
     static const uint16_t kMagnetorquerPWMPeriod = 100;
 
-    static const uint8_t kMagnetorquerPWMAxisX = Mag_STR_CDH_FS_Out1;
-    static const uint8_t kMagnetorquerPWMAxisY = Mag_STR_CDH_FS_Out2;
-    static const uint8_t kMagnetorquerPWMAxisZ = Mag_STR_CDH_FS_Out3;
+    static const uint8_t kMagnetorquerPWMAxisA = Mag_STR_CDH_FS_Out1;
+    static const uint8_t kMagnetorquerPWMAxisB = Mag_STR_CDH_FS_Out2;
+    static const uint8_t kMagnetorquerPWMAxisC = Mag_STR_CDH_FS_Out3;
 
-    static const uint32_t kMagnetorquerPolarityGpioAxisX = FS_X_DIR;
-    static const uint32_t kMagnetorquerPolarityGpioAxisY = FS_Y_DIR;
-    static const uint32_t kMagnetorquerPolarityGpioAxisZ = FS_Z_DIR;
+    static const uint32_t kMagnetorquerPolarityGpioAxisA = FS_A_DIR;
+    static const uint32_t kMagnetorquerPolarityGpioAxisB = FS_B_DIR;
+    static const uint32_t kMagnetorquerPolarityGpioAxisC = FS_C_DIR;
 
     //
     // TODO(crozone):
