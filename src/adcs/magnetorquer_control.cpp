@@ -2,21 +2,22 @@
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
-#include <ti/drivers/GPIO.h>
-#include <ti/drivers/PWM.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/PWM.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
 
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
-PWM_Handle MagnetorquerControl::pwm_handle_axis_x = NULL;
-PWM_Handle MagnetorquerControl::pwm_handle_axis_y = NULL;
-PWM_Handle MagnetorquerControl::pwm_handle_axis_z = NULL;
+PWM_Handle MagnetorquerControl::pwm_handle_axis_a = NULL;
+PWM_Handle MagnetorquerControl::pwm_handle_axis_b = NULL;
+PWM_Handle MagnetorquerControl::pwm_handle_axis_c = NULL;
 
 void MagnetorquerControl::Initialize() { InitializePwm(); }
 
@@ -26,25 +27,29 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
         PushDebugMessage(x, y, z);
     }
 
+    float a = x;
+    float b = y;
+    float c = z;
+
     if (kMagnetorquerHardwareEnabled) {
-        // Set X axis
-        SetPolarity(kMagnetorquerAxisX, x >= 0);
-        SetMagnitude(kMagnetorquerAxisX, fabsf(x));
+        // Set A axis
+        SetPolarity(kMagnetorquerAxisA, a >= 0);
+        SetMagnitude(kMagnetorquerAxisA, fabsf(a));
 
-        // Set Y value
-        SetPolarity(kMagnetorquerAxisY, y >= 0);
-        SetMagnitude(kMagnetorquerAxisY, fabsf(y));
+        // Set B value
+        SetPolarity(kMagnetorquerAxisB, b >= 0);
+        SetMagnitude(kMagnetorquerAxisB, fabsf(b));
 
-        // Set Z value
-        SetPolarity(kMagnetorquerAxisZ, z >= 0);
-        SetMagnitude(kMagnetorquerAxisZ, fabsf(z));
+        // Set C value
+        SetPolarity(kMagnetorquerAxisC, c >= 0);
+        SetMagnitude(kMagnetorquerAxisC, fabsf(c));
     }
 }
 
 void MagnetorquerControl::InitializePwm() {
-    pwm_handle_axis_x = NULL;
-    pwm_handle_axis_y = NULL;
-    pwm_handle_axis_z = NULL;
+    pwm_handle_axis_a = NULL;
+    pwm_handle_axis_b = NULL;
+    pwm_handle_axis_c = NULL;
 
     // Setup the PWM parameters.
     PWM_Params params;
@@ -62,25 +67,25 @@ void MagnetorquerControl::InitializePwm() {
     params.dutyValue = 0;
 
     // Setup all PWMs
-    pwm_handle_axis_x = PWM_open(kMagnetorquerPWMAxisX, &params);
-    if (pwm_handle_axis_x == NULL) {
-        throw etl::exception("X Axis PWM did not open", __FILE__, __LINE__);
+    pwm_handle_axis_a = PWM_open(kMagnetorquerPWMAxisA, &params);
+    if (pwm_handle_axis_a == NULL) {
+        throw etl::exception("A Axis PWM did not open", __FILE__, __LINE__);
     }
 
-    pwm_handle_axis_y = PWM_open(kMagnetorquerPWMAxisY, &params);
-    if (pwm_handle_axis_y == NULL) {
-        throw etl::exception("Y Axis PWM did not open", __FILE__, __LINE__);
+    pwm_handle_axis_b = PWM_open(kMagnetorquerPWMAxisB, &params);
+    if (pwm_handle_axis_b == NULL) {
+        throw etl::exception("B Axis PWM did not open", __FILE__, __LINE__);
     }
 
-    pwm_handle_axis_z = PWM_open(kMagnetorquerPWMAxisZ, &params);
-    if (pwm_handle_axis_z == NULL) {
-        throw etl::exception("Z Axis PWM did not open", __FILE__, __LINE__);
+    pwm_handle_axis_c = PWM_open(kMagnetorquerPWMAxisC, &params);
+    if (pwm_handle_axis_c == NULL) {
+        throw etl::exception("C Axis PWM did not open", __FILE__, __LINE__);
     }
 
     // Start all PWMs
-    PWM_start(pwm_handle_axis_x);
-    PWM_start(pwm_handle_axis_y);
-    PWM_start(pwm_handle_axis_z);
+    PWM_start(pwm_handle_axis_a);
+    PWM_start(pwm_handle_axis_b);
+    PWM_start(pwm_handle_axis_c);
 }
 
 void MagnetorquerControl::PushDebugMessage(float x, float y, float z) {
@@ -92,19 +97,19 @@ void MagnetorquerControl::PushDebugMessage(float x, float y, float z) {
     pwm_output_reading.z = z;
 
     RunnableDataDashboard::TransmitMessage(
-        kPwmOutputReadingCode, PwmOutputReading_size,
-        PwmOutputReading_fields, &pwm_output_reading);
+        kPwmOutputReadingCode, PwmOutputReading_size, PwmOutputReading_fields,
+        &pwm_output_reading);
 }
 
 void MagnetorquerControl::SetPolarity(MagnetorquerAxis axis, bool positive) {
     uint8_t polarity = (positive) ? 1 : 0;
 
-    if (axis == kMagnetorquerAxisX) {
-        GPIO_write(kMagnetorquerPolarityGpioAxisX, polarity);
-    } else if (axis == kMagnetorquerAxisY) {
-        GPIO_write(kMagnetorquerPolarityGpioAxisY, polarity);
-    } else if (axis == kMagnetorquerAxisZ) {
-        GPIO_write(kMagnetorquerPolarityGpioAxisZ, polarity);
+    if (axis == kMagnetorquerAxisA) {
+        GPIO_write(kMagnetorquerPolarityGpioAxisA, polarity);
+    } else if (axis == kMagnetorquerAxisB) {
+        GPIO_write(kMagnetorquerPolarityGpioAxisB, polarity);
+    } else if (axis == kMagnetorquerAxisC) {
+        GPIO_write(kMagnetorquerPolarityGpioAxisC, polarity);
     } else {
         throw etl::exception("Invalid axis", __FILE__, __LINE__);
     }
@@ -120,12 +125,12 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
 
     // Get the PWM handle for the axis specified
     PWM_Handle pwm_handle;
-    if (axis == kMagnetorquerAxisX) {
-        pwm_handle = pwm_handle_axis_x;
-    } else if (axis == kMagnetorquerAxisY) {
-        pwm_handle = pwm_handle_axis_y;
-    } else if (axis == kMagnetorquerAxisZ) {
-        pwm_handle = pwm_handle_axis_z;
+    if (axis == kMagnetorquerAxisA) {
+        pwm_handle = pwm_handle_axis_a;
+    } else if (axis == kMagnetorquerAxisB) {
+        pwm_handle = pwm_handle_axis_b;
+    } else if (axis == kMagnetorquerAxisC) {
+        pwm_handle = pwm_handle_axis_c;
     } else {
         throw etl::exception("Invalid axis", __FILE__, __LINE__);
     }
@@ -144,9 +149,13 @@ void MagnetorquerControl::Degauss() {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
         // Wait for timer
-        // TODO(rskew): It is possible for this to be null due to how the semaphore is initialised. I (akremor) have temporarily modded it so the code doesn't break but we need to revisit the creation of the semaphore. Perhaps dependency injection.
-        // There is a race condition because this check can be called before the semaphore has been initialised.
-        if (degaussing_timer_semaphore){
+        // TODO(rskew): It is possible for this to be null due to how the
+        // semaphore is initialised. I (akremor) have temporarily modded it so
+        // the code doesn't break but we need to revisit the creation of the
+        // semaphore. Perhaps dependency injection. There is a race condition
+        // because this check can be called before the semaphore has been
+        // initialised.
+        if (degaussing_timer_semaphore) {
             Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
             // Negative power
             SetMagnetorquersPowerFraction(-power, -power, -power);
