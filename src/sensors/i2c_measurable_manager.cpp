@@ -1,10 +1,11 @@
 #include <src/board/i2c/bms/bms.h>
+#include <src/config/satellite.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
-#include <src/sensors/i2c_sensors/measurables/bms_readings_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_readings_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/current_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_accelerometer_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_gyroscope_measurable.h>
@@ -139,7 +140,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddVoltage(kFsMagTorqBZ, fs_adc_z, kAdcP2NGnd, 2);
 
     AddCurrent(kFsTorquerCurrentX, fs_adc_x, kAdcP0NGnd, 0.1, 1.65);
-    AddCurrent(kFsTorquerCurrentTotal, fs_adc_x, kAdcP3NGnd, 1.0/7.5, 0);
+    AddCurrent(kFsTorquerCurrentTotal, fs_adc_x, kAdcP3NGnd, 1.0 / 7.5, 0);
     AddCurrent(kFsTorquerCurrentY, fs_adc_y, kAdcP0NGnd, 0.1, 1.65);
     AddCurrent(kFsTorquerCurrentZ, fs_adc_z, kAdcP0NGnd, 0.1, 1.65);
 
@@ -160,14 +161,16 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_1);
     AddImuAcceleromterMeasurable(kFsImuAccelerometer1, fs_imu_1);
     AddImuTemperatureMeasurable(kFsImuTemperature1, fs_imu_1);
-    AddImuMagnetometerMeasurable(kFsImuMagnetometer1, fs_imu_1);
+    AddImuMagnetometerMeasurable(kFsImuMagnetometer1, fs_imu_1,
+                                 kImuAToBodyFrameTransform);
 
     MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
     AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
     AddImuAcceleromterMeasurable(kFsImuAccelerometer2, fs_imu_2);
     AddImuTemperatureMeasurable(kFsImuTemperature2, fs_imu_2);
-    AddImuMagnetometerMeasurable(kFsImuMagnetometer2, fs_imu_2);
+    AddImuMagnetometerMeasurable(kFsImuMagnetometer2, fs_imu_2,
+                                 kImuBToBodyFrameTransform);
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
@@ -338,10 +341,11 @@ void I2cMeasurableManager::AddImuTemperatureMeasurable(
     measurables[id] = temp;
 }
 void I2cMeasurableManager::AddImuMagnetometerMeasurable(
-    MeasurableId id, MPU9250MotionTracker *imu_sensor) {
+    MeasurableId id, MPU9250MotionTracker *imu_sensor,
+    const Matrix frame_mapping) {
     CheckValidId(id);
     ImuMagnetometerMeasurable *magnetometer =
-        new ImuMagnetometerMeasurable(imu_sensor);
+        new ImuMagnetometerMeasurable(imu_sensor, frame_mapping);
     measurables[id] = magnetometer;
 }
 BmsBatteryTemperatureMeasurable *

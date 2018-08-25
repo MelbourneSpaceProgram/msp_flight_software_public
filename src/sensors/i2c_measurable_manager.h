@@ -5,6 +5,7 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/measurable_id.h>
+#include <src/util/matrix.h>
 
 class I2cMultiplexer;
 class I2c;
@@ -113,7 +114,8 @@ class I2cMeasurableManager {
     void AddImuTemperatureMeasurable(MeasurableId id,
                                      MPU9250MotionTracker *imu_sensor);
     void AddImuMagnetometerMeasurable(MeasurableId id,
-                                      MPU9250MotionTracker *imu_sensor);
+                                      MPU9250MotionTracker *imu_sensor,
+                                      const Matrix frame_mapping);
     void CheckValidId(MeasurableId id);
 
     static I2cMeasurableManager *instance;

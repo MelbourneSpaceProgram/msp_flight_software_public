@@ -10,6 +10,20 @@ class Matrix {
     explicit Matrix(double (&data)[rows][columns])
         : data(&data[0][0]), nrows(rows), ncolumns(columns) {}
 
+    // To instantiate a constant matrix, use this constructor (constant data),
+    // a dummy 2D array of mutable data, but declare the object as 'const'
+    // to disallow any modification of the inner array.
+    template <uint8_t rows, uint8_t columns>
+    explicit Matrix(const double (&const_data)[rows][columns],
+                    double (&data)[rows][columns])
+        : data(&data[0][0]), nrows(rows), ncolumns(columns) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                data[i][j] = const_data[i][j];
+            }
+        }
+    }
+
     // TODO(rskew) implement copy constructor in matrix.cpp
     template <uint8_t rows, uint8_t columns>
     Matrix(const Matrix &A, double (&init_data)[rows][columns] = NULL) {

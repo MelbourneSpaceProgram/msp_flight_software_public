@@ -12,9 +12,10 @@ const MagnetometerReading
                                                              -9999, 0};
 
 ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
-    MPU9250MotionTracker* imu_sensor)
+    MPU9250MotionTracker* imu_sensor, const Matrix frame_mapping)
     : I2cMeasurable<MagnetometerReading>(imu_sensor,
-                                         kFailedMagnetometerReading) {}
+                                         kFailedMagnetometerReading),
+      magnetometer_to_body_frame_transform(frame_mapping) {}
 
 // Get readings from the hardware magnetometer and the simulation.
 // Fuse the hardware and simulation readings for the controller, and
@@ -22,7 +23,22 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
 MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     MPU9250MotionTracker* imu_sensor =
         static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
-    reading = imu_sensor->TakeMagnetometerReading();
+    MagnetometerReading raw_reading = imu_sensor->TakeMagnetometerReading();
+
+    // Apply change of frame from magnetometer frame to satellite body frame
+    double reading_magnetometer_frame_data[3][1];
+    Matrix reading_magnetometer_frame(reading_magnetometer_frame_data);
+    reading_magnetometer_frame.Set(0, 0, raw_reading.x);
+    reading_magnetometer_frame.Set(1, 0, raw_reading.y);
+    reading_magnetometer_frame.Set(2, 0, raw_reading.z);
+    double reading_body_frame_data[3][1];
+    Matrix reading_body_frame(reading_body_frame_data);
+    reading_body_frame.Multiply(magnetometer_to_body_frame_transform,
+                                reading_magnetometer_frame);
+    reading.x = reading_body_frame.Get(0,0);
+    reading.y = reading_body_frame.Get(1,0);
+    reading.z = reading_body_frame.Get(2,0);
+
 
     if (hil_available) {
         // Echo reading to data dashboard

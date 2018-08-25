@@ -27,9 +27,24 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
         PushDebugMessage(x, y, z);
     }
 
-    float a = x;
-    float b = y;
-    float c = z;
+    // Map from the body frame to the magnetorquer 'frame'.
+    // Note: the magnetorquers may be orientated arbitrarily, and so the
+    //   'a', 'b' and 'c' components may not make a right-handed coordinate
+    //   system. Therefore, the transformation from the body frame to the
+    //   magnetorquer 'frame' may not be a pure rotation.
+    double magnetorquer_power_body_frame_data[3][1];
+    Matrix magnetorquer_power_body_frame(magnetorquer_power_body_frame_data);
+    magnetorquer_power_body_frame.Set(0, 0, x);
+    magnetorquer_power_body_frame.Set(1, 0, y);
+    magnetorquer_power_body_frame.Set(2, 0, z);
+    double magnetorquer_power_magnetorquer_frame_data[3][1];
+    Matrix magnetorquer_power_magnetorquer_frame(
+        magnetorquer_power_magnetorquer_frame_data);
+    magnetorquer_power_magnetorquer_frame.Multiply(
+        kBodyToMagnetorquerFrameTransform, magnetorquer_power_body_frame);
+    float a = magnetorquer_power_magnetorquer_frame.Get(0, 0);
+    float b = magnetorquer_power_magnetorquer_frame.Get(1, 0);
+    float c = magnetorquer_power_magnetorquer_frame.Get(2, 0);
 
     if (kMagnetorquerHardwareEnabled) {
         // Set A axis
