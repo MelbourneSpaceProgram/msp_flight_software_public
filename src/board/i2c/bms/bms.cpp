@@ -381,7 +381,7 @@ uint16_t Bms::GetChargerConfig() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToChargerConfig(read_buffer);
     }
-    return kInvalidDouble;
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToChargerConfig(etl::array<byte, 2>& read_buffer) {
@@ -431,7 +431,7 @@ uint16_t Bms::GetChargeCurrentTarget() {
         ReadFromCurrentRegister(read_buffer);
         return ConvertToChargeCurrentTarget(read_buffer);
     }
-    return kInvalidDouble;
+    return kInvalidPositiveInteger;
 }
 
 uint16_t Bms::ConvertToChargeCurrentTarget(etl::array<byte, 2>& read_buffer) {
