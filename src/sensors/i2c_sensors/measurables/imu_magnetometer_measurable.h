@@ -3,14 +3,17 @@
 
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
+#include <src/util/matrix.h>
 
 class ImuMagnetometerMeasurable : public I2cMeasurable<MagnetometerReading> {
    public:
-    explicit ImuMagnetometerMeasurable(MPU9250MotionTracker* imu_sensor);
+    explicit ImuMagnetometerMeasurable(MPU9250MotionTracker* imu_sensor,
+                                       const Matrix frame_mapping);
     MagnetometerReading TakeDirectI2cReading();
     MagnetometerReading TakeSimulationReading();
 
    private:
+    const Matrix magnetometer_to_body_frame_transform;
     static const MagnetometerReading kFailedMagnetometerReading;
 };
 
