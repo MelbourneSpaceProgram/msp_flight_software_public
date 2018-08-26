@@ -5,12 +5,11 @@
 RadDriver::RadDriver(const I2c* bus, int address,
                      const I2cMultiplexer* multiplexer,
                      I2cMultiplexer::MuxChannel channel)
-    : I2cDevice(bus, address, multiplexer, channel) {}
+    : I2cDevice(bus, address, multiplexer, channel),
+      io_expander(bus, address, multiplexer, channel) {}
 
+// Carry out radiation measurement algorithm:
 double RadDriver::TakeI2cReading() {
-    // Carry out radiation measurement algorithm:
-    I2cIoExpander io_expander(I2cDevice::GetI2cBus(), RadDriver::kRadAddress);
-
     // Setting all IO pins in the range 0-11 to input, and IO pin 12 to output
     io_expander.RangeSetDirection(I2cIoExpander::kIoPin0,
                                   I2cIoExpander::kIoPin11,

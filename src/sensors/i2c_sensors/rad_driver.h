@@ -1,8 +1,3 @@
-/*
- * rad_driver.h
- * I2C Radiation Driver
- */
-
 #ifndef I2C_SENSORS_RAD_DRIVER_H_
 #define I2C_SENSORS_RAD_DRIVER_H_
 
@@ -34,6 +29,7 @@ class RadDriver : public I2cDevice {
     double TakeI2cReading();
 
    private:
+    I2cIoExpander io_expander;
     static const int kRadAddress = 0x20;
     static const int kSamplePeriodTime = 250;  // sampling time (milliseconds)
     static const int kWaitTime = 1;            // (milliseconds)

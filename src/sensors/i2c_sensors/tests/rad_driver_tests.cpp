@@ -4,6 +4,8 @@
 #include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/sensors/i2c_sensors/rad_driver.h>
 
+#include <src/sensors/i2c_sensors/adc.h>
+
 /**
  * Data for these tests has been sourced from the "Radiation Sensor Test v3"
  * jama doc (CS1-DD-270).
@@ -23,6 +25,7 @@ static const double kAvgExposureRad = 0.670214;
 static const double kExposureRadTolerance = 0.1;
 
 static const int kRadAddress = 0x20;
+static const int kMuxAddress = 0x71;
 
 TEST_GROUP(RadDriver) {
     void setup() {
@@ -32,8 +35,8 @@ TEST_GROUP(RadDriver) {
     };
 };
 
-// Test (rad_driver's) radiation reader in a "normal", room environment.
-TEST(RadDriver, TestRoomRead) {
+// Test radiation reading (on bus B) in a normal environment
+TEST(RadDriver, TestRoomReadB) {
     I2c test_i2c_bus(I2C_BUS_B);
     RadDriver test_rad_driver(&test_i2c_bus, kRadAddress);
 
@@ -43,11 +46,28 @@ TEST(RadDriver, TestRoomRead) {
           (rad_reading > kAvgRoomRad - kRoomRadTolerance));
 }
 
-// Test radiation reader, directly exposing it to a rad source.
+// Test radiation reading (on bus C) in a normal environment. This is routed
+// through the a mux(0x71) on channel 4. Refer the to I2C Architecture doc on
+// lucidchart.
+/*
+ * (24th aug) Solar Panel Rad Sensor [MUX(0x71)]: The external sensor is located
+ * on channel number 4
+ */
+TEST(RadDriver, TestRoomReadC) {
+    I2c test_i2c_bus(I2C_BUS_C);
+    I2cMultiplexer *mux_c = new I2cMultiplexer(&test_i2c_bus, kMuxAddress);
+    RadDriver test_rad_driver(&test_i2c_bus, kRadAddress, mux_c,
+                              I2cMultiplexer::kMuxChannel4);
+    double rad_reading = test_rad_driver.TakeI2cReading();
+
+    CHECK((rad_reading < kAvgRoomRad + kRoomRadTolerance) &&
+          (rad_reading > kAvgRoomRad - kRoomRadTolerance));
+}
+
+// Test radiation reading (on bus B), exposing it to a rad source.
 TEST(RadDriver, TestRadExposureRead) {
     I2c test_i2c_bus(I2C_BUS_B);
     RadDriver test_rad_driver(&test_i2c_bus, kRadAddress);
-
     double rad_reading = test_rad_driver.TakeI2cReading();
 
     CHECK((rad_reading < kAvgExposureRad + kExposureRadTolerance) &&
