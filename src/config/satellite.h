@@ -41,4 +41,25 @@ const Matrix kBodyToMagnetorquerFrameTransform(
     kBodyToMagnetorquerFrameTransform_const_data,
     kBodyToMagnetorquerFrameTransform_dummy_data);
 
+// Won't override the hard-coded initial scale factors that are set with
+// pre-flight calibration values if true.
+//
+// Because the on-orbit calibration data is taken orbiting the Earth, the
+// readings will have different magnitudes for different locations,
+// and the location of the spacecraft is not known during the comissioning
+// period. This will corrupt the generated scale factors, therefore the
+// pre-flight calibration scale factors are to be used.
+static bool kUsePreFlightMagnetometerCalibrationScaleFactors = true;
+
+// TODO (rskew) populate these values with calibration parameters
+// from pre-flight calibration of the flight model
+const double kPreFlightMagnetometerCalibrationBiasesImuBusA[3][1] = {
+    {0}, {0}, {0}};
+const double kPreFlightMagnetometerCalibrationBiasesImuBusB[3][1] = {
+    {0}, {0}, {0}};
+const double kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[3][1] = {
+    {1}, {1}, {1}};
+const double kPreFlightMagnetometerCalibrationScaleFactorsImuBusB[3][1] = {
+    {1}, {1}, {1}};
+
 #endif  //  SRC_CONFIG_SATELLITE_H_
