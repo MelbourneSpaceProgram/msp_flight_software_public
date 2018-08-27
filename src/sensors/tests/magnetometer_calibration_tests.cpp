@@ -1,28 +1,28 @@
 #include <CppUTest/TestHarness.h>
-#include <src/config/satellite.h>
 #include <src/sensors/magnetometer_calibration.h>
 
-const double test_calibration_values_data[40][3] = {
-    {-36.74, -32.77, -117.56}, {-36.74, -32.77, -117.56},
-    {-36.56, -33.29, -117.73}, {-35.52, -32.94, -117.39},
-    {-35.87, -32.60, -117.73}, {-36.56, -31.55, -118.40},
-    {-37.26, -31.55, -118.40}, {-36.91, -32.94, -117.39},
-    {-37.78, -32.07, -117.22}, {-35.17, -35.39, -115.37},
-    {-35.17, -35.39, -115.37}, {-36.21, -39.23, -113.36},
-    {-35.35, -44.99, -109.49}, {-36.74, -48.48, -106.80},
-    {-37.43, -49.53, -106.13}, {-36.21, -51.45, -103.61},
-    {-37.26, -57.03, -99.91},  {-37.26, -61.57, -93.19},
-    {-35.87, -64.01, -87.13},  {-35.87, -64.01, -87.13},
-    {-37.61, -71.34, -75.03},  {-37.95, -73.44, -66.29},
-    {-38.82, -74.66, -59.73},  {-42.65, -75.36, -52.00},
-    {-43.52, -74.83, -46.79},  {-43.69, -73.61, -41.24},
-    {-43.87, -71.69, -36.03},  {-43.87, -71.69, -36.03},
-    {-46.83, -70.47, -34.52},  {-47.52, -71.52, -37.21},
-    {-54.13, -70.47, -41.92},  {-59.70, -70.12, -49.65},
-    {-65.96, -68.38, -56.37},  {-74.48, -62.97, -59.23},
-    {-83.70, -56.86, -60.74},  {-92.92, -46.91, -65.62},
-    {-101.97, -28.76, -73.35}, {-101.97, -28.76, -73.35},
-    {-102.32, -14.09, -83.10}, {-99.19, -5.02, -92.18}};
+const double
+    test_calibration_values_data[MagnetometerCalibration::kDataSize][3] = {
+        {-36.74, -32.77, -117.56}, {-36.74, -32.77, -117.56},
+        {-36.56, -33.29, -117.73}, {-35.52, -32.94, -117.39},
+        {-35.87, -32.60, -117.73}, {-36.56, -31.55, -118.40},
+        {-37.26, -31.55, -118.40}, {-36.91, -32.94, -117.39},
+        {-37.78, -32.07, -117.22}, {-35.17, -35.39, -115.37},
+        {-35.17, -35.39, -115.37}, {-36.21, -39.23, -113.36},
+        {-35.35, -44.99, -109.49}, {-36.74, -48.48, -106.80},
+        {-37.43, -49.53, -106.13}, {-36.21, -51.45, -103.61},
+        {-37.26, -57.03, -99.91},  {-37.26, -61.57, -93.19},
+        {-35.87, -64.01, -87.13},  {-35.87, -64.01, -87.13},
+        {-37.61, -71.34, -75.03},  {-37.95, -73.44, -66.29},
+        {-38.82, -74.66, -59.73},  {-42.65, -75.36, -52.00},
+        {-43.52, -74.83, -46.79},  {-43.69, -73.61, -41.24},
+        {-43.87, -71.69, -36.03},  {-43.87, -71.69, -36.03},
+        {-46.83, -70.47, -34.52},  {-47.52, -71.52, -37.21},
+        {-54.13, -70.47, -41.92},  {-59.70, -70.12, -49.65},
+        {-65.96, -68.38, -56.37},  {-74.48, -62.97, -59.23},
+        {-83.70, -56.86, -60.74},  {-92.92, -46.91, -65.62},
+        {-101.97, -28.76, -73.35}, {-101.97, -28.76, -73.35},
+        {-102.32, -14.09, -83.10}, {-99.19, -5.02, -92.18}};
 
 const double biases_expected_data[3][1] = {
     {-47.7545590950}, {-30.0125021696}, {-72.0746933014}};
@@ -65,26 +65,13 @@ const double aggregated_readings_expected_data[10][10] = {
 TEST_GROUP(MagnetometerCalibration){};
 
 TEST(MagnetometerCalibration, TestComputeAggregatedReadings) {
-    double test_calibration_values_dummy_data[40][3];
-    const Matrix test_calibration_values(test_calibration_values_data,
-                                         test_calibration_values_dummy_data);
+    Matrix test_calibration_values(
+        const_cast<double(&)[40][3]>(test_calibration_values_data));
 
-    double aggregated_readings_expected_dummy_data[10][10];
-    const Matrix aggregated_readings_expected(
-        aggregated_readings_expected_data,
-        aggregated_readings_expected_dummy_data);
-
-    double initial_biases_bus_a_dummy_data[3][1];
-    const Matrix initial_biases_bus_a(
-        kPreFlightMagnetometerCalibrationBiasesImuBusA,
-        initial_biases_bus_a_dummy_data);
-    double initial_scale_factors_bus_a_dummy_data[3][1];
-    const Matrix initial_scale_factors_bus_a(
-        kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
-        initial_scale_factors_bus_a_dummy_data);
-    MagnetometerCalibration magnetometer_calibration(
-        initial_biases_bus_a, initial_scale_factors_bus_a);
-    magnetometer_calibration.AggregateReadings(test_calibration_values);
+    Matrix aggregated_readings_expected(
+        const_cast<double(&)[10][10]>(aggregated_readings_expected_data));
+    MagnetometerCalibration magnetometer_calibration;
+    magnetometer_calibration.ComputeAggregatedReadings(test_calibration_values);
     for (uint8_t i = 0; i < 10; i++) {
         for (uint8_t j = 0; j < 10; j++) {
             DOUBLES_EQUAL(
@@ -105,29 +92,12 @@ TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
     Matrix scale_factors_expected(
         const_cast<double(&)[3][3]>(scale_factors_expected_data));
 
-    double initial_biases_bus_a_data[3][1];
-    Matrix initial_biases_bus_a(initial_biases_bus_a_data);
-    initial_biases_bus_a.Set(
-        0, 0, kPreFlightMagnetometerCalibrationBiasesImuBusA[0][0]);
-    initial_biases_bus_a.Set(
-        1, 0, kPreFlightMagnetometerCalibrationBiasesImuBusA[1][0]);
-    initial_biases_bus_a.Set(
-        2, 0, kPreFlightMagnetometerCalibrationBiasesImuBusA[2][0]);
-    double initial_scale_factors_bus_a_data[3][1];
-    Matrix initial_scale_factors_bus_a(initial_scale_factors_bus_a_data);
-    initial_scale_factors_bus_a.Set(
-        0, 0, kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[0][0]);
-    initial_scale_factors_bus_a.Set(
-        1, 0, kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[1][0]);
-    initial_scale_factors_bus_a.Set(
-        2, 0, kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[2][0]);
-    MagnetometerCalibration magnetometer_calibration(
-        initial_biases_bus_a, initial_scale_factors_bus_a);
-
-    uint8_t number_of_test_samples = 40;
-    for (uint8_t i = 0; i < number_of_test_samples;
-         i += MagnetometerCalibration::kBatchSizeInReadings) {
-        magnetometer_calibration.AggregateReadings(test_calibration_values);
+    MagnetometerCalibration magnetometer_calibration;
+    uint8_t batchSize = 100;
+    uint8_t dataSize = 100;
+    for (uint8_t i = 0; i < dataSize; i += batchSize) {
+        magnetometer_calibration.ComputeAggregatedReadings(
+            test_calibration_values);
     }
     magnetometer_calibration.ComputeCalibrationParameters();
 
