@@ -68,6 +68,12 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
         I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
     } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
+        // Pass exceptions up so that an incompletely initialised
+        // measurable manager isn't used.
+        // If a hardware sensor fails to be initialised, it should be
+        // caught by the driver. Only exceptions from measurables, which should
+        // be software problems, should get to here.
+        throw e;
     }
 }
 
