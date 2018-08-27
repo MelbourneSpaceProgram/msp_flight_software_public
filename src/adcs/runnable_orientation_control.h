@@ -13,12 +13,13 @@ class RunnableOrientationControl : public Runnable {
     static void OrientationControlTimerISR(
         UArg orientation_control_timer_semaphore);
 
+    static const uint32_t kControlLoopPeriodMicros = 1000000;
+
    private:
     static void ControlOrientation();
 
     static Semaphore_Handle control_loop_timer_semaphore;
     static const uint16_t kOperationDisableWaitTime = 500;
-    static const uint32_t kControlLoopPeriodMicros = 1000000;
 };
 
 #endif  // SRC_ADCS_RUNNABLE_ORIENTATION_CONTROL_H_
