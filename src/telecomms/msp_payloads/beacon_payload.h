@@ -33,7 +33,7 @@ class BeaconPayload : public TransmitPayload {
     float x_pos_v;
     float x_pos_i;
     float x_pos_t1;
-    float x_pos_rad;
+    uint16_t x_pos_rad;
     float y_pos_v;
     float y_pos_i;
     float y_pos_t1;
@@ -58,6 +58,7 @@ class BeaconPayload : public TransmitPayload {
     float fs_hb_yt;
     float fs_hb_zt;
     uint16_t fs_rad1;  // TODO(naverill) clarify data type
+    Time cdh_time;
     int16_t cdh_t;
     uint32_t com_rx_bytes;
     uint32_t com_tx_bytes;

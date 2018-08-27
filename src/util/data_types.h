@@ -20,5 +20,6 @@ typedef struct time {
 
 static const double kInvalidDouble = -9999.0;
 static const uint16_t kInvalidPositiveInteger = 9999;
+static const int16_t kInvalidNegativeInteger = -9999;
 
 #endif  // SRC_UTIL_DATA_TYPES_H_
