@@ -100,8 +100,10 @@ class I2cMeasurableManager {
     void InitCdh(const I2cMultiplexer *mux_a);
     void InitSolarPanels(const I2cMultiplexer *mux_c);
 
-    void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line, float scaling_factor);
-    void AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line, float scaling_factor, float zero_bias_point);
+    void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line,
+                    float scaling_factor);
+    void AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line,
+                    float scaling_factor, float zero_bias_point);
     void AddTemperature(MeasurableId id, MCP9808 *temp_sensor);
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
@@ -115,7 +117,9 @@ class I2cMeasurableManager {
                                      MPU9250MotionTracker *imu_sensor);
     void AddImuMagnetometerMeasurable(MeasurableId id,
                                       MPU9250MotionTracker *imu_sensor,
-                                      const Matrix frame_mapping);
+                                      const Matrix &frame_mapping,
+                                      const Matrix &initial_biases,
+                                      const Matrix &initial_scale_factors);
     void CheckValidId(MeasurableId id);
 
     static I2cMeasurableManager *instance;
