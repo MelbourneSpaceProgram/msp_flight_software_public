@@ -90,3 +90,12 @@ uint32_t SdCard::FileSize(File &f) {
     FSIZE_t size = f_size(&f);
     return static_cast<uint32_t>(size);
 }
+
+void SdCard::Format() {
+    byte work[FF_MAX_SS];
+    FResult result = f_mkfs("0", FM_ANY, 0, work, sizeof(work));
+
+    if (result != FR_OK) {
+        throw etl::exception("Could not format SdCard", __FILE__, __LINE__);
+    }
+}
