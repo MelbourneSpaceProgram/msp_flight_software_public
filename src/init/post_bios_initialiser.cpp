@@ -79,14 +79,14 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
 
 void PostBiosInitialiser::InitRadioListener() {
     TaskHolder* radio_listener =
-        new TaskHolder(radio_listener_stack_size, "RadioListener", 11,
+        new TaskHolder(radio_listener_stack_size, "RadioListener", 12,
                        new RunnableLithiumListener());
     radio_listener->Start();
 }
 
 void PostBiosInitialiser::RunUnitTests() {
     TaskHolder* test_task = new TaskHolder(unit_tests_stack_size, "Unit Tests",
-                                           7, TestInitialiser::GetInstance());
+                                           3, TestInitialiser::GetInstance());
     test_task->Start();
 }
 
@@ -95,26 +95,26 @@ void PostBiosInitialiser::InitStateManagement() {
     StateManager* state_manager = StateManager::GetStateManager();
 
     TaskHolder* state_management_task = new TaskHolder(
-        1024, "StateManagement", 11, new RunnableStateManagement());
+        1024, "StateManagement", 9, new RunnableStateManagement());
     state_management_task->Start();
 }
 
 void PostBiosInitialiser::InitBeacon() {
     TaskHolder* beacon_task =
-        new TaskHolder(beacon_stack_size, "Beacon", 12, new RunnableBeacon());
+        new TaskHolder(beacon_stack_size, "Beacon", 8, new RunnableBeacon());
     beacon_task->Start();
 }
 
 void PostBiosInitialiser::InitPayloadProcessor() {
     TaskHolder* payload_processor_task = new TaskHolder(
-        1536, "PayloadProcessor", 12, new RunnablePayloadProcessor());
+        1536, "PayloadProcessor", 6, new RunnablePayloadProcessor());
     payload_processor_task->Start();
 }
 
 void PostBiosInitialiser::InitDataDashboard() {
     // TODO(rskew) review priority
     TaskHolder* data_dashboard_task =
-        new TaskHolder(4096, "DataDashboard", 5, new RunnableDataDashboard());
+        new TaskHolder(4096, "DataDashboard", 2, new RunnableDataDashboard());
     data_dashboard_task->Start();
 }
 
@@ -151,14 +151,14 @@ void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
     // TODO(rskew) review priority
     TaskHolder* pre_deployment_magnetometer_poller_task = new TaskHolder(
         // works with this little stack?
-        1024, "PreDeploymentMagnetometerPoller", 5,
+        1024, "PreDeploymentMagnetometerPoller", 4,
         new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Start();
 }
 
 void PostBiosInitialiser::InitSystemHealthCheck() {
     TaskHolder* system_health_check_task = new TaskHolder(
-        4096, "SystemHealthCheck", 12, new RunnableSystemHealthCheck());
+        4096, "SystemHealthCheck", 5, new RunnableSystemHealthCheck());
     system_health_check_task->Start();
 }
 
@@ -190,14 +190,14 @@ void PostBiosInitialiser::InitHardware() {
 
 void PostBiosInitialiser::InitMemoryLogger() {
     TaskHolder* memory_logger_task =
-        new TaskHolder(memory_logger_stack_size, "MemoryLogger", 13,
+        new TaskHolder(memory_logger_stack_size, "MemoryLogger", 11,
                        new RunnableMemoryLogger());
     memory_logger_task->Start();
 }
 
 void PostBiosInitialiser::InitTimeSource() {
     TaskHolder* time_source_task = new TaskHolder(
-        time_source_stack_size, "TimeSource", 13, new RunnableTimeSource());
+        time_source_stack_size, "TimeSource", 10, new RunnableTimeSource());
     time_source_task->Start();
 }
 
