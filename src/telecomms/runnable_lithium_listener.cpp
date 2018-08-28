@@ -48,9 +48,13 @@ void RunnableLithiumListener::Receive() {
         uint16_t payload_size = LithiumUtils::GetPayloadSize(read_buffer);
         uint8_t command_code = LithiumUtils::GetCommandCode(read_buffer);
 
-        // Post first 8 bytes of read_buffer to header mailbox
-        Mailbox_post(Lithium::GetInstance()->GetHeaderMailbox(), read_buffer,
-                     BIOS_WAIT_FOREVER);
+        // Post first 8 bytes of read_buffer to header mailbox if not an
+        // uplinked packet
+        if (command_code != kReceivedDataCommandCode) {
+            Mailbox_post(Lithium::GetInstance()->GetHeaderMailbox(),
+                         read_buffer, BIOS_WAIT_FOREVER);
+        }
+
         if (payload_size > 0 &&
             payload_size <= Lithium::kMaxReceivedUplinkSize) {
             // TODO(dingbenjamin): Check tail checksum over payload
