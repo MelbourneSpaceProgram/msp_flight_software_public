@@ -11,8 +11,8 @@
 #include <src/sensors/runnable_cache_write_back.h>
 #include <stdio.h>
 
-TEST_GROUP(CacheWriteBack){
-    void setup(){
+TEST_GROUP(CacheWriteBack) {
+    void setup() {
         if (!sd_card_available || !i2c_available) {
             TEST_EXIT;
         }
@@ -22,7 +22,7 @@ TEST_GROUP(CacheWriteBack){
 // WARNING: Test deletes SD file for CdhTemp1
 TEST(CacheWriteBack, TestCacheWriteBack) {
     char filename[3];
-    snprintf(filename, sizeof(filename), "%03d", kCdhSysTemp);
+    snprintf(filename, sizeof(filename), "%03d", kCdhT);
 
     I2cMeasurableManager *manager = I2cMeasurableManager::GetInstance();
 
@@ -33,12 +33,12 @@ TEST(CacheWriteBack, TestCacheWriteBack) {
     }
 
     // Populate the cache with a new reading
-    float temp = manager->ReadI2cMeasurable<double>(kCdhSysTemp, 0);
+    float temp = manager->ReadI2cMeasurable<double>(kCdhT, 0);
 
     // The same value in `temp` should now be in the cache, so write the cache
     // to SD card
     try {
-        RunnableCacheWriteBack::WriteBackTemp(kCdhSysTemp);
+        RunnableCacheWriteBack::WriteBackTemp(kCdhT);
     } catch (etl::exception e) {
         // Likely SD card not present
         FAIL("Uncaught exception in test");

@@ -21,10 +21,10 @@ void BatteryTempStateMachine::Update() {
         I2cMeasurableManager::GetInstance();
     BmsBatteryTemperatureMeasurable* battery_1_sensor =
         dynamic_cast<BmsBatteryTemperatureMeasurable*>(
-            measurable_manager->GetMeasurable<double>(kPowerBmsBatteryTemp1));
+            measurable_manager->GetMeasurable<double>(kEpsBmsBatT1));
     BmsBatteryTemperatureMeasurable* battery_2_sensor =
         dynamic_cast<BmsBatteryTemperatureMeasurable*>(
-            measurable_manager->GetMeasurable<double>(kPowerBmsBatteryTemp2));
+            measurable_manager->GetMeasurable<double>(kEpsBmsBatT2));
 
     if (sensor_with_reading == battery_1_sensor) {
         id = kBattery1;

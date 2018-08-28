@@ -41,7 +41,7 @@ TEST(Bms, TestBmsDieTemperatureRead) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
     double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kPowerBmsDieTemp1, 1);
+        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsDieT1, 1);
     DOUBLES_EQUAL(25, temp, 50);
 }
 
@@ -49,7 +49,7 @@ TEST(Bms, TestBmsBatteryTemperatureRead) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kPowerBmsBatteryTemp1, 1);
+        kEpsBmsBatT1, 1);
     DOUBLES_EQUAL(25, temp, 50);
 }
 
