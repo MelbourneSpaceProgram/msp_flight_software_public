@@ -22,7 +22,7 @@ static const bool eeprom_available =
     false;  // It is actually available but there is a resource conflict with
             // the SD cards as they share the same bus
 static const bool i2c_available = true;
-static const bool sd_card_available = false;
+static const bool sd_card_available = true;
 static const bool hil_available = false;
 static const bool bms_available = false;
 static const bool antenna_available = false;

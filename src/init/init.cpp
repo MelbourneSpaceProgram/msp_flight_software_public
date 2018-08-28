@@ -27,6 +27,6 @@ void PreBiosInit() {
     }
 
     TaskHolder *post_bios_initialiser_task =
-        new TaskHolder(1536, "Initialiser", 10, new PostBiosInitialiser());
+        new TaskHolder(3000, "Initialiser", 10, new PostBiosInitialiser());
     post_bios_initialiser_task->Start();
 }
