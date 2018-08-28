@@ -56,23 +56,23 @@ void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
         new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel3);
     comms_adc_2->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kCommsRegulator1InputVoltage, comms_adc_1, kAdcP2NGnd, 2.0);
-    AddVoltage(kCommsRegulator1OutputVoltage, comms_adc_1, kAdcP3NGnd, 3.0);
-    AddCurrent(kCommsRegulator1InputCurrent, comms_adc_1, kAdcP0NGnd, 1, 0);
-    AddCurrent(kCommsRegulator1OutputCurrent, comms_adc_1, kAdcP1NGnd, 1, 0);
+    AddVoltage(kComInV1, comms_adc_1, kAdcP2NGnd, 2.0);
+    AddVoltage(kComOutV1, comms_adc_1, kAdcP3NGnd, 3.0);
+    AddCurrent(kComInI1, comms_adc_1, kAdcP0NGnd, 1, 0);
+    AddCurrent(kComOutI1, comms_adc_1, kAdcP1NGnd, 1, 0);
 
-    AddVoltage(kCommsRegulator2InputVoltage, comms_adc_2, kAdcP2NGnd, 2.0);
-    AddVoltage(kCommsRegulator2OutputVoltage, comms_adc_2, kAdcP3NGnd, 3.0);
-    AddCurrent(kCommsRegulator2InputCurrent, comms_adc_2, kAdcP0NGnd, 1, 0);
-    AddCurrent(kCommsRegulator2OutputCurrent, comms_adc_2, kAdcP1NGnd, 1, 0);
+    AddVoltage(kComInV2, comms_adc_2, kAdcP2NGnd, 2.0);
+    AddVoltage(kComOutV2, comms_adc_2, kAdcP3NGnd, 3.0);
+    AddCurrent(kComInI2, comms_adc_2, kAdcP0NGnd, 1, 0);
+    AddCurrent(kComOutI2, comms_adc_2, kAdcP1NGnd, 1, 0);
 
     MCP9808 *comms_temp_1 =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
     MCP9808 *comms_temp_2 =
         new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel3);
 
-    AddTemperature(kCommsTemp1, comms_temp_1);
-    AddTemperature(kCommsTemp2, comms_temp_2);
+    AddTemperature(kComT1, comms_temp_1);
+    AddTemperature(kComT2, comms_temp_2);
 }
 
 void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
@@ -86,18 +86,18 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
         new Adc(bus_a, 0x4A, mux_a, I2cMultiplexer::kMuxChannel2);
     power_adc_3->SetGainAmplifierLevel(kAdc2v048);
 
-    AddVoltage(kEpsBatVoltage1, power_adc_1, kAdcP0NGnd, 3.0);
-    AddVoltage(kEpsBoostOutVoltage1, power_adc_1, kAdcP1NGnd, 3.0);
-    AddCurrent(kPowerBoostInCurrent1, power_adc_1, kAdcP2NGnd, 5.0 / 3, 0);
-    AddCurrent(kPowerLoadCurrent1, power_adc_1, kAdcP3NGnd, 5.0 / 3, 0);
+    AddVoltage(kEpsAdcBatV1, power_adc_1, kAdcP0NGnd, 3.0);
+    AddVoltage(kEpsBoostOutV1, power_adc_1, kAdcP1NGnd, 3.0);
+    AddCurrent(kEpsBoostInI1, power_adc_1, kAdcP2NGnd, 5.0 / 3, 0);
+    AddCurrent(kEpsLoadI1, power_adc_1, kAdcP3NGnd, 5.0 / 3, 0);
 
-    AddVoltage(kEpsBatVoltage2, power_adc_2, kAdcP0NGnd, 3.0);
-    AddVoltage(kEpsBoostOutVoltage2, power_adc_2, kAdcP1NGnd, 3.0);
-    AddCurrent(kPowerBoostInCurrent2, power_adc_2, kAdcP2NGnd, 5.0 / 3, 0);
-    AddCurrent(kPowerLoadCurrent2, power_adc_2, kAdcP3NGnd, 5.0 / 3, 0);
+    AddVoltage(kEpsAdcBatV2, power_adc_2, kAdcP0NGnd, 3.0);
+    AddVoltage(kEpsBoostOutV2, power_adc_2, kAdcP1NGnd, 3.0);
+    AddCurrent(kEpsLoadI2, power_adc_2, kAdcP2NGnd, 5.0 / 3, 0);
+    AddCurrent(kEpsBoostInI2, power_adc_2, kAdcP3NGnd, 5.0 / 3, 0);
 
-    AddVoltage(kEps5VRail1, power_adc_3, kAdcP0NGnd, 3.0);
-    AddVoltage(kEps5VRail2, power_adc_3, kAdcP1NGnd, 3.0);
+    AddVoltage(kEpsRail1, power_adc_3, kAdcP0NGnd, 3.0);
+    AddVoltage(kEpsRail2, power_adc_3, kAdcP1NGnd, 3.0);
 
     MCP9808 *power_temp_1 =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel2);
@@ -113,16 +113,16 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
             state_manager->GetStateMachine(kBatteryTempStateMachine));
 
     battery_temp_state_machine->RegisterWithSensor(
-        AddBmsBatteryTempMeasurable(kPowerBmsBatteryTemp1, bms_bus_d));
+        AddBmsBatteryTempMeasurable(kEpsBmsBatT1, bms_bus_d));
     battery_temp_state_machine->RegisterWithSensor(
-        AddBmsBatteryTempMeasurable(kPowerBmsBatteryTemp2, bms_bus_c));
+        AddBmsBatteryTempMeasurable(kEpsBmsBatT2, bms_bus_c));
 
-    AddTemperature(kPowerTemp1, power_temp_1);
-    AddTemperature(kPowerTemp2, power_temp_2);
-    AddBmsDieTempMeasurable(kPowerBmsDieTemp1, bms_bus_d);
-    AddBmsDieTempMeasurable(kPowerBmsDieTemp2, bms_bus_c);
-    AddBmsReadingsMeasurable(kPowerBmsReadings1, bms_bus_d);
-    AddBmsReadingsMeasurable(kPowerBmsReadings2, bms_bus_c);
+    AddTemperature(kEpsT1, power_temp_1);
+    AddTemperature(kEpsT2, power_temp_2);
+    AddBmsDieTempMeasurable(kEpsBmsDieT1, bms_bus_d);
+    AddBmsDieTempMeasurable(kEpsBmsDieT2, bms_bus_c);
+    AddBmsReadingsMeasurable(kEpsBmsReadings1, bms_bus_d);
+    AddBmsReadingsMeasurable(kEpsBmsReadings2, bms_bus_c);
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -133,35 +133,35 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     Adc *fs_adc_z = new Adc(bus_a, 0x4B, mux_a, I2cMultiplexer::kMuxChannel1);
     fs_adc_z->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kFsMagTorqAX, fs_adc_x, kAdcP1NGnd, 2);
-    AddVoltage(kFsMagTorqBX, fs_adc_x, kAdcP2NGnd, 2);
-    AddVoltage(kFsMagTorqAY, fs_adc_y, kAdcP1NGnd, 2);
-    AddVoltage(kFsMagTorqBY, fs_adc_y, kAdcP2NGnd, 2);
-    AddVoltage(kFsMagTorqAZ, fs_adc_z, kAdcP1NGnd, 2);
-    AddVoltage(kFsMagTorqBZ, fs_adc_z, kAdcP2NGnd, 2);
+    AddVoltage(kFsTorquerXAV, fs_adc_x, kAdcP1NGnd, 2);
+    AddVoltage(kFsTorquerXBV, fs_adc_x, kAdcP2NGnd, 2);
+    AddVoltage(kFsTorquerYAV, fs_adc_y, kAdcP1NGnd, 2);
+    AddVoltage(kFsTorquerYBV, fs_adc_y, kAdcP2NGnd, 2);
+    AddVoltage(kFsTorquerZAV, fs_adc_z, kAdcP1NGnd, 2);
+    AddVoltage(kFsTorquerZBV, fs_adc_z, kAdcP2NGnd, 2);
 
-    AddCurrent(kFsTorquerCurrentX, fs_adc_x, kAdcP0NGnd, 0.1, 1.65);
-    AddCurrent(kFsTorquerCurrentTotal, fs_adc_x, kAdcP3NGnd, 1.0 / 7.5, 0);
-    AddCurrent(kFsTorquerCurrentY, fs_adc_y, kAdcP0NGnd, 0.1, 1.65);
-    AddCurrent(kFsTorquerCurrentZ, fs_adc_z, kAdcP0NGnd, 0.1, 1.65);
+    AddCurrent(kFsTorquerXI, fs_adc_x, kAdcP0NGnd, 0.1, 1.65);
+    AddCurrent(kFsTorquerTotalI, fs_adc_x, kAdcP3NGnd, 1.0 / 7.5, 0);
+    AddCurrent(kFsTorquerYI, fs_adc_y, kAdcP0NGnd, 0.1, 1.65);
+    AddCurrent(kFsTorquerZI, fs_adc_z, kAdcP0NGnd, 0.1, 1.65);
 
-    MCP9808 *fs_temp_hb_x =
+    MCP9808 *fs_hb_xt =
         new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel1);
-    MCP9808 *fs_temp_hb_y =
+    MCP9808 *fs_hb_yt =
         new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel1);
-    MCP9808 *fs_temp_hb_z =
+    MCP9808 *fs_hb_zt =
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel1);
 
-    AddTemperature(kFsTempHbX, fs_temp_hb_x);
-    AddTemperature(kFsTempHbY, fs_temp_hb_y);
-    AddTemperature(kFsTempHbZ, fs_temp_hb_z);
+    AddTemperature(kFsHbXT, fs_hb_xt);
+    AddTemperature(kFsHbYT, fs_hb_yt);
+    AddTemperature(kFsHbZT, fs_hb_zt);
 
     MPU9250MotionTracker *fs_imu_1 = new MPU9250MotionTracker(
         bus_a, 0x68, mux_a, I2cMultiplexer::kMuxChannel1);
 
     AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_1);
-    AddImuAcceleromterMeasurable(kFsImuAccelerometer1, fs_imu_1);
-    AddImuTemperatureMeasurable(kFsImuTemperature1, fs_imu_1);
+    AddImuAcceleromterMeasurable(kFsImuAccel1, fs_imu_1);
+    AddImuTemperatureMeasurable(kFsImuT1, fs_imu_1);
     double initial_biases_bus_a_data[3][1];
     const Matrix initial_biases_bus_a(
         kPreFlightMagnetometerCalibrationBiasesImuBusA,
@@ -171,14 +171,14 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
         initial_scale_factors_bus_a_data);
     AddImuMagnetometerMeasurable(
-        kFsImuMagnetometer1, fs_imu_1, kImuAToBodyFrameTransform,
+        kFsImuMagno1, fs_imu_1, kImuAToBodyFrameTransform,
         initial_biases_bus_a, initial_scale_factors_bus_a);
 
     MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
     AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
-    AddImuAcceleromterMeasurable(kFsImuAccelerometer2, fs_imu_2);
-    AddImuTemperatureMeasurable(kFsImuTemperature2, fs_imu_2);
+    AddImuAcceleromterMeasurable(kFsImuAccel2, fs_imu_2);
+    AddImuTemperatureMeasurable(kFsImuT2, fs_imu_2);
     double initial_biases_bus_b_data[3][1];
     const Matrix initial_biases_bus_b(
         kPreFlightMagnetometerCalibrationBiasesImuBusB,
@@ -188,7 +188,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusB,
         initial_scale_factors_bus_b_data);
     AddImuMagnetometerMeasurable(
-        kFsImuMagnetometer2, fs_imu_2, kImuBToBodyFrameTransform,
+        kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform,
         initial_biases_bus_b, initial_scale_factors_bus_b);
 }
 
@@ -199,7 +199,7 @@ void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
     MCP9808 *cdh_temp_1 =
         new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
-    AddTemperature(kCdhSysTemp, cdh_temp_1);
+    AddTemperature(kCdhT, cdh_temp_1);
 }
 
 void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
@@ -208,99 +208,99 @@ void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
     MCP9808 *solar_panel_1_temp_2 =
         new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel4);
 
-    AddTemperature(kPowerPanel1Temp1, solar_panel_1_temp_1);
-    AddTemperature(kPowerPanel1Temp2, solar_panel_1_temp_2);
+    AddTemperature(kXPosT1, solar_panel_1_temp_1);
+    AddTemperature(kXPosT2, solar_panel_1_temp_2);
 
     MCP9808 *solar_panel_2_temp_1 =
         new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel5);
     MCP9808 *solar_panel_2_temp_2 =
         new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel5);
 
-    AddTemperature(kPowerPanel2Temp1, solar_panel_2_temp_1);
-    AddTemperature(kPowerPanel2Temp2, solar_panel_2_temp_2);
+    AddTemperature(kYPosT1, solar_panel_2_temp_1);
+    AddTemperature(kYPosT2, solar_panel_2_temp_2);
 
     MCP9808 *solar_panel_3_temp_1 =
         new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel6);
     MCP9808 *solar_panel_3_temp_2 =
         new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel6);
 
-    AddTemperature(kPowerPanel3Temp1, solar_panel_3_temp_1);
-    AddTemperature(kPowerPanel3Temp2, solar_panel_3_temp_2);
+    AddTemperature(kXNegT1, solar_panel_3_temp_1);
+    AddTemperature(kXNegT2, solar_panel_3_temp_2);
 
     MCP9808 *solar_panel_4_temp_1 =
         new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel7);
     MCP9808 *solar_panel_4_temp_2 =
         new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel7);
 
-    AddTemperature(kPowerPanel4Temp1, solar_panel_4_temp_1);
-    AddTemperature(kPowerPanel4Temp2, solar_panel_4_temp_2);
+    AddTemperature(kYNegT1, solar_panel_4_temp_1);
+    AddTemperature(kYNegT2, solar_panel_4_temp_2);
 
     MCP9808 *solar_panel_5_temp_1 =
         new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel3);
     MCP9808 *solar_panel_5_temp_2 =
         new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel3);
 
-    AddTemperature(kPowerPanel5Temp1, solar_panel_5_temp_1);
-    AddTemperature(kPowerPanel5Temp2, solar_panel_5_temp_2);
+    AddTemperature(kZNegT1, solar_panel_5_temp_1);
+    AddTemperature(kZNegT2, solar_panel_5_temp_2);
 
     MCP9808 *solar_panel_6_temp_1 =
         new MCP9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel2);
 
-    AddTemperature(kPowerPanel6Temp1, solar_panel_6_temp_1);
+    AddTemperature(kZPosT, solar_panel_6_temp_1);
 
     Adc *solar_adc_6 =
         new Adc(bus_c, 0x4B, mux_c, I2cMultiplexer::kMuxChannel2);
     solar_adc_6->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kPowerTopPanelVoltage, solar_adc_6, kAdcP0NGnd, 3.0);
-    AddVoltage(kPowerTopSolarVoltage, solar_adc_6, kAdcP1NGnd, 3.0);
-    AddCurrent(kPowerTopPanelCurrent, solar_adc_6, kAdcP1NGnd, 5.0 / 3, 0);
-    AddCurrent(kPowerTopSolarCurrent, solar_adc_6, kAdcP3NGnd, 5.0 / 3, 0);
+    AddVoltage(kEpsTopPanelV, solar_adc_6, kAdcP0NGnd, 3.0);
+    AddVoltage(kEpsTopSolarV, solar_adc_6, kAdcP1NGnd, 3.0);
+    AddCurrent(kEpsTopPanelI, solar_adc_6, kAdcP1NGnd, 5.0 / 3, 0);
+    AddCurrent(kEpsTopSolarI, solar_adc_6, kAdcP3NGnd, 5.0 / 3, 0);
 
     Adc *solar_adc_1 =
         new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel4);
     solar_adc_1->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kPowerPanelVoltage1, solar_adc_1, kAdcP0NGnd, 3.0);
-    AddVoltage(kPowerSolarVoltage1, solar_adc_1, kAdcP2NGnd, 3.0);
-    AddCurrent(kPowerPanelCurrent1, solar_adc_1, kAdcP1NGnd, 0.285714, 0);
-    AddCurrent(kPowerSolarCurrent1, solar_adc_1, kAdcP3NGnd, 0.285714, 0);
+    AddVoltage(kXPosV, solar_adc_1, kAdcP0NGnd, 3.0);
+    AddVoltage(kXPosSolarV, solar_adc_1, kAdcP2NGnd, 3.0);
+    AddCurrent(kXPosI, solar_adc_1, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kXPosSolarI, solar_adc_1, kAdcP3NGnd, 0.285714, 0);
 
     Adc *solar_adc_2 =
         new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel5);
     solar_adc_2->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kPowerPanelVoltage2, solar_adc_2, kAdcP0NGnd, 3.0);
-    AddVoltage(kPowerSolarVoltage2, solar_adc_2, kAdcP2NGnd, 3.0);
-    AddCurrent(kPowerPanelCurrent2, solar_adc_2, kAdcP1NGnd, 0.285714, 0);
-    AddCurrent(kPowerSolarCurrent2, solar_adc_2, kAdcP3NGnd, 0.285714, 0);
+    AddVoltage(kYPosV, solar_adc_2, kAdcP0NGnd, 3.0);
+    AddVoltage(kYPosSolarV, solar_adc_2, kAdcP2NGnd, 3.0);
+    AddCurrent(kYPosI, solar_adc_2, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kYPosSolarI, solar_adc_2, kAdcP3NGnd, 0.285714, 0);
 
     Adc *solar_adc_3 =
         new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel6);
     solar_adc_3->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kPowerPanelVoltage3, solar_adc_3, kAdcP0NGnd, 3.0);
-    AddVoltage(kPowerSolarVoltage3, solar_adc_3, kAdcP2NGnd, 3.0);
-    AddCurrent(kPowerPanelCurrent3, solar_adc_3, kAdcP1NGnd, 0.285714, 0);
-    AddCurrent(kPowerSolarCurrent3, solar_adc_3, kAdcP3NGnd, 0.285714, 0);
+    AddVoltage(kXNegV, solar_adc_3, kAdcP0NGnd, 3.0);
+    AddVoltage(kXNegSolarV, solar_adc_3, kAdcP2NGnd, 3.0);
+    AddCurrent(kXNegI, solar_adc_3, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kXNegSolarI, solar_adc_3, kAdcP3NGnd, 0.285714, 0);
 
     Adc *solar_adc_4 =
         new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel7);
     solar_adc_4->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kPowerPanelVoltage4, solar_adc_4, kAdcP0NGnd, 3.0);
-    AddVoltage(kPowerSolarVoltage4, solar_adc_4, kAdcP2NGnd, 3.0);
-    AddCurrent(kPowerPanelCurrent4, solar_adc_4, kAdcP1NGnd, 0.285714, 0);
-    AddCurrent(kPowerSolarCurrent4, solar_adc_4, kAdcP3NGnd, 0.285714, 0);
+    AddVoltage(kYNegV, solar_adc_4, kAdcP0NGnd, 3.0);
+    AddVoltage(kYNegSolarV, solar_adc_4, kAdcP2NGnd, 3.0);
+    AddCurrent(kYNegI, solar_adc_4, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kYNegSolarI, solar_adc_4, kAdcP3NGnd, 0.285714, 0);
 
     Adc *solar_adc_5 =
         new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel3);
     solar_adc_5->SetGainAmplifierLevel(kAdc4v096);
 
-    AddVoltage(kPowerPanelVoltage5, solar_adc_5, kAdcP0NGnd, 3.0);
-    AddVoltage(kPowerSolarVoltage5, solar_adc_5, kAdcP2NGnd, 3.0);
-    AddCurrent(kPowerPanelCurrent5, solar_adc_5, kAdcP1NGnd, 0.285714, 0);
-    AddCurrent(kPowerSolarCurrent5, solar_adc_5, kAdcP3NGnd, 0.285714, 0);
+    AddVoltage(kZNegV, solar_adc_5, kAdcP0NGnd, 3.0);
+    AddVoltage(kZNegSolarV, solar_adc_5, kAdcP2NGnd, 3.0);
+    AddCurrent(kZNegI, solar_adc_5, kAdcP1NGnd, 0.285714, 0);
+    AddCurrent(kZNegSolarI, solar_adc_5, kAdcP3NGnd, 0.285714, 0);
 }
 
 void I2cMeasurableManager::AddVoltage(MeasurableId id, Adc *adc,

@@ -14,7 +14,7 @@ static I2cMeasurableManager* i2c_measurable_manager =
     I2cMeasurableManager::GetInstance();
 
 TEST(CdhCheckout, CanSenseSysTemperature) {
-    double cdh_sys_temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kCdhSysTemp, 0);
-    DOUBLES_EQUAL(50, cdh_sys_temp, 50);
+    double cdh_t =
+        i2c_measurable_manager->ReadI2cMeasurable<double>(kCdhT, 0);
+    DOUBLES_EQUAL(50, cdh_t, 50);
 }

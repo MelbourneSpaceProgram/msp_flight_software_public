@@ -15,86 +15,84 @@ class BeaconPayload : public TransmitPayload {
     uint16_t GetSerialisedSize() const;
     uint8_t GetPayloadCode() const;
 
-    int16_t comms_regulator_1_output_current;
-    float comms_regulator_1_output_voltage;
-    float comms_regulator_2_output_current;
-    float comms_regulator_2_output_voltage;
-    float comms_temp_2;
-    float power_bat_voltage_1;
-    float power_load_current_1;
-    float power_bat_voltage_2;
-    float power_load_current_2;
-    float power_5v_rail_1;
-    float power_5v_rail_2;
-    float power_top_panel_voltage;
-    float power_top_panel_current;
-    float power_temp_1;
-    float power_temp_2;
-    float power_panel_voltage_access_x_axis;
-    float power_panel_current_access_x_axis;
-    float power_access_panel_x_axis_temp_1;
-    float fs_radiation_access_panel_x_axis;
-    float power_panel_voltage_side_1_y_axis;
-    float power_panel_current_side_1_y_axis;
-    float power_side_1_panel_temp_1_y_axis_;
-    float power_panel_voltage_side_2_minus_x_axis;
-    float power_panel_current_side_2_minus_x_axis;
-    float power_side_2_panel_minus_x_axis_temp_1;
-    float power_panel_voltage_side_3_minus_y_axis;
-    float power_panel_current_side_3_minus_y_axis;
-    float power_side_3_panel_minus_y_axis_temp_1;
-    float power_panel_voltage_bottom_minus_z_axis;
-    float power_panel_current_bottom_minus_z_axis;
-    float power_solar_voltage_bottom_minus_z_axis;
-    float power_solar_current_bottom_minus_z_axis;
-    float power_bottom_panel_minus_z_axis_temp_1;
-    float power_top_panel_z_axis_temp_1;
-    uint16_t util_ntc_1;    // TODO(naverill) clarify data type
-    uint16_t util_ntc_2;    // TODO(naverill) clarify data type
-    uint16_t util_heating;  // TODO(naverill) clarify data type
-    float util_temp;
-    float fs_torquer_current_x;
-    float fs_torquer_current_y;
-    float fs_torquer_current_z;
-    float fs_temp_hb_x;
-    float fs_temp_hb_y;
-    float fs_temp_hb_z;
-    uint16_t fs_radiation_1;  // TODO(naverill) clarify data type
-    float cdh_sys_temp;
-    uint16_t comms_bytes_received;
-    uint16_t comms_bytes_transmitted;
-    uint16_t comms_antenna_flags;
-    uint16_t comms_lithium_op_count;
-    uint16_t comms_lithium_rssi;
-    uint16_t comms_lithium_temp;
-    Time comms_lithium_time;
-    int16_t fs_angular_velocity_1;  // TODO(naverill) clarify data type
-    int16_t fs_angular_velocity_2;  // TODO(naverill) clarify data type
-    int16_t fs_angular_velocity_3;  // TODO(naverill) clarify data type
-    int16_t fs_attitude_cov;
-    int16_t fs_attitude_distance;
-    int16_t fs_attitude_quaternion_1;  // TODO(naverill) clarify data type
-    int16_t fs_attitude_quaternion_2;  // TODO(naverill) clarify data type
-    int16_t fs_attitude_quaternion_3;  // TODO(naverill) clarify data type
-    int16_t fs_attitude_quaternion_4;  // TODO(naverill) clarify data type
-    int16_t fs_control_1;
-    int16_t fs_control_2;
-    int16_t fs_control_3;
-    uint16_t fs_health_flags;
-    uint16_t fs_attitude_flags;
-    uint16_t fs_flags;
-    int16_t fs_location;
-    int16_t fs_ir;
-    Time cdh_last_reboot;
-    uint16_t cdh_memory;
-    uint16_t cdh_memory_available;
-    uint16_t cdh_mcu_1;
-    uint16_t mcu_reset_count_1;
+    float com_out_i1;
+    float com_out_v1;
+    float com_out_i2;
+    float com_out_v2;
+    float com_t2;
+    float eps_adc_bat_v1;
+    float eps_load_i1;
+    float eps_adc_bat_v2;
+    float eps_boost_in_i2;
+    float eps_rail1;
+    float eps_rail2;
+    float eps_top_panel_v;
+    float eps_top_panel_i;
+    float eps_t1;
+    float eps_t2;
+    float x_pos_v;
+    float x_pos_i;
+    float x_pos_t1;
+    float x_pos_rad;
+    float y_pos_v;
+    float y_pos_i;
+    float y_pos_t1;
+    float x_neg_v;
+    float x_neg_i;
+    float x_neg_t1;
+    float y_neg_v;
+    float y_neg_i;
+    float y_neg_t1;
+    float z_neg_v;
+    float z_neg_i;
+    float z_neg_t1;
+    float z_pos_t;
+    int16_t util_ntc_v1;  // TODO(naverill) clarify data type
+    int16_t util_ntc_v2;  // TODO(naverill) clarify data type
+    int16_t util_heat_v;  // TODO(naverill) clarify data type
+    float util_t;
+    float fs_torquer_xi;
+    float fs_torquer_yi;
+    float fs_torquer_zi;
+    float fs_hb_xt;
+    float fs_hb_yt;
+    float fs_hb_zt;
+    uint16_t fs_rad1;  // TODO(naverill) clarify data type
+    int16_t cdh_t;
+    uint32_t com_rx_bytes;
+    uint32_t com_tx_bytes;
+    uint8_t com_antenna_flags;
+    uint16_t com_lithium_ops;
+    uint8_t com_lithium_rssi;
+    int16_t com_lithium_t;
+    Time com_lithium_time;
+    int16_t sw_fs_angular_velocity1;  // TODO(naverill) clarify data type
+    int16_t sw_fs_angular_velocity2;  // TODO(naverill) clarify data type
+    int16_t sw_fs_angular_velocity3;  // TODO(naverill) clarify data type
+    int16_t sw_fs_attitude_cov;
+    int16_t sw_fs_attitude_distance;
+    int16_t sw_fs_attitude_quaternion1;  // TODO(naverill) clarify data type
+    int16_t sw_fs_attitude_quaternion2;  // TODO(naverill) clarify data type
+    int16_t sw_fs_attitude_quaternion3;  // TODO(naverill) clarify data type
+    int16_t sw_fs_attitude_quaternion4;  // TODO(naverill) clarify data type
+    int16_t sw_fs_control1;
+    int16_t sw_fs_control2;
+    int16_t sw_fs_control3;
+    uint16_t sw_fs_health_flags;
+    uint16_t sw_fs_attitude_flags;
+    uint16_t sw_fs_flags;
+    uint16_t sw_fs_location;
+    uint16_t sw_fs_ir;
+    Time sw_cdh_last_reboot;
+    uint16_t sw_cdh_memory;
+    uint16_t sw_cdh_memory_available;
+    uint16_t sw_cdh_mcu1;
+    uint16_t sw_mcu_reset_count1;
     char* comms_outreach;  // TODO(dingbenjamin): Convert to etl::string
 
     static const uint8_t kFsHealthFlagByteCount = 20;
     static const uint8_t kFsFsAttitudeFlagByteCount = 2;
-    static const uint8_t kFsLocationFloatCount = 2;
+    static const uint8_t kSwFsLocationFloatCount = 2;
     static const uint8_t kOutreachMessageSize = 27;
 
     static const uint8_t kVoltageUpperBound =

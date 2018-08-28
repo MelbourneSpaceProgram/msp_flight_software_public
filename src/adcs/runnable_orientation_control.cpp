@@ -80,13 +80,13 @@ void RunnableOrientationControl::ControlOrientation() {
 
     if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
               measurable_manager->GetMeasurable<MagnetometerReading>(
-                  kFsImuMagnetometer1)))
+                  kFsImuMagno1)))
              ->Calibrate()) {
         Log_error0("Magnetometer on bus A calibration failed");
     }
     if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
               measurable_manager->GetMeasurable<MagnetometerReading>(
-                  kFsImuMagnetometer2)))
+                  kFsImuMagno2)))
              ->Calibrate()) {
         Log_error0("Magnetometer on bus B calibration failed");
     }
@@ -113,7 +113,7 @@ void RunnableOrientationControl::ControlOrientation() {
         // TODO(rskew) handle exception from magnetometer overflow
         MagnetometerReading magnetometer_reading =
             measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
-                kFsImuMagnetometer2, 0);
+                kFsImuMagno2, 0);
 
         if (hil_available) {
             // Echo magnetometer reading to data dashboard

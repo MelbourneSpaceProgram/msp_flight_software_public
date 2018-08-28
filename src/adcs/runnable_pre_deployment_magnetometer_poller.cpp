@@ -57,8 +57,8 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
         // to persistant buffers backed by files on the SD card
         // for the sake of calibration
         measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
-            kFsImuMagnetometer1, 0);
+            kFsImuMagno1, 0);
         measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
-            kFsImuMagnetometer2, 0);
+            kFsImuMagno2, 0);
     }
 }
