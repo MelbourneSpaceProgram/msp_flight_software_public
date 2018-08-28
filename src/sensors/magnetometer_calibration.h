@@ -19,7 +19,7 @@ class MagnetometerCalibration {
     Matrix GetAggregatedReadings() const;
     void Apply(MagnetometerReading &magnetometer_reading_struct);
 
-    static const uint8_t kBatchSizeInReadings = 10;
+    static const uint8_t kBatchSizeInReadings = 40;
 
     // TODO (rskew) check this value
     static const uint32_t kMinimumSamplesForValidCalibration = 250;
@@ -37,7 +37,7 @@ class MagnetometerCalibration {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
     double biases_data[3][1] = {{0}, {0}, {0}};
     ;
-    double scale_factors_data[3][1] = {{0}, {0}, {0}};
+    double scale_factors_data[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     Matrix biases;
     Matrix scale_factors;
     Matrix aggregated_readings;

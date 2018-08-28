@@ -166,13 +166,13 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     const Matrix initial_biases_bus_a(
         kPreFlightMagnetometerCalibrationBiasesImuBusA,
         initial_biases_bus_a_data);
-    double initial_scale_factors_bus_a_data[3][1];
+    double initial_scale_factors_bus_a_data[3][3];
     const Matrix initial_scale_factors_bus_a(
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
         initial_scale_factors_bus_a_data);
     AddImuMagnetometerMeasurable(
-        kFsImuMagno1, fs_imu_1, kImuAToBodyFrameTransform,
-        initial_biases_bus_a, initial_scale_factors_bus_a);
+        kFsImuMagno1, fs_imu_1, kImuAToBodyFrameTransform, initial_biases_bus_a,
+        initial_scale_factors_bus_a);
 
     MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
@@ -183,13 +183,13 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     const Matrix initial_biases_bus_b(
         kPreFlightMagnetometerCalibrationBiasesImuBusB,
         initial_biases_bus_b_data);
-    double initial_scale_factors_bus_b_data[3][1];
+    double initial_scale_factors_bus_b_data[3][3];
     const Matrix initial_scale_factors_bus_b(
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusB,
         initial_scale_factors_bus_b_data);
     AddImuMagnetometerMeasurable(
-        kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform,
-        initial_biases_bus_b, initial_scale_factors_bus_b);
+        kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform, initial_biases_bus_b,
+        initial_scale_factors_bus_b);
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {

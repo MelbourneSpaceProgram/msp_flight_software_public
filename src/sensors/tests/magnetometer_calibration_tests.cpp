@@ -78,7 +78,7 @@ TEST(MagnetometerCalibration, TestComputeAggregatedReadings) {
     const Matrix initial_biases_bus_a(
         kPreFlightMagnetometerCalibrationBiasesImuBusA,
         initial_biases_bus_a_dummy_data);
-    double initial_scale_factors_bus_a_dummy_data[3][1];
+    double initial_scale_factors_bus_a_dummy_data[3][3];
     const Matrix initial_scale_factors_bus_a(
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
         initial_scale_factors_bus_a_dummy_data);
@@ -97,30 +97,26 @@ TEST(MagnetometerCalibration, TestComputeAggregatedReadings) {
 }
 
 TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
-    Matrix test_calibration_values(
-        const_cast<double(&)[40][3]>(test_calibration_values_data));
+    double test_calibration_values_dummy_data[40][3];
+    const Matrix test_calibration_values(test_calibration_values_data,
+                                         test_calibration_values_dummy_data);
 
-    Matrix biases_expected(const_cast<double(&)[3][1]>(biases_expected_data));
+    double biases_expected_dummy_data[3][1];
+    const Matrix biases_expected(biases_expected_data,
+                                 biases_expected_dummy_data);
 
-    Matrix scale_factors_expected(
-        const_cast<double(&)[3][3]>(scale_factors_expected_data));
+    double scale_factors_expected_dummy_data[3][3];
+    const Matrix scale_factors_expected(scale_factors_expected_data,
+                                        scale_factors_expected_dummy_data);
 
     double initial_biases_bus_a_data[3][1];
-    Matrix initial_biases_bus_a(initial_biases_bus_a_data);
-    initial_biases_bus_a.Set(
-        0, 0, kPreFlightMagnetometerCalibrationBiasesImuBusA[0][0]);
-    initial_biases_bus_a.Set(
-        1, 0, kPreFlightMagnetometerCalibrationBiasesImuBusA[1][0]);
-    initial_biases_bus_a.Set(
-        2, 0, kPreFlightMagnetometerCalibrationBiasesImuBusA[2][0]);
-    double initial_scale_factors_bus_a_data[3][1];
-    Matrix initial_scale_factors_bus_a(initial_scale_factors_bus_a_data);
-    initial_scale_factors_bus_a.Set(
-        0, 0, kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[0][0]);
-    initial_scale_factors_bus_a.Set(
-        1, 0, kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[1][0]);
-    initial_scale_factors_bus_a.Set(
-        2, 0, kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[2][0]);
+    const Matrix initial_biases_bus_a(
+        kPreFlightMagnetometerCalibrationBiasesImuBusA,
+        initial_biases_bus_a_data);
+    double initial_scale_factors_bus_a_data[3][3];
+    const Matrix initial_scale_factors_bus_a(
+        kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
+        initial_scale_factors_bus_a_data);
     MagnetometerCalibration magnetometer_calibration(
         initial_biases_bus_a, initial_scale_factors_bus_a);
 
@@ -137,10 +133,18 @@ TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
     }
     for (uint8_t i = 0; i < 3; i++) {
         for (uint8_t j = 0; j < 3; j++) {
-            DOUBLES_EQUAL(
-                scale_factors_expected.Get(i, j) / 1000,
-                magnetometer_calibration.GetScaleFactors().Get(i, j) / 1000,
-                0.001);
+            if (kUsePreFlightMagnetometerCalibrationScaleFactors) {
+                DOUBLES_EQUAL(
+                    kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[i][j] /
+                        1000,
+                    magnetometer_calibration.GetScaleFactors().Get(i, j) / 1000,
+                    0.001);
+            } else {
+                DOUBLES_EQUAL(
+                    scale_factors_expected.Get(i, j) / 1000,
+                    magnetometer_calibration.GetScaleFactors().Get(i, j) / 1000,
+                    0.001);
+            }
         }
     }
 }
