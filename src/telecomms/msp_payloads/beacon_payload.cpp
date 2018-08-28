@@ -77,7 +77,6 @@ BeaconPayload::BeaconPayload()
       cdh_memory_available(0),
       cdh_last_reboot({0, false}),
       comms_outreach("Hello from Melbourne       ") {}
-
 SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
 
@@ -194,4 +193,8 @@ float BeaconPayload::ConstrainToRange(float data, uint16_t abs_max) {
         data = signum * abs_max;
     }
     return data;
+}
+
+double BeaconPayload::ReadCachedDouble(uint16_t measurable_id) {
+    return ReadCachedMeasurable<double>(measurable_id);
 }
