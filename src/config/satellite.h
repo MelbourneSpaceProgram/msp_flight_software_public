@@ -57,9 +57,9 @@ const double kPreFlightMagnetometerCalibrationBiasesImuBusA[3][1] = {
     {0}, {0}, {0}};
 const double kPreFlightMagnetometerCalibrationBiasesImuBusB[3][1] = {
     {0}, {0}, {0}};
-const double kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[3][1] = {
-    {1}, {1}, {1}};
-const double kPreFlightMagnetometerCalibrationScaleFactorsImuBusB[3][1] = {
-    {1}, {1}, {1}};
+const double kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[3][3] = {
+    {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+const double kPreFlightMagnetometerCalibrationScaleFactorsImuBusB[3][3] = {
+    {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 
 #endif  //  SRC_CONFIG_SATELLITE_H_
