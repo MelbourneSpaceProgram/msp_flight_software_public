@@ -31,6 +31,7 @@ Lithium::Lithium()
         ->SetReadMode(UART_MODE_BLOCKING)
         ->SetWriteMode(UART_MODE_BLOCKING)
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kUartWriteTimeoutMilli))
+        ->SetReadTimeout(TaskUtils::MilliToCycles(kUartReadTimeoutMilli))
         ->Open();
 
     Mailbox_Params_init(&command_response_mailbox_params);
