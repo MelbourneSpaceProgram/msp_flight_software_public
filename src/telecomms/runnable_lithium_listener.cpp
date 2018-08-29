@@ -16,7 +16,7 @@ fnptr RunnableLithiumListener::GetRunnablePointer() {
 }
 
 bool RunnableLithiumListener::ReadLithiumUart(byte* read_buffer, uint8_t size) {
-    return Lithium::GetInstance()->GetUart()->PerformReadTransaction(
+    return size == Lithium::GetInstance()->GetUart()->PerformReadTransaction(
         read_buffer, size);
 }
 
