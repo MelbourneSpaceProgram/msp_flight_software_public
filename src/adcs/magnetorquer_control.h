@@ -63,26 +63,10 @@ class MagnetorquerControl {
     static const uint32_t kMagnetorquerPolarityGpioAxisB = FS_B_DIR;
     static const uint32_t kMagnetorquerPolarityGpioAxisC = FS_C_DIR;
 
-    //
-    // TODO(crozone):
-    //
-    // Make this reference an external pwm_and_gpio_enabled constant
-    //
-    static const bool kMagnetorquerHardwareEnabled = true;
-
     static Semaphore_Handle degaussing_timer_semaphore;
+    static const float kDegaussingDecayMultiplier;
+    static const uint16_t kNDegaussPulses;
     static const uint16_t kDegaussingTimeConstantMillis = 300;
-
-    // Compute the exponential decay multiplier from the time constant
-    // and sample period:
-    //     exp(-(2 * (double)kDegaussingSwitchPeriodMicros * 1e-6) /
-    //         ((double)kDegaussingTimeConstantMillis * 1e-3));
-    static const float kDegaussingDecayMultiplier = 0.513417119;
-
-    // 3 time constants worth of exp decay:
-    //     round((3 * (double)kDegaussingTimeConstantMillis * 1e-3) /
-    //       ((double)kDegaussingSwitchPeriodMicros * 1e-6));
-    static const uint16_t kNDegaussPulses = 9;
 };
 
 #endif  // SRC_ADCS_MAGNETORQUER_CONTROL_H_

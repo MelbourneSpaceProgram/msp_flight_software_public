@@ -13,6 +13,17 @@
 #include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
 
+// Compute the exponential decay multiplier from the time constant
+// and sample period:
+const float MagnetorquerControl::kDegaussingDecayMultiplier =
+    exp(-(2 * static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6) /
+        (static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3));
+
+// 3 time constants worth of exp decay:
+const uint16_t MagnetorquerControl::kNDegaussPulses =
+    round((3 * static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3) /
+          (static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6));
+
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
 PWM_Handle MagnetorquerControl::pwm_handle_axis_a = NULL;
@@ -46,19 +57,16 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
     float b = magnetorquer_power_magnetorquer_frame.Get(1, 0);
     float c = magnetorquer_power_magnetorquer_frame.Get(2, 0);
 
-    if (kMagnetorquerHardwareEnabled) {
-        // Set A axis
-        SetPolarity(kMagnetorquerAxisA, a >= 0);
-        SetMagnitude(kMagnetorquerAxisA, fabsf(a));
+    // Set A axis
+    SetPolarity(kMagnetorquerAxisA, a >= 0);
+    SetMagnitude(kMagnetorquerAxisA, fabsf(a));
 
-        // Set B value
-        SetPolarity(kMagnetorquerAxisB, b >= 0);
-        SetMagnitude(kMagnetorquerAxisB, fabsf(b));
-
-        // Set C value
-        SetPolarity(kMagnetorquerAxisC, c >= 0);
-        SetMagnitude(kMagnetorquerAxisC, fabsf(c));
-    }
+    // Set B value
+    SetPolarity(kMagnetorquerAxisB, b >= 0);
+    SetMagnitude(kMagnetorquerAxisB, fabsf(b));
+    // Set C value
+    SetPolarity(kMagnetorquerAxisC, c >= 0);
+    SetMagnitude(kMagnetorquerAxisC, fabsf(c));
 }
 
 void MagnetorquerControl::InitializePwm() {
