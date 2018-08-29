@@ -181,8 +181,11 @@ void MagnetorquerControl::Degauss() {
             // Update power
             power = power * kDegaussingDecayMultiplier;
         } else {
-            Log_warning("Trying to degauss before the timer semaphore has been
-                         initialized");
+            etl::exception e(
+                "Trying to degauss before the timer semaphore has been "
+                "initialized",
+                __FILE__, __LINE__);
+            throw e;
         }
     }
 }
