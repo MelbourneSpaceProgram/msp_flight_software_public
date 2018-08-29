@@ -59,7 +59,8 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
                 command = &tle_update_command;
                 break;
             case kForceResetCommand:
-                ForceResetCommand force_reset_command;
+                ForceResetCommand force_reset_command(payload +
+                                                      kCommandCodeLength);
                 command = &force_reset_command;
                 break;
             case kLithiumBeaconPeriodCommand:
