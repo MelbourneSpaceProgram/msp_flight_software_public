@@ -76,24 +76,27 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
                 LithiumTestCommand lithium_test_command;
                 command = &lithium_test_command;
                 break;
+            default:
+                etl::exception e("Payload command does not exist!", __FILE__,
+                                 __LINE__);
+                break;
         }
 
         try {
             if (command != NULL) {
                 command_execution_successful = command->ExecuteCommand();
+                index +=
+                    command->GetCommandArgumentLength() + kCommandCodeLength;
             }
         } catch (etl::exception e) {
             Log_error1("Unable to successfully execute command with code %d",
                        command_code);
-            command_execution_successful = false;
             // TODO(akremor): Possible failure mode needs to be handled
         }
     } catch (etl::exception e) {
         Log_error1("Could not parse command with code code %d", command_code);
         // TODO(akremor): Possible failure mode needs to be handled
     }
-
-    index += command->GetCommandArgumentLength() + kCommandCodeLength;
 
     return command_execution_successful;
 }
