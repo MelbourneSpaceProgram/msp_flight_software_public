@@ -122,9 +122,6 @@ void PostBiosInitialiser::InitOrientationControl() {
     // Set up timer for orientation control loop
     RunnableOrientationControl::SetupControlLoopTimer();
 
-    // Set up timer for degaussing routine
-    MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
-
     // TODO(rskew) review priority
     TaskHolder* orientation_control_task = new TaskHolder(
         4096, "OrientationControl", 7, new RunnableOrientationControl());
@@ -146,6 +143,9 @@ void PostBiosInitialiser::InitOrientationControl() {
 }
 
 void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
+    // Set up timer for degaussing routine
+    MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
+
     RunnablePreDeploymentMagnetometerPoller::
         SetupKillTaskOnOrientationControlBeginSemaphore();
     // TODO(rskew) review priority
@@ -274,8 +274,8 @@ void PostBiosInitialiser::PostBiosInit() {
             Log_info0("Orientation control started");
         }
 
-        InitSystemHealthCheck();
-        Log_info0("System healthcheck started");
+        //InitSystemHealthCheck();
+        //Log_info0("System healthcheck started");
 
         Log_info0("System start up complete");
 #endif
