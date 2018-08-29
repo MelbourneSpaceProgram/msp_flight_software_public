@@ -28,7 +28,7 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
         // Suspect the Lithium is forwarding the AX.25 header along as we are
         // seeing the callsign come in
         byte *msp_payload =
-            lithium_payload + kMspHeaderBytes + kSequenceSecurityBytes + 24;
+            lithium_payload + kAx25Bytes + kSignatureBytes + kLengthBytes + kSequenceNumberBytes;
         payload_processor.ParseAndExecuteCommands(msp_payload);
     }
 }
