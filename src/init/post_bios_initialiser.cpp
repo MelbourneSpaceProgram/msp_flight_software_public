@@ -297,6 +297,7 @@ void PostBiosInitialiser::PostBiosInit() {
         if (kRunMagnetorquersAtConstantPower == false) {
             Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
+        }
         //InitBeacon();
         //Log_info0("Beacon started");
 
