@@ -239,7 +239,7 @@ void PostBiosInitialiser::PostBiosInit() {
 #endif
 
 #if defined ORBIT_CONFIGURATION
-        SystemWatchdog((uint32_t)SYS_WATCHDOG0);
+        //SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
         if (hil_available) {
             InitDataDashboard();
@@ -259,8 +259,8 @@ void PostBiosInitialiser::PostBiosInit() {
         Antenna::GetAntenna()->DeployAntenna();
         Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
-        InitBeacon();
-        Log_info0("Beacon started");
+        //InitBeacon();
+        //Log_info0("Beacon started");
 
         if (kRunMagnetorquersAtConstantPower) {
             // Rather than start orientation control, just blast the
