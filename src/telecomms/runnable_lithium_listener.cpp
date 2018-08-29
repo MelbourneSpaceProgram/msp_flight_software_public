@@ -15,30 +15,34 @@ fnptr RunnableLithiumListener::GetRunnablePointer() {
     return &RunnableLithiumListener::Receive;
 }
 
+bool RunnableLithiumListener::ReadLithiumUart(byte* read_buffer, uint8_t size) {
+    return Lithium::GetInstance()->GetUart()->PerformReadTransaction(
+        read_buffer, size);
+}
+
 void RunnableLithiumListener::Receive() {
-    byte read_buffer[Lithium::kMaxReceivedUartSize];
+    byte read_buffer[Lithium::kMaxReceivedUartSize] = {0};
     while (1) {
         // Grab sync characters (first two bytes of header/packet) one char at a
         // time Not two at a time so we can 'burn off' additional characters and
         // regain sync
-        Lithium::GetInstance()->GetUart()->PerformReadTransaction(read_buffer,
-                                                                  1);
+        if (!ReadLithiumUart(read_buffer, 1)) continue;
 
         if (read_buffer[0] != Lithium::kSyncCharOne) {
             continue;
         }
 
-        Lithium::GetInstance()->GetUart()->PerformReadTransaction(
-            read_buffer + 1, 1);
+        if (!ReadLithiumUart(read_buffer + 1, 1)) continue;
 
         if (read_buffer[1] != Lithium::kSyncCharTwo) {
             continue;
         }
 
         // Blocking read that reads headers only
-        Lithium::GetInstance()->GetUart()->PerformReadTransaction(
-            read_buffer + Lithium::kLithiumSyncSize,
-            Lithium::kLithiumHeaderSize - Lithium::kLithiumSyncSize);
+        if (!ReadLithiumUart(
+                read_buffer + Lithium::kLithiumSyncSize,
+                Lithium::kLithiumHeaderSize - Lithium::kLithiumSyncSize))
+            continue;
 
         if (!LithiumUtils::IsValidHeader(read_buffer)) {
             Log_error0("Invalid Lithium header");
@@ -50,7 +54,7 @@ void RunnableLithiumListener::Receive() {
 
         // Post first 8 bytes of read_buffer to header mailbox if not an
         // uplinked packet
-        if (command_code != kReceivedDataCommandCode) {
+        if (command_code != kReceivedDataCode) {
             Mailbox_post(Lithium::GetInstance()->GetHeaderMailbox(),
                          read_buffer, BIOS_WAIT_FOREVER);
         }
@@ -60,6 +64,10 @@ void RunnableLithiumListener::Receive() {
             // TODO(dingbenjamin): Check tail checksum over payload
             Lithium::GetInstance()->GetUart()->PerformReadTransaction(
                 read_buffer + Lithium::kLithiumHeaderSize, payload_size);
+
+            if (!ReadLithiumUart(read_buffer + Lithium::kLithiumHeaderSize,
+                                 payload_size))
+                continue;
 
             Mailbox_Handle mailbox;
             if (command_code == kReceivedDataCode) {
