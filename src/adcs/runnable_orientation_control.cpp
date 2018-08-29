@@ -67,7 +67,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    BDotEstimator b_dot_estimator(50, 4);
+    BDotEstimator b_dot_estimator(10 * kControlLoopPeriodMicros / 1000, 1);
     LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
@@ -135,6 +135,11 @@ void RunnableOrientationControl::ControlOrientation() {
         Matrix b_dot_estimate(b_dot_estimate_data);
         b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
+        Log_warning3("B dot estimate: %f, %f, %f\n",
+                     floatToArg(b_dot_estimate.Get(0,0)),
+                     floatToArg(b_dot_estimate.Get(1,0)),
+                     floatToArg(b_dot_estimate.Get(2,0)));
+
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
 
         // Run controller
@@ -146,6 +151,7 @@ void RunnableOrientationControl::ControlOrientation() {
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]
 
+        signed_pwm_output.MultiplyScalar(signed_pwm_output, -1);
         MagnetorquerControl::SetMagnetorquersPowerFraction(
             signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
             signed_pwm_output.Get(2, 0));
