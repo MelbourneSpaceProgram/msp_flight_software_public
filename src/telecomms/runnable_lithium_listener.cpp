@@ -62,9 +62,6 @@ void RunnableLithiumListener::Receive() {
         if (payload_size > 0 &&
             payload_size <= Lithium::kMaxReceivedUplinkSize) {
             // TODO(dingbenjamin): Check tail checksum over payload
-            Lithium::GetInstance()->GetUart()->PerformReadTransaction(
-                read_buffer + Lithium::kLithiumHeaderSize, payload_size);
-
             if (!ReadLithiumUart(read_buffer + Lithium::kLithiumHeaderSize,
                                  payload_size))
                 continue;
