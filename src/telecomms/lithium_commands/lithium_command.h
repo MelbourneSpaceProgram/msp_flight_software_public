@@ -14,7 +14,8 @@ class LithiumCommand : public Message {
     virtual uint16_t GetLithiumPayloadSize() const = 0;
     virtual const byte &GetCommandCode() const = 0;
     virtual uint16_t GetReplyPayloadSize() const = 0;
-    virtual void *GetReplyBuffer();
+    // TODO(dingbenjamin): Implement constness
+    virtual byte *GetReplyBuffer();
     SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 

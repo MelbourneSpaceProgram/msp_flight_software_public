@@ -14,17 +14,11 @@ class LithiumResponseCommand : public LithiumCommand {
         : LithiumCommand(command_code, lithium_payload) {}
     virtual ~LithiumResponseCommand(){};
 
-    void *GetReplyBuffer() { return reply_buffer; }
+    byte *GetReplyBuffer() { return reply_buffer; }
+    LithiumResponseType GetParsedResponse();
 
-    LithiumResponseType GetResponse() {
-        // TODO(dingbenjamin): Check if the cast succeeds
-        LithiumResponseType *response =
-            reinterpret_cast<LithiumResponseType *>(reply_buffer);
-        return *response;
-    }
-
-   private:
-    byte reply_buffer[Lithium::kLithiumHeaderSize];
+   protected:
+    byte reply_buffer[Lithium::kMaxReceivedLithiumResponseSize];
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_COMMANDS_LITHIUM_RESPONSE_COMMAND_H_

@@ -69,4 +69,4 @@ uint16_t LithiumCommand::GetSerialisedSize() const {
     }
 }
 
-void *LithiumCommand::GetReplyBuffer() { return NULL; }
+byte *LithiumCommand::GetReplyBuffer() { return NULL; }
