@@ -196,7 +196,7 @@ int16_t BeaconPayload::ScaleTemp(float data) {
 }
 
 float BeaconPayload::ConstrainToRange(float data, uint16_t abs_max) {
-    if (abs(data) > abs_max) {
+    if (fabs(data) > abs_max) {
         int8_t signum = data > abs_max ? 1 : -1;
         data = signum * abs_max;
     }
