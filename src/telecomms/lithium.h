@@ -5,6 +5,7 @@
 #include <src/telecomms/lithium_configuration.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
+typedef struct LithiumTelemetry LithiumTelemetry;
 class LithiumCommand;
 class LithiumEnableCommand;
 class RunnableLithiumListener;
@@ -44,7 +45,9 @@ class Lithium {
     Mailbox_Handle GetHeaderMailbox() const;
     Mailbox_Handle GetCommandResponseMailbox() const;
     Mailbox_Handle GetReceiveMailbox() const;
-    const LithiumConfiguration& GetLithiumConfig() const;
+    const LithiumConfiguration& GetLithiumConfig()
+        const;  // TODO(dingbenjamin): Refactor this method
+    LithiumTelemetry ReadLithiumTelemetry() const;
     void SetLithiumConfig(const LithiumConfiguration& lithium_config);
     bool IsTransmitEnabled();
     bool DoCommand(LithiumCommand* command) const;

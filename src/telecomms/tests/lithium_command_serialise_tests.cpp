@@ -4,6 +4,7 @@
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/telemetry_query_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_md5.h>
@@ -186,4 +187,24 @@ TEST(LithiumCommandSerialise, TestFastPaSerialisation) {
     // Payload
     CHECK_EQUAL(92, serial_buffer[8]);
     // TODO(dingbenjamin): Tail checksum
+}
+
+TEST(LithiumCommandSerialise, TestTelemetryQuerySerialisation) {
+    TelemetryQueryCommand telemetry_command;
+    byte command_buffer[8];
+    SerialisedMessage serial_command =
+        telemetry_command.SerialiseTo(command_buffer);
+    byte* serial_buffer = serial_command.GetBuffer();
+
+    CHECK_EQUAL(8, serial_command.GetSize());
+    CHECK_EQUAL(8, telemetry_command.GetSerialisedSize());
+
+    CHECK_EQUAL(static_cast<uint8_t>('H'), serial_buffer[0]);
+    CHECK_EQUAL(static_cast<uint8_t>('e'), serial_buffer[1]);
+    CHECK_EQUAL(0x10, serial_buffer[2]);
+    CHECK_EQUAL(0x07, serial_buffer[3]);
+    CHECK_EQUAL(0x00, serial_buffer[4]);
+    CHECK_EQUAL(0x00, serial_buffer[5]);
+    CHECK_EQUAL(0x17, serial_buffer[6]);
+    CHECK_EQUAL(0x55, serial_buffer[7]);
 }
