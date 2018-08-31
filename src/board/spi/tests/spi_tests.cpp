@@ -4,6 +4,14 @@
 #include <src/config/unit_tests.h>
 
 TEST_GROUP(Spi) {
+    // TODO(dingbenjamin): SD card functionality 'hogs' the SPI bus causing all
+    // other SPI transactions to fail. This conditional can be removed after an
+    // SPI bus manager is created
+    void setup() {
+        if (sd_card_available) {
+            TEST_EXIT;
+        }
+    };
 };
 
 TEST(Spi, TestSpiWriteTransaction) {
