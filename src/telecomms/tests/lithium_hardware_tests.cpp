@@ -7,9 +7,11 @@
 #include <src/telecomms/lithium_commands/lithium_command.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/telemetry_query_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_md5.h>
+#include <src/telecomms/lithium_telemetry.h>
 #include <src/telecomms/msp_payloads/test_payload.h>
 #include <src/util/data_types.h>
 
@@ -53,4 +55,9 @@ TEST(Lithium, TestWriteFlashHardware) {
 TEST(Lithium, TestFastPaHardware) {
     FastPaCommand fast_pa_command(5);
     CHECK(Lithium::GetInstance()->DoCommand(&fast_pa_command));
+}
+
+TEST(Lithium, TestTelemetryQueryHardware) {
+    LithiumTelemetry telemetry = Lithium::GetInstance()->ReadLithiumTelemetry();
+    CHECK(TelemetryQueryCommand::CheckValidTelemetry(telemetry));
 }

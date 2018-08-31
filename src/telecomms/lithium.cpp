@@ -9,6 +9,7 @@
 #include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/telemetry_query_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_utils.h>
@@ -147,6 +148,26 @@ uint8_t Lithium::GetCommandSuccessCounter() {
 
 const LithiumConfiguration& Lithium::GetLithiumConfig() const {
     return lithium_config;
+}
+
+LithiumTelemetry Lithium::ReadLithiumTelemetry() const {
+    LithiumTelemetry invalid_telemetry = {0, 0, {0, 0, 0}, 0, 0, 0};
+    TelemetryQueryCommand query;
+
+    if (!DoCommand(&query)) return invalid_telemetry;
+
+    // Sometimes the Lithium returns a telemetry packet filled with zeroes, if
+    // this is the case we should query again
+    if (!TelemetryQueryCommand::CheckValidTelemetry(
+            query.GetParsedResponse())) {
+        // Try again if we get an invalid telemetry
+        if (!DoCommand(&query)) return invalid_telemetry;
+        if (!TelemetryQueryCommand::CheckValidTelemetry(
+                query.GetParsedResponse()))
+            return invalid_telemetry;
+    }
+    // We have received a valid telemetry
+    return query.GetParsedResponse();
 }
 
 void Lithium::SetLithiumConfig(const LithiumConfiguration& lithium_config) {
