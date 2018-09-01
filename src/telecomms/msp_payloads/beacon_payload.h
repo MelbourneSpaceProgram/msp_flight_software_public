@@ -7,6 +7,7 @@
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/telecomms/msp_payloads/transmit_payload.h>
 #include <src/util/data_types.h>
+#include <stdint.h>
 
 class BeaconPayload : public TransmitPayload {
    public:
@@ -102,9 +103,11 @@ class BeaconPayload : public TransmitPayload {
         20;  // assumed [-20, 20] value range
     static const uint8_t kTempUpperBound =
         128;  // assumed [-128, 128] value range
+    static const int16_t kInvalidScaled16BitValue = INT16_MIN;
 
     // TODO(dingbenjamin): Make these private
-    static int16_t ScaleArbitraryInt16(float data, uint16_t abs_max);
+    static int16_t ScaleArbitraryInt16(float data, uint16_t abs_max,
+                                       float invalid_value = kInvalidDouble);
     static int16_t ScaleCurrent(float data);
     static int16_t ScaleVoltage(float data);
     static int16_t ScaleTemp(float data);
