@@ -5,7 +5,7 @@
 
 TEST_GROUP(FsCheckout) {
     void setup() {
-        if (!fs_board_available) {
+        if (!kFsBoardAvailable) {
             TEST_EXIT
         }
     };

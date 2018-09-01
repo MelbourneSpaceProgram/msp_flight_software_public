@@ -10,7 +10,7 @@ static const byte kIoExpanderAddress = 0x22;
 
 TEST_GROUP(IoExpander) {
     void setup() {
-        if (!i2c_available) {
+        if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };

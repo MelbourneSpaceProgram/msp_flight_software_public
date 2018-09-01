@@ -26,7 +26,7 @@ const uint16_t copy_buffer_size = 128;
 
 TEST_GROUP(SdCard) {
     void setup() {
-        if (!sd_card_available) {
+        if (!kSdCardAvailable) {
             TEST_EXIT;
         }
     };

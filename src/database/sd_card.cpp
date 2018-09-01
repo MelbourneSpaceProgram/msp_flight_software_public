@@ -13,7 +13,7 @@ SdHandle SdCard::handle = NULL;
 
 // TODO(dingbenjamin): Parameterize
 SdHandle SdCard::SdOpen() {
-    if (!sd_card_available) {
+    if (!kSdCardAvailable) {
         Log_info0("SdCard not available");
     }
 

@@ -34,7 +34,7 @@ void MagnetorquerControl::Initialize() { InitializePwm(); }
 
 void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
                                                         float z) {
-    if (hil_available) {
+    if (kHilAvailable) {
         PushDebugMessage(x, y, z);
     }
 

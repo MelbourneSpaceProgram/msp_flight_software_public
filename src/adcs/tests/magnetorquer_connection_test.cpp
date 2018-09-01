@@ -9,7 +9,7 @@
 TEST_GROUP(Magnetorquer){};
 
 TEST(Magnetorquer, MagnetorquerConnectivity) {
-    if (!i2c_available || !fs_board_available || !utilities_board_available) {
+    if (!kI2cAvailable || !kFsBoardAvailable || !kUtilitiesBoardAvailable) {
         TEST_EXIT;
     }
 

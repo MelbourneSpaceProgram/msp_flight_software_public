@@ -5,7 +5,7 @@
 
 TEST_GROUP(PanelCheckout) {
     void setup() {
-        if (!panel_board_available) {
+        if (!kPanelBoardAvailable) {
             TEST_EXIT
         }
     };

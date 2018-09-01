@@ -10,7 +10,7 @@
 
 TEST_GROUP(HardwareInLoop){
     void setup() {
-        if (!hil_available) {
+        if (!kHilAvailable) {
             TEST_EXIT;
         }
     };

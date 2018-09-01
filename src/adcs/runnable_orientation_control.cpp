@@ -115,7 +115,7 @@ void RunnableOrientationControl::ControlOrientation() {
             measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
                 kFsImuMagno2, 0);
 
-        if (hil_available) {
+        if (kHilAvailable) {
             // Echo magnetometer reading to data dashboard
             RunnableDataDashboard::TransmitMessage(
                 kMagnetometerReadingCode, MagnetometerReading_size,
@@ -146,12 +146,12 @@ void RunnableOrientationControl::ControlOrientation() {
             signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
             signed_pwm_output.Get(2, 0));
 
-        if (tcom_board_available) {
+        if (kTcomBoardAvailable) {
             if (location_estimator.CheckForUpdatedTle()) {
                 tle_last_updated = SatelliteTimeSource::GetTime();
                 // TODO (rskew) notify tle state machine
             }
-        } else if (hil_available) {
+        } else if (kHilAvailable) {
             location_estimator.RequestTleFromDebugClient();
             tle_last_updated = SatelliteTimeSource::GetTime();
             // TODO (rskew) notify tle state machine

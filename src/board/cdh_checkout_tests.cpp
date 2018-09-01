@@ -4,7 +4,7 @@
 
 TEST_GROUP(CdhCheckout) {
     void setup() {
-        if (!cdh_board_available) {
+        if (!kCdhBoardAvailable) {
             TEST_EXIT
         }
     };

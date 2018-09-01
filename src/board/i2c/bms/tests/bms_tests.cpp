@@ -12,7 +12,7 @@ static const uint8_t kReadRegisterCount = 2;
 
 TEST_GROUP(Bms) {
     void setup() {
-        if (!bms_available) {
+        if (!kBmsAvailable) {
             TEST_EXIT;
         }
     };

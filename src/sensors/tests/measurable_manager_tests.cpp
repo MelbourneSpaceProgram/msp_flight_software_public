@@ -7,7 +7,7 @@
 
 TEST_GROUP(MeasurableManager) {
     void setup() {
-        if (!i2c_available) {
+        if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };

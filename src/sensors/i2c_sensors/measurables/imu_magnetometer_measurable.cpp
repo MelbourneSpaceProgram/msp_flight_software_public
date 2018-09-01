@@ -22,7 +22,7 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
                                          kFailedMagnetometerReading),
       magnetometer_to_body_frame_transform(frame_mapping),
       magnetometer_calibration(initial_biases, initial_scale_factors) {
-    if (sd_card_available) {
+    if (kSdCardAvailable) {
         // TODO (rskew) catch exceptions
         CircularBufferNanopb(MagnetometerReading)::Create(
             kCalibrationReadingsBufferFileName,
@@ -52,14 +52,14 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     reading.y = reading_body_frame.Get(1, 0);
     reading.z = reading_body_frame.Get(2, 0);
 
-    if (hil_available) {
+    if (kHilAvailable) {
         // Echo reading to data dashboard
         RunnableDataDashboard::TransmitMessage(
             kMagnetometerReadingCode, MagnetometerReading_size,
             MagnetometerReading_fields, &reading);
     }
 
-    if (hil_available) {
+    if (kHilAvailable) {
         MagnetometerReading simulation_reading = TakeSimulationReading();
         // Combine readings.
         // The static hardware reading will be calibrated out, and the
@@ -69,7 +69,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         reading.z = reading.z + simulation_reading.z;
     }
 
-    if (sd_card_available) {
+    if (kSdCardAvailable) {
         // Write to circular buffer for calibration.
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,
@@ -79,7 +79,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
 
     // Apply calibration operations
     magnetometer_calibration.Apply(reading);
-    if (hil_available) {
+    if (kHilAvailable) {
         RunnableDataDashboard::TransmitMessage(
             kCalibratedMagnetometerReadingCode, MagnetometerReading_size,
             MagnetometerReading_fields, &reading);
@@ -116,7 +116,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
 }
 
 bool ImuMagnetometerMeasurable::Calibrate() {
-    if (!sd_card_available) {
+    if (!kSdCardAvailable) {
         return false;
     }
 

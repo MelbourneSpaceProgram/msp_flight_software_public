@@ -11,7 +11,7 @@ static const byte kTestRtcAddr = 0x69;
 
 TEST_GROUP(Rtc) {
     void setup() {
-        if (!i2c_available) {
+        if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };

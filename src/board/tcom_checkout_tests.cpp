@@ -4,7 +4,7 @@
 
 TEST_GROUP(TcomCheckout) {
     void setup() {
-        if (!tcom_board_available) {
+        if (!kTcomBoardAvailable) {
             TEST_EXIT
         }
     };

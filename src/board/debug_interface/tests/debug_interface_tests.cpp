@@ -9,7 +9,7 @@
 
 TEST_GROUP(DebugInterface) {
     void setup() {
-        if (!hil_available) {
+        if (!kHilAvailable) {
             TEST_EXIT;
         }
     };

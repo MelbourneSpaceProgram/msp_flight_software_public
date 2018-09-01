@@ -5,7 +5,7 @@
 
 TEST_GROUP(CircularBuffer) {
     void setup() {
-        if (!sd_card_available) {
+        if (!kSdCardAvailable) {
             TEST_EXIT
         }
     };
