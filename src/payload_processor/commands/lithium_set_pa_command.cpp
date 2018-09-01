@@ -8,8 +8,8 @@
 #include <xdc/runtime/Log.h>
 
 LithiumSetPaCommand::LithiumSetPaCommand(byte* payload)
-    : Command(kLithiumSetPaCommandArgumentLength),
-      pa_level(NanopbDecode(LithiumFastPaCommand)(payload)) {}
+    : Command(LithiumFastPaCommandPayload_size),
+      pa_level(NanopbDecode(LithiumFastPaCommandPayload)(payload)) {}
 
 bool LithiumSetPaCommand::ExecuteCommand() {
     Lithium* lithium = Lithium::GetInstance();

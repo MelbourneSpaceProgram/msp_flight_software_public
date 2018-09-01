@@ -143,16 +143,18 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
     buffer[1] = 0;
 
     // Set nanopb message
-    LithiumBeaconPeriod injected_beacon_period = {5000};
-    NanopbEncode(LithiumBeaconPeriod)(
+    LithiumBeaconPeriodCommandPayload injected_beacon_period = {5000};
+    NanopbEncode(LithiumBeaconPeriodCommandPayload)(
         buffer + PayloadProcessor::GetCommandCodeLength(),
         injected_beacon_period);
 
     // Set end terminators
     buffer[PayloadProcessor::GetCommandCodeLength() +
-           LithiumBeaconPeriod_size] = PayloadProcessor::GetEndTerminator();
-    buffer[PayloadProcessor::GetCommandCodeLength() + LithiumBeaconPeriod_size +
-           1] = PayloadProcessor::GetEndTerminator();
+           LithiumBeaconPeriodCommandPayload_size] =
+        PayloadProcessor::GetEndTerminator();
+    buffer[PayloadProcessor::GetCommandCodeLength() +
+           LithiumBeaconPeriodCommandPayload_size + 1] =
+        PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
     CHECK(payload_processor.ParseAndExecuteCommands(buffer));
@@ -160,7 +162,7 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
 
     // Reset to nominal
     injected_beacon_period = {kNominalBeaconPeriodMs};
-    NanopbEncode(LithiumBeaconPeriod)(
+    NanopbEncode(LithiumBeaconPeriodCommandPayload)(
         buffer + PayloadProcessor::GetCommandCodeLength(),
         injected_beacon_period);
     CHECK(payload_processor.ParseAndExecuteCommands(buffer));

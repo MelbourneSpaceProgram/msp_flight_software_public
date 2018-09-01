@@ -1,6 +1,7 @@
 #include <external/etl/exception.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/tle_update_command.h>
+#include <src/util/nanopb_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <src/util/nanopb_utils.h>
 
@@ -16,7 +17,6 @@ void TleUpdateCommand::SetTleUpdateCommandMailboxHandle(
 }
 
 bool TleUpdateCommand::ExecuteCommand() {
-    bool tle_update_command_delivered =
-        Mailbox_post(tle_update_command_mailbox_handle, &new_tle, BIOS_NO_WAIT);
-    return tle_update_command_delivered;
+    return Mailbox_post(tle_update_command_mailbox_handle, &new_tle,
+                        BIOS_NO_WAIT);
 }

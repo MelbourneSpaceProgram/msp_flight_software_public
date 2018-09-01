@@ -1,3 +1,0 @@
-message LithiumOnOffState {
-  required bool shouldTransmit = 1;
-}

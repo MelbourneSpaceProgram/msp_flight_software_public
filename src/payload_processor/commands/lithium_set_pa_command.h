@@ -1,7 +1,7 @@
 #ifndef SRC_PAYLOAD_PROCESSOR_COMMANDS_LITHIUM_SET_PA_COMMAND_H_
 #define SRC_PAYLOAD_PROCESSOR_COMMANDS_LITHIUM_SET_PA_COMMAND_H_
 
-#include <src/messages/LithiumFastPaCommand.pb.h>
+#include <src/messages/LithiumFastPaCommandPayload.pb.h>
 #include <src/payload_processor/commands/command.h>
 
 class LithiumSetPaCommand : public Command {
@@ -10,8 +10,6 @@ class LithiumSetPaCommand : public Command {
     bool ExecuteCommand();
 
    private:
-    LithiumFastPaCommand pa_level;
-    static const uint8_t kLithiumSetPaCommandArgumentLength =
-        LithiumFastPaCommand_size;
+    LithiumFastPaCommandPayload pa_level;
 };
 #endif  // SRC_PAYLOAD_PROCESSOR_COMMANDS_LITHIUM_SET_PA_COMMAND_H_
