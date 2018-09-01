@@ -1,3 +1,4 @@
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <src/util/satellite_time_source.h>
@@ -26,7 +27,7 @@ void SatelliteTimeSource::SetTime(RTime time) {
 Time SatelliteTimeSource::GetTime() {
     if (i2c_available) {
         if (!satellite_time.is_valid) {
-            //Log_error0("Satellite time is not valid");
+            // Log_error0("Satellite time is not valid");
         }
     } else {
         satellite_time.is_valid = false;
@@ -44,7 +45,7 @@ void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
     // starting from the time the `DeploymentWait` call is made.
     // It is a blocking wait.
 
-    if (deployment_waits_are_instant) {
+    if (kInstantDeploymentWaits) {
         Log_info0("Fast-forwarding through deployment wait");
         return;
     }

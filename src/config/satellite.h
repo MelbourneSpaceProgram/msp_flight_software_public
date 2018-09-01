@@ -5,7 +5,8 @@
 #include <src/util/matrix.h>
 
 constexpr bool kEnterDeepSleepOnStartup = false;
-
+static const bool kInstantDeploymentWaits = true;
+static const bool kLogI2c = false;
 static const bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 static const uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
 static const uint8_t kNominalLithiumPowerLevel = 150;  // Scaled between 0-255
