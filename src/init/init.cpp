@@ -1,4 +1,5 @@
 #include <src/board/board.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
@@ -15,6 +16,19 @@
 // init tasks. Should be called once at system startup, and prior to the BIOS
 // starting.
 void PreBiosInit() {
+    if (kEnterDeepSleepOnStartup) {
+        // Spin for a bit in case we need to stop this happening with the
+        // debugger etc (conservative approach, this likely isn't needed).
+        // Will take around 1-30 seconds to finish this loop; depends on things
+        // like system clock frequency, and whether the debugger or breakpoints
+        // are loaded. This isn't designed to be timing level accurate.
+        volatile uint32_t timeout = 120E6;
+        for (; timeout > 0; timeout--)
+            ;
+
+        EnterLowPowerMode();
+    }
+
     initGeneral();
     GPIO_init();
     I2C_init();

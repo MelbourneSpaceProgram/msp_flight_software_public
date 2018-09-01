@@ -86,6 +86,8 @@ typedef enum Board_WatchdogName {
     Board_WATCHDOGCOUNT
 } Board_WatchdogName;
 
+void EnterLowPowerMode();
+
 #ifdef __cplusplus
 }
 #endif

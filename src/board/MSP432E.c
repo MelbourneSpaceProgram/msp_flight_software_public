@@ -1,6 +1,6 @@
 #include <src/board/MSP432E.h>
-#include <ti/drivers/Power.h>
 #include <ti/devices/msp432e4/driverlib/driverlib.h>
+#include <ti/drivers/Power.h>
 
 /*
  *  =============================== GPIO ===============================
@@ -388,3 +388,13 @@ const Watchdog_Config Watchdog_config[Board_WATCHDOGCOUNT] = {
      .hwAttrs = &watchdogMSP432E4HWAttrs[SYS_WATCHDOG0]}};
 
 const uint_least8_t Watchdog_count = Board_WATCHDOGCOUNT;
+
+void EnterLowPowerMode() {
+    SysCtlPeripheralClockGating(true);
+    SysCtlDeepSleepPowerSet(SYSCTL_SRAM_LOW_POWER | SYSCTL_FLASH_LOW_POWER);
+    SysCtlDeepSleepClockConfigSet(
+        (SYSCTL_DSLP_OSC_INT30 | SYSCTL_DSLP_PIOSC_PD | SYSCTL_DSLP_MOSC_DPD),
+        1);
+    SysCtlLDODeepSleepSet(SYSCTL_LDO_0_90V);
+    SysCtlDeepSleep();
+}
