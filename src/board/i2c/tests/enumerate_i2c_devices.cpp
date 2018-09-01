@@ -23,14 +23,14 @@ static void CheckForDevices(I2c& bus, I2cMultiplexer* multiplexer,
 
 TEST_GROUP(I2cDeviceEnumeration) {
     void setup() {
-        if (!i2c_available) {
+        if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };
 };
 
 TEST(I2cDeviceEnumeration, CheckBusACdh) {
-    if (!cdh_board_available) {
+    if (!kCdhBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -43,7 +43,7 @@ TEST(I2cDeviceEnumeration, CheckBusACdh) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusAFs) {
-    if (!fs_board_available) {
+    if (!kFsBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -56,7 +56,7 @@ TEST(I2cDeviceEnumeration, CheckBusAFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusAEps) {
-    if (!eps_board_available) {
+    if (!kEpsBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -69,7 +69,7 @@ TEST(I2cDeviceEnumeration, CheckBusAEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusACom) {
-    if (!tcom_board_available) {
+    if (!kTcomBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -82,7 +82,7 @@ TEST(I2cDeviceEnumeration, CheckBusACom) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusBFs) {
-    if (!fs_board_available) {
+    if (!kFsBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -94,7 +94,7 @@ TEST(I2cDeviceEnumeration, CheckBusBFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCFs) {
-    if (!fs_board_available) {
+    if (!kFsBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -107,7 +107,7 @@ TEST(I2cDeviceEnumeration, CheckBusCFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCEps) {
-    if (!eps_board_available) {
+    if (!kEpsBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -119,7 +119,7 @@ TEST(I2cDeviceEnumeration, CheckBusCEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusDEps) {
-    if (!eps_board_available) {
+    if (!kEpsBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -131,7 +131,7 @@ TEST(I2cDeviceEnumeration, CheckBusDEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
-    if (!utilities_board_available) {
+    if (!kUtilitiesBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -144,7 +144,7 @@ TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
-    if (!panel_board_available) {
+    if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -157,7 +157,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
-    if (!panel_board_available) {
+    if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -170,7 +170,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
-    if (!panel_board_available) {
+    if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -183,7 +183,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
-    if (!panel_board_available) {
+    if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -196,7 +196,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
-    if (!panel_board_available) {
+    if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
 
@@ -209,7 +209,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCPanel6) {
-    if (!panel_board_available) {
+    if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
 

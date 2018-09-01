@@ -8,7 +8,7 @@ TEST_GROUP(Spi) {
     // other SPI transactions to fail. This conditional can be removed after an
     // SPI bus manager is created
     void setup() {
-        if (sd_card_available) {
+        if (kSdCardAvailable) {
             TEST_EXIT;
         }
     };

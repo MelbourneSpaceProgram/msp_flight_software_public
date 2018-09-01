@@ -204,7 +204,7 @@ void PostBiosInitialiser::InitTimeSource() {
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
-    if (ditl_mode) {
+    if (kDitlMode) {
         InitMemoryLogger();
     }
 
@@ -241,7 +241,7 @@ void PostBiosInitialiser::PostBiosInit() {
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
-        if (hil_available) {
+        if (kHilAvailable) {
             InitDataDashboard();
         }
 

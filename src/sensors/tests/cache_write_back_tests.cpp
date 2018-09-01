@@ -13,7 +13,7 @@
 
 TEST_GROUP(CacheWriteBack) {
     void setup() {
-        if (!sd_card_available || !i2c_available) {
+        if (!kSdCardAvailable || !kI2cAvailable) {
             TEST_EXIT;
         }
     };

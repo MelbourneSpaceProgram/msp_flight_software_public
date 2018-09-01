@@ -13,7 +13,7 @@ static const byte kTempSensorAddress = 0x1A;
 
 TEST_GROUP(Multiplexer) {
     void setup() {
-        if (!i2c_available) {
+        if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };

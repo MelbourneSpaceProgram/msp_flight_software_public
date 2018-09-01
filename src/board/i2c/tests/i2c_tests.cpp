@@ -9,7 +9,7 @@ static const byte kTestHardwareAddr = 0x76;
 // powered on in the I2c::InitBusses call.
 TEST_GROUP(I2c) {
     void setup() {
-        if (!i2c_available) {
+        if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };

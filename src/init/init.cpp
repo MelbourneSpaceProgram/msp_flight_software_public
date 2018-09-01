@@ -36,7 +36,7 @@ void PreBiosInit() {
     UART_init();
     PWM_init();
 
-    if (sd_card_available) {
+    if (kSdCardAvailable) {
         SDFatFS_init();
     }
 

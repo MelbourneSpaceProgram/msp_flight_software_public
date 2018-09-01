@@ -5,7 +5,7 @@
 
 TEST_GROUP(EpsCheckout) {
     void setup() {
-        if (!eps_board_available) {
+        if (!kEpsBoardAvailable) {
             TEST_EXIT
         }
     };

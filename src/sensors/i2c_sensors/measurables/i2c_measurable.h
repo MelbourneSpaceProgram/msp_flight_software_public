@@ -31,7 +31,7 @@ class I2cMeasurable : public Reading<R>, public Measurable {
             } catch (etl::exception& e) {
                 this->timestamp = {0, false};
             }
-            if (i2c_available) {
+            if (kI2cAvailable) {
                 Log_error3(
                     "Failed to read from sensor 0x%02x on bus %c (mux line "
                     "0x%02x)",

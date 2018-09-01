@@ -6,7 +6,7 @@
 
 TEST_GROUP(CurrentSensor) {
     void setup() {
-        if (!current_sensor_test_enabled) {
+        if (!kCurrentSensorTestEnabled) {
             TEST_EXIT;
         }
     };

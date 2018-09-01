@@ -11,7 +11,7 @@
 Semaphore_Handle Eeprom::eeprom_in_use = NULL;
 
 void Eeprom::Init() {
-    if (!eeprom_available) {
+    if (!kEepromAvailable) {
         Log_info0("EEPROM not available");
         return;
     }

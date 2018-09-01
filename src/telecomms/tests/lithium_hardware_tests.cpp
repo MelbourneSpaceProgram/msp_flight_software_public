@@ -17,7 +17,7 @@
 
 TEST_GROUP(Lithium) {
     void setup() {
-        if (!tcom_board_available) {
+        if (!kTcomBoardAvailable) {
             TEST_EXIT
         }
     };
@@ -41,7 +41,7 @@ TEST(Lithium, TestTransmitAckHardware) {
 }
 
 TEST(Lithium, TestWriteFlashHardware) {
-    if (!lithium_flash_test_enabled) {
+    if (!kLithiumFlashTestEnabled) {
         TEST_EXIT;
     }
     etl::array<byte, LithiumMd5::kNumMd5Bytes> md5_bytes = {

@@ -25,7 +25,7 @@ void SatelliteTimeSource::SetTime(RTime time) {
 }
 
 Time SatelliteTimeSource::GetTime() {
-    if (i2c_available) {
+    if (kI2cAvailable) {
         if (!satellite_time.is_valid) {
             // Log_error0("Satellite time is not valid");
         }

@@ -38,7 +38,7 @@ TEST(PayloadProcessor, TestPayloadProcessor) {
 }
 
 TEST(PayloadProcessor, TestForceResetCommand) {
-    if (!force_reset_command_test_enabled) {
+    if (!kForceResetCommandEnabled) {
         TEST_EXIT
     }
 
@@ -118,7 +118,7 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
 }
 
 TEST(PayloadProcessor, TestLithiumTestCommand) {
-    if (!tcom_board_available) {
+    if (!kTcomBoardAvailable) {
         TEST_EXIT
     }
 
