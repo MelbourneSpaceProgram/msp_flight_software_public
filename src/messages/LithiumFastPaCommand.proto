@@ -1,3 +1,0 @@
-message LithiumFastPaCommand {
-  required fixed32 pa_level = 1;
-}

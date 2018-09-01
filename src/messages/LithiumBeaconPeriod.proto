@@ -1,3 +1,0 @@
-message LithiumBeaconPeriod {
-  required fixed32 beacon_period_ms = 1;
-}

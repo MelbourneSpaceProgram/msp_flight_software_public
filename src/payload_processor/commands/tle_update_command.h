@@ -13,7 +13,6 @@ class TleUpdateCommand : public Command {
         Mailbox_Handle tle_update_command_mailbox_handle);
 
    private:
-    static const uint8_t kTleUpdateCommandArgumentLength = Tle_size;
     Tle new_tle;
     static Mailbox_Handle tle_update_command_mailbox_handle;
 };
