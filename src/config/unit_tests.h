@@ -15,7 +15,6 @@ static const bool current_sensor_test_enabled =
     false;  // No current sensors on CDH alone TODO
 static const bool force_reset_command_test_enabled =
     false;  // It will reset the satellite
-static const bool deployment_waits_are_instant = true;
 
 // Hardware available
 static const bool eeprom_available =
@@ -27,8 +26,6 @@ static const bool hil_available = false;
 static const bool bms_available = false;
 static const bool antenna_available = false;
 static const bool ditl_mode = false;
-
-static const bool log_i2c = false;
 
 // See CppUTest Guide.md in top folder for how-to. The below examples can be
 // chained together to run all but some tests, or to only run a certain set

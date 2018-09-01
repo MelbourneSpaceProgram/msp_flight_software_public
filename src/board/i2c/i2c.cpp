@@ -1,6 +1,7 @@
 #include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/board/i2c/i2c.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
@@ -112,7 +113,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
     Mailbox_delete(&i2c_mailbox);
 
-    if (log_i2c) {
+    if (kLogI2c) {
         if (write_buffer_length) {
             Log_info3("I2c: %c-W0x%02x length %d", this->GetBusLabel(), address,
                       write_buffer_length);
