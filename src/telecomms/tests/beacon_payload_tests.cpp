@@ -1,5 +1,6 @@
 #include <CppUTest/TestHarness.h>
 #include <src/telecomms/msp_payloads/beacon_payload.h>
+#include <stdint.h>
 
 TEST_GROUP(BeaconPayload){};
 
@@ -30,8 +31,9 @@ TEST(BeaconPayload, TestConstrain) {
 TEST(BeaconPayload, TestScaling) {
     CHECK_EQUAL(1000, BeaconPayload::ScaleArbitraryInt16(500, 16384));
     CHECK_EQUAL(32767, BeaconPayload::ScaleArbitraryInt16(1213, 1213));
-    CHECK_EQUAL(-32768, BeaconPayload::ScaleArbitraryInt16(-1213, 1213));
+    CHECK_EQUAL(-32767, BeaconPayload::ScaleArbitraryInt16(-1213, 1213));
     CHECK_EQUAL(0, BeaconPayload::ScaleArbitraryInt16(0, 1213))
     CHECK_EQUAL(993, BeaconPayload::ScaleArbitraryInt16(231, 7623));
     CHECK_EQUAL(-993, BeaconPayload::ScaleArbitraryInt16(-231, 7623));
+    CHECK_EQUAL(INT16_MIN, BeaconPayload::ScaleArbitraryInt16(-9999, 12345));
 }

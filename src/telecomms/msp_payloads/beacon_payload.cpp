@@ -175,12 +175,21 @@ uint16_t BeaconPayload::GetSerialisedSize() const { return kPayloadSize; }
 
 uint8_t BeaconPayload::GetPayloadCode() const { return kBeaconPayloadCode; }
 
-int16_t BeaconPayload::ScaleArbitraryInt16(float data, uint16_t abs_max) {
+int16_t BeaconPayload::ScaleArbitraryInt16(float data, uint16_t abs_max,
+                                           float invalid_value) {
+    if (fabs(data - invalid_value) <= std::numeric_limits<float>::epsilon()) {
+        // This flag is used on the ground station to signify an 'invalid' value
+        // which is different to the minimum value
+        return kInvalidScaled16BitValue;
+    }
+
     data = ConstrainToRange(data, abs_max);
     double resolution = (abs_max * 2.0) / (2 << 15);
     int32_t scaled = round(data / resolution);
     constexpr int32_t max = (2 << 14) - 1;
-    return scaled > max ? max : scaled;
+    if (scaled > max) return max;
+    if (scaled < -max) return -max;
+    return scaled;
 }
 
 int16_t BeaconPayload::ScaleCurrent(float data) {
