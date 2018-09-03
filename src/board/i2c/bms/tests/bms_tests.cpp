@@ -10,6 +10,8 @@
 static const byte test_bms_address = 0x68;
 static const uint8_t kReadRegisterCount = 2;
 
+// TODO(hugorilla): Complete further testing in coordination with electronics team
+
 TEST_GROUP(Bms) {
     void setup() {
         if (!kBmsAvailable) {
@@ -23,18 +25,16 @@ TEST(Bms, TestBms) {
     Bms bms(&bus_d, test_bms_address);
     etl::array<byte, kReadRegisterCount> read_buffer;
 
-    CHECK_EQUAL(Bms::kUVCLRegisterValue,
-                bms.GetConfiguration(0x16, read_buffer));
-    CHECK_EQUAL(Bms::kVChargeSettingRegisterValue,
-                bms.GetConfiguration(0x1B, read_buffer));
-    CHECK_EQUAL(Bms::kIChargeRegisterValue,
-                bms.GetConfiguration(0x1A, read_buffer));
-    CHECK_EQUAL((Bms::kReChargeThresholdURegisterValue << 8 |
-                 Bms::kReChargeThresholdLRegisterValue),
-                bms.GetConfiguration(0x2E, read_buffer));
+    CHECK_EQUAL(Bms::kVinUvclSettingConfigurationValue,
+                bms.GetVinUvclSetting());
+    CHECK_EQUAL(Bms::kVchargeSettingConfigurationValue,
+                bms.GetVchargeSetting());
+    CHECK_EQUAL(Bms::kIChargeTargetConfigurationValue, bms.GetIchargeTarget());
+    CHECK_EQUAL((Bms::kRechargeThresholdConfigurationUBValue << 8 |
+                 Bms::kRechargeThresholdConfigurationLBValue),
+                bms.GetRechargeThreshold());
 
-    CHECK(Bms::kError != bms.GetChargeStatus(read_buffer));
-    CHECK(Bms::kOther != bms.GetSystemStatus(read_buffer));
+    CHECK(Bms::kError != bms.GetChargeStatus());
 }
 
 TEST(Bms, TestBmsDieTemperatureRead) {
@@ -56,13 +56,12 @@ TEST(Bms, TestBmsBatteryTemperatureRead) {
 TEST(Bms, TestJeitaRegion) {
     I2c bus_d(I2C_BUS_D);
     Bms bms(&bus_d, test_bms_address);
-    etl::array<byte, kReadRegisterCount> read_buffer;
 
-    uint16_t Jeita_region = 3;
-    double Vcharge = 3.6;
-    double Icharge = 1.0;
+    uint16_t jeita_region = 3;
+    double v_charge = 3.6;
+    double i_charge = 1.0;
 
-    CHECK_EQUAL(Jeita_region, bms.GetJeitaRegionVCharge(read_buffer));
-    DOUBLES_EQUAL(Vcharge, bms.GetVChargeDEC(read_buffer), 0.5);
-    DOUBLES_EQUAL(Icharge, bms.GetIChargeDEC(read_buffer), 0.5);
+    CHECK_EQUAL(jeita_region, bms.GetJeitaRegion());
+    DOUBLES_EQUAL(v_charge, bms.GetVchargeDac(), 0.5);
+    DOUBLES_EQUAL(i_charge, bms.GetIchargeDac(), 0.5);
 }
