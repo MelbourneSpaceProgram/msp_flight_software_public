@@ -36,7 +36,8 @@
 
 MEMORY
 {
-    FLASH (RX) : origin = 0x00000000, length = 0x00100000
+    FLASH (RX) : origin = 0x00000000, length = 0x000F0000
+	RESETINFO (RWX) : origin = 0x000F0000, length = 0x00010000
     SRAM (RWX) : origin = 0x20000000, length = 0x00040000
 }
 
@@ -66,7 +67,7 @@ SECTIONS
     .init_array : > FLASH
     .ARM.extab  : > FLASH
     .ARM.exidx  : > FLASH
-
+	.resetinfo : > RESETINFO
     .vtable :   > 0x20000000
     .data   :   > SRAM
     .bss    :   > SRAM
