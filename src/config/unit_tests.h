@@ -11,8 +11,6 @@ static const bool kUtilitiesBoardAvailable = true;
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability
 static const bool kLithiumFlashTestEnabled= false;
-static const bool kCurrentSensorTestEnabled =
-    false;  // No current sensors on CDH alone TODO
 static const bool kForceResetCommandEnabled =
     false;  // It will reset the satellite
 
