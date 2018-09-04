@@ -4,6 +4,7 @@
 ForceResetCommand::ForceResetCommand() : Command(kForceResetCommandLength) {}
 
 bool ForceResetCommand::ExecuteCommand() {
-    SysCtlReset();
+    ResetManagement::SetResetFlag(ResetManagement::kForceResetCommand);
+    ResetManagement::ResetSystem();
     return true;
 }
