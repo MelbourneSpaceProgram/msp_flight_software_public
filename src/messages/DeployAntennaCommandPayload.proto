@@ -1,0 +1,3 @@
+message DeployAntennaCommandPayload {
+  required fixed32 deploy_antenna = 1;
+}
