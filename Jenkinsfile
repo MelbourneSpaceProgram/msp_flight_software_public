@@ -16,10 +16,9 @@ pipeline {
             steps {
                 sh 'if [ -d "checker_output" ]; then rm -Rf checker_output; fi'
                 sh 'mkdir checker_output'
-                sh 'python cpplint.py --recursive src 2>&1 | tee ./checker_output/cpplint.txt'
                 // Check conditional branches for "#define A" only. This doesn't exist, which means we skip the poor-scaling of checking all possible
                 // configurations, with the trade-off of weaker static analysis results.
-                sh 'cppcheck -DA --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 -i"TIRTOS Build" -itest/ . 2> ./checker_output/cppcheck.xml'
+                sh 'cppcheck -DA --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 . 2> ./checker_output/cppcheck.xml'
                 step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
                 sh 'cppcheck-htmlreport --source-encoding="iso8859-1" --title="MSP" --source-dir=. --report-dir=./checker_output/ --file=./checker_output/cppcheck.xml' 
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: './checker_output/', reportFiles: 'index.html', reportName: 'Static Analysis', reportTitles: ''])
@@ -57,12 +56,10 @@ pipeline {
                     tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
                     sudo docker run -td --name ${docker_name} ccsv8_msp432e
                     sudo docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/root/
-		            sudo docker exec -t $docker_name mkdir /root/flight_software
+		    sudo docker exec -t $docker_name mkdir /root/flight_software
                     sudo docker exec -t $docker_name tar -xf /root/CDH_software.tar.gz -C /root/flight_software/
                     sudo docker exec -t $docker_name /opt/ti/ccsv8/eclipse/eclipse -noSplash -data /root/ws -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "Tests MSP432E"
-		            sudo docker cp $docker_name:"/root/flight_software/Tests MSP432E/MSP.out" ${WORKSPACE}/MSP.out 
 		    '''
-		    stash includes: 'MSP.out', name: 'flight_software_binary'
     	    }
             post {
                 always {
