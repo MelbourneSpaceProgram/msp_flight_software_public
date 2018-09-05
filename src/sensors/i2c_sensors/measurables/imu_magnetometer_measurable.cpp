@@ -21,12 +21,22 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
     : I2cMeasurable<MagnetometerReading>(imu_sensor,
                                          kFailedMagnetometerReading),
       magnetometer_to_body_frame_transform(frame_mapping),
-      magnetometer_calibration(initial_biases, initial_scale_factors) {
+      magnetometer_calibration(initial_biases, initial_scale_factors),
+      can_calibrate(true) {
     if (kSdCardAvailable) {
-        // TODO (rskew) catch exceptions
-        CircularBufferNanopb(MagnetometerReading)::Create(
-            kCalibrationReadingsBufferFileName,
-            kCalibrationReadingsBufferSizeInReadings);
+        try {
+            CircularBufferNanopb(MagnetometerReading)::Create(
+                kCalibrationReadingsBufferFileName,
+                kCalibrationReadingsBufferSizeInReadings);
+        } catch (etl::exception& e) {
+            Log_error0(
+                "Disabling magnetometer calibration due to Circular Buffer/SD "
+                "error");
+            can_calibrate = false;
+        }
+    } else {
+        Log_info0("Disabling magnetometer calibration due to no SD card");
+        can_calibrate = false;
     }
 }
 
@@ -69,16 +79,20 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         reading.z = reading.z + simulation_reading.z;
     }
 
-    if (kSdCardAvailable) {
+    if (can_calibrate) {
         // Write to circular buffer for calibration.
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,
         CircularBufferNanopb(MagnetometerReading)::WriteMessage(
             kCalibrationReadingsBufferFileName, reading);
+
+        // Apply calibration operations
+        magnetometer_calibration.Apply(reading);
+    } else {
+        Log_info0(
+            "Skipping magnetometer calibration due to error or no SD card");
     }
 
-    // Apply calibration operations
-    magnetometer_calibration.Apply(reading);
     if (kHilAvailable) {
         RunnableDataDashboard::TransmitMessage(
             kCalibratedMagnetometerReadingCode, MagnetometerReading_size,
