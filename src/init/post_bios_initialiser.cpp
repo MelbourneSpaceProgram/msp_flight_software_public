@@ -183,7 +183,16 @@ void PostBiosInitialiser::InitHardware() {
 
     try {
         SdCard::SdOpen();
+        try {
+            if (kFormatSdOnStartup) {
+                SdCard::Format();
+            }
+        } catch (etl::exception& e) {
+            Log_error0("Failed to format SD card");
+        }
     } catch (etl::exception& e) {
+        // TODO(dingbenjamin): Single catch that just prints the exception
+        Log_error0("Failed to open SD card");
         // TODO(akremor): Possible failure mode needs to be handled
     }
 }
