@@ -9,17 +9,14 @@ message BmsReadings {
 	required uint32 jeita_region = 8;
 	required uint32 system_status = 9;
 	required uint32 charger_state = 10;
-	required uint32 charge_status = 11;
+	required uint32 charge_indicator = 11;
 	required double recharge_threshold  = 12;
 	required uint32 charger_config = 13;
-	required uint32 c_over_x_threshold = 14;
+	required uint32 c_x_threshold = 14;
 	required uint32 v_charge_setting = 15;
 	required uint32 i_charge_target = 16;
-	required uint32 config_bits = 17;
+	required uint32 configuration = 17;
 	required uint32 q_count = 18;
-	required uint32 q_count_prescale_factor = 19;
-	required uint32 v_in_uvcl_setting = 20;
-	required double v_charge_dac = 21;
-	required double i_charge_dac = 22;
-	required bool telemetry_valid = 23;
+	required uint32 q_count_scale_factor = 19;
+	required bool telemetry_valid = 20;
 }
