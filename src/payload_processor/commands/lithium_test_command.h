@@ -9,7 +9,7 @@ class LithiumTestCommand : public Command {
     bool ExecuteCommand();
 
    private:
-    static const uint8_t kLithiumTestCommandArgumentLength = 0;
+    static const uint8_t kLithiumTestCommandArgumentLength = 1;
     static const uint8_t kNumTestTransmits = 10;
 };
 #endif  // SRC_PAYLOAD_PROCESSOR_COMMANDS_LITHIUM_TEST_COMMAND_H_

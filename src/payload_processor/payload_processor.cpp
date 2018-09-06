@@ -35,27 +35,28 @@ bool PayloadProcessor::ParseAndExecuteCommands(byte* payload) {
     return true;
 }
 
-bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
+bool PayloadProcessor::ParseNextCommandAndExecute(uint8_t& index,
+                                                  byte* payload) {
     uint16_t command_code = static_cast<uint16_t>(payload[index]) |
                             (static_cast<uint16_t>(payload[index + 1]) << 8);
     Command* command = NULL;
     bool command_execution_successful = false;
 
+    payload += kCommandCodeLength;
+
     try {
         // TODO(akremor): Is this referencing a local variable?
         switch (command_code) {
-            case kEchoCommand:
-                TestCommand echo_command(payload, index + kCommandCodeLength);
-                command = &echo_command;
+            case kTestCommand:
+                TestCommand test_command(payload);
+                command = &test_command;
                 break;
             case kLithiumEnableCommand:
-                LithiumEnableCommand lithium_enable_command(payload +
-                                                            kCommandCodeLength);
+                LithiumEnableCommand lithium_enable_command(payload);
                 command = &lithium_enable_command;
                 break;
             case kTleUpdateCommand:
-                TleUpdateCommand tle_update_command(payload,
-                                                    index + kCommandCodeLength);
+                TleUpdateCommand tle_update_command(payload);
                 command = &tle_update_command;
                 break;
             case kForceResetCommand:
@@ -63,13 +64,11 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
                 command = &force_reset_command;
                 break;
             case kLithiumBeaconPeriodCommand:
-                LithiumBeaconPeriodCommand beacon_period_command(
-                    payload + kCommandCodeLength);
+                LithiumBeaconPeriodCommand beacon_period_command(payload);
                 command = &beacon_period_command;
                 break;
             case kLithiumFastPaCommand:
-                LithiumSetPaCommand set_pa_command(payload +
-                                                   kCommandCodeLength);
+                LithiumSetPaCommand set_pa_command(payload);
                 command = &set_pa_command;
                 break;
             case kLithiumTestCommand:
@@ -86,8 +85,7 @@ bool PayloadProcessor::ParseNextCommandAndExecute(byte& index, byte* payload) {
         try {
             if (command != NULL) {
                 command_execution_successful = command->ExecuteCommand();
-                index +=
-                    command->GetCommandArgumentLength() + kCommandCodeLength;
+                index += command->GetCommandArgumentLength() + kCommandCodeLength;
             }
         } catch (etl::exception e) {
             Log_error1("Unable to successfully execute command with code %d",
