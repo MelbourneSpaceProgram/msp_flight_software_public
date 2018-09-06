@@ -7,7 +7,7 @@
 
 class TleUpdateCommand : public Command {
    public:
-    TleUpdateCommand(byte* payload, byte command_argument_start_index);
+    explicit TleUpdateCommand(byte* payload);
     bool ExecuteCommand();
     static void SetTleUpdateCommandMailboxHandle(
         Mailbox_Handle tle_update_command_mailbox_handle);

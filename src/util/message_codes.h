@@ -45,7 +45,7 @@ enum PayloadType {
 
 enum Commands {
     kNoCommand = 0,
-    kEchoCommand = 1,
+    kTestCommand = 1,
     kLithiumEnableCommand = 2,
     kTleUpdateCommand = 3,
     kForceResetCommand = 4,
