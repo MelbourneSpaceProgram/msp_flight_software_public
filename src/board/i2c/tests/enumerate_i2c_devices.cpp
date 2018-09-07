@@ -143,7 +143,7 @@ TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
+TEST(I2cDeviceEnumeration, CheckBusCXPos) {
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
@@ -156,7 +156,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel1) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
+TEST(I2cDeviceEnumeration, CheckBusCYPos) {
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
@@ -169,7 +169,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel2) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
+TEST(I2cDeviceEnumeration, CheckBusCXNeg) {
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
@@ -182,7 +182,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel3) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
+TEST(I2cDeviceEnumeration, CheckBusCYNeg) {
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
@@ -195,7 +195,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel4) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
+TEST(I2cDeviceEnumeration, CheckBusCZNeg) {
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
@@ -208,7 +208,7 @@ TEST(I2cDeviceEnumeration, CheckBusCPanel5) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCPanel6) {
+TEST(I2cDeviceEnumeration, CheckBusCZPos) {
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }
