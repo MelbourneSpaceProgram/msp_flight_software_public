@@ -6,6 +6,7 @@
 #include <src/payload_processor/commands/lithium_test_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
+#include <src/payload_processor/commands/enable_datalogger_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
@@ -74,6 +75,10 @@ bool PayloadProcessor::ParseNextCommandAndExecute(uint8_t& index,
             case kLithiumTestCommand:
                 LithiumTestCommand lithium_test_command;
                 command = &lithium_test_command;
+                break;
+            case kEnableDataloggerCommand:
+                EnableDataloggerCommand enable_datalogger_command(payload);
+                command = &enable_datalogger_command;
                 break;
             default:
                 etl::exception e("Payload command does not exist!", __FILE__,

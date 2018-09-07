@@ -12,6 +12,7 @@
 #include <src/util/task_utils.h>
 
 Uart RunnableSystemHealthCheck::debug_uart(UMBILICAL_CONSOLE);
+bool RunnableSystemHealthCheck::datalogger_enabled = true;
 
 RunnableSystemHealthCheck::RunnableSystemHealthCheck() {
     debug_uart.SetBaudRate(Uart::kBaud115200)
@@ -39,205 +40,211 @@ void RunnableSystemHealthCheck::WriteToDataLogger(uint8_t measurable_id,
     debug_uart.PerformWriteTransaction(encoded_message, message_size);
 }
 
+bool RunnableSystemHealthCheck::IsEnabled() { return datalogger_enabled; }
+
+void RunnableSystemHealthCheck::EnableDatalogger(bool enable_logger) {
+    datalogger_enabled = enable_logger;
+}
+
 void RunnableSystemHealthCheck::SystemHealthCheck() {
     while (1) {
-        // Telecomms
+        if (datalogger_enabled) {
+            // Telecomms
+            LogToUart(double, VoltageReading)(kComInI1,
+                                              &NanopbUtils::NanopbVoltage);
 
-        LogToUart(double, VoltageReading)(kComInI1,
-                                          &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kComOutV1,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kComInV2,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kComOutV2,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, CurrentReading)(kComInI1,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kComOutI1,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kComInI2,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kComOutI2,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, TemperatureReading)(
+                kComT1, &NanopbUtils::NanopbTemperature);
 
-        LogToUart(double, VoltageReading)(kComOutV1,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kComInV2,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kComOutV2,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, CurrentReading)(kComInI1,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kComOutI1,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kComInI2,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kComOutI2,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, TemperatureReading)(kComT1,
-                                              &NanopbUtils::NanopbTemperature);
+            // EPS
+            LogToUart(double, CurrentReading)(kEpsBoostInI1,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kEpsLoadI1,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kEpsBoostInI2,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kEpsLoadI2,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, TemperatureReading)(
+                kEpsT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kEpsT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kEpsBmsDieT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kEpsBmsDieT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kEpsBmsBatT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kEpsBmsBatT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, VoltageReading)(kEpsAdcBatV1,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kEpsBoostOutV1,
+                                              &NanopbUtils::NanopbVoltage);
 
-        // EPS
-        LogToUart(double, CurrentReading)(kEpsBoostInI1,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kEpsLoadI1,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kEpsBoostInI2,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kEpsLoadI2,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, TemperatureReading)(kEpsT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kEpsT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kEpsBmsDieT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kEpsBmsDieT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kEpsBmsBatT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kEpsBmsBatT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, VoltageReading)(kEpsAdcBatV1,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kEpsBoostOutV1,
-                                          &NanopbUtils::NanopbVoltage);
+            LogToUart(double, TemperatureReading)(
+                kXPosT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kXPosT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kYPosT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kYPosT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kXNegT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kXNegT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kYNegT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kYNegT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kZNegT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kZNegT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kZPosT, &NanopbUtils::NanopbTemperature);
 
-        LogToUart(double, TemperatureReading)(kXPosT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kXPosT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kYPosT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kYPosT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kXNegT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kXNegT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kYNegT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kYNegT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kZNegT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kZNegT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kZPosT,
-                                              &NanopbUtils::NanopbTemperature);
+            LogToUart(double, VoltageReading)(kXPosV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kXPosSolarV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kYPosV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kYPosSolarV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kXNegV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kXNegSolarV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kYNegV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kYNegSolarV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kZNegV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kZNegSolarV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kEpsTopPanelV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kEpsTopSolarV,
+                                              &NanopbUtils::NanopbVoltage);
 
-        LogToUart(double, VoltageReading)(kXPosV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kXPosSolarV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kYPosV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kYPosSolarV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kXNegV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kXNegSolarV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kYNegV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kYNegSolarV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kZNegV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kZNegSolarV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kEpsTopPanelV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kEpsTopSolarV,
-                                          &NanopbUtils::NanopbVoltage);
+            LogToUart(double, CurrentReading)(kXPosI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kXPosSolarI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kYPosI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kYPosSolarI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kXNegI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kXNegSolarI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kYNegI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kYNegSolarI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kZNegI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kZNegSolarI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kEpsTopPanelI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kEpsTopSolarI,
+                                              &NanopbUtils::NanopbCurrent);
 
-        LogToUart(double, CurrentReading)(kXPosI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kXPosSolarI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kYPosI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kYPosSolarI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kXNegI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kXNegSolarI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kYNegI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kYNegSolarI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kZNegI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kZNegSolarI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kEpsTopPanelI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kEpsTopSolarI,
-                                          &NanopbUtils::NanopbCurrent);
+            // TODO(akremor): Keeping these as they represent uninitialised
+            // measurables
+            // LogToUart(double, CurrentReading)(kEpsBoostInI1,
+            //                                         &NanopbUtils::NanopbCurrent);
+            // LogToUart(double, CurrentReading)(kEpsLoadI1,
+            //                                         &NanopbUtils::NanopbCurrent);
+            LogToUart(double, VoltageReading)(kEpsAdcBatV2,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kEpsBoostOutV2,
+                                              &NanopbUtils::NanopbVoltage);
+            // LogToUart(double, CurrentReading)(kEpsBoostInI2,
+            //                                        &NanopbUtils::NanopbCurrent);
+            // LogToUart(double, CurrentReading)(kEpsLoadI2,
+            //                                         &NanopbUtils::NanopbCurrent);
+            LogToUart(double, VoltageReading)(kEpsRail1,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kEpsRail2,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(BmsReadings, BmsReadings)(kEpsBmsReadings1,
+                                                &NanopbUtils::NanopbBms);
+            LogToUart(BmsReadings, BmsReadings)(kEpsBmsReadings2,
+                                                &NanopbUtils::NanopbBms);
 
-        // TODO(akremor): Keeping these as they represent uninitialised
-        // measurables
-        // LogToUart(double, CurrentReading)(kEpsBoostInI1,
-        //                                         &NanopbUtils::NanopbCurrent);
-        // LogToUart(double, CurrentReading)(kEpsLoadI1,
-        //                                         &NanopbUtils::NanopbCurrent);
-        LogToUart(double, VoltageReading)(kEpsAdcBatV2,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kEpsBoostOutV2,
-                                          &NanopbUtils::NanopbVoltage);
-        // LogToUart(double, CurrentReading)(kEpsBoostInI2,
-        //                                        &NanopbUtils::NanopbCurrent);
-        // LogToUart(double, CurrentReading)(kEpsLoadI2,
-        //                                         &NanopbUtils::NanopbCurrent);
-        LogToUart(double, VoltageReading)(kEpsRail1,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kEpsRail2,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(BmsReadings, BmsReadings)(kEpsBmsReadings1,
-                                            &NanopbUtils::NanopbBms);
-        LogToUart(BmsReadings, BmsReadings)(kEpsBmsReadings2,
-                                            &NanopbUtils::NanopbBms);
+            // Flight Systems
+            LogToUart(double, CurrentReading)(kFsTorquerXI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kFsTorquerTotalI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kFsTorquerYI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, CurrentReading)(kFsTorquerZI,
+                                              &NanopbUtils::NanopbCurrent);
+            LogToUart(double, VoltageReading)(kFsTorquerXAV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kFsTorquerXBV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kFsTorquerYAV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kFsTorquerYBV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kFsTorquerZAV,
+                                              &NanopbUtils::NanopbVoltage);
+            LogToUart(double, VoltageReading)(kFsTorquerZBV,
+                                              &NanopbUtils::NanopbVoltage);
 
-        // Flight Systems
-        LogToUart(double, CurrentReading)(kFsTorquerXI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kFsTorquerTotalI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kFsTorquerYI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, CurrentReading)(kFsTorquerZI,
-                                          &NanopbUtils::NanopbCurrent);
-        LogToUart(double, VoltageReading)(kFsTorquerXAV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kFsTorquerXBV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kFsTorquerYAV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kFsTorquerYBV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kFsTorquerZAV,
-                                          &NanopbUtils::NanopbVoltage);
-        LogToUart(double, VoltageReading)(kFsTorquerZBV,
-                                          &NanopbUtils::NanopbVoltage);
+            LogToUart(double, TemperatureReading)(
+                kFsHbXT, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kFsHbYT, &NanopbUtils::NanopbTemperature);
+            LogToUart(double, TemperatureReading)(
+                kFsHbZT, &NanopbUtils::NanopbTemperature);
+            LogToUart(GyroscopeReading, GyroscopeReading)(
+                kFsImuGyro1, &NanopbUtils::NanopbGyroscope);
+            LogToUart(AccelerometerReading, AccelerometerReading)(
+                kFsImuAccel1, &NanopbUtils::NanopbAccelerometer);
+            LogToUart(double, TemperatureReading)(
+                kFsImuT1, &NanopbUtils::NanopbTemperature);
+            LogToUart(MagnetometerReading, MagnetometerReading)(
+                kFsImuMagno1, &NanopbUtils::NanopbMagnetometer);
+            LogToUart(GyroscopeReading, GyroscopeReading)(
+                kFsImuGyro2, &NanopbUtils::NanopbGyroscope);
+            LogToUart(AccelerometerReading, AccelerometerReading)(
+                kFsImuAccel2, &NanopbUtils::NanopbAccelerometer);
+            LogToUart(double, TemperatureReading)(
+                kFsImuT2, &NanopbUtils::NanopbTemperature);
+            LogToUart(MagnetometerReading, MagnetometerReading)(
+                kFsImuMagno2, &NanopbUtils::NanopbMagnetometer);
 
-        LogToUart(double, TemperatureReading)(kFsHbXT,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kFsHbYT,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(double, TemperatureReading)(kFsHbZT,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(GyroscopeReading, GyroscopeReading)(
-            kFsImuGyro1, &NanopbUtils::NanopbGyroscope);
-        LogToUart(AccelerometerReading, AccelerometerReading)(
-            kFsImuAccel1, &NanopbUtils::NanopbAccelerometer);
-        LogToUart(double, TemperatureReading)(kFsImuT1,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(MagnetometerReading, MagnetometerReading)(
-            kFsImuMagno1, &NanopbUtils::NanopbMagnetometer);
-        LogToUart(GyroscopeReading, GyroscopeReading)(
-            kFsImuGyro2, &NanopbUtils::NanopbGyroscope);
-        LogToUart(AccelerometerReading, AccelerometerReading)(
-            kFsImuAccel2, &NanopbUtils::NanopbAccelerometer);
-        LogToUart(double, TemperatureReading)(kFsImuT2,
-                                              &NanopbUtils::NanopbTemperature);
-        LogToUart(MagnetometerReading, MagnetometerReading)(
-            kFsImuMagno2, &NanopbUtils::NanopbMagnetometer);
+            // CDH
+            LogToUart(double, TemperatureReading)(
+                kCdhT, &NanopbUtils::NanopbTemperature);
 
-        // CDH
-        LogToUart(double, TemperatureReading)(kCdhT,
-                                              &NanopbUtils::NanopbTemperature);
-
-        // TODO(dingbenjamin): Yet to add:
-        //        kUtilAdc2,
-        //        kUtilT,
-
+            // TODO(dingbenjamin): Yet to add:
+            //        kUtilAdc2,
+            //        kUtilT,
+        }
         SystemWatchdog::ResetTimer();
         TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
     }

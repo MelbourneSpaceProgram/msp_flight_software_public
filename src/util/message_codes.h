@@ -53,6 +53,7 @@ enum Commands {
     kScienceCommand = 6,
     kLithiumFastPaCommand = 7,
     kLithiumTestCommand = 8,
+    kEnableDataloggerCommand = 10,
     kCommandsLength
 };
 
