@@ -55,6 +55,7 @@ enum Commands {
     kLithiumTestCommand = 8,
     kDeployAntennaCommand = 9,
     kEnableDataloggerCommand = 10,
+    kFormatSdCommand = 11,
     kCommandsLength
 };
 
