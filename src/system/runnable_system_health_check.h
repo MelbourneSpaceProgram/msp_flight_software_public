@@ -20,8 +20,11 @@ class RunnableSystemHealthCheck : public Runnable {
     RunnableSystemHealthCheck();
     static void WriteToDataLogger(uint8_t measurable_id, byte encoded_message[],
                                   uint8_t message_size);
+    static bool IsEnabled();
+    static void EnableDatalogger(bool enable_logger);
 
    private:
+    static bool datalogger_enabled;
     static Uart debug_uart;
     static void SystemHealthCheck();
     static const uint32_t kHealthCheckPeriodMillis = 1000;
