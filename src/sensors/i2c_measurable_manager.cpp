@@ -258,8 +258,8 @@ void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
 
     AddVoltage(kEpsTopPanelV, z_pos_adc, kAdcP0NGnd, 3.0);
     AddVoltage(kEpsTopSolarV, z_pos_adc, kAdcP1NGnd, 3.0);
-    AddCurrent(kEpsTopPanelI, z_pos_adc, kAdcP1NGnd, 5.0 / 3, 0);
-    AddCurrent(kEpsTopSolarI, z_pos_adc, kAdcP3NGnd, 5.0 / 3, 0);
+    AddCurrent(kEpsTopSolarI, z_pos_adc, kAdcP2NGnd, 5.0 / 3, 0);
+    AddCurrent(kEpsTopPanelI, z_pos_adc, kAdcP3NGnd, 5.0 / 3, 0);
 
     Adc *x_pos_adc = new Adc(bus_c, 0x48, mux_c, I2cMultiplexer::kMuxChannel4);
     x_pos_adc->SetGainAmplifierLevel(kAdc4v096);
