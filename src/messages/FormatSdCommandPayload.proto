@@ -1,0 +1,3 @@
+message FormatSdCommandPayload {
+  required uint32 sd_index = 1;
+}

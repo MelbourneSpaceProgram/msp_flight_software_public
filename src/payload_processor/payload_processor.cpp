@@ -1,5 +1,6 @@
 #include <src/payload_processor/commands/command.h>
 #include <src/payload_processor/commands/force_reset_command.h>
+#include <src/payload_processor/commands/format_sd_command.h>
 #include <src/payload_processor/commands/lithium_beacon_period_command.h>
 #include <src/payload_processor/commands/lithium_enable_command.h>
 #include <src/payload_processor/commands/lithium_set_pa_command.h>
@@ -84,6 +85,10 @@ bool PayloadProcessor::ParseNextCommandAndExecute(uint8_t& index,
             case kEnableDataloggerCommand:
                 EnableDataloggerCommand enable_datalogger_command(payload);
                 command = &enable_datalogger_command;
+                break;
+            case kFormatSdCommand:
+                FormatSdCommand format_sd_command(payload);
+                command = &format_sd_command;
                 break;
             default:
                 etl::exception e("Payload command does not exist!", __FILE__,
