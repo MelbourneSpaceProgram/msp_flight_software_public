@@ -64,7 +64,7 @@ class I2cMeasurableManager {
             // TODO(dingbenjamin): Account for error if no reading exists yet
             return i2c_measurable->GetReading();
         } catch (etl::exception &e) {
-            Log_error0("Could not read from sensor, exception caught");
+            Log_error1("Could read measurable id: %d", id);
         }
     }
 
