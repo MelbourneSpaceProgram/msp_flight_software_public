@@ -1,5 +1,6 @@
 #include <src/board/uart/uart.h>
 #include <src/messages/AccelerometerReading.pb.h>
+#include <src/messages/ConsoleMessage.pb.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/TemperatureReading.pb.h>
@@ -10,16 +11,27 @@
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
+#include <ti/drivers/utils/RingBuf.h>
 
 Uart RunnableSystemHealthCheck::debug_uart(UMBILICAL_CONSOLE);
 bool RunnableSystemHealthCheck::datalogger_enabled = true;
 
-RunnableSystemHealthCheck::RunnableSystemHealthCheck() {
-    debug_uart.SetBaudRate(Uart::kBaud115200)
+// These are created outside of the class to make getting C linkage easier
+extern "C" {
+RingBuf_Object ring_buffer;
+byte buffer[5000];
+}
+
+void RunnableSystemHealthCheck::Init() {
+    RingBuf_construct(&ring_buffer, buffer, sizeof(buffer));
+
+    RunnableSystemHealthCheck::debug_uart.SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(1000))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(1000))
         ->Open();
 }
+
+RunnableSystemHealthCheck::RunnableSystemHealthCheck() {}
 
 fnptr RunnableSystemHealthCheck::GetRunnablePointer() {
     return &RunnableSystemHealthCheck::SystemHealthCheck;
@@ -249,5 +261,32 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             SystemWatchdog::ResetTimer();
             TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
         }
+    }
+}
+
+void UartPutch(Char ch) { RingBuf_put(&ring_buffer, ch); }
+
+void UartFlush() {
+    // Send 100 bytes at a time, or less
+
+    while (RingBuf_getCount(&ring_buffer)) {
+        byte encoded_message[100];
+        ConsoleMessage pb_reading = ConsoleMessage_init_default;
+        int bytes_available = RingBuf_getCount(&ring_buffer);
+        if (bytes_available == -1) {
+            continue;
+        }
+
+        uint32_t byte_counter = 0;
+        while (byte_counter < 100 && byte_counter < bytes_available) {
+            RingBuf_get(&ring_buffer,
+                        (pb_byte_t*)pb_reading.message.bytes + byte_counter);
+            byte_counter++;
+            pb_reading.message.size++;
+        }
+
+        NanopbEncode(ConsoleMessage)(encoded_message, pb_reading);
+        RunnableSystemHealthCheck::WriteToDataLogger(
+            kConsoleMessage, encoded_message +2 , byte_counter);
     }
 }

@@ -264,6 +264,8 @@ void PostBiosInitialiser::InitTimeSource() {
 }
 
 void PostBiosInitialiser::PostBiosInit() {
+    RunnableSystemHealthCheck::Init();
+
     Log_info0("System has started");
 
     if (kDitlMode) {

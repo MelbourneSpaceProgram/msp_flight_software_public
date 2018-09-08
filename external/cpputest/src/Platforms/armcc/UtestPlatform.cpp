@@ -26,6 +26,7 @@
  */
 
 
+#include <xdc/runtime/System.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -143,14 +144,20 @@ static void PlatformSpecificFCloseImplementation(PlatformSpecificFile file)
 
 static void PlatformSpecificFlushImplementation()
 {
-    fflush(stdout);
+    System_flush();
+}
+
+static int PlatformSpecificPutchImplementation(int ch)
+{
+    System_putch((char) ch);
+    return 0;
 }
 
 PlatformSpecificFile (*PlatformSpecificFOpen)(const char*, const char*) = PlatformSpecificFOpenImplementation;
 void (*PlatformSpecificFPuts)(const char*, PlatformSpecificFile) = PlatformSpecificFPutsImplementation;
 void (*PlatformSpecificFClose)(PlatformSpecificFile) = PlatformSpecificFCloseImplementation;
 
-int (*PlatformSpecificPutchar)(int) = putchar;
+int (*PlatformSpecificPutchar)(int) = PlatformSpecificPutchImplementation;
 void (*PlatformSpecificFlush)() = PlatformSpecificFlushImplementation;
 
 void* (*PlatformSpecificMalloc)(size_t size) = malloc;

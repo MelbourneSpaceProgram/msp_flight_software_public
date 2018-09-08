@@ -25,6 +25,7 @@ class Uart {
     Uart* SetReadTimeout(uint32_t read_timeout);
     Uart* SetWriteTimeout(uint32_t write_timeout);
 
+    static const uint32_t kBaud921600 = 921600;
     static const uint32_t kBaud115200 = 115200;
     static const uint32_t kBaud9600 = 9600;
 

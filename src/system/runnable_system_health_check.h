@@ -25,6 +25,7 @@ class RunnableSystemHealthCheck : public Runnable {
                                   uint8_t message_size);
     static bool IsEnabled();
     static void EnableDatalogger(bool enable_logger);
+    static void Init();
 
    private:
     static bool datalogger_enabled;
@@ -81,5 +82,10 @@ class RunnableSystemHealthCheck : public Runnable {
     static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
     static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
 };
+
+extern "C" {
+void UartPutch(Char);
+void UartFlush();
+}
 
 #endif  //  SRC_SYSTEM_RUNNABLE_SYSTEM_HEALTH_CHECK_H_

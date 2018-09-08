@@ -1,0 +1,3 @@
+message ConsoleMessage {
+   required bytes message = 1;
+}
