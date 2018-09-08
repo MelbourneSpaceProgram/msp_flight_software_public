@@ -261,6 +261,8 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             //        kUtilAdc2,
             //        kUtilT,
 
+            UartFlush();
+
             SystemWatchdog::ResetTimer();
             TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
         }
