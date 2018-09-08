@@ -8,6 +8,7 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/system/runnable_system_health_check.h>
+#include <src/telecomms/lithium.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
@@ -26,7 +27,9 @@ void RunnableSystemHealthCheck::Init() {
     RingBuf_construct(&ring_buffer, buffer, sizeof(buffer));
 
     RunnableSystemHealthCheck::debug_uart.SetBaudRate(Uart::kBaud115200)
-        ->SetReadTimeout(TaskUtils::MilliToCycles(1000))
+        ->SetReadMode(UART_MODE_BLOCKING)
+        ->SetReadTimeout(
+            TaskUtils::MilliToCycles(Lithium::kUartReadTimeoutMilli))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(1000))
         ->Open();
 }

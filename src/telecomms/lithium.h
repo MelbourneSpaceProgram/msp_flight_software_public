@@ -15,6 +15,7 @@ class Lithium {
     friend class PayloadProcessor;         // For incrementing command success
     friend class RunnableLithiumListener;  // For incrementing received count
     friend class LithiumEnableCommand;
+    friend class RunnableConsoleUartListener;
 
    public:
     static const uint8_t kLithiumHeaderSize = 8;
@@ -37,6 +38,11 @@ class Lithium {
 
     static const uint16_t kInterCommandTimeMilli = 250;
 
+    static const uint32_t kUartReadTimeoutMilli = 300;
+    static const uint32_t kUartWriteTimeoutMilli = 500;
+    static const uint32_t kWaitForAckMilli = 2000;
+    static const uint32_t kWaitForReplyPayloadMilli = 5000;
+
     static Lithium* GetInstance();  // Initial call is not thread safe
     static uint8_t GetTxCounter();
     static uint8_t GetRxCounter();
@@ -54,10 +60,6 @@ class Lithium {
 
    private:
     static Lithium* instance;
-    static const uint32_t kUartReadTimeoutMilli = 300;
-    static const uint32_t kUartWriteTimeoutMilli = 500;
-    static const uint32_t kWaitForAckMilli = 2000;
-    static const uint32_t kWaitForReplyPayloadMilli = 5000;
 
     static uint8_t tx_count;
     static uint8_t rx_count;

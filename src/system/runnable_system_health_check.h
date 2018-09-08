@@ -18,6 +18,8 @@
                                              NanopbMessageType##_fields>
 
 class RunnableSystemHealthCheck : public Runnable {
+    friend class RunnableConsoleUartListener;
+
    public:
     fnptr GetRunnablePointer();
     RunnableSystemHealthCheck();
@@ -26,6 +28,9 @@ class RunnableSystemHealthCheck : public Runnable {
     static bool IsEnabled();
     static void EnableDatalogger(bool enable_logger);
     static void Init();
+
+    static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
+    static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
 
    private:
     static bool datalogger_enabled;
@@ -79,8 +84,6 @@ class RunnableSystemHealthCheck : public Runnable {
             WriteToDataLogger(id, buffer, size);
         }
     }
-    static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
-    static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
 };
 
 extern "C" {

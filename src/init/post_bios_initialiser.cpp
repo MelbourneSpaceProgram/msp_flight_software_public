@@ -34,6 +34,7 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
+#include <src/payload_processor/runnable_console_uart_listener.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -139,6 +140,11 @@ void PostBiosInitialiser::RunOrbit()
 
     InitSystemHealthCheck();
     Log_info0("System healthcheck started");
+
+    TaskHolder* console_uart_listener_task = new TaskHolder(
+        1536, "UartListener", 12, new RunnableConsoleUartListener());
+    console_uart_listener_task->Start();
+    Log_info0("UART listener started");
 
     Log_info0("System start up complete");
 }
