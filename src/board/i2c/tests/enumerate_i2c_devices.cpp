@@ -4,6 +4,7 @@
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/config/unit_tests.h>
 #include <stdio.h>
+#include <xdc/runtime/Log.h>
 
 static void CheckForDevices(I2c& bus, I2cMultiplexer* multiplexer,
                             I2cMultiplexer::MuxChannel channel, byte* devices,
@@ -106,6 +107,26 @@ TEST(I2cDeviceEnumeration, CheckBusCFs) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
+TEST(I2cDeviceEnumeration, CheckBusCMux){
+    if (!kEpsBoardAvailable) {
+        TEST_EXIT;
+    }
+
+    I2c bus(I2C_BUS_C);
+    CHECK(bus.GetHandle() != NULL);
+    I2cMultiplexer multiplexer(&bus, 0x71);
+
+    multiplexer.CloseAllChannels();
+
+    for(int i = 0; i < 8; i++){
+        if(i == 5){
+            continue;
+        }
+        multiplexer.OpenChannel(i);
+        multiplexer.CloseChannel(i);
+    }
+}
+
 TEST(I2cDeviceEnumeration, CheckBusCEps) {
     if (!kEpsBoardAvailable) {
         TEST_EXIT;
@@ -157,6 +178,7 @@ TEST(I2cDeviceEnumeration, CheckBusCXPos) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCYPos) {
+    TEST_EXIT;
     if (!kPanelBoardAvailable) {
         TEST_EXIT;
     }

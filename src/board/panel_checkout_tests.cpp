@@ -25,11 +25,13 @@ TEST(PanelCheckout, XPosTemp2) {
 }
 
 TEST(PanelCheckout, YPosTemp1) {
+    TEST_EXIT;
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosT1, 0);
     DOUBLES_EQUAL(50, temp, 50);
 }
 
 TEST(PanelCheckout, YPosTemp2) {
+    TEST_EXIT;
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosT2, 0);
     DOUBLES_EQUAL(50, temp, 50);
 }
@@ -82,12 +84,14 @@ TEST(PanelCheckout, XPosSolarVoltage) {
 }
 
 TEST(PanelCheckout, YPosVoltage) {
+    TEST_EXIT;
     double voltage =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosV, 0);
     DOUBLES_EQUAL(2.5, voltage, 3);
 }
 
 TEST(PanelCheckout, YPosSolarVoltage) {
+    TEST_EXIT;
     double voltage =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosSolarV, 0);
     DOUBLES_EQUAL(2.5, voltage, 3);
@@ -166,12 +170,14 @@ TEST(PanelCheckout, XPosCurrent) {
 }
 
 TEST(PanelCheckout, YPosSolarCurrent) {
+    TEST_EXIT;
     double current =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosSolarI, 0);
     DOUBLES_EQUAL(0.25, current, 0.25);
 }
 
 TEST(PanelCheckout, YPosCurrent) {
+    TEST_EXIT;
     double current =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosI, 0);
     DOUBLES_EQUAL(0.25, current, 0.25);

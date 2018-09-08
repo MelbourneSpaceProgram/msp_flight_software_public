@@ -15,7 +15,9 @@ void I2cMultiplexer::OpenChannel(MuxChannel channel) const {
     } else {
         byte write_buffer = GetChannelStates();
         write_buffer |= (1 << static_cast<uint8_t>(channel));
-        GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
+        if(!GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1)){
+            Log_error0("Could not open mux channel");
+        }
     }
 }
 
@@ -66,7 +68,9 @@ void I2cMultiplexer::CloseChannel(MuxChannel channel) const {
     } else {
         byte write_buffer = GetChannelStates();
         write_buffer &= ~(1 << static_cast<uint8_t>(channel));
-        GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
+        if(!GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1)){
+            Log_error0("Could not close mux channel");
+        }
     }
 }
 
@@ -77,11 +81,15 @@ void I2cMultiplexer::CloseChannel(uint8_t channel_index) const {
 
 void I2cMultiplexer::CloseAllChannels() const {
     byte write_buffer = 0;
-    GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
+    if(!GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1)){
+        Log_error0("Could not close all mux channel");
+    }
 }
 
 byte I2cMultiplexer::GetChannelStates() const {
     byte read_buffer = 0;
-    GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1);
+    if(!GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1)){
+        Log_error0("Could not read channel states");
+    }
     return read_buffer;
 }
