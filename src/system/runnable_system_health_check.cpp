@@ -50,9 +50,8 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
     while (1) {
         if (datalogger_enabled) {
             // Telecomms
-            LogToUart(double, VoltageReading)(kComInI1,
+            LogToUart(double, VoltageReading)(kComInV1,
                                               &NanopbUtils::NanopbVoltage);
-
             LogToUart(double, VoltageReading)(kComOutV1,
                                               &NanopbUtils::NanopbVoltage);
             LogToUart(double, VoltageReading)(kComInV2,
