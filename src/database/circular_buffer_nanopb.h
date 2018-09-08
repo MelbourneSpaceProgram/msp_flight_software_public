@@ -196,54 +196,54 @@ class CircularBufferNanopb {
     static uint32_t GetCountMessagesWritten(File &file_handle) {
         // count_messages_written is the second encoded uint32_t in the
         // file, starting byte 8
-        return ReadUint32_t(file_handle, 2 * kUint32_tSize);
+        return ReadUint32_t(file_handle, 2 * sizeof(uint32_t));
     }
 
     static void SetCountMessagesWritten(File &file_handle,
                                         uint32_t count_messages_written) {
         // count_messages_written is the second encoded uint32_t in
         // the file, starting byte 8
-        WriteUint32_t(file_handle, 2 * 1 * kUint32_tSize,
+        WriteUint32_t(file_handle, 2 * 1 * sizeof(uint32_t),
                       count_messages_written);
     }
 
     static uint32_t GetWriteIndex(File &file_handle) {
         // write_index is the third encoded uint32_t in the
         // file, starting byte 16
-        return ReadUint32_t(file_handle, 2 * 2 * kUint32_tSize);
+        return ReadUint32_t(file_handle, 2 * 2 * sizeof(uint32_t));
     }
 
     static void SetWriteIndex(File &file_handle, uint32_t write_index_bytes) {
         // write_index is the third encoded uint32_t in the
         // file, starting byte 16
-        WriteUint32_t(file_handle, 2 * 2 * kUint32_tSize, write_index_bytes);
+        WriteUint32_t(file_handle, 2 * 2 * sizeof(uint32_t), write_index_bytes);
     }
 
     static uint32_t GetReadIndex(File &file_handle) {
         // read_index is the fourth encoded uint32_t in
         // the file, starting byte 24
-        return ReadUint32_t(file_handle, 2 * 3 * kUint32_tSize);
+        return ReadUint32_t(file_handle, 2 * 3 * sizeof(uint32_t));
     }
 
     static void SetReadIndex(File &file_handle, uint32_t read_index_bytes) {
         // read_index is the fourth encoded uint32_t
         // in the file, starting byte 24
-        WriteUint32_t(file_handle, 2 * 3 * kUint32_tSize, read_index_bytes);
+        WriteUint32_t(file_handle, 2 * 3 * sizeof(uint32_t), read_index_bytes);
     }
 
     static uint32_t ReadUint32_t(File &file_handle, uint32_t index_bytes) {
-        byte byte_array[kUint32_tSize];
-        bool valid_decodings[kUint32_tSize];
-        byte hamming_encoded_byte_array[2 * kUint32_tSize];
+        byte byte_array[sizeof(uint32_t)];
+        bool valid_decodings[sizeof(uint32_t)];
+        byte hamming_encoded_byte_array[2 * sizeof(uint32_t)];
         // write_index is the third encoded uint32_t in
         // the file, starting byte 16
         SdCard::FileSeek(file_handle, index_bytes);
         SdCard::FileRead(file_handle, hamming_encoded_byte_array,
-                         2 * kUint32_tSize);
+                         2 * sizeof(uint32_t));
         HammingCoder::DecodeByteArray(
-            byte_array, kUint32_tSize, valid_decodings,
-            hamming_encoded_byte_array, 2 * kUint32_tSize);
-        for (uint16_t i = 0; i < kUint32_tSize; i++) {
+            byte_array, sizeof(uint32_t), valid_decodings,
+            hamming_encoded_byte_array, 2 * sizeof(uint32_t));
+        for (uint16_t i = 0; i < sizeof(uint32_t); i++) {
             if (valid_decodings[i] == false) {
                 etl::exception e("Failed to decode hamming encoded message",
                                  __FILE__, __LINE__);
@@ -258,7 +258,7 @@ class CircularBufferNanopb {
         byte write_buffer[4];
         Uint32_tToByteArray(value_to_write, write_buffer);
         SdCard::FileSeek(file_handle, index_bytes);
-        for (uint8_t i = 0; i < kUint32_tSize; i++) {
+        for (uint8_t i = 0; i < sizeof(uint32_t); i++) {
             WriteByte(file_handle, write_buffer[i]);
         }
         SdCard::FileFlush(file_handle);
@@ -276,7 +276,7 @@ class CircularBufferNanopb {
                (byte_array[2] << (8 * 1)) + (byte_array[3]);
     }
 
-    static const uint8_t kEncodedHeaderSize = 2 * 4 * kUint32_tSize;
+    static const uint8_t kEncodedHeaderSize = 2 * 4 * sizeof(uint32_t);
 };
 
 #endif  // SRC_DATABASE_CIRCULAR_BUFFER_NANOPB_H_
