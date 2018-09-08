@@ -30,7 +30,7 @@ class RunnableSystemHealthCheck : public Runnable {
     static bool datalogger_enabled;
     static Uart debug_uart;
     static void SystemHealthCheck();
-    static const uint32_t kHealthCheckPeriodMillis = 30000;
+    static const uint32_t kHealthCheckPeriodMillis = 1000;
     static const uint32_t kCircularBufferMessageLength = 10000;
 
     template <typename T, typename NanopbMessageType,
