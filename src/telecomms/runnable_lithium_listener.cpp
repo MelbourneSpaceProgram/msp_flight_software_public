@@ -17,7 +17,7 @@ fnptr RunnableLithiumListener::GetRunnablePointer() {
 
 bool RunnableLithiumListener::ReadLithiumUart(byte* read_buffer, uint8_t size) {
     return size == Lithium::GetInstance()->GetUart()->PerformReadTransaction(
-        read_buffer, size);
+                       read_buffer, size);
 }
 
 void RunnableLithiumListener::Receive() {
@@ -70,6 +70,7 @@ void RunnableLithiumListener::Receive() {
             if (command_code == kReceivedDataCode) {
                 if (payload_size > Lithium::kMaxReceivedUplinkSize) {
                     Log_error0("Incoming packet too large, ignored");
+                    continue;
                 }
                 Lithium::rx_count =
                     Lithium::rx_count == 255 ? 0 : Lithium::rx_count + 1;
@@ -77,6 +78,7 @@ void RunnableLithiumListener::Receive() {
             } else {
                 if (payload_size > Lithium::kMaxReceivedLithiumResponseSize) {
                     Log_error0("Incoming lithium response too large, ignored");
+                    continue;
                 }
                 mailbox = Lithium::GetInstance()->GetCommandResponseMailbox();
             }

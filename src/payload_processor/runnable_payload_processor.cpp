@@ -23,12 +23,8 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
 
         // TODO(dingbenjamin): Parse 4 byte MSP header
         // TODO(dingbenjamin): Check sequence number/security
-
-        // TODO(): Determine why the 24 is required to index out of the header
-        // Suspect the Lithium is forwarding the AX.25 header along as we are
-        // seeing the callsign come in
-        byte *msp_payload =
-            lithium_payload + kAx25Bytes + kSignatureBytes + kLengthBytes + kSequenceNumberBytes;
+        byte *msp_payload = lithium_payload + kAx25Bytes + kSignatureBytes +
+                            kLengthBytes + kSequenceNumberBytes;
         payload_processor.ParseAndExecuteCommands(msp_payload);
     }
 }
