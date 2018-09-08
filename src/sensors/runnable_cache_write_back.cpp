@@ -41,7 +41,7 @@ void RunnableCacheWriteBack::WriteBackTemp(uint16_t measurable_id) {
     NanopbEncode(TemperatureReading)(buffer, temp_reading);
 
     // TODO(dingbenjamin): Potentially remove in order to remove stdio include
-    char filename[3];
+    char filename[4];
     snprintf(filename, sizeof(filename), "%03d", measurable_id);
 
     CircularBufferNanopb(TemperatureReading)::Create(filename,

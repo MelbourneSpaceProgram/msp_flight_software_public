@@ -3,16 +3,19 @@
 
 #include <external/etl/exception.h>
 #include <src/board/uart/uart.h>
+#include <src/config/satellite.h>
+#include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/tasks/runnable.h>
 #include <src/util/nanopb_utils.h>
+#include <stdio.h>
 #include <xdc/runtime/Log.h>
 
-#define LogToUart(RawType, NanopbMessageType)                                  \
-    RunnableSystemHealthCheck::LogMeasurableToUart<RawType, NanopbMessageType, \
-                                                   NanopbMessageType##_size,   \
-                                                   NanopbMessageType##_fields>
+#define LogMeasurableMacro(RawType, NanopbMessageType)                   \
+    RunnableSystemHealthCheck::LogMeasurable<RawType, NanopbMessageType, \
+                                             NanopbMessageType##_size,   \
+                                             NanopbMessageType##_fields>
 
 class RunnableSystemHealthCheck : public Runnable {
    public:
@@ -27,14 +30,14 @@ class RunnableSystemHealthCheck : public Runnable {
     static bool datalogger_enabled;
     static Uart debug_uart;
     static void SystemHealthCheck();
-    static const uint32_t kHealthCheckPeriodMillis = 1000;
+    static const uint32_t kHealthCheckPeriodMillis = 30000;
+    static const uint32_t kCircularBufferMessageLength = 10000;
 
     template <typename T, typename NanopbMessageType,
               uint16_t NanopbMessageType_size,
               const pb_field_t* NanopbMessageType_fields>
-    static void LogMeasurableToUart(uint16_t id,
-                                    NanopbMessageType (*raw_to_nanopb)(T,
-                                                                       Time)) {
+    static void LogMeasurable(uint16_t id,
+                              NanopbMessageType (*raw_to_nanopb)(T, Time)) {
         I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
 
         // TODO(dingbenjamin): Fix case where another task interrupts and
@@ -48,19 +51,33 @@ class RunnableSystemHealthCheck : public Runnable {
         // using the conversion function
         NanopbMessageType pb_reading = raw_to_nanopb(raw, time);
 
-        assert(NanopbMessageType_size <= 255);
-        byte buffer[255];
-        try {
-            NanopbEncode(NanopbMessageType)(buffer, pb_reading);
-        } catch (etl::exception& e) {
-            Log_error1("Nanopb encode failed for measurable id %d", id);
-        }
-
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
 
-        WriteToDataLogger(id, buffer, size);
-    };
+        if (kLogToSd) {
+            char file_name[4];
+            snprintf(file_name, sizeof(file_name), "%03d", id);
+            // TODO(dingbenjamin): Exception handle here
+            CircularBufferNanopb<
+                NanopbMessageType, NanopbMessageType_size,
+                NanopbMessageType_fields>::Create(file_name,
+                                                  kCircularBufferMessageLength);
+            CircularBufferNanopb<
+                NanopbMessageType, NanopbMessageType_size,
+                NanopbMessageType_fields>::WriteMessage(file_name, pb_reading);
+        };
+
+        if (kLogToUart) {
+            assert(NanopbMessageType_size <= 255);
+            byte buffer[255];
+            try {
+                NanopbEncode(NanopbMessageType)(buffer, pb_reading);
+            } catch (etl::exception& e) {
+                Log_error1("Nanopb encode failed for measurable id %d", id);
+            }
+            WriteToDataLogger(id, buffer, size);
+        }
+    }
     static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
     static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
 };

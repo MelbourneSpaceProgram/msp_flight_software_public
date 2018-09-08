@@ -21,7 +21,7 @@ TEST_GROUP(CacheWriteBack) {
 
 // WARNING: Test deletes SD file for CdhTemp1
 TEST(CacheWriteBack, TestCacheWriteBack) {
-    char filename[3];
+    char filename[4];
     snprintf(filename, sizeof(filename), "%03d", kCdhT);
 
     I2cMeasurableManager *manager = I2cMeasurableManager::GetInstance();
