@@ -244,7 +244,7 @@ void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
     AddTemperature(kZNegT2, z_neg_temp_2);
 
     MCP9808 *z_pos_temp_1 =
-        new MCP9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel2);
+        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel2);
 
     AddTemperature(kZPosT, z_pos_temp_1);
 
