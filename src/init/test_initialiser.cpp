@@ -1,6 +1,7 @@
 #include <CppUTest/CommandLineTestRunner.h>
 #include <src/config/unit_tests.h>
 #include <src/init/test_initialiser.h>
+#include <src/util/reset_management.h>
 
 TestInitialiser* TestInitialiser::instance = NULL;
 
@@ -18,4 +19,6 @@ void TestInitialiser::RunUnitTests() {
     int num_test_args = sizeof(test_args) / sizeof(test_args[0]);
 
     RUN_ALL_TESTS(num_test_args, test_args);
+
+    ResetManagement::ResetSystem();
 }

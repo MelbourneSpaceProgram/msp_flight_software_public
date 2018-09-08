@@ -1,3 +1,5 @@
+#include <external/etl/array.h>
+#include <external/etl/exception.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
@@ -24,6 +26,7 @@
 #include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/reset_management.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
@@ -85,9 +88,59 @@ void PostBiosInitialiser::InitRadioListener() {
 }
 
 void PostBiosInitialiser::RunUnitTests() {
+    ResetManagement::SetResetFlag(ResetManagement::kUnitTestsComplete);
     TaskHolder* test_task = new TaskHolder(unit_tests_stack_size, "Unit Tests",
                                            3, TestInitialiser::GetInstance());
     test_task->Start();
+}
+
+void PostBiosInitialiser::RunOrbit()
+{
+    ResetManagement::SetResetFlag(ResetManagement::kOrbitComplete);
+
+    SystemWatchdog((uint32_t) SYS_WATCHDOG0);
+    InitStateManagement();
+    if (kHilAvailable)
+    {
+        InitDataDashboard();
+    }
+
+    InitPreDeploymentMagnetometerPoller();
+
+    // TODO(akremor): We should add a force-enable based on number of
+    // reboots feature In case the satellite gets stuck in a boot loop or
+    // similar, we don't want the timers to be operating each time
+    Log_info0("Starting beacon delay timer");
+    SatelliteTimeSource::RealTimeWait(kBeaconDelaySeconds);
+    Log_info0("Beacon delay timer finished");
+
+    SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
+    Log_info0("Antenna deploying, can take awhile");
+    Antenna::GetAntenna()->DeployAntenna();
+    Semaphore_post(
+            RunnablePreDeploymentMagnetometerPoller::kill_task_on_orientation_control_begin_semaphore);
+    InitBeacon();
+    Log_info0("Beacon started");
+
+    if (kRunMagnetorquersAtConstantPower)
+    {
+        // Rather than start orientation control, just blast the
+        // magnetorquers
+        MagnetorquerControl::SetMagnetorquersPowerFraction(
+                kMagnetorquerPowerFractionX, kMagnetorquerPowerFractionY,
+                kMagnetorquerPowerFractionZ);
+        Log_info0("Magnetorquers set to constant power");
+    }
+    else
+    {
+        InitOrientationControl();
+        Log_info0("Orientation control started");
+    }
+
+    InitSystemHealthCheck();
+    Log_info0("System healthcheck started");
+
+    Log_info0("System start up complete");
 }
 
 void PostBiosInitialiser::InitStateManagement() {
@@ -243,51 +296,29 @@ void PostBiosInitialiser::PostBiosInit() {
         // - Set Active
         // - Choose Orbit or TIRTOS Build
 
-#if defined TEST_CONFIGURATION
-        RunUnitTests();
-#endif
-
-#if defined ORBIT_CONFIGURATION
-        SystemWatchdog((uint32_t)SYS_WATCHDOG0);
-        InitStateManagement();
-        if (kHilAvailable) {
-            InitDataDashboard();
-        }
-
-        InitPreDeploymentMagnetometerPoller();
-
-        // TODO(akremor): We should add a force-enable based on number of
-        // reboots feature In case the satellite gets stuck in a boot loop or
-        // similar, we don't want the timers to be operating each time
-        Log_info0("Starting beacon delay timer");
-        SatelliteTimeSource::RealTimeWait(kBeaconDelaySeconds);
-        Log_info0("Beacon delay timer finished");
-
-        SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
-        Log_info0("Antenna deploying, can take awhile");
-        Antenna::GetAntenna()->DeployAntenna();
-        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
-                           kill_task_on_orientation_control_begin_semaphore);
-        InitBeacon();
-        Log_info0("Beacon started");
-
-        if (kRunMagnetorquersAtConstantPower) {
-            // Rather than start orientation control, just blast the
-            // magnetorquers
-            MagnetorquerControl::SetMagnetorquersPowerFraction(
-                kMagnetorquerPowerFractionX, kMagnetorquerPowerFractionY,
-                kMagnetorquerPowerFractionZ);
-            Log_info0("Magnetorquers set to constant power");
+        etl::array<uint32_t, ResetManagement::kResetDataLength> reset_data;
+        ResetManagement::ReadResetDataFromFlash(reset_data);
+        if (reset_data[ResetManagement::kResetHasOccurredIndex] != ResetManagement::kResetHasOccurred) {
+            RunUnitTests();
         } else {
-            InitOrientationControl();
-            Log_info0("Orientation control started");
+            switch (reset_data[ResetManagement::kResetFlagIndex])
+            {
+            case ResetManagement::kUnitTestsComplete:
+                RunOrbit();
+                break;
+            case ResetManagement::kOrbitComplete:
+                RunUnitTests();
+                break;
+            case ResetManagement::kForceResetCommand:
+                RunUnitTests();
+                break;
+            default:
+                //TODO(hugorilla): update with better flag
+                ResetManagement::SetResetFlag(kForceResetCommand);
+                ResetManagement::ResetSystem();
+            }
         }
 
-        InitSystemHealthCheck();
-        Log_info0("System healthcheck started");
-
-        Log_info0("System start up complete");
-#endif
     } catch (etl::exception& e) {
         System_printf("EXCEPTION OCCURRED\n");
         System_printf("File: %s, line %d\n", e.file_name(), e.line_number());
