@@ -12,6 +12,7 @@ static const byte kTestHardwareAddr = 0x33;
 
 TEST_GROUP(Antenna) {
     void setup() {
+        TEST_EXIT;
         if (!kAntennaAvailable) {
             TEST_EXIT;
         }
@@ -19,6 +20,7 @@ TEST_GROUP(Antenna) {
 };
 
 TEST(Antenna, TestSafeDeploy) {
+    TEST_EXIT;
     static uint8_t test_count = 2;
     byte initial_state = 0x00;
     byte test_number[2] = {0xF0, 0xF1};
@@ -44,6 +46,7 @@ TEST(Antenna, TestSafeDeploy) {
 }
 
 TEST(Antenna, TestForceDeploy) {
+    TEST_EXIT;
     Antenna *antenna = Antenna::GetAntenna();
     byte test_number = 0xF2;
     byte reset = 0xff;

@@ -116,8 +116,8 @@ void PostBiosInitialiser::RunOrbit()
     Log_info0("Beacon delay timer finished");
 
     SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
-    Log_info0("Antenna deploying, can take awhile");
-    Antenna::GetAntenna()->DeployAntenna();
+    Log_info0("Skipping deploy");
+    //Antenna::GetAntenna()->DeployAntenna();
     Semaphore_post(
             RunnablePreDeploymentMagnetometerPoller::kill_task_on_orientation_control_begin_semaphore);
     InitBeacon();
