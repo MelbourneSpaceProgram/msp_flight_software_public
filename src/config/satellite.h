@@ -15,7 +15,8 @@ static const uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
 static const uint8_t kNominalLithiumPowerLevel = 150;  // Scaled between 0-255
 
 // DO NOT TURN ON UNTIL LAUNCH
-static bool kDeployAntenna = false;
+// Or in this case, a deployment test at stromlo
+static bool kDeployAntenna = true;
 // Will disable orientation control if true
 static bool kRunMagnetorquersAtConstantPower = true;
 // float value in range [-1, 1]
