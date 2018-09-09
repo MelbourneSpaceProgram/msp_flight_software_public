@@ -9,9 +9,6 @@ class ImuGyroscopeMeasurable : public I2cMeasurable<GyroscopeReading> {
    public:
     explicit ImuGyroscopeMeasurable(MPU9250MotionTracker* imu_sensor);
     GyroscopeReading TakeDirectI2cReading();
-
-   private:
-    static const GyroscopeReading kFailedGyroscopeReading;
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_MEASURABLES_IMU_GYROSCOPE_MEASURABLE_H_

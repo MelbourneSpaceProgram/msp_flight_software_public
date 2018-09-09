@@ -29,8 +29,6 @@ class ImuMagnetometerMeasurable : public I2cMeasurable<MagnetometerReading> {
     // we give up on calibration
     static const uint32_t kBufferReadAttempts = 500;
 
-    static const MagnetometerReading kFailedMagnetometerReading;
-
     bool can_calibrate;
 };
 

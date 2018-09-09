@@ -1,6 +1,6 @@
 message GyroscopeReading {
-   required float x = 1;
-   required float y = 2;
-   required float z = 3;
-   required fixed64 timestamp_millis_unix_epoch = 4;
+   required float x = 1 [default = -9999];
+   required float y = 2 [default = -9999];
+   required float z = 3 [default = -9999];
+   required fixed64 timestamp_millis_unix_epoch = 4 [default = 0];
 }

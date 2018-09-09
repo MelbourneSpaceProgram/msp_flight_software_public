@@ -9,9 +9,6 @@ class ImuAccelerometerMeasurable : public I2cMeasurable<AccelerometerReading> {
    public:
     explicit ImuAccelerometerMeasurable(MPU9250MotionTracker* imu_sensor);
     AccelerometerReading TakeDirectI2cReading();
-
-   private:
-    static const AccelerometerReading kFailedAccelerometerReading;
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_MEASURABLES_IMU_ACCELEROMETER_MEASURABLE_H_

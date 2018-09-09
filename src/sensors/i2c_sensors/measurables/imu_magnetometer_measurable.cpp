@@ -12,15 +12,11 @@
 const char* ImuMagnetometerMeasurable::kCalibrationReadingsBufferFileName =
     "magcal.pb";
 
-const MagnetometerReading
-    ImuMagnetometerMeasurable::kFailedMagnetometerReading = {-9999, -9999,
-                                                             -9999, 0};
-
 ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
     MPU9250MotionTracker* imu_sensor, const Matrix& frame_mapping,
     const Matrix& initial_biases, const Matrix& initial_scale_factors)
     : I2cMeasurable<MagnetometerReading>(imu_sensor,
-                                         kFailedMagnetometerReading),
+                                         MagnetometerReading_init_default),
       magnetometer_to_body_frame_transform(frame_mapping),
       magnetometer_calibration(initial_biases, initial_scale_factors),
       can_calibrate(true) {
