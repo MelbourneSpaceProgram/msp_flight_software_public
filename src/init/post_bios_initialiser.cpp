@@ -256,7 +256,9 @@ void PostBiosInitialiser::PostBiosInit() {
             InitDataDashboard();
         }
 
-        InitPreDeploymentMagnetometerPoller();
+        if (kRunMagnetorquersAtConstantPower == false) {
+            InitPreDeploymentMagnetometerPoller();
+        }
 
         // TODO(akremor): We should add a force-enable based on number of
         // reboots feature In case the satellite gets stuck in a boot loop or
@@ -268,7 +270,8 @@ void PostBiosInitialiser::PostBiosInit() {
         SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
         Log_info0("Antenna deploying, can take awhile");
         Antenna::GetAntenna()->DeployAntenna();
-        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
+        if (kRunMagnetorquersAtConstantPower == false) {
+            Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
         //InitBeacon();
         //Log_info0("Beacon started");
