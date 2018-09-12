@@ -16,57 +16,57 @@ static I2cMeasurableManager* i2c_measurable_manager =
 
 TEST(PanelCheckout, XPosTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kXPosT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, XPosTemp2) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kXPosT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, YPosTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, YPosTemp2) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kYPosT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, XNegTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kXNegT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, XNegTemp2) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kXNegT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, YNegTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kYNegT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, YNegTemp2) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kYNegT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, ZNegTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kZNegT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, ZNegTemp2) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kZNegT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, ZPosTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kZPosT, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(PanelCheckout, XPosVoltage) {

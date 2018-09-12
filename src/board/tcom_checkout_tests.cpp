@@ -15,12 +15,12 @@ static I2cMeasurableManager* i2c_measurable_manager =
 
 TEST(TcomCheckout, CanSenseCommsTemp1) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kComT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(TcomCheckout, CanSenseCommsTemp2) {
     double temp = i2c_measurable_manager->ReadI2cMeasurable<double>(kComT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(TcomCheckout, CanSenseCommsRegulator1OutputVoltage) {
