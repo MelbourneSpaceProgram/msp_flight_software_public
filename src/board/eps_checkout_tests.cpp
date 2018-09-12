@@ -53,25 +53,25 @@ TEST(EpsCheckout, CanSenseEps5VRail2) {
 TEST(EpsCheckout, CanSensePowerTemp1) {
     double temp =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerTemp2) {
     double temp =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerBmsDieTemp1) {
     double temp =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsDieT1, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerBmsDieTemp2) {
     double temp =
         i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsDieT2, 0);
-    DOUBLES_EQUAL(50, temp, 50);
+    DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerBoostInCurrent1) {
