@@ -24,7 +24,9 @@ uint8_t Lithium::rx_count = 0;
 uint8_t Lithium::command_success_count = 0;
 
 Lithium::Lithium()
-    : lithium_config(), uart(TELECOMS), lithium_transmit_enabled(true) {
+    : lithium_config(),
+      uart(TELECOMS),
+      lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded) {
     // Ensure Lithium is not in reset
     GPIO_write(nCOMMS_RST, 1);
 
@@ -64,10 +66,10 @@ Lithium::Lithium()
         throw e;
     }
 
-    SetTransmitEnabled(!kLithiumTransmitOnlyWhenGroundCommanded);
-
     FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
-    DoCommand(&fast_pa_command);
+    if (!DoCommand(&fast_pa_command)) {
+        Log_error0("Failed to initialise Lithium power amplifier setting");
+    }
 }
 
 bool Lithium::DoCommand(LithiumCommand* command) const {
