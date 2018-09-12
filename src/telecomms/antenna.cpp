@@ -2,7 +2,7 @@
 #include <src/config/satellite.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
-#include <src/util/satellite_time_source.h>
+#include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
 
 Antenna *Antenna::instance = NULL;
@@ -33,12 +33,12 @@ bool Antenna::SafeDeploy() const {
 
 bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
     WriteCommand(command);
-    SatelliteTimeSource::RealTimeWait(kWaitTime);
+    TaskUtils::SleepMilli(kWaitTime);
 
     uint8_t iterations = 0;
 
     while (IsHeatersOn() && (iterations < kMaxNumberOfIterations)) {
-        SatelliteTimeSource::RealTimeWait(kWaitTime);
+        TaskUtils::SleepMilli(kWaitTime);
         iterations++;
     }
 
@@ -57,7 +57,7 @@ bool Antenna::ForceDeploy() const {
     io_expander.SetPolarity(kPrimaryOverridePin, I2cIoExpander::kIoActiveHigh);
 
     io_expander.SetPin(kPrimaryOverridePin, true);
-    SatelliteTimeSource::RealTimeWait(kWaitTimeManualOverride);
+    TaskUtils::SleepMilli(kWaitTimeManualOverride);
     io_expander.SetPin(kPrimaryOverridePin, false);
     if (IsDoorsOpen()) {
         return true;
@@ -68,7 +68,7 @@ bool Antenna::ForceDeploy() const {
     io_expander.SetPolarity(kBackupOverridePin, I2cIoExpander::kIoActiveHigh);
 
     io_expander.SetPin(kBackupOverridePin, true);
-    SatelliteTimeSource::RealTimeWait(kWaitTimeManualOverride);
+    TaskUtils::SleepMilli(kWaitTimeManualOverride);
     io_expander.SetPin(kBackupOverridePin, false);
     if (IsDoorsOpen()) {
         return true;
