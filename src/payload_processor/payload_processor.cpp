@@ -1,3 +1,4 @@
+#include <src/payload_processor/commands/lithium_set_pa_command.h>
 #include <src/payload_processor/commands/command.h>
 #include <src/payload_processor/commands/force_reset_command.h>
 #include <src/payload_processor/commands/format_sd_command.h>
