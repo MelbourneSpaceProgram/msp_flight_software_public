@@ -180,6 +180,7 @@ enum MeasurableId {
     kSwCdhMcu1 = 173,
     kSwCdhMcu2 = 174,
     kSwMcuReCount = 175,
+    kConsoleMessage = 176,
     // Add new measurables below this line only
     kMeasurableIdEnd
 };

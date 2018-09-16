@@ -1,0 +1,4 @@
+// Exactly one of these MUST be true
+
+var ConsoleToUart = false;
+var ConsoleToCcs = true;

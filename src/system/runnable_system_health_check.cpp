@@ -10,16 +10,27 @@
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
+#include <ti/drivers/utils/RingBuf.h>
 
 Uart RunnableSystemHealthCheck::debug_uart(UMBILICAL_CONSOLE);
 bool RunnableSystemHealthCheck::datalogger_enabled = true;
 
-RunnableSystemHealthCheck::RunnableSystemHealthCheck() {
-    debug_uart.SetBaudRate(Uart::kBaud115200)
+// These are created outside of the class to make getting C linkage easier
+extern "C" {
+RingBuf_Object ring_buffer;
+byte buffer[5000];
+}
+
+void RunnableSystemHealthCheck::Init() {
+    RingBuf_construct(&ring_buffer, buffer, sizeof(buffer));
+
+    RunnableSystemHealthCheck::debug_uart.SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(1000))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(1000))
         ->Open();
 }
+
+RunnableSystemHealthCheck::RunnableSystemHealthCheck() {}
 
 fnptr RunnableSystemHealthCheck::GetRunnablePointer() {
     return &RunnableSystemHealthCheck::SystemHealthCheck;
@@ -246,8 +257,35 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             //        kUtilAdc2,
             //        kUtilT,
 
+            UartFlush();
+
             SystemWatchdog::ResetTimer();
             TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
         }
+    }
+}
+
+void UartPutch(Char ch) {
+    RingBuf_put(&ring_buffer, ch);
+}
+
+void UartFlush() {
+    // Send 100 bytes at a time, or less
+    byte encoded_message[100];
+
+    while (RingBuf_getCount(&ring_buffer)) {
+        int bytes_available = RingBuf_getCount(&ring_buffer);
+        if (bytes_available == -1) {
+            continue;
+        }
+
+        uint32_t byte_counter = 0;
+        while (byte_counter < 100 && byte_counter < bytes_available) {
+            RingBuf_get(&ring_buffer, encoded_message + byte_counter);
+            byte_counter++;
+        }
+
+        RunnableSystemHealthCheck::WriteToDataLogger(
+            kConsoleMessage, encoded_message, byte_counter);
     }
 }

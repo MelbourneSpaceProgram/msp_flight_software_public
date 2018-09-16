@@ -1,6 +1,9 @@
 #ifndef SRC_CONFIG_UNIT_TESTS_H_
 #define SRC_CONFIG_UNIT_TESTS_H_
 
+// Console configuration (text output to CCS or Data Dashboard)
+// Please look in console_config.txt
+
 static const bool kEpsBoardAvailable = true;
 static const bool kCdhBoardAvailable = true;
 static const bool kFsBoardAvailable = true;
@@ -10,7 +13,7 @@ static const bool kUtilitiesBoardAvailable = true;
 
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability
-static const bool kLithiumFlashTestEnabled= false;
+static const bool kLithiumFlashTestEnabled = false;
 static const bool kForceResetCommandEnabled =
     false;  // It will reset the satellite
 
