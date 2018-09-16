@@ -213,6 +213,8 @@ void PostBiosInitialiser::InitTimeSource() {
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
+    RunnableSystemHealthCheck::Init();
+
     if (kDitlMode) {
         InitMemoryLogger();
     }
