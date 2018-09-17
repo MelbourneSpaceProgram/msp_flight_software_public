@@ -1,34 +1,32 @@
 #include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
-#include <string>
 
-const int MCP9808::TEMP_REGISTER = 0x05;
-
-MCP9808::MCP9808(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
+Mcp9808::Mcp9808(const I2c* bus, uint8_t address,
+                 const I2cMultiplexer* multiplexer,
                  I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {}
 
-double MCP9808::TakeI2cReading() {
-    uint8_t read_buffer[2];
-    uint8_t write_buffer[1];
+double Mcp9808::TakeI2cReading() {
+    byte read_buffer[2];
+    byte write_buffer[1];
 
-    // Tell the MCP9808 to read from the temperature register.
-    write_buffer[0] = MCP9808::TEMP_REGISTER;
+    write_buffer[0] = kTempRegister;
 
-    // Perform I2C transaction.
-    bool reading_successful =
-        PerformTransaction(address, read_buffer, 2, write_buffer, 1);
-
-    // Perform the necessary bit-shifting on the read buffer.
-    double temperature = ((read_buffer[0] & ~(7 << 5)) << 8) | (read_buffer[1]);
-
-    temperature /= 16.0;
-
-    if (reading_successful) {
-        return temperature;
-    } else {
+    if (!PerformTransaction(address, read_buffer, 2, write_buffer, 1)) {
         etl::exception e("Failed MCP9808 Reading", __FILE__, __LINE__);
         throw e;
+    }
+
+    // See MCP9808 datasheet for conversion logic
+    int16_t sign = read_buffer[0] & kSignBitMask ? -1 : 1;
+    byte upper_byte = read_buffer[0] & kUpperByteMask;
+    byte lower_byte = read_buffer[1];
+
+    if (sign == 1) {
+        return upper_byte * kUpperByteScale + lower_byte * kLowerByteScale;
+    } else {
+        return 256 -
+               (upper_byte * kUpperByteScale + lower_byte * kLowerByteScale);
     }
 }

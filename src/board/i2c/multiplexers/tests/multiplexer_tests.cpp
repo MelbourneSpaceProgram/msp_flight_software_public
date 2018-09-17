@@ -22,8 +22,8 @@ TEST_GROUP(Multiplexer) {
 TEST(Multiplexer, TestMultiplexer) {
     I2c bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&bus, kMultiplexerAddress);
-    MCP9808 temp_sensor(&bus, kTempSensorAddress);
-    MCP9808 temp_sensor2(&bus, kTempSensorAddress);
+    Mcp9808 temp_sensor(&bus, kTempSensorAddress);
+    Mcp9808 temp_sensor2(&bus, kTempSensorAddress);
 
     TemperatureMeasurable accessible_temp(&temp_sensor);
     TemperatureMeasurable inaccessible_temp(&temp_sensor2);
