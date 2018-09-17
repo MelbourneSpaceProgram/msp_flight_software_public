@@ -5,6 +5,11 @@
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
+#include <src/config/satellite.h>
+
+double kImuAToBodyFrameTransform_dummy_data[3][3];
+double kImuBToBodyFrameTransform_dummy_data[3][3];
+double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
 
 const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
     250, 500, 1000, 2000};
