@@ -66,10 +66,10 @@ void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
     AddCurrent(kComInI2, comms_adc_2, kAdcP0NGnd, 1, 0);
     AddCurrent(kComOutI2, comms_adc_2, kAdcP1NGnd, 1, 0);
 
-    MCP9808 *comms_temp_1 =
-        new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
-    MCP9808 *comms_temp_2 =
-        new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel3);
+    Mcp9808 *comms_temp_1 =
+        new Mcp9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
+    Mcp9808 *comms_temp_2 =
+        new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel3);
 
     AddTemperature(kComT1, comms_temp_1);
     AddTemperature(kComT2, comms_temp_2);
@@ -99,10 +99,10 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     AddVoltage(kEpsRail1, power_adc_3, kAdcP0NGnd, 3.0);
     AddVoltage(kEpsRail2, power_adc_3, kAdcP1NGnd, 3.0);
 
-    MCP9808 *power_temp_1 =
-        new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel2);
-    MCP9808 *power_temp_2 =
-        new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel2);
+    Mcp9808 *power_temp_1 =
+        new Mcp9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel2);
+    Mcp9808 *power_temp_2 =
+        new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel2);
 
     Bms *bms_bus_d = new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
     Bms *bms_bus_c = new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
@@ -145,12 +145,12 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddCurrent(kFsTorquerYI, fs_adc_y, kAdcP0NGnd, 0.1, 1.65);
     AddCurrent(kFsTorquerZI, fs_adc_z, kAdcP0NGnd, 0.1, 1.65);
 
-    MCP9808 *fs_hb_xt =
-        new MCP9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel1);
-    MCP9808 *fs_hb_yt =
-        new MCP9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel1);
-    MCP9808 *fs_hb_zt =
-        new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel1);
+    Mcp9808 *fs_hb_xt =
+        new Mcp9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel1);
+    Mcp9808 *fs_hb_yt =
+        new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel1);
+    Mcp9808 *fs_hb_zt =
+        new Mcp9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel1);
 
     AddTemperature(kFsHbXT, fs_hb_xt);
     AddTemperature(kFsHbYT, fs_hb_yt);
@@ -197,54 +197,54 @@ void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
 }
 
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
-    MCP9808 *cdh_temp_1 =
-        new MCP9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
+    Mcp9808 *cdh_temp_1 =
+        new Mcp9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
     AddTemperature(kCdhT, cdh_temp_1);
 }
 
 void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
-    MCP9808 *x_pos_temp_1 =
-        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel4);
-    MCP9808 *x_pos_temp_2 =
-        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel4);
+    Mcp9808 *x_pos_temp_1 =
+        new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel4);
+    Mcp9808 *x_pos_temp_2 =
+        new Mcp9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel4);
 
     AddTemperature(kXPosT1, x_pos_temp_1);
     AddTemperature(kXPosT2, x_pos_temp_2);
 
-    MCP9808 *y_pos_temp_1 =
-        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel5);
-    MCP9808 *y_pos_temp_2 =
-        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel5);
+    Mcp9808 *y_pos_temp_1 =
+        new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel5);
+    Mcp9808 *y_pos_temp_2 =
+        new Mcp9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel5);
 
     AddTemperature(kYPosT1, y_pos_temp_1);
     AddTemperature(kYPosT2, y_pos_temp_2);
 
-    MCP9808 *x_neg_temp_1 =
-        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel6);
-    MCP9808 *x_neg_temp_2 =
-        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel6);
+    Mcp9808 *x_neg_temp_1 =
+        new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel6);
+    Mcp9808 *x_neg_temp_2 =
+        new Mcp9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel6);
 
     AddTemperature(kXNegT1, x_neg_temp_1);
     AddTemperature(kXNegT2, x_neg_temp_2);
 
-    MCP9808 *y_neg_temp_1 =
-        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel7);
-    MCP9808 *y_neg_temp_2 =
-        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel7);
+    Mcp9808 *y_neg_temp_1 =
+        new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel7);
+    Mcp9808 *y_neg_temp_2 =
+        new Mcp9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel7);
 
     AddTemperature(kYNegT1, y_neg_temp_1);
     AddTemperature(kYNegT2, y_neg_temp_2);
 
-    MCP9808 *z_neg_temp_1 =
-        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel3);
-    MCP9808 *z_neg_temp_2 =
-        new MCP9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel3);
+    Mcp9808 *z_neg_temp_1 =
+        new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel3);
+    Mcp9808 *z_neg_temp_2 =
+        new Mcp9808(bus_c, 0x1A, mux_c, I2cMultiplexer::kMuxChannel3);
 
     AddTemperature(kZNegT1, z_neg_temp_1);
     AddTemperature(kZNegT2, z_neg_temp_2);
 
-    MCP9808 *z_pos_temp_1 =
-        new MCP9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel2);
+    Mcp9808 *z_pos_temp_1 =
+        new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel2);
 
     AddTemperature(kZPosT, z_pos_temp_1);
 
@@ -315,7 +315,7 @@ void I2cMeasurableManager::AddCurrent(MeasurableId id, Adc *adc,
 }
 
 void I2cMeasurableManager::AddTemperature(MeasurableId id,
-                                          MCP9808 *temp_sensor) {
+                                          Mcp9808 *temp_sensor) {
     CheckValidId(id);
     TemperatureMeasurable *temp = new TemperatureMeasurable(temp_sensor);
     measurables[id] = temp;

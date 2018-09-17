@@ -11,7 +11,7 @@ class I2cMultiplexer;
 class I2c;
 class Measurable;
 class Rtc;
-class MCP9808;
+class Mcp9808;
 class Bms;
 class MPU9250MotionTracker;
 class BmsBatteryTemperatureMeasurable;
@@ -104,7 +104,7 @@ class I2cMeasurableManager {
                     float scaling_factor);
     void AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line,
                     float scaling_factor, float zero_bias_point);
-    void AddTemperature(MeasurableId id, MCP9808 *temp_sensor);
+    void AddTemperature(MeasurableId id, Mcp9808 *temp_sensor);
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
         MeasurableId id, Bms *temp_sensor);
