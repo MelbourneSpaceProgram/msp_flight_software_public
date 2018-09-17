@@ -6,7 +6,7 @@
 
 class TemperatureMeasurable : public I2cMeasurable<double> {
    public:
-    TemperatureMeasurable(MCP9808* temp_sensor);
+    TemperatureMeasurable(Mcp9808* temp_sensor);
     double TakeDirectI2cReading();
 
    private:

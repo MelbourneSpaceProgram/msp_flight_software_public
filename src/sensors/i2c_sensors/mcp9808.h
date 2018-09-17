@@ -1,30 +1,22 @@
-#ifndef SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
-#define SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
+#ifndef SRC_SENSORS_I2C_SENSORS_MCP9808_H_
+#define SRC_SENSORS_I2C_SENSORS_MCP9808_H_
 
 #include <src/sensors/i2c_sensors/i2c_device.h>
 
-class MCP9808 : public I2cDevice {
+class Mcp9808 : public I2cDevice {
    public:
-    MCP9808(const I2c* bus, int address,
+    Mcp9808(const I2c* bus, uint8_t address,
             const I2cMultiplexer* multiplexer = NULL,
             I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
-    /**
-      Method that causes the MCP9808 to take a reading. The value is then
-      stored in the reading variable, and all observers are notified.
-      This is an implementation of the virtual function in I2cDevice.
-
-      @return The sensor reading.
-    */
     double TakeI2cReading();
 
    private:
-    /**
-      The register in which the MCP9808 temperature is stored.
-    */
-    static const int TEMP_REGISTER;
-
-    double get_temperature(void);
+    static constexpr uint8_t kTempRegister = 0x05;
+    static constexpr byte kSignBitMask = 0b00010000;
+    static constexpr byte kUpperByteMask = 0b00011111;
+    static constexpr double kUpperByteScale = 16;
+    static constexpr double kLowerByteScale = 1.0 / 16;
 };
 
-#endif  //  SRC_SENSORS_I2C_SENSORS_MCP9808_HPP_
+#endif  //  SRC_SENSORS_I2C_SENSORS_MCP9808_H_
