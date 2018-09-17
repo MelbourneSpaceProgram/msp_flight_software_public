@@ -1,4 +1,5 @@
 // Exactly one of these MUST be true
+// A full clean/rebuild may be required when changing these parameters
 
 var ConsoleToUart = false;
 var ConsoleToCcs = true;

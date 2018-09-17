@@ -28,12 +28,12 @@ static float kMagnetorquerPowerFractionZ = 1.0;
 // Mappings for the Helmholtz rig FS board
 const double kImuAToBodyFrameTransform_const_data[3][3] = {
     {1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
-double kImuAToBodyFrameTransform_dummy_data[3][3];
+extern double kImuAToBodyFrameTransform_dummy_data[3][3];
 const Matrix kImuAToBodyFrameTransform(kImuAToBodyFrameTransform_const_data,
                                        kImuAToBodyFrameTransform_dummy_data);
 const double kImuBToBodyFrameTransform_const_data[3][3] = {
     {1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
-double kImuBToBodyFrameTransform_dummy_data[3][3];
+extern double kImuBToBodyFrameTransform_dummy_data[3][3];
 const Matrix kImuBToBodyFrameTransform(kImuBToBodyFrameTransform_const_data,
                                        kImuBToBodyFrameTransform_dummy_data);
 
@@ -42,7 +42,7 @@ const Matrix kImuBToBodyFrameTransform(kImuBToBodyFrameTransform_const_data,
 // Mapping for the Helmholtz rig
 const double kBodyToMagnetorquerFrameTransform_const_data[3][3] = {
     {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
+extern double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
 const Matrix kBodyToMagnetorquerFrameTransform(
     kBodyToMagnetorquerFrameTransform_const_data,
     kBodyToMagnetorquerFrameTransform_dummy_data);
