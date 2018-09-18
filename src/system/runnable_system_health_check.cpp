@@ -33,8 +33,9 @@ RunnableSystemHealthCheck::RunnableSystemHealthCheck(Uart* debug_uart) {
         RunnableSystemHealthCheck::debug_uart = debug_uart;
     } else {
         throw etl::exception(
-            "Only one instance of RunnableSystemHealthCheck should ever be instantiated"
-            , __FILE__, __LINE__);
+            "Only one instance of RunnableSystemHealthCheck should ever be "
+            "instantiated",
+            __FILE__, __LINE__);
     }
 }
 
@@ -48,10 +49,9 @@ void RunnableSystemHealthCheck::WriteToDataLogger(uint8_t measurable_id,
     byte packet[5] = {NULL};
     packet[0] = kMeasurableLoggerSyncChar1;
     packet[1] = kMeasurableLoggerSyncChar2;
-    packet[2] =
-        message_size + 3;  // Length of packet (this, ID, checksum, payload)
+    packet[2] = message_size;  // Length of packet except header
     packet[3] = measurable_id;
-    packet[4] = 0x00;  // Checksum
+    packet[4] = 0x00;  // TODO(dingbenjamin): Implement checksum
 
     debug_uart->PerformWriteTransaction(packet, 5);
     debug_uart->PerformWriteTransaction(encoded_message, message_size);
