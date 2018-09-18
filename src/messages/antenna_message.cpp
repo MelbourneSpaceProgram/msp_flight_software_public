@@ -16,9 +16,6 @@ AntennaMessage::AntennaMessage(bool door_one_open, bool door_two_open,
       active_heaters(active_heaters),
       seconds_elapsed(seconds_elapsed) {}
 
-// TODO(dingbenjamin) This function is wasteful in terms of memory, the direct
-// I2C reading from the antenna can be sent but this way is more clear and
-// easier to debug. Still, consider implementing a more efficient version
 SerialisedMessage AntennaMessage::SerialiseTo(byte *serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, kSerialisedSize, kAntenna,
                                      kV1);
