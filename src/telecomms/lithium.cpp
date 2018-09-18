@@ -100,9 +100,9 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
     // TODO(dingbenjamin): Figure out why this is needed
     TaskUtils::SleepMilli(kInterCommandTimeMilli);
 
-    if (!LithiumUtils::IsValidHeader(ack_buffer) ||
-        !LithiumUtils::GetCommandCode(ack_buffer) ==
-            command->GetCommandCode()) {
+    if ((!LithiumUtils::IsValidHeader(ack_buffer)) ||
+        (LithiumUtils::GetCommandCode(ack_buffer) !=
+         command->GetCommandCode())) {
         return false;
     }
 
