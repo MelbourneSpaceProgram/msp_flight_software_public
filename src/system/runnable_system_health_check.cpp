@@ -253,9 +253,11 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             LogMeasurableMacro(double, TemperatureReading)(
                 kCdhT, &NanopbUtils::NanopbTemperature);
 
-            // TODO(dingbenjamin): Yet to add:
-            //        kUtilAdc2,
-            //        kUtilT,
+            // Utilities
+            LogMeasurableMacro(double, TemperatureReading)(
+                kUtilT, &NanopbUtils::NanopbTemperature);
+            LogMeasurableMacro(double, VoltageReading)(
+                            kUtilHeatV, &NanopbUtils::NanopbVoltage);
 
             UartFlush();
 

@@ -194,6 +194,11 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
     Adc *util_adc_1 = new Adc(bus_c, 0x49, mux_c, I2cMultiplexer::kMuxChannel1);
+    AddVoltage(kUtilHeatV, util_adc_1, kAdcP3NGnd, 1);
+
+    Mcp9808 *util_temp =
+        new Mcp9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel1);
+    AddTemperature(kUtilT, util_temp);
 }
 
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
