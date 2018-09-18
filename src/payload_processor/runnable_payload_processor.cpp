@@ -53,8 +53,9 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
 
         // Verify that the hash matches the signature
         if (msp_signature.compare(hex_hash) == 0) {
-            byte *msp_payload = lithium_payload + kAx25Bytes + kSignatureBytes +
-                                kLengthBytes + kSequenceNumberBytes;
+            byte *msp_payload = lithium_payload + kAx25Bytes +
+                                kMspSignatureBytes + kLengthBytes +
+                                kSequenceNumberBytes;
             payload_processor.ParseAndExecuteCommands(msp_payload);
         } else {
             // TODO(danieL632): c++ style static_cast<xdc_IArg> not working
