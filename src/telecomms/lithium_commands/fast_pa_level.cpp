@@ -5,7 +5,6 @@ FastPaLevel::FastPaLevel(uint8_t pa_level) : pa_level(pa_level) {}
 
 SerialisedMessage FastPaLevel::SerialiseTo(byte* serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
-    // TODO(dingbenjamin): Check endianness if tests don't pass
     builder.AddData<uint8_t>(pa_level);
     return builder.Build();
 }
