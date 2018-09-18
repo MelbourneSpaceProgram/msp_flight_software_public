@@ -1,11 +1,11 @@
 #include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <ti/sysbios/knl/Task.h>
-#include <src/config/satellite.h>
 
 double kImuAToBodyFrameTransform_dummy_data[3][3];
 double kImuBToBodyFrameTransform_dummy_data[3][3];
@@ -49,7 +49,7 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
 }
 
 GyroscopeReading MPU9250MotionTracker::TakeGyroscopeReading() {
-    GyroscopeReading gyroscope_reading;
+    GyroscopeReading gyroscope_reading = GyroscopeReading_init_default;
     SelectRegister(kGyroXOutHigh);
 
     etl::array<byte, 6> gyro_reading_bytes = ReadSixBytesFromCurrentRegister();
@@ -70,7 +70,8 @@ GyroscopeReading MPU9250MotionTracker::TakeGyroscopeReading() {
 }
 
 AccelerometerReading MPU9250MotionTracker::TakeAccelerometerReading() {
-    AccelerometerReading accelerometer_reading;
+    AccelerometerReading accelerometer_reading =
+        AccelerometerReading_init_default;
     SelectRegister(kAccelXOutHigh);
 
     etl::array<byte, 6> accel_reading_bytes = ReadSixBytesFromCurrentRegister();
@@ -100,7 +101,7 @@ double MPU9250MotionTracker::TakeTemperatureReading() {
 }
 
 MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
-    MagnetometerReading magnetometer_reading;
+    MagnetometerReading magnetometer_reading = MagnetometerReading_init_default;
     SetBypassMode(kBypassModeEnable);
     SelectMagnetometerRegister(kExtMagnoXOutHigh);
 
