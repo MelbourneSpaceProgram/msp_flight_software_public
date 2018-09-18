@@ -1,7 +1,6 @@
 #ifndef SRC_CONFIG_UNIT_TESTS_H_
 #define SRC_CONFIG_UNIT_TESTS_H_
 
-<<<<<<< HEAD
 // Console configuration (text output to CCS or Data Dashboard)
 // Please look in console_config.txt
 
@@ -11,14 +10,6 @@ static const bool kFsBoardAvailable = true;
 static const bool kPanelBoardAvailable = true;
 static const bool kTcomBoardAvailable = true;
 static const bool kUtilitiesBoardAvailable = true;
-=======
-static const bool eps_board_available = false;
-static const bool cdh_board_available = true;
-static const bool fs_board_available = true;
-static const bool panel_board_available = false;
-static const bool tcom_board_available = false;
-static const bool utilities_board_available = false;
->>>>>>> Helmholtz squashed
 
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability

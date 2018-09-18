@@ -2,7 +2,9 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
@@ -13,6 +15,7 @@
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
+#include <src/payload_processor/runnable_console_uart_listener.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/system/runnable_state_management.h>
@@ -36,6 +39,15 @@ PostBiosInitialiser::PostBiosInitialiser() {}
 
 fnptr PostBiosInitialiser::GetRunnablePointer() {
     return &PostBiosInitialiser::PostBiosInit;
+}
+
+Uart* PostBiosInitialiser::InitDebugUart() {
+    Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
+    debug_uart->SetBaudRate(Uart::kBaud115200)
+        ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
+        ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
+        ->Open();
+    return debug_uart;
 }
 
 void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
@@ -108,6 +120,7 @@ void PostBiosInitialiser::InitBeacon() {
 void PostBiosInitialiser::InitPayloadProcessor() {
     TaskHolder* payload_processor_task = new TaskHolder(
         1536, "PayloadProcessor", 6, new RunnablePayloadProcessor());
+
     payload_processor_task->Start();
 }
 
@@ -156,9 +169,10 @@ void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
     pre_deployment_magnetometer_poller_task->Start();
 }
 
-void PostBiosInitialiser::InitSystemHealthCheck() {
-    TaskHolder* system_health_check_task = new TaskHolder(
-        4096, "SystemHealthCheck", 5, new RunnableSystemHealthCheck());
+void PostBiosInitialiser::InitSystemHealthCheck(Uart* debug_uart) {
+    TaskHolder* system_health_check_task =
+        new TaskHolder(4096, "SystemHealthCheck", 5,
+                       new RunnableSystemHealthCheck(debug_uart));
     system_health_check_task->Start();
 }
 
@@ -210,6 +224,12 @@ void PostBiosInitialiser::InitTimeSource() {
     time_source_task->Start();
 }
 
+void PostBiosInitialiser::InitConsoleUartListener(Uart* debug_uart) {
+    TaskHolder* console_uart_listener_task = new TaskHolder(
+        1536, "UartListener", 12, new RunnableConsoleUartListener(debug_uart));
+    console_uart_listener_task->Start();
+}
+
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
@@ -236,6 +256,10 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("Radio receiver started");
         InitPayloadProcessor();
         Log_info0("Payload processor started");
+
+        Uart* debug_uart = InitDebugUart();
+        InitConsoleUartListener(debug_uart);
+        Log_info0("UART listener started");
 
         // The satellite now runs either the unit tests or the in-orbit
         // configuration for memory reasons.

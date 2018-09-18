@@ -17,19 +17,26 @@
                                              NanopbMessageType##_size,   \
                                              NanopbMessageType##_fields>
 
+class Uart;
+
 class RunnableSystemHealthCheck : public Runnable {
+    friend class RunnableConsoleUartListener;
+
    public:
     fnptr GetRunnablePointer();
-    RunnableSystemHealthCheck();
+    RunnableSystemHealthCheck(Uart* debug_uart);
     static void WriteToDataLogger(uint8_t measurable_id, byte encoded_message[],
                                   uint8_t message_size);
     static bool IsEnabled();
     static void EnableDatalogger(bool enable_logger);
     static void Init();
 
+    static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
+    static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
+
    private:
     static bool datalogger_enabled;
-    static Uart debug_uart;
+    static Uart* debug_uart;
     static void SystemHealthCheck();
     static const uint32_t kHealthCheckPeriodMillis = 1000;
     static const uint32_t kCircularBufferMessageLength = 10000;
@@ -79,8 +86,6 @@ class RunnableSystemHealthCheck : public Runnable {
             WriteToDataLogger(id, buffer, size);
         }
     }
-    static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
-    static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
 };
 
 extern "C" {

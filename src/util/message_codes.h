@@ -31,7 +31,11 @@ enum DebugMessageType {
     kLocationReadingCode = 0x0D,
     kPwmOutputReadingCode = 0x0E,
     kCalibratedMagnetometerReadingCode = 0x0F,
+<<<<<<< HEAD
     kBDotEstimateCode = 0x10
+=======
+    kPayloadProcessorInjection = 0x10
+>>>>>>> Implement UART Console Listener
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient
