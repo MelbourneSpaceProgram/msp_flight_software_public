@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/board/uart/uart.h>
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/CurrentReading.pb.h>
@@ -7,12 +8,13 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/system/runnable_system_health_check.h>
+#include <src/telecomms/lithium.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/utils/RingBuf.h>
 
-Uart RunnableSystemHealthCheck::debug_uart(UMBILICAL_CONSOLE);
+Uart* RunnableSystemHealthCheck::debug_uart = NULL;
 bool RunnableSystemHealthCheck::datalogger_enabled = true;
 
 // These are created outside of the class to make getting C linkage easier
@@ -23,14 +25,18 @@ byte buffer[5000];
 
 void RunnableSystemHealthCheck::Init() {
     RingBuf_construct(&ring_buffer, buffer, sizeof(buffer));
-
-    RunnableSystemHealthCheck::debug_uart.SetBaudRate(Uart::kBaud115200)
-        ->SetReadTimeout(TaskUtils::MilliToCycles(1000))
-        ->SetWriteTimeout(TaskUtils::MilliToCycles(1000))
-        ->Open();
 }
 
-RunnableSystemHealthCheck::RunnableSystemHealthCheck() {}
+RunnableSystemHealthCheck::RunnableSystemHealthCheck(Uart* debug_uart) {
+    if (RunnableSystemHealthCheck::debug_uart == NULL) {
+        // WARNING: This task should only ever WRITE to the debug UART
+        RunnableSystemHealthCheck::debug_uart = debug_uart;
+    } else {
+        throw etl::exception(
+            "Only one instance of RunnableSystemHealthCheck should ever be instantiated"
+            , __FILE__, __LINE__);
+    }
+}
 
 fnptr RunnableSystemHealthCheck::GetRunnablePointer() {
     return &RunnableSystemHealthCheck::SystemHealthCheck;
@@ -47,8 +53,8 @@ void RunnableSystemHealthCheck::WriteToDataLogger(uint8_t measurable_id,
     packet[3] = measurable_id;
     packet[4] = 0x00;  // Checksum
 
-    debug_uart.PerformWriteTransaction(packet, 5);
-    debug_uart.PerformWriteTransaction(encoded_message, message_size);
+    debug_uart->PerformWriteTransaction(packet, 5);
+    debug_uart->PerformWriteTransaction(encoded_message, message_size);
 }
 
 bool RunnableSystemHealthCheck::IsEnabled() { return datalogger_enabled; }
@@ -267,9 +273,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
     }
 }
 
-void UartPutch(Char ch) {
-    RingBuf_put(&ring_buffer, ch);
-}
+void UartPutch(Char ch) { RingBuf_put(&ring_buffer, ch); }
 
 void UartFlush() {
     // Send 100 bytes at a time, or less
