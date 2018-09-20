@@ -140,6 +140,13 @@ void RunnableOrientationControl::ControlOrientation() {
                      floatToArg(b_dot_estimate.Get(1,0)),
                      floatToArg(b_dot_estimate.Get(2,0)));
 
+        if (kHilAvailable) {
+          // Echo magnetometer reading to data dashboard
+          RunnableDataDashboard::TransmitMessage(
+              kBDosEstimateCode, BDotEstimate_size,
+              BDotEstimate_fields, &b_dot_estimate);
+        }
+
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
 
         // Run controller

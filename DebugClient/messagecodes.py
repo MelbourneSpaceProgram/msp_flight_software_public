@@ -14,4 +14,5 @@ message_codes = {
     "location_reading_code": 0x0D,
     "pwm_output_reading_code": 0x0E,
     "calibrated_magnetometer_reading_code": 0x0F,
+    "b_dot_estimate_code": 0x10,
 }

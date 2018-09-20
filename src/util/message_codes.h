@@ -30,7 +30,8 @@ enum DebugMessageType {
     kTleRequestCode = 0x0C,
     kLocationReadingCode = 0x0D,
     kPwmOutputReadingCode = 0x0E,
-    kCalibratedMagnetometerReadingCode = 0x0F
+    kCalibratedMagnetometerReadingCode = 0x0F,
+    kBDotEstimateCode = 0x10
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient

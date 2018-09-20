@@ -7,6 +7,7 @@ import datetime
 import serial.tools.list_ports
 import MagnetometerReading_pb2
 import PwmOutputReading_pb2
+import BDotEstimate_pb2
 import SensorReading_pb2
 import StateMachineStateReading_pb2
 import TorqueOutputReading_pb2
@@ -280,6 +281,25 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>d',magnetometer_reading_echo.y))
                 mc.set("Calibrated_Magnetometer_Z",
                        struct.pack('>d',magnetometer_reading_echo.z))
+
+
+            elif message_code == \
+                message_codes["b_dot_estimate_code"]:
+                b_dot_estimate = \
+                    BDotEstimate_pb2.BDotEstimate()
+                b_dot_estimate.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(magnetorquer_x_current_reading.value))
+                mc.set("B_Dot_Estimate_X",
+                       struct.pack('>d',b_dot_estimate.x))
+                mc.set("B_Dot_Estimate_Y",
+                       struct.pack('>d',b_dot_estimate.y))
+                mc.set("B_Dot_Estimate_Z",
+                       struct.pack('>d',b_dot_estimate.z))
+                mc.set("B_Dot_Estimate_X",
+                    struct.pack('>d',magnetorquer_x_current_reading.value))
+                print("Logging b-dot estimate to CSV")
+                log_to_csv(b_dot_estimate, session_timestamp)
 
 
             elif message_code == \
