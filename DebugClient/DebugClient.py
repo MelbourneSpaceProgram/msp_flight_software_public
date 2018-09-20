@@ -16,7 +16,18 @@ import LocationReading_pb2
 import time
 import logging
 import struct
+import csv
+import os
+import subprocess
 from messagecodes import message_codes
+
+def message_log_dir():
+    repo_dir = \
+        subprocess.run(['git', 'rev-parse', '--show-toplevel'],
+                       stdout=subprocess.PIPE)\
+        .stdout\
+        .decode('utf-8').rstrip()
+    return repo_dir + '/DebugClient/logs/'
 
 logger = logging.getLogger('debug_interface')
 logger.setLevel(logging.DEBUG)
@@ -79,6 +90,31 @@ def detect_serial_port():
             suggested_port = str(p).split(' ')[0]  # Grabs the first COMX instance
     return suggested_port
 
+def measurable_filename(measurable_name, session_timestamp):
+    return 'sensors_' + \
+           time.strftime('%Y-%m-%d_%H-%M-%S', session_timestamp) + \
+           '_' + \
+           measurable_name + \
+           '.csv'
+
+
+def log_to_csv(message, session_timestamp):
+    measurable_name = message.DESCRIPTOR.name
+    fpath = message_log_dir() + measurable_filename(measurable_name, session_timestamp)
+    field_names = [field.name for field in list(message.DESCRIPTOR.fields)]
+
+    if not(os.path.isfile(fpath)):
+        csvfile = open(fpath, 'w+')
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(field_names + ['ground_timestamp_ms'])
+        csvfile.close()
+
+    with open(fpath, 'a+') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        data = [getattr(message, field) for field in field_names]
+        csvwriter.writerow(data + [time.time()])
+
+
 def main():
     suggested_port = detect_serial_port()
     print("Enter port ({}):".format(suggested_port))
@@ -116,6 +152,8 @@ def main():
                'you should see this on the Memcached stdout when run with -vv')
 
     with serial.Serial(**serial_arguments) as debug_serial_port:
+        # flush input buffer, discarding all its contents
+        debug_serial_port.flushInput()
         logger.info("Port " + debug_serial_port.portstr + " opened.")
         testLoop(debug_serial_port, logger, mc)
 
@@ -123,6 +161,10 @@ def testLoop(debug_serial_port, logger, mc):
     # Persistent var for flight-computer-side unit test
     test_message_value = 0
     test_message_timestamp = 0
+
+    # Get a timestamp for the CSV files generated
+    session_timestamp = time.localtime()
+
     try:
         while True:
             message_code, message_size, payload = wait_for_message(debug_serial_port)
@@ -153,40 +195,6 @@ def testLoop(debug_serial_port, logger, mc):
                 logger.info("Sending message: " + str(magnetometer_reading))
                 serialised_message = magnetometer_reading.SerializeToString()
                 send_message(debug_serial_port, 0x06, serialised_message)
-
-
-            elif message_code == \
-                 message_codes["bms1_input_current_reading_code"]:
-                bms1_input_current_reading = SensorReading_pb2.SensorReading()
-                bms1_input_current_reading.ParseFromString(payload)
-                logger.info("Received message data: " + \
-                            str(bms1_input_current_reading.value))
-                mc.set("BMS1_Input_Current",
-                    struct.pack('>d',
-                                bms1_input_current_reading.value))
-
-
-            elif message_code == \
-                message_codes["bms1_input_voltage_reading_code"]:
-                bms1_input_voltage_reading = SensorReading_pb2.SensorReading()
-                bms1_input_voltage_reading.ParseFromString(payload)
-                logger.info("Received message data: " + \
-                            str(bms1_input_voltage_reading.value))
-                mc.set("BMS1_Input_Voltage",
-                    struct.pack('>d',
-                                bms1_input_voltage_reading.value))
-
-
-            elif message_code == \
-                message_codes["primary_mcu_regulator_current_reading_code"]:
-                primary_mcu_regulator_current_reading = \
-                    SensorReading_pb2.SensorReading()
-                primary_mcu_regulator_current_reading.ParseFromString(payload)
-                logger.info("Received message data: " + \
-                    str(primary_mcu_regulator_current_reading.value))
-                mc.set("Primary_MCU_Regulator_Current",
-                    struct.pack('>d',
-                        primary_mcu_regulator_current_reading.value))
 
 
             elif message_code == \
@@ -238,6 +246,9 @@ def testLoop(debug_serial_port, logger, mc):
                 mc.set("Satellite_PWM_Z",
                        struct.pack('>d',pwm_output_reading.z))
 
+                print("Logging pwm reading to CSV")
+                log_to_csv(pwm_output_reading, session_timestamp)
+
 
             elif message_code == \
                 message_codes["magnetometer_reading_code"]:
@@ -248,6 +259,9 @@ def testLoop(debug_serial_port, logger, mc):
                 logger.info("Message data: " + str(magnetometer_reading_echo))
                 mc.set("Magnetometer_X",
                        struct.pack('>d',magnetometer_reading_echo.x))
+
+                print("Logging magnetometer reading to CSV")
+                log_to_csv(magnetometer_reading_echo, session_timestamp)
 
 
             elif message_code == \
@@ -359,6 +373,9 @@ def testLoop(debug_serial_port, logger, mc):
                                    location_reading.altitude_above_ellipsoid_km))
                 mc.set("Location_Timestamp_Millis_Unix_Epoch",
                        struct.pack('>Q',location_reading.timestamp_ms))
+
+                print("Logging location reading to CSV")
+                log_to_csv(location_reading, session_timestamp)
 
 
             else:
