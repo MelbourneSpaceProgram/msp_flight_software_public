@@ -266,7 +266,7 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>d',satellite_magnetometer_reading.z))
 
                 print("Logging magnetometer reading to CSV")
-                log_to_csv(magnetometer_reading_echo, session_timestamp)
+                log_to_csv(satellite_magnetometer_reading, session_timestamp)
 
 
             elif message_code == \
@@ -289,15 +289,13 @@ def testLoop(debug_serial_port, logger, mc):
                     BDotEstimate_pb2.BDotEstimate()
                 b_dot_estimate.ParseFromString(payload)
                 logger.info("Received message data: " + \
-                            str(magnetorquer_x_current_reading.value))
+                            str(b_dot_estimate))
                 mc.set("B_Dot_Estimate_X",
                        struct.pack('>d',b_dot_estimate.x))
                 mc.set("B_Dot_Estimate_Y",
                        struct.pack('>d',b_dot_estimate.y))
                 mc.set("B_Dot_Estimate_Z",
                        struct.pack('>d',b_dot_estimate.z))
-                mc.set("B_Dot_Estimate_X",
-                    struct.pack('>d',magnetorquer_x_current_reading.value))
                 print("Logging b-dot estimate to CSV")
                 log_to_csv(b_dot_estimate, session_timestamp)
 
