@@ -292,8 +292,8 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("Beacon delay timer finished");
 
         SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
-        Log_info0("Antenna deploying, can take awhile");
-        Antenna::GetAntenna()->DeployAntenna();
+        //Log_info0("Antenna deploying, can take awhile");
+        //Antenna::GetAntenna()->DeployAntenna();
         if (kRunMagnetorquersAtConstantPower == false) {
             Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
                            kill_task_on_orientation_control_begin_semaphore);
@@ -313,7 +313,7 @@ void PostBiosInitialiser::PostBiosInit() {
             Log_info0("Orientation control started");
         }
 
-        //InitSystemHealthCheck();
+        //InitSystemHealthCheck(debug_uart);
         //Log_info0("System healthcheck started");
 
         Log_info0("System start up complete");

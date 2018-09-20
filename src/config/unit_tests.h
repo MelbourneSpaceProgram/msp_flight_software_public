@@ -22,7 +22,7 @@ static const bool kEepromAvailable =
     false;  // It is actually available but there is a resource conflict with
             // the SD cards as they share the same bus
 static const bool kI2cAvailable = true;
-static const bool kSdCardAvailable = true;
+static const bool kSdCardAvailable = false;
 static const bool kHilAvailable = true;
 static const bool kBmsAvailable = false;
 static const bool kAntennaAvailable = false;

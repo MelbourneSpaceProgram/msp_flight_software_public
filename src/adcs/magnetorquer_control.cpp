@@ -34,9 +34,9 @@ void MagnetorquerControl::Initialize() { InitializePwm(); }
 
 void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
                                                         float z) {
-    if (kHilAvailable) {
-        PushDebugMessage(x, y, z);
-    }
+    //if (kHilAvailable) {
+    //    PushDebugMessage(x, y, z);
+    //}
 
     // Map from the body frame to the magnetorquer 'frame'.
     // Note: the magnetorquers may be orientated arbitrarily, and so the

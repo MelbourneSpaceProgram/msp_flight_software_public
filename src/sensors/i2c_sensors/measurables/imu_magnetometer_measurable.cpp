@@ -130,7 +130,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
 }
 
 bool ImuMagnetometerMeasurable::Calibrate() {
-    if (!kSdCardAvailable) {
+    if (!kSdCardAvailable || !can_calibrate) {
         return false;
     }
 
