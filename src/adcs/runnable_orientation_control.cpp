@@ -12,6 +12,7 @@
 #include <src/init/init.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/BDotEstimate.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
@@ -140,11 +141,15 @@ void RunnableOrientationControl::ControlOrientation() {
                      floatToArg(b_dot_estimate.Get(1,0)),
                      floatToArg(b_dot_estimate.Get(2,0)));
 
+        BDotEstimate b_dot_estimate_pb;
+        b_dot_estimate_pb.x = b_dot_estimate.Get(0,0);
+        b_dot_estimate_pb.y = b_dot_estimate.Get(1,0);
+        b_dot_estimate_pb.z = b_dot_estimate.Get(2,0);
         if (kHilAvailable) {
           // Echo magnetometer reading to data dashboard
           RunnableDataDashboard::TransmitMessage(
-              kBDosEstimateCode, BDotEstimate_size,
-              BDotEstimate_fields, &b_dot_estimate);
+              kBDotEstimateCode, BDotEstimate_size,
+              BDotEstimate_fields, &b_dot_estimate_pb);
         }
 
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
