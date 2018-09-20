@@ -23,7 +23,7 @@ static const bool kEepromAvailable =
             // the SD cards as they share the same bus
 static const bool kI2cAvailable = true;
 static const bool kSdCardAvailable = true;
-static const bool kHilAvailable = false;
+static const bool kHilAvailable = true;
 static const bool kBmsAvailable = false;
 static const bool kAntennaAvailable = false;
 static const bool kDitlMode = false;

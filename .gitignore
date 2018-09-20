@@ -75,3 +75,9 @@ DebugClient/.idea/DebugClient.iml
 .vs/
 
 src/version.h
+
+# DebugClient logs
+DebugClient/logs/*.csv
+
+# Compiled python files
+*.pyc
