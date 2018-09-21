@@ -263,13 +263,11 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             LogMeasurableMacro(double, TemperatureReading)(
                 kUtilT, &NanopbUtils::NanopbTemperature);
             LogMeasurableMacro(double, VoltageReading)(
-                            kUtilHeatV, &NanopbUtils::NanopbVoltage);
-
-            UartFlush();
-
-            SystemWatchdog::ResetTimer();
-            TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
+                kUtilHeatV, &NanopbUtils::NanopbVoltage);
         }
+        UartFlush();
+        SystemWatchdog::ResetTimer();
+        TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
     }
 }
 
