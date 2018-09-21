@@ -121,6 +121,7 @@ class BeaconPayload : public TransmitPayload {
     }
 
     static double ReadCachedDouble(uint16_t measurable_id);
+    static uint16_t GetSystemIdentifier();
 };
 
 #endif  // SRC_TELECOMMS_MSP_PAYLOADS_BEACON_PAYLOAD_H_

@@ -5,6 +5,7 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
+#include <ti/devices/msp432e4/driverlib/rom_map.h>
 
 BeaconPayload::BeaconPayload()
     : com_out_i1(ReadCachedDouble(kComOutI1)),
@@ -214,4 +215,21 @@ float BeaconPayload::ConstrainToRange(float data, uint16_t abs_max) {
 
 double BeaconPayload::ReadCachedDouble(uint16_t measurable_id) {
     return ReadCachedMeasurable<double>(measurable_id);
+}
+
+uint16_t BeaconPayload::GetSystemIdentifier() {
+    typedef struct {
+        uint32_t Die_X_Position;
+        uint32_t Die_Y_Position;
+        uint32_t Wafer_ID;
+        uint32_t Lot_ID;
+        uint32_t Reserved_5;
+        uint32_t Reserved_6;
+        uint32_t Reserved_7;
+        uint32_t Test_Results;
+    } SysCtl_Die_Record_Info;
+
+    uint_fast8_t tlvLength;
+    SysCtl_Die_Record_Info* pDieInfo;
+    MAP_SysCtl_getTLVInfo(TLV_TAG_DIEREC, 0, &tlvLength, (uint32_t**)&pDieInfo);
 }
