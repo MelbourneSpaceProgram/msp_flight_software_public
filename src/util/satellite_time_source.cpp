@@ -6,7 +6,8 @@
 #include <time.h>
 #include <xdc/runtime/Log.h>
 
-Time SatelliteTimeSource::satellite_time;
+Time SatelliteTimeSource::satellite_time = {0, false};
+Time SatelliteTimeSource::initial_time = {0, false};
 
 void SatelliteTimeSource::SetTime(RTime time) {
     time_t epoch_seconds = Rtc::RTimeToEpoch(time);
@@ -17,6 +18,9 @@ void SatelliteTimeSource::SetTime(RTime time) {
         satellite_time.is_valid = true;
         // TODO(akremor): Pull this from the RTC clock interrupt (once
         // configured)
+        if (!initial_time.is_valid) {
+            initial_time = {epoch_seconds, true};
+        }
     } else {
         Log_error0("Unable to convert from RTime -> tm");
         satellite_time.timestamp_ms = NULL;
@@ -35,6 +39,8 @@ Time SatelliteTimeSource::GetTime() {
 
     return satellite_time;
 }
+
+Time SatelliteTimeSource::GetInitialTime() { return initial_time; }
 
 uint64_t SatelliteTimeSource::TimeDifferenceMilli(Time start, Time end) {
     return end.timestamp_ms - start.timestamp_ms;

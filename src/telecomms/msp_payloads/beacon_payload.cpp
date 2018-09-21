@@ -79,7 +79,7 @@ BeaconPayload::BeaconPayload()
       sw_fs_flags(0),
       sw_fs_location(kInvalidPositiveInteger),
       sw_fs_ir(kInvalidPositiveInteger),
-      sw_cdh_last_reboot({0, false}),
+      sw_cdh_last_reboot(SatelliteTimeSource::GetInitialTime()),
       sw_cdh_memory(kInvalidPositiveInteger),
       sw_cdh_memory_available(kInvalidPositiveInteger),
       sw_cdh_mcu1(kInvalidPositiveInteger),
