@@ -6,6 +6,7 @@
 class Command {
    public:
     explicit Command(uint8_t command_arg_length);
+    virtual ~Command() {};
     virtual bool ExecuteCommand() = 0;
     uint8_t GetCommandArgumentLength() const;
 
