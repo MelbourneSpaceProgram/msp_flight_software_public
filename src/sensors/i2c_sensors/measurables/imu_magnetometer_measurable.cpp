@@ -89,8 +89,8 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         // Apply calibration operations
         magnetometer_calibration.Apply(reading);
     } else {
-        Log_info0(
-            "Skipping magnetometer calibration due to error or no SD card");
+      //Log_info0(
+      //    "Skipping magnetometer calibration due to error or no SD card");
     }
 
     if (kHilAvailable) {

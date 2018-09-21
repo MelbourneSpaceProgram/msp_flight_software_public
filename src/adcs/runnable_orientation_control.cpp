@@ -68,7 +68,10 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     DebugStream* debug_stream = DebugStream::GetInstance();
-    BDotEstimator b_dot_estimator(10 * kControlLoopPeriodMicros / 1000, 1);
+    // b_dot_estimator args:
+    //     sample_period_millis,
+    //     time_constant_millis
+    BDotEstimator b_dot_estimator(10 * kControlLoopPeriodMicros / 1000, 10);
     LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
@@ -115,17 +118,10 @@ void RunnableOrientationControl::ControlOrientation() {
         MagnetometerReading magnetometer_reading =
             measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
                 kFsImuMagno2, 0);
-        Log_warning3("Magnetometer Reading: %f, %f, %f\n",
-                     floatToArg(magnetometer_reading.x),
-                     floatToArg(magnetometer_reading.y),
-                     floatToArg(magnetometer_reading.z));
-
-        if (kHilAvailable) {
-            // Echo magnetometer reading to data dashboard
-            RunnableDataDashboard::TransmitMessage(
-                kMagnetometerReadingCode, MagnetometerReading_size,
-                MagnetometerReading_fields, &magnetometer_reading);
-        }
+        //Log_warning3("Magnetometer Reading: %f, %f, %f\n",
+        //             floatToArg(magnetometer_reading.x),
+        //             floatToArg(magnetometer_reading.y),
+        //             floatToArg(magnetometer_reading.z));
 
         // Run estimator
         double geomag_data[3][1] = {{magnetometer_reading.x},
@@ -136,10 +132,10 @@ void RunnableOrientationControl::ControlOrientation() {
         Matrix b_dot_estimate(b_dot_estimate_data);
         b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
-        Log_warning3("B dot estimate: %f, %f, %f\n",
-                     floatToArg(b_dot_estimate.Get(0,0)),
-                     floatToArg(b_dot_estimate.Get(1,0)),
-                     floatToArg(b_dot_estimate.Get(2,0)));
+        //Log_warning3("B dot estimate: %f, %f, %f\n",
+        //             floatToArg(b_dot_estimate.Get(0,0)),
+        //             floatToArg(b_dot_estimate.Get(1,0)),
+        //             floatToArg(b_dot_estimate.Get(2,0)));
 
         BDotEstimate b_dot_estimate_pb;
         b_dot_estimate_pb.x = b_dot_estimate.Get(0,0);
@@ -163,47 +159,48 @@ void RunnableOrientationControl::ControlOrientation() {
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]
 
-        signed_pwm_output.MultiplyScalar(signed_pwm_output, -1);
+        // Detumbling or tumbling
+        //signed_pwm_output.MultiplyScalar(signed_pwm_output, -1);
         MagnetorquerControl::SetMagnetorquersPowerFraction(
             signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
             signed_pwm_output.Get(2, 0));
 
-        if (kTcomBoardAvailable) {
-            if (location_estimator.CheckForUpdatedTle()) {
-                tle_last_updated = SatelliteTimeSource::GetTime();
-                // TODO (rskew) notify tle state machine
-            }
-        } else if (kHilAvailable) {
-            location_estimator.RequestTleFromDebugClient();
-            tle_last_updated = SatelliteTimeSource::GetTime();
-            // TODO (rskew) notify tle state machine
-        }
+        //if (kTcomBoardAvailable) {
+        //    if (location_estimator.CheckForUpdatedTle()) {
+        //        tle_last_updated = SatelliteTimeSource::GetTime();
+        //        // TODO (rskew) notify tle state machine
+        //    }
+        //} else if (kHilAvailable) {
+        //    location_estimator.RequestTleFromDebugClient();
+        //    tle_last_updated = SatelliteTimeSource::GetTime();
+        //    // TODO (rskew) notify tle state machine
+        //}
 
-        if (adcs_state == kAdcsNominal) {
-            // Calculate position
-            current_time = SatelliteTimeSource::GetTime();
-            // TODO(rskew): Need to check if the returned time was valid
-            // (current_time.is_valid). Also appears as if tle_last_updated can
-            // be accessed before it is initialised
-            time_since_tle_updated_millis =
-                current_time.timestamp_millis_unix_epoch -
-                tle_last_updated.timestamp_millis_unix_epoch;
-            location_estimator.UpdateLocation(time_since_tle_updated_millis);
+        //if (adcs_state == kAdcsNominal) {
+        //    // Calculate position
+        //    current_time = SatelliteTimeSource::GetTime();
+        //    // TODO(rskew): Need to check if the returned time was valid
+        //    // (current_time.is_valid). Also appears as if tle_last_updated can
+        //    // be accessed before it is initialised
+        //    time_since_tle_updated_millis =
+        //        current_time.timestamp_millis_unix_epoch -
+        //        tle_last_updated.timestamp_millis_unix_epoch;
+        //    location_estimator.UpdateLocation(time_since_tle_updated_millis);
 
-            // Write calculated position to data dashboard
-            LocationReading location_reading = LocationReading_init_zero;
-            location_reading.lattitude_geodetic_degrees =
-                location_estimator.GetLattitudeGeodeticDegrees();
-            location_reading.longitude_degrees =
-                location_estimator.GetLongitudeDegrees();
-            location_reading.altitude_above_ellipsoid_km =
-                location_estimator.GetAltitudeAboveEllipsoidKm();
-            // TODO (rskew) generate timestamp
-            location_reading.timestamp_millis_unix_epoch =
-                current_time.timestamp_millis_unix_epoch;
-            RunnableDataDashboard::TransmitMessage(
-                kLocationReadingCode, LocationReading_size,
-                LocationReading_fields, &location_reading);
-        }
+        //    // Write calculated position to data dashboard
+        //    LocationReading location_reading = LocationReading_init_zero;
+        //    location_reading.lattitude_geodetic_degrees =
+        //        location_estimator.GetLattitudeGeodeticDegrees();
+        //    location_reading.longitude_degrees =
+        //        location_estimator.GetLongitudeDegrees();
+        //    location_reading.altitude_above_ellipsoid_km =
+        //        location_estimator.GetAltitudeAboveEllipsoidKm();
+        //    // TODO (rskew) generate timestamp
+        //    location_reading.timestamp_millis_unix_epoch =
+        //        current_time.timestamp_millis_unix_epoch;
+        //    RunnableDataDashboard::TransmitMessage(
+        //        kLocationReadingCode, LocationReading_size,
+        //        LocationReading_fields, &location_reading);
+        //}
     }
 }
