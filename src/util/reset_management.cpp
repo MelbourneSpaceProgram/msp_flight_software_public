@@ -8,7 +8,7 @@ void ResetManagement::ReadResetDataFromFlash(
     }
 }
 
-void ResetManagement::WriteResetDataToFlash(
+bool ResetManagement::WriteResetDataToFlash(
     etl::array<uint32_t, kResetDataLength>& new_reset_data) {
     uint32_t new_reset_data_array[kResetDataLength];
     uint32_t i;
@@ -19,8 +19,8 @@ void ResetManagement::WriteResetDataToFlash(
     // write to flash memory
     FlashProtectSet(kResetDataAddress, FlashReadWrite);
     FlashErase(kResetDataAddress);
-    bool success = FlashProgram(new_reset_data_array, kResetDataAddress,
-                                kResetDataLength * sizeof(uint32_t));
+    return FlashProgram(new_reset_data_array, kResetDataAddress,
+                        kResetDataLength * sizeof(uint32_t));
 }
 
 // TODO(hugorilla): split this into a flag set and a reset

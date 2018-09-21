@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/system/sensor_state_machine.h>
 #include <src/system/sensor_state_machines/battery_charge_state_machine.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
@@ -10,7 +11,6 @@
 #include <src/system/system_state_machines/power_state_machine.h>
 #include <src/system/system_state_machines/telecoms_state_machine.h>
 #include <src/util/data_types.h>
-#include <external/etl/exception.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
@@ -38,7 +38,7 @@ StateManager* StateManager::GetStateManager() {
 void StateManager::NotifySystems() {
     for (etl::vector<SystemStateMachine*, TotalSystemStateMachines>::iterator
              it = system_state_machines.begin();
-         it != system_state_machines.end(); it++) {
+         it != system_state_machines.end(); ++it) {
         (*it)->CheckUpstreamStates();
     }
 }
@@ -116,14 +116,12 @@ void StateManager::RemoveLastSystemStateMachine() {
     }
 }
 
-void StateManager::DeleteInstance() {
-    delete instance;
-}
+void StateManager::DeleteInstance() { delete instance; }
 
 StateManager::~StateManager() {
-    for (etl::array<StateMachine*, kNumStateMachines>::iterator
-             it = state_machines.begin();
-         it != state_machines.end(); it++) {
+    for (etl::array<StateMachine*, kNumStateMachines>::iterator it =
+             state_machines.begin();
+         it != state_machines.end(); ++it) {
         delete (*it);
     }
     state_machines.erase_range(0, kNumStateMachines - 1);

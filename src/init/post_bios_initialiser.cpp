@@ -103,8 +103,7 @@ void PostBiosInitialiser::RunUnitTests() {
 }
 
 void PostBiosInitialiser::InitStateManagement() {
-    // TODO(rskew) review priority
-    StateManager* state_manager = StateManager::GetStateManager();
+    StateManager::GetStateManager();
 
     TaskHolder* state_management_task = new TaskHolder(
         1024, "StateManagement", 9, new RunnableStateManagement());
@@ -295,8 +294,9 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("Antenna deploying, can take awhile");
         Antenna::GetAntenna()->DeployAntenna();
         if (kRunMagnetorquersAtConstantPower == false) {
-            Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
-                           kill_task_on_orientation_control_begin_semaphore);
+            Semaphore_post(
+                RunnablePreDeploymentMagnetometerPoller::
+                    kill_task_on_orientation_control_begin_semaphore);
         }
         InitBeacon();
         Log_info0("Beacon started");

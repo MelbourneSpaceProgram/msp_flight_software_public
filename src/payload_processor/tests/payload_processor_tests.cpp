@@ -95,8 +95,7 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     // Send the encoded TLE to a payload processor (which decodes it and posts
     // it to the TLE update mailbox)
     PayloadProcessor test_payload_processor;
-    bool command_executed =
-        test_payload_processor.ParseAndExecuteCommands(buffer);
+    CHECK(test_payload_processor.ParseAndExecuteCommands(buffer));
 
     // Have a location estimator retrieve the decoded TLE from the mailbox and
     // update its internal satrec values

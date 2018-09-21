@@ -17,7 +17,7 @@ bool Measurable::AddObserver(Observer* observer) {
 void Measurable::NotifyObservers() {
     new_reading = true;
     for (etl::vector<Observer*, kMaxObservers>::iterator it = observers.begin();
-         it != observers.end(); it++) {
+         it != observers.end(); ++it) {
         (*it)->Update();
     }
     new_reading = false;

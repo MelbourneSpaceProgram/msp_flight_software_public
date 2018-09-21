@@ -22,7 +22,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         RTime time;
         try {
             time = rtc.GetTime();
-        } catch (etl::exception e) {
+        } catch (etl::exception& e) {
             Log_error0("Unable to retrieve time from RTC");
             TaskUtils::SleepMilli(5000);
             continue;
