@@ -11,7 +11,7 @@ class ResetManagement {
 
     static void ReadResetDataFromFlash(
         etl::array<uint32_t, kResetDataLength>& buffer);
-    static void WriteResetDataToFlash(
+    static bool WriteResetDataToFlash(
         etl::array<uint32_t, kResetDataLength>& new_reset_data);
     static void ResetSystem();
     static void SetResetFlag(uint32_t reset_flag);
@@ -24,6 +24,7 @@ class ResetManagement {
     // reset data array indexes
     static const uint32_t kResetHasOccurredIndex = 0;
     static const uint32_t kResetFlagIndex = 1;
+
    private:
     static const uint32_t kResetDataAddress =
         0xf0000;  // specified by memory section partitioning in linker.cmd

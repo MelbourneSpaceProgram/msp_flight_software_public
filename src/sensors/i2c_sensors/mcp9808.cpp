@@ -19,7 +19,7 @@ double Mcp9808::TakeI2cReading() {
     }
 
     // See MCP9808 datasheet for conversion logic
-    int16_t sign = read_buffer[0] & kSignBitMask ? -1 : 1;
+    int16_t sign = (read_buffer[0] & kSignBitMask) ? -1 : 1;
     byte upper_byte = read_buffer[0] & kUpperByteMask;
     byte lower_byte = read_buffer[1];
 

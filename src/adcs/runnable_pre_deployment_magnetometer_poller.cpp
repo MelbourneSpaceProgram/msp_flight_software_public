@@ -32,8 +32,6 @@ void RunnablePreDeploymentMagnetometerPoller::
 }
 
 void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
-    DebugStream* debug_stream = DebugStream::GetInstance();
-
     I2cMeasurableManager* measurable_manager =
         I2cMeasurableManager::GetInstance();
 
@@ -56,9 +54,9 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
         // Poll magnetometers, which internally write new readings
         // to persistant buffers backed by files on the SD card
         // for the sake of calibration
-        measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
-            kFsImuMagno1, 0);
-        measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
-            kFsImuMagno2, 0);
+        measurable_manager->ReadI2cMeasurable<MagnetometerReading>(kFsImuMagno1,
+                                                                   0);
+        measurable_manager->ReadI2cMeasurable<MagnetometerReading>(kFsImuMagno2,
+                                                                   0);
     }
 }

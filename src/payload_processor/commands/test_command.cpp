@@ -6,9 +6,6 @@ TestCommand::TestCommand(byte* payload) : Command(kEchoCommandArgumentLength) {
 }
 
 bool TestCommand::ExecuteCommand() {
-    const byte write_buffer[kEchoCommandArgumentLength] = {
-        command_arguments[0], command_arguments[1]};
-
     if (command_arguments[0] == kTestValue1 &&
         command_arguments[1] == kTestValue2) {
         return true;

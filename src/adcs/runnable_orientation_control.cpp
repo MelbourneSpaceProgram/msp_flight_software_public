@@ -66,7 +66,6 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 }
 
 void RunnableOrientationControl::ControlOrientation() {
-    DebugStream* debug_stream = DebugStream::GetInstance();
     BDotEstimator b_dot_estimator(50, 4000);
     LocationEstimator location_estimator;
 
