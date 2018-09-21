@@ -6,6 +6,7 @@
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
+#include <src/util/etl_utils.h>
 #include <src/util/message_codes.h>
 
 const char* ImuMagnetometerMeasurable::kCalibrationReadingsBufferFileName =
@@ -29,6 +30,7 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
                 kCalibrationReadingsBufferFileName,
                 kCalibrationReadingsBufferSizeInReadings);
         } catch (etl::exception& e) {
+            EtlUtils::LogException(e);
             Log_error0(
                 "Disabling magnetometer calibration due to Circular Buffer/SD "
                 "error");

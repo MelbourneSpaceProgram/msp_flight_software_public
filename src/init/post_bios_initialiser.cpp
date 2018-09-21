@@ -179,33 +179,31 @@ void PostBiosInitialiser::InitHardware() {
     try {
         I2c::InitBusses();
     } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         Eeprom::Init();
     } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         MagnetorquerControl::Initialize();
     } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         SdCard::SdOpen();
-        try {
-            if (kFormatSdOnStartup) {
-                SdCard::Format();
-            }
-        } catch (etl::exception& e) {
-            Log_error0("Failed to format SD card");
+        if (kFormatSdOnStartup) {
+            SdCard::Format();
         }
     } catch (etl::exception& e) {
-        // TODO(dingbenjamin): Single catch that just prints the exception
-        Log_error0("Failed to open SD card");
+        EtlUtils::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 }
@@ -319,11 +317,7 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("System start up complete");
 #endif
     } catch (etl::exception& e) {
-        System_printf("EXCEPTION OCCURRED\n");
-        System_printf("File: %s, line %d\n", e.file_name(), e.line_number());
-        std::string message = e.what();
-        System_printf("Message: %s\n", message.c_str());
-
+        EtlUtils::LogException(e);
         System_flush();
     }
 }

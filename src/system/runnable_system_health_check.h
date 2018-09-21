@@ -8,6 +8,7 @@
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/tasks/runnable.h>
+#include <src/util/etl_utils.h>
 #include <src/util/nanopb_utils.h>
 #include <stdio.h>
 #include <xdc/runtime/Log.h>
@@ -81,6 +82,7 @@ class RunnableSystemHealthCheck : public Runnable {
             try {
                 NanopbEncode(NanopbMessageType)(buffer, pb_reading);
             } catch (etl::exception& e) {
+                EtlUtils::LogException(e);
                 Log_error1("Nanopb encode failed for measurable id %d", id);
             }
             WriteToDataLogger(id, buffer, size);
