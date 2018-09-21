@@ -7,9 +7,15 @@
 static const bool kEpsBoardAvailable = true;
 static const bool kCdhBoardAvailable = true;
 static const bool kFsBoardAvailable = true;
-static const bool kPanelBoardAvailable = true;
 static const bool kTcomBoardAvailable = true;
 static const bool kUtilitiesBoardAvailable = true;
+
+static const bool kXPosAvailable = true;
+static const bool kXNegAvailable = true;
+static const bool kYPosAvailable = true;
+static const bool kYNegAvailable = true;
+static const bool kZPosAvailable = true;
+static const bool kZNegAvailable = true;
 
 // TODO(akremor): Begin deprecating these once we are comfortable with hardware
 // stability
