@@ -34,6 +34,7 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
+#include <src/telecomms/lithium_commands/fast_pa_command.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -251,6 +252,12 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitRadioListener();
         Log_info0("Radio receiver started");
+
+        FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
+        if (!Lithium::GetInstance()->DoCommand(&fast_pa_command)) {
+            Log_error0("Failed to initialise Lithium power amplifier setting");
+        }
+
         InitPayloadProcessor();
         Log_info0("Payload processor started");
 

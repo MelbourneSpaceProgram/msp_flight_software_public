@@ -53,8 +53,14 @@ TEST(Lithium, TestWriteFlashHardware) {
 }
 
 TEST(Lithium, TestFastPaHardware) {
-    FastPaCommand fast_pa_command(5);
+    uint8_t pa_level = 0x04;
+    FastPaCommand fast_pa_command(pa_level);
     CHECK(Lithium::GetInstance()->DoCommand(&fast_pa_command));
+    GetConfigurationCommand config_command;
+    Lithium::GetInstance()->DoCommand(&config_command);
+    LithiumConfiguration received_configuration =
+        config_command.GetParsedResponse();
+    CHECK_EQUAL(received_configuration.tx_power_amp_level, pa_level);
 }
 
 TEST(Lithium, TestTelemetryQueryHardware) {

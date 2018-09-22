@@ -3,7 +3,6 @@
 #include <src/config/satellite.h>
 #include <src/messages/serialised_message.h>
 #include <src/telecomms/lithium.h>
-#include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/lithium_command.h>
 #include <src/telecomms/lithium_commands/lithium_command_codes.h>
@@ -64,11 +63,6 @@ Lithium::Lithium()
         etl::exception e("Unable to create Lithium uplink mailbox", __FILE__,
                          __LINE__);
         throw e;
-    }
-
-    FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
-    if (!DoCommand(&fast_pa_command)) {
-        Log_error0("Failed to initialise Lithium power amplifier setting");
     }
 }
 
