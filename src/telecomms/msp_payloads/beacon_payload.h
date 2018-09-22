@@ -120,7 +120,9 @@ class BeaconPayload : public TransmitPayload {
             measurable_id, 0, true);
     }
 
-    static double ReadCachedDouble(uint16_t measurable_id);
+    double ReadCachedTemperature(uint16_t measurable_id);
+    double ReadCachedVoltage(uint16_t measurable_id);
+    double ReadCachedCurrent(uint16_t measurable_id);
 };
 
 #endif  // SRC_TELECOMMS_MSP_PAYLOADS_BEACON_PAYLOAD_H_

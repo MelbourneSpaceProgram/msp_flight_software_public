@@ -13,9 +13,9 @@
 #include <stdio.h>
 #include <xdc/runtime/Log.h>
 
-#define LogMeasurableMacro(RawType, NanopbMessageType)                   \
-    RunnableSystemHealthCheck::LogMeasurable<RawType, NanopbMessageType, \
-                                             NanopbMessageType##_size,   \
+#define LogMeasurableMacro(NanopbMessageType)                          \
+    RunnableSystemHealthCheck::LogMeasurable<NanopbMessageType,        \
+                                             NanopbMessageType##_size, \
                                              NanopbMessageType##_fields>
 
 class Uart;
@@ -42,24 +42,12 @@ class RunnableSystemHealthCheck : public Runnable {
     static const uint32_t kHealthCheckPeriodMillis = 1000;
     static const uint32_t kCircularBufferMessageLength = 10000;
 
-    template <typename T, typename NanopbMessageType,
-              uint16_t NanopbMessageType_size,
+    template <typename NanopbMessageType, uint16_t NanopbMessageType_size,
               const pb_field_t* NanopbMessageType_fields>
-    static void LogMeasurable(uint16_t id,
-                              NanopbMessageType (*raw_to_nanopb)(T, Time)) {
+    static void LogMeasurable(uint16_t id) {
         I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
-
-        // TODO(dingbenjamin): Fix case where another task interrupts and
-        // generates a new timestamp between the reading of the  measurable and
-        // the getting of the timestamp
-        T raw = manager->ReadI2cMeasurable<T>(id, 0);
-        Time time =
-            I2cMeasurableManager::GetInstance()->GetMeasurableTimeStamp<T>(id);
-
-        // Convert the reading from the measurable manager to a nanopb
-        // using the conversion function
-        NanopbMessageType pb_reading = raw_to_nanopb(raw, time);
-
+        NanopbMessageType pb_reading =
+            manager->ReadI2cMeasurable<NanopbMessageType>(id, 0);
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
 

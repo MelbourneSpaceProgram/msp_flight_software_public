@@ -2,8 +2,10 @@
 #include <src/board/uart/uart.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>
+#include <src/messages/BmsReadings.pb.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
+#include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TemperatureReading.pb.h>
 #include <src/messages/VoltageReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
@@ -68,209 +70,123 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
     while (1) {
         if (datalogger_enabled) {
             if (kTcomBoardAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kComInV1, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kComOutV1, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kComInV2, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kComOutV2, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kComInI1, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kComOutI1, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kComInI2, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kComOutI2, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kComT1, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kComInV1);
+                LogMeasurableMacro(VoltageReading)(kComOutV1);
+                LogMeasurableMacro(VoltageReading)(kComInV2);
+                LogMeasurableMacro(VoltageReading)(kComOutV2);
+                LogMeasurableMacro(CurrentReading)(kComInI1);
+                LogMeasurableMacro(CurrentReading)(kComOutI1);
+                LogMeasurableMacro(CurrentReading)(kComInI2);
+                LogMeasurableMacro(CurrentReading)(kComOutI2);
+                LogMeasurableMacro(TemperatureReading)(kComT1);
             }
 
             if (kEpsBoardAvailable) {
-                LogMeasurableMacro(double, CurrentReading)(
-                    kEpsBoostInI1, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kEpsLoadI1, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kEpsBoostInI2, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kEpsLoadI2, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kEpsT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kEpsT2, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kEpsBmsDieT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kEpsBmsDieT2, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kEpsBmsBatT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kEpsBmsBatT2, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsAdcBatV1, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsBoostOutV1, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsAdcBatV2, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsBoostOutV2, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsRail1, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsRail2, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(BmsReadings, BmsReadings)(
-                    kEpsBmsReadings1, &NanopbUtils::NanopbBms);
-                LogMeasurableMacro(BmsReadings, BmsReadings)(
-                    kEpsBmsReadings2, &NanopbUtils::NanopbBms);
+                LogMeasurableMacro(CurrentReading)(kEpsBoostInI1);
+                LogMeasurableMacro(CurrentReading)(kEpsLoadI1);
+                LogMeasurableMacro(CurrentReading)(kEpsBoostInI2);
+                LogMeasurableMacro(CurrentReading)(kEpsLoadI2);
+                LogMeasurableMacro(TemperatureReading)(kEpsT1);
+                LogMeasurableMacro(TemperatureReading)(kEpsT2);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsDieT1);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsDieT2);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsBatT1);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsBatT2);
+                LogMeasurableMacro(VoltageReading)(kEpsAdcBatV1);
+                LogMeasurableMacro(VoltageReading)(kEpsBoostOutV1);
+                LogMeasurableMacro(VoltageReading)(kEpsAdcBatV2);
+                LogMeasurableMacro(VoltageReading)(kEpsBoostOutV2);
+                LogMeasurableMacro(VoltageReading)(kEpsRail1);
+                LogMeasurableMacro(VoltageReading)(kEpsRail2);
+                LogMeasurableMacro(BmsReadings)(kEpsBmsReadings1);
+                LogMeasurableMacro(BmsReadings)(kEpsBmsReadings2);
             }
 
             if (kXPosAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kXPosV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kXPosSolarV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kXPosI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kXPosSolarI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kXPosT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kXPosT2, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kXPosV);
+                LogMeasurableMacro(VoltageReading)(kXPosSolarV);
+                LogMeasurableMacro(CurrentReading)(kXPosI);
+                LogMeasurableMacro(CurrentReading)(kXPosSolarI);
+                LogMeasurableMacro(TemperatureReading)(kXPosT1);
+                LogMeasurableMacro(TemperatureReading)(kXPosT2);
             }
 
             if (kYPosAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kYPosV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kYPosSolarV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kYPosI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kYPosSolarI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kYPosT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kYPosT2, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kYPosV);
+                LogMeasurableMacro(VoltageReading)(kYPosSolarV);
+                LogMeasurableMacro(CurrentReading)(kYPosI);
+                LogMeasurableMacro(CurrentReading)(kYPosSolarI);
+                LogMeasurableMacro(TemperatureReading)(kYPosT1);
+                LogMeasurableMacro(TemperatureReading)(kYPosT2);
             }
 
             if (kZPosAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsTopPanelV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kEpsTopSolarV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kEpsTopPanelI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kEpsTopSolarI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kZPosT, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kEpsTopPanelV);
+                LogMeasurableMacro(VoltageReading)(kEpsTopSolarV);
+                LogMeasurableMacro(CurrentReading)(kEpsTopPanelI);
+                LogMeasurableMacro(CurrentReading)(kEpsTopSolarI);
+                LogMeasurableMacro(TemperatureReading)(kZPosT);
             }
 
             if (kXNegAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kXNegV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kXNegSolarV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kXNegI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kXNegSolarI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kXNegT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kXNegT2, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kXNegV);
+                LogMeasurableMacro(VoltageReading)(kXNegSolarV);
+                LogMeasurableMacro(CurrentReading)(kXNegI);
+                LogMeasurableMacro(CurrentReading)(kXNegSolarI);
+                LogMeasurableMacro(TemperatureReading)(kXNegT1);
+                LogMeasurableMacro(TemperatureReading)(kXNegT2);
             }
 
             if (kYNegAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kYNegV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kYNegSolarV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kYNegI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kYNegSolarI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kYNegT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kYNegT2, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kYNegV);
+                LogMeasurableMacro(VoltageReading)(kYNegSolarV);
+                LogMeasurableMacro(CurrentReading)(kYNegI);
+                LogMeasurableMacro(CurrentReading)(kYNegSolarI);
+                LogMeasurableMacro(TemperatureReading)(kYNegT1);
+                LogMeasurableMacro(TemperatureReading)(kYNegT2);
             }
 
             if (kZNegAvailable) {
-                LogMeasurableMacro(double, VoltageReading)(
-                    kZNegV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kZNegSolarV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kZNegI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kZNegSolarI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kZNegT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kZNegT2, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(VoltageReading)(kZNegV);
+                LogMeasurableMacro(VoltageReading)(kZNegSolarV);
+                LogMeasurableMacro(CurrentReading)(kZNegI);
+                LogMeasurableMacro(CurrentReading)(kZNegSolarI);
+                LogMeasurableMacro(TemperatureReading)(kZNegT1);
+                LogMeasurableMacro(TemperatureReading)(kZNegT2);
             }
 
             if (kFsBoardAvailable) {
-                LogMeasurableMacro(double, CurrentReading)(
-                    kFsTorquerXI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kFsTorquerTotalI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kFsTorquerYI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, CurrentReading)(
-                    kFsTorquerZI, &NanopbUtils::NanopbCurrent);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kFsTorquerXAV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kFsTorquerXBV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kFsTorquerYAV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kFsTorquerYBV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kFsTorquerZAV, &NanopbUtils::NanopbVoltage);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kFsTorquerZBV, &NanopbUtils::NanopbVoltage);
+                LogMeasurableMacro(CurrentReading)(kFsTorquerXI);
+                LogMeasurableMacro(CurrentReading)(kFsTorquerTotalI);
+                LogMeasurableMacro(CurrentReading)(kFsTorquerYI);
+                LogMeasurableMacro(CurrentReading)(kFsTorquerZI);
+                LogMeasurableMacro(VoltageReading)(kFsTorquerXAV);
+                LogMeasurableMacro(VoltageReading)(kFsTorquerXBV);
+                LogMeasurableMacro(VoltageReading)(kFsTorquerYAV);
+                LogMeasurableMacro(VoltageReading)(kFsTorquerYBV);
+                LogMeasurableMacro(VoltageReading)(kFsTorquerZAV);
+                LogMeasurableMacro(VoltageReading)(kFsTorquerZBV);
 
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kFsHbXT, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kFsHbYT, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kFsHbZT, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(GyroscopeReading, GyroscopeReading)(
-                    kFsImuGyro1, &NanopbUtils::NanopbGyroscope);
-                LogMeasurableMacro(AccelerometerReading, AccelerometerReading)(
-                    kFsImuAccel1, &NanopbUtils::NanopbAccelerometer);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kFsImuT1, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(MagnetometerReading, MagnetometerReading)(
-                    kFsImuMagno1, &NanopbUtils::NanopbMagnetometer);
-                LogMeasurableMacro(GyroscopeReading, GyroscopeReading)(
-                    kFsImuGyro2, &NanopbUtils::NanopbGyroscope);
-                LogMeasurableMacro(AccelerometerReading, AccelerometerReading)(
-                    kFsImuAccel2, &NanopbUtils::NanopbAccelerometer);
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kFsImuT2, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(MagnetometerReading, MagnetometerReading)(
-                    kFsImuMagno2, &NanopbUtils::NanopbMagnetometer);
+                LogMeasurableMacro(TemperatureReading)(kFsHbXT);
+                LogMeasurableMacro(TemperatureReading)(kFsHbYT);
+                LogMeasurableMacro(TemperatureReading)(kFsHbZT);
+                LogMeasurableMacro(GyroscopeReading)(kFsImuGyro1);
+                LogMeasurableMacro(AccelerometerReading)(kFsImuAccel1);
+                LogMeasurableMacro(TemperatureReading)(kFsImuT1);
+                LogMeasurableMacro(MagnetometerReading)(kFsImuMagno1);
+                LogMeasurableMacro(GyroscopeReading)(kFsImuGyro2);
+                LogMeasurableMacro(AccelerometerReading)(kFsImuAccel2);
+                LogMeasurableMacro(TemperatureReading)(kFsImuT2);
+                LogMeasurableMacro(MagnetometerReading)(kFsImuMagno2);
             }
 
             if (kCdhBoardAvailable) {
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kCdhT, &NanopbUtils::NanopbTemperature);
+                LogMeasurableMacro(TemperatureReading)(kCdhT);
             }
 
             if (kUtilitiesBoardAvailable) {
-                LogMeasurableMacro(double, TemperatureReading)(
-                    kUtilT, &NanopbUtils::NanopbTemperature);
-                LogMeasurableMacro(double, VoltageReading)(
-                    kUtilHeatV, &NanopbUtils::NanopbVoltage);
+                LogMeasurableMacro(TemperatureReading)(kUtilT);
+                LogMeasurableMacro(VoltageReading)(kUtilHeatV);
             }
         }
         UartFlush();

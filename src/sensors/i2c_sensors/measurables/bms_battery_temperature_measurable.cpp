@@ -2,9 +2,12 @@
 
 BmsBatteryTemperatureMeasurable::BmsBatteryTemperatureMeasurable(
     Bms* temp_sensor)
-    : I2cMeasurable<double>(temp_sensor, kFailedBmsBatteryTemperatureReading) {}
+    : I2cMeasurable<TemperatureReading>(temp_sensor,
+                                        TemperatureReading_init_default) {}
 
-double BmsBatteryTemperatureMeasurable::TakeDirectI2cReading() {
+TemperatureReading BmsBatteryTemperatureMeasurable::TakeDirectI2cReading() {
+    TemperatureReading reading = TemperatureReading_init_default;
     Bms* temp_sensor = static_cast<Bms*>(I2cMeasurable::sensor);
-    return temp_sensor->GetBatteryTemp();
+    reading.temp = temp_sensor->GetBatteryTemp();
+    return reading;
 }

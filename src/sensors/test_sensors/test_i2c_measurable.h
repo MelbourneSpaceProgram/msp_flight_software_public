@@ -3,14 +3,19 @@
 
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 
-class TestI2cMeasurable : public I2cMeasurable<double> {
+typedef struct {
+    double dummy_data;
+    uint64_t timestamp_ms;
+} TestI2cReading;
+
+class TestI2cMeasurable : public I2cMeasurable<TestI2cReading> {
    public:
     explicit TestI2cMeasurable();
-    double TakeDirectI2cReading();
+    TestI2cReading TakeDirectI2cReading();
     void SetDummySensorData(double dummy_data);
 
    private:
-    double dummy_data;
+    TestI2cReading data;
     static const uint8_t kTestI2cAddress = 0x00;
 };
 

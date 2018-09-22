@@ -38,7 +38,7 @@ void BatteryTempStateMachine::Update() {
         throw e;
     }
 
-    UpdateState(sensor_with_reading->GetReading(), id);
+    UpdateState(sensor_with_reading->GetReading().temp, id);
 }
 
 void BatteryTempStateMachine::UpdateState(double temp, BatteryIndex id) {

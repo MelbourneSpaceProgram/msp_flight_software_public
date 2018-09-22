@@ -2,6 +2,7 @@
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/config/unit_tests.h>
+#include <src/messages/CurrentReading.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/measurable_id.h>
 #include <src/util/task_utils.h>
@@ -27,11 +28,14 @@ TEST(Magnetorquer, MagnetorquerConnectivity) {
     I2cMeasurableManager* measurable_manager =
         I2cMeasurableManager::GetInstance();
     double current_reading_x =
-        measurable_manager->ReadI2cMeasurable<double>(kFsTorquerXI, 0);
+        measurable_manager->ReadI2cMeasurable<CurrentReading>(kFsTorquerXI, 0)
+            .current;
     double current_reading_y =
-        measurable_manager->ReadI2cMeasurable<double>(kFsTorquerYI, 0);
+        measurable_manager->ReadI2cMeasurable<CurrentReading>(kFsTorquerYI, 0)
+            .current;
     double current_reading_z =
-        measurable_manager->ReadI2cMeasurable<double>(kFsTorquerZI, 0);
+        measurable_manager->ReadI2cMeasurable<CurrentReading>(kFsTorquerZI, 0)
+            .current;
 
     // Degauss magnetorquers so that they don't interfere with other magnetic
     // tests.

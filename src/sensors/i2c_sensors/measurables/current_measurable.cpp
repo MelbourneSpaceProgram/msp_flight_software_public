@@ -3,14 +3,17 @@
 CurrentMeasurable::CurrentMeasurable(Adc* adc, AdcMuxMode adc_line,
                                      float scaling_factor,
                                      float zero_bias_point = 0)
-    : I2cMeasurable<double>(adc, kFailedCurrentReading),
+    : I2cMeasurable<CurrentReading>(adc, CurrentReading_init_default),
       adc_line(adc_line),
       scaling_factor(scaling_factor),
       zero_bias_point(zero_bias_point) {}
 
-double CurrentMeasurable::TakeDirectI2cReading() {
+CurrentReading CurrentMeasurable::TakeDirectI2cReading() {
     Adc* adc = static_cast<Adc*>(I2cMeasurable::sensor);
     adc->SetMuxMode(adc_line);
     adc->SetOperationalStatus(kAdcConversion);
-    return (adc->TakeI2cReading() - zero_bias_point) * scaling_factor;
+    CurrentReading reading = CurrentReading_init_default;
+    reading.current =
+        (adc->TakeI2cReading() - zero_bias_point) * scaling_factor;
+    return reading;
 }

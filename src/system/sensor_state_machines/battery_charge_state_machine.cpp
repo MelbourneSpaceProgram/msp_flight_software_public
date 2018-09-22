@@ -8,7 +8,7 @@ BatteryChargeStateMachine::BatteryChargeStateMachine(
 void BatteryChargeStateMachine::Update() {
     TestI2cMeasurable* sensor_with_reading = GetSensorWithReading();
     if (sensor_with_reading != NULL) {
-        UpdateState(sensor_with_reading->GetReading());
+        UpdateState(sensor_with_reading->GetReading().dummy_data);
     }
 }
 

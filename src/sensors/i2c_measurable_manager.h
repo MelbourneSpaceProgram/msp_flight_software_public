@@ -22,10 +22,11 @@ class I2cMeasurableManager {
     void Init(const I2c *bus_a, const I2c *bus_b, const I2c *bus_c,
               const I2c *bus_d);
 
-    template <class T>
-    I2cMeasurable<T> *GetMeasurable(uint16_t id) {
-        I2cMeasurable<T> *i2c_measurable =
-            dynamic_cast<I2cMeasurable<T> *>(measurables.at(id));
+    template <class TimestampedNanopbType>
+    I2cMeasurable<TimestampedNanopbType> *GetMeasurable(uint16_t id) {
+        I2cMeasurable<TimestampedNanopbType> *i2c_measurable =
+            dynamic_cast<I2cMeasurable<TimestampedNanopbType> *>(
+                measurables.at(id));
         if (i2c_measurable == NULL) {
             etl::exception e("Cannot cast to specified measurable type",
                              __FILE__, __LINE__);
@@ -34,59 +35,41 @@ class I2cMeasurableManager {
         return i2c_measurable;
     }
 
-    template <class T>
-    T ReadI2cMeasurable(uint16_t id, uint64_t max_cache_time_milliseconds,
-                        bool always_use_cached = false) {
-        try {
-            Measurable *measurable = measurables.at(id);
-            I2cMeasurable<T> *i2c_measurable =
-                dynamic_cast<I2cMeasurable<T> *>(measurable);
-            if (i2c_measurable == NULL) {
-                etl::exception e("Cannot cast to specified measurable type",
+    template <class TimestampedNanopbType>
+    TimestampedNanopbType ReadI2cMeasurable(uint16_t id, uint64_t max_cache_ms,
+                                            bool always_use_cached = false) {
+        Measurable *measurable = measurables.at(id);
+        I2cMeasurable<TimestampedNanopbType> *i2c_measurable =
+            dynamic_cast<I2cMeasurable<TimestampedNanopbType> *>(measurable);
+        if (i2c_measurable == NULL) {
+            throw etl::exception("Cannot cast to specified measurable type",
                                  __FILE__, __LINE__);
-                throw e;
+        }
+
+        try {
+            uint64_t earliest_acceptable_ms;
+            Time time = SatelliteTimeSource::GetTime();
+            if (time.is_valid) {
+                earliest_acceptable_ms = time.timestamp_ms - max_cache_ms;
+            } else {
+                Log_error0(
+                    "Failed to acquire time for cache, taking new sensor "
+                    "reading");
+                earliest_acceptable_ms = 0;
             }
 
-            Time timestamp = i2c_measurable->GetTimestamp();
-            Time earliest_acceptable_time = SatelliteTimeSource::GetTime();
-            earliest_acceptable_time.timestamp_ms -=
-                max_cache_time_milliseconds;
-
-            if (!always_use_cached &&
-                (max_cache_time_milliseconds == 0 || !timestamp.is_valid ||
-                 SatelliteTimeSource::TimeDifferenceMilli(
-                     timestamp, earliest_acceptable_time) > 0)) {
+            uint64_t cache_time_ms = i2c_measurable->GetReading().timestamp_ms;
+            if (i2c_measurable->first_reading ||
+                (!always_use_cached &&
+                 (cache_time_ms > earliest_acceptable_ms))) {
                 // TODO(dingbenjamin): Lock the relevant bus/sensor with a
                 // semaphore
                 i2c_measurable->TakeReading();
+                i2c_measurable->first_reading = false;
             }
-
-            // TODO(dingbenjamin): Account for error if no reading exists yet
             return i2c_measurable->GetReading();
         } catch (etl::exception &e) {
-            // TODO(dingbenjamin): Handle the exception
-            // Possible exceptions are bad cast or nonexistent sensor
-            throw e;
-        }
-    }
-
-    // TODO(dingbenjamin): Make this not a template
-    template <class T>
-    Time GetMeasurableTimeStamp(uint16_t id) {
-        try {
-            Measurable *measurable = measurables.at(id);
-            I2cMeasurable<T> *i2c_measurable =
-                dynamic_cast<I2cMeasurable<T> *>(measurable);
-            if (i2c_measurable == NULL) {
-                etl::exception e("Cannot cast to specified measurable type",
-                                 __FILE__, __LINE__);
-                throw e;
-            }
-            return i2c_measurable->GetTimestamp();
-        } catch (etl::exception &e) {
-            // TODO(dingbenjamin): Handle the exception
-            // Possible exceptions are bad cast or nonexistent sensor
-            throw e;
+            return i2c_measurable->failure_reading;
         }
     }
 

@@ -1,4 +1,7 @@
 #include <math.h>
+#include <src/messages/CurrentReading.pb.h>
+#include <src/messages/TemperatureReading.pb.h>
+#include <src/messages/VoltageReading.pb.h>
 #include <src/messages/serialised_message.h>
 #include <src/messages/serialised_message_builder.h>
 #include <src/telecomms/msp_payloads/beacon_payload.h>
@@ -7,38 +10,38 @@
 #include <src/util/satellite_time_source.h>
 
 BeaconPayload::BeaconPayload()
-    : com_out_i1(ReadCachedDouble(kComOutI1)),
-      com_out_v1(ReadCachedDouble(kComOutV1)),
-      com_out_i2(ReadCachedDouble(kComOutI2)),
-      com_out_v2(ReadCachedDouble(kComOutV2)),
-      com_t2(ReadCachedDouble(kComT2)),
-      eps_adc_bat_v1(ReadCachedDouble(kEpsAdcBatV1)),
-      eps_load_i1(ReadCachedDouble(kEpsLoadI1)),
-      eps_adc_bat_v2(ReadCachedDouble(kEpsAdcBatV2)),
-      eps_boost_in_i2(ReadCachedDouble(kEpsBoostInI2)),
-      eps_rail1(ReadCachedDouble(kEpsRail1)),
-      eps_rail2(ReadCachedDouble(kEpsRail2)),
-      eps_top_panel_v(ReadCachedDouble(kEpsTopPanelV)),
-      eps_top_panel_i(ReadCachedDouble(kEpsTopPanelI)),
-      eps_t1(ReadCachedDouble(kEpsT1)),
-      eps_t2(ReadCachedDouble(kEpsT2)),
-      x_pos_v(ReadCachedDouble(kXPosV)),
-      x_pos_i(ReadCachedDouble(kXPosI)),
-      x_pos_t1(ReadCachedDouble(kXPosT1)),
+    : com_out_i1(ReadCachedCurrent(kComOutI1)),
+      com_out_v1(ReadCachedVoltage(kComOutV1)),
+      com_out_i2(ReadCachedCurrent(kComOutI2)),
+      com_out_v2(ReadCachedVoltage(kComOutV2)),
+      com_t2(ReadCachedTemperature(kComT2)),
+      eps_adc_bat_v1(ReadCachedVoltage(kEpsAdcBatV1)),
+      eps_load_i1(ReadCachedCurrent(kEpsLoadI1)),
+      eps_adc_bat_v2(ReadCachedVoltage(kEpsAdcBatV2)),
+      eps_boost_in_i2(ReadCachedCurrent(kEpsBoostInI2)),
+      eps_rail1(ReadCachedVoltage(kEpsRail1)),
+      eps_rail2(ReadCachedVoltage(kEpsRail2)),
+      eps_top_panel_v(ReadCachedVoltage(kEpsTopPanelV)),
+      eps_top_panel_i(ReadCachedCurrent(kEpsTopPanelI)),
+      eps_t1(ReadCachedTemperature(kEpsT1)),
+      eps_t2(ReadCachedTemperature(kEpsT2)),
+      x_pos_v(ReadCachedVoltage(kXPosV)),
+      x_pos_i(ReadCachedCurrent(kXPosI)),
+      x_pos_t1(ReadCachedTemperature(kXPosT1)),
       x_pos_rad(kInvalidPositiveInteger),
-      y_pos_v(ReadCachedDouble(kYPosV)),
-      y_pos_i(ReadCachedDouble(kYPosI)),
-      y_pos_t1(ReadCachedDouble(kYPosT1)),
-      x_neg_v(ReadCachedDouble(kXNegV)),
-      x_neg_i(ReadCachedDouble(kXNegI)),
-      x_neg_t1(ReadCachedDouble(kXNegT1)),
-      y_neg_v(ReadCachedDouble(kYNegV)),
-      y_neg_i(ReadCachedDouble(kYNegI)),
-      y_neg_t1(ReadCachedDouble(kYNegT1)),
-      z_neg_v(ReadCachedDouble(kZNegV)),
-      z_neg_i(ReadCachedDouble(kZNegI)),
-      z_neg_t1(ReadCachedDouble(kZNegT1)),
-      z_pos_t(ReadCachedDouble(kZPosT)),
+      y_pos_v(ReadCachedVoltage(kYPosV)),
+      y_pos_i(ReadCachedCurrent(kYPosI)),
+      y_pos_t1(ReadCachedTemperature(kYPosT1)),
+      x_neg_v(ReadCachedVoltage(kXNegV)),
+      x_neg_i(ReadCachedCurrent(kXNegI)),
+      x_neg_t1(ReadCachedTemperature(kXNegT1)),
+      y_neg_v(ReadCachedVoltage(kYNegV)),
+      y_neg_i(ReadCachedCurrent(kYNegI)),
+      y_neg_t1(ReadCachedTemperature(kYNegT1)),
+      z_neg_v(ReadCachedVoltage(kZNegV)),
+      z_neg_i(ReadCachedCurrent(kZNegI)),
+      z_neg_t1(ReadCachedTemperature(kZNegT1)),
+      z_pos_t(ReadCachedTemperature(kZPosT)),
       util_ntc_v1(kInvalidNegativeInteger),
       util_ntc_v2(kInvalidNegativeInteger),
       util_heat_v(kInvalidNegativeInteger),
@@ -51,7 +54,7 @@ BeaconPayload::BeaconPayload()
       fs_hb_zt(kInvalidDouble),
       fs_rad1(kInvalidPositiveInteger),
       cdh_time(SatelliteTimeSource::GetTime()),
-      cdh_t(ReadCachedDouble(kCdhT)),
+      cdh_t(ReadCachedTemperature(kCdhT)),
       com_rx_bytes(kInvalidPositiveInteger),
       com_tx_bytes(kInvalidPositiveInteger),
       com_antenna_flags(0),
@@ -204,14 +207,22 @@ int16_t BeaconPayload::ScaleTemp(float data) {
     return ScaleArbitraryInt16(data, kTempUpperBound);
 }
 
+double BeaconPayload::ReadCachedTemperature(uint16_t measurable_id) {
+    return ReadCachedMeasurable<TemperatureReading>(measurable_id).temp;
+}
+
+double BeaconPayload::ReadCachedVoltage(uint16_t measurable_id) {
+    return ReadCachedMeasurable<VoltageReading>(measurable_id).voltage;
+}
+
+double BeaconPayload::ReadCachedCurrent(uint16_t measurable_id) {
+    return ReadCachedMeasurable<CurrentReading>(measurable_id).current;
+}
+
 float BeaconPayload::ConstrainToRange(float data, uint16_t abs_max) {
     if (fabs(data) > abs_max) {
         int8_t signum = data > abs_max ? 1 : -1;
         data = signum * abs_max;
     }
     return data;
-}
-
-double BeaconPayload::ReadCachedDouble(uint16_t measurable_id) {
-    return ReadCachedMeasurable<double>(measurable_id);
 }

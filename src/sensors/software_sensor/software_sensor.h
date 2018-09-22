@@ -6,15 +6,14 @@
 #include "../generic_measurable.h"
 
 class SoftwareSensor : public GenericMeasurable<double> {
-public:
+   public:
     explicit SoftwareSensor(std::string id);
     std::string GetId() const;
     void LoadReading(double reading);
-    bool TakeReading();
+    double GetReading();
 
-protected:
+   protected:
     std::string id;
-    double reading;
     bool initialised;
 };
 

@@ -1,5 +1,8 @@
 #include <CppUTest/TestHarness.h>
 #include <src/config/unit_tests.h>
+#include <src/messages/CurrentReading.pb.h>
+#include <src/messages/TemperatureReading.pb.h>
+#include <src/messages/VoltageReading.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
 
@@ -15,85 +18,99 @@ static I2cMeasurableManager* i2c_measurable_manager =
     I2cMeasurableManager::GetInstance();
 
 TEST(EpsCheckout, CanSenseEpsBatVoltage1) {
-    double vbat =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsAdcBatV1, 0);
+    double vbat = i2c_measurable_manager
+                      ->ReadI2cMeasurable<VoltageReading>(kEpsAdcBatV1, 0)
+                      .voltage;
     DOUBLES_EQUAL(2.9, vbat, 0.9);
 }
 
 TEST(EpsCheckout, CanSenseEpsBatVoltage2) {
-    double vbat =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsAdcBatV2, 0);
+    double vbat = i2c_measurable_manager
+                      ->ReadI2cMeasurable<VoltageReading>(kEpsAdcBatV2, 0)
+                      .voltage;
     DOUBLES_EQUAL(2.9, vbat, 0.9);
 }
 
 TEST(EpsCheckout, CanSenseEpsBoostOutVoltage1) {
-    double boost = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kEpsBoostOutV1, 0);
+    double boost = i2c_measurable_manager
+                       ->ReadI2cMeasurable<VoltageReading>(kEpsBoostOutV1, 0)
+                       .voltage;
     DOUBLES_EQUAL(5.36, boost, 0.1);
 }
 
 TEST(EpsCheckout, CanSenseEpsBoostOutVoltage2) {
-    double boost = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kEpsBoostOutV2, 0);
+    double boost = i2c_measurable_manager
+                       ->ReadI2cMeasurable<VoltageReading>(kEpsBoostOutV2, 0)
+                       .voltage;
     DOUBLES_EQUAL(5.36, boost, 0.1);
 }
 
 TEST(EpsCheckout, CanSenseEps5VRail1) {
     double rail_5v =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsRail1, 0);
+        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kEpsRail1, 0)
+            .voltage;
     DOUBLES_EQUAL(5.25, rail_5v, 0.25);
 }
 
 TEST(EpsCheckout, CanSenseEps5VRail2) {
     double rail_5v =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsRail2, 0);
+        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kEpsRail2, 0)
+            .voltage;
     DOUBLES_EQUAL(5.25, rail_5v, 0.25);
 }
 
 TEST(EpsCheckout, CanSensePowerTemp1) {
     double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsT1, 0);
+        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kEpsT1, 0)
+            .temp;
     DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerTemp2) {
     double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsT2, 0);
+        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kEpsT2, 0)
+            .temp;
     DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerBmsDieTemp1) {
-    double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsDieT1, 0);
+    double temp = i2c_measurable_manager
+                      ->ReadI2cMeasurable<TemperatureReading>(kEpsBmsDieT1, 0)
+                      .temp;
     DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerBmsDieTemp2) {
-    double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsDieT2, 0);
+    double temp = i2c_measurable_manager
+                      ->ReadI2cMeasurable<TemperatureReading>(kEpsBmsDieT2, 0)
+                      .temp;
     DOUBLES_EQUAL(20, temp, 45);
 }
 
 TEST(EpsCheckout, CanSensePowerBoostInCurrent1) {
-    double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kEpsBoostInI1, 0);
+    double current = i2c_measurable_manager
+                         ->ReadI2cMeasurable<CurrentReading>(kEpsBoostInI1, 0)
+                         .current;
     DOUBLES_EQUAL(2.5, current, 2.5);
 }
 
 TEST(EpsCheckout, CanSensePowerLoadCurrent1) {
-    double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kEpsLoadI1, 0);
+    double current =
+        i2c_measurable_manager->ReadI2cMeasurable<CurrentReading>(kEpsLoadI1, 0)
+            .current;
     DOUBLES_EQUAL(1.25, current, 1.25);
 }
 
 TEST(EpsCheckout, CanSensePowerLoadCurrent2) {
-    double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kEpsBoostInI2, 0);
+    double current = i2c_measurable_manager
+                         ->ReadI2cMeasurable<CurrentReading>(kEpsBoostInI2, 0)
+                         .current;
     DOUBLES_EQUAL(1.25, current, 1.25);
 }
 
 TEST(EpsCheckout, CanSensePowerBoostInCurrent2) {
-    double current = i2c_measurable_manager->ReadI2cMeasurable<double>(
-        kEpsLoadI2, 0);
+    double current =
+        i2c_measurable_manager->ReadI2cMeasurable<CurrentReading>(kEpsLoadI2, 0)
+            .current;
     DOUBLES_EQUAL(2.5, current, 2.5);
 }

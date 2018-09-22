@@ -3,7 +3,7 @@
 TestIntSensor::TestIntSensor() {}
 
 bool TestIntSensor::TakeReading() {
-    reading = dummy_data;
+    last_reading = dummy_data;
     NotifyObservers();
     return true;
 }

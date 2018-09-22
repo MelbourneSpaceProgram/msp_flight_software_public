@@ -2,12 +2,13 @@
 #include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
 
 TelecomsTempStateMachine::TelecomsTempStateMachine(StateManager* state_manager)
-    : SensorStateMachine<TestI2cMeasurable>(state_manager, kTelecomsTempNominal) {}
+    : SensorStateMachine<TestI2cMeasurable>(state_manager,
+                                            kTelecomsTempNominal) {}
 
 void TelecomsTempStateMachine::Update() {
     TestI2cMeasurable* sensor_with_reading = GetSensorWithReading();
     if (sensor_with_reading != NULL) {
-        UpdateState(sensor_with_reading->GetReading());
+        UpdateState(sensor_with_reading->GetReading().dummy_data);
     }
 }
 

@@ -4,6 +4,7 @@
 #include <src/board/i2c/bms/bms.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
+#include <src/messages/TemperatureReading.pb.h>
 #include <src/sensors/i2c_measurable_manager.h>
 
 // Address value must be changed for each BMS.
@@ -155,16 +156,18 @@ TEST(Bms, TestBms) {
 TEST(Bms, TestBmsDieTemperatureRead) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
-    double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsDieT1, 1);
+    double temp = i2c_measurable_manager
+                      ->ReadI2cMeasurable<TemperatureReading>(kEpsBmsDieT1, 1)
+                      .temp;
     DOUBLES_EQUAL(25, temp, 50);
 }
 
 TEST(Bms, TestBmsBatteryTemperatureRead) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
-    double temp =
-        i2c_measurable_manager->ReadI2cMeasurable<double>(kEpsBmsBatT1, 1);
+    double temp = i2c_measurable_manager
+                      ->ReadI2cMeasurable<TemperatureReading>(kEpsBmsBatT1, 1)
+                      .temp;
     DOUBLES_EQUAL(25, temp, 50);
 }
 

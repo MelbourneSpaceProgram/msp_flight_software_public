@@ -3,13 +3,12 @@
 #include <src/util/data_types.h>
 
 TemperatureMeasurable::TemperatureMeasurable(Mcp9808* temp_sensor)
-    : I2cMeasurable<double>(temp_sensor, kFailedTemperatureReading) {}
+    : I2cMeasurable<TemperatureReading>(temp_sensor,
+                                        TemperatureReading_init_default) {}
 
-double TemperatureMeasurable::TakeDirectI2cReading() {
+TemperatureReading TemperatureMeasurable::TakeDirectI2cReading() {
     Mcp9808* temp_sensor = static_cast<Mcp9808*>(I2cMeasurable::sensor);
-    try {
-        return temp_sensor->TakeI2cReading();
-    } catch (etl::exception& e) {
-        return kInvalidDouble;
-    }
+    TemperatureReading reading = TemperatureReading_init_default;
+    reading.temp = temp_sensor->TakeI2cReading();
+    return reading;
 }

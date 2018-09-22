@@ -4,14 +4,15 @@ SoftwareSensor::SoftwareSensor(std::string id) : id(id) {}
 
 void SoftwareSensor::LoadReading(double reading) {
     initialised = true;
-    this->reading = reading;
+    last_reading = reading;
 }
 
-bool SoftwareSensor::TakeReading() {
+double SoftwareSensor::GetReading() {
     if (initialised) {
+        initialised = false;
         NotifyObservers();
+        return last_reading;
+    } else {
+        return 0;
     }
-    bool reading_successful = initialised;
-    initialised = false;
-    return reading_successful;
 }

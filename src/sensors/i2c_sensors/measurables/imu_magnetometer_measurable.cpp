@@ -56,15 +56,15 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     Matrix reading_body_frame(reading_body_frame_data);
     reading_body_frame.Multiply(magnetometer_to_body_frame_transform,
                                 reading_magnetometer_frame);
-    reading.x = reading_body_frame.Get(0, 0);
-    reading.y = reading_body_frame.Get(1, 0);
-    reading.z = reading_body_frame.Get(2, 0);
+    last_reading.x = reading_body_frame.Get(0, 0);
+    last_reading.y = reading_body_frame.Get(1, 0);
+    last_reading.z = reading_body_frame.Get(2, 0);
 
     if (kHilAvailable) {
         // Echo reading to data dashboard
         RunnableDataDashboard::TransmitMessage(
             kMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &reading);
+            MagnetometerReading_fields, &last_reading);
     }
 
     if (kHilAvailable) {
@@ -72,9 +72,9 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         // Combine readings.
         // The static hardware reading will be calibrated out, and the
         // true hardware noise will be added to the simulated reading.
-        reading.x = reading.x + simulation_reading.x;
-        reading.y = reading.y + simulation_reading.y;
-        reading.z = reading.z + simulation_reading.z;
+        last_reading.x = last_reading.x + simulation_reading.x;
+        last_reading.y = last_reading.y + simulation_reading.y;
+        last_reading.z = last_reading.z + simulation_reading.z;
     }
 
     if (can_calibrate) {
@@ -82,10 +82,10 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
         // error,
         CircularBufferNanopb(MagnetometerReading)::WriteMessage(
-            kCalibrationReadingsBufferFileName, reading);
+            kCalibrationReadingsBufferFileName, last_reading);
 
         // Apply calibration operations
-        magnetometer_calibration.Apply(reading);
+        magnetometer_calibration.Apply(last_reading);
     } else {
         Log_info0(
             "Skipping magnetometer calibration due to error or no SD card");
@@ -94,10 +94,10 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     if (kHilAvailable) {
         RunnableDataDashboard::TransmitMessage(
             kCalibratedMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &reading);
+            MagnetometerReading_fields, &last_reading);
     }
 
-    return reading;
+    return last_reading;
 }
 
 MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {

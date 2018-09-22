@@ -2,10 +2,13 @@
 
 ImuTemperatureMeasurable::ImuTemperatureMeasurable(
     MPU9250MotionTracker* imu_sensor)
-    : I2cMeasurable<double>(imu_sensor, kFailedImuTemperatureReading) {}
+    : I2cMeasurable<TemperatureReading>(imu_sensor,
+                                        TemperatureReading_init_default) {}
 
-double ImuTemperatureMeasurable::TakeDirectI2cReading() {
+TemperatureReading ImuTemperatureMeasurable::TakeDirectI2cReading() {
     MPU9250MotionTracker* imu_sensor =
         static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
-    return imu_sensor->TakeTemperatureReading();
+    TemperatureReading reading = TemperatureReading_init_default;
+    reading.temp = imu_sensor->TakeTemperatureReading();
+    return reading;
 }
