@@ -3,6 +3,7 @@
 
 // Console configuration (text output to CCS or Data Dashboard)
 // Please look in console_config.txt
+static const bool kVerboseUnitTests = false;
 
 static const bool kEpsBoardAvailable = true;
 static const bool kCdhBoardAvailable = true;
