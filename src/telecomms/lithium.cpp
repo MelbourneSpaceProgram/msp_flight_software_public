@@ -17,6 +17,7 @@
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
+#include <src/telecomms/lithium_configuration.h>
 
 Lithium* Lithium::instance = NULL;
 uint8_t Lithium::tx_count = 0;
@@ -24,8 +25,7 @@ uint8_t Lithium::rx_count = 0;
 uint8_t Lithium::command_success_count = 0;
 
 Lithium::Lithium()
-    : lithium_config(),
-      uart(TELECOMS),
+    : uart(TELECOMS),
       lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded) {
     // Ensure Lithium is not in reset
     GPIO_write(nCOMMS_RST, 1);
@@ -148,10 +148,6 @@ uint8_t Lithium::GetCommandSuccessCounter() {
     return Lithium::command_success_count;
 }
 
-const LithiumConfiguration& Lithium::GetLithiumConfig() const {
-    return lithium_config;
-}
-
 LithiumTelemetry Lithium::ReadLithiumTelemetry() const {
     LithiumTelemetry invalid_telemetry = {0, 0, {0, 0, 0}, 0, 0, 0};
     TelemetryQueryCommand query;
@@ -172,8 +168,15 @@ LithiumTelemetry Lithium::ReadLithiumTelemetry() const {
     return query.GetParsedResponse();
 }
 
-void Lithium::SetLithiumConfig(const LithiumConfiguration& lithium_config) {
-    this->lithium_config = lithium_config;
+LithiumConfiguration Lithium::ReadLithiumConfiguration() const {
+    LithiumConfiguration invalid_configuration = {
+        0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0},
+        0, 0, 0, 0};
+    GetConfigurationCommand config_command;
+
+    if (!DoCommand(&config_command)) return invalid_configuration;
+
+    return config_command.GetParsedResponse();
 }
 
 Uart* Lithium::GetUart() { return &uart; }

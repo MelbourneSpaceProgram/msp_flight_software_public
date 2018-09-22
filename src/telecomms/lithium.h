@@ -2,7 +2,6 @@
 #define SRC_TELECOMMS_LITHIUM_H_
 
 #include <src/board/uart/uart.h>
-#include <src/telecomms/lithium_configuration.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
 typedef struct LithiumTelemetry LithiumTelemetry;
@@ -10,6 +9,7 @@ class LithiumCommand;
 class LithiumEnableCommand;
 class RunnableLithiumListener;
 class PayloadProcessor;
+class LithiumConfiguration;
 
 class Lithium {
     friend class PayloadProcessor;         // For incrementing command success
@@ -45,10 +45,8 @@ class Lithium {
     Mailbox_Handle GetHeaderMailbox() const;
     Mailbox_Handle GetCommandResponseMailbox() const;
     Mailbox_Handle GetReceiveMailbox() const;
-    const LithiumConfiguration& GetLithiumConfig()
-        const;  // TODO(dingbenjamin): Refactor this method
     LithiumTelemetry ReadLithiumTelemetry() const;
-    void SetLithiumConfig(const LithiumConfiguration& lithium_config);
+    LithiumConfiguration ReadLithiumConfiguration() const;
     bool IsTransmitEnabled();
     bool DoCommand(LithiumCommand* command) const;
 
@@ -74,7 +72,6 @@ class Lithium {
     // the mailbox at any one time.
     static const uint8_t kMaxNumberOfPayloads = 2;
 
-    LithiumConfiguration lithium_config;
     Uart uart;
 
     Lithium();
