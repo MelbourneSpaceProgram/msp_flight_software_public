@@ -49,7 +49,7 @@ class I2cMeasurableManager {
 
             Time timestamp = i2c_measurable->GetTimestamp();
             Time earliest_acceptable_time = SatelliteTimeSource::GetTime();
-            earliest_acceptable_time.timestamp_millis_unix_epoch -=
+            earliest_acceptable_time.timestamp_ms -=
                 max_cache_time_milliseconds;
 
             if (!always_use_cached &&

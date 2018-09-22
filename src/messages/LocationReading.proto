@@ -1,6 +1,6 @@
 message LocationReading {
-    required double lattitude_geodetic_degrees = 1;
-    required double longitude_degrees = 2;
-    required double altitude_above_ellipsoid_km = 3;
-    required fixed64 timestamp_millis_unix_epoch = 4;
+    required double lattitude_geodetic_degrees = 1 [default = -9999];
+    required double longitude_degrees = 2 [default = -9999];
+    required double altitude_above_ellipsoid_km = 3 [default = -9999];
+    required fixed64 timestamp_ms = 4 [default = 0];
 }

@@ -1,4 +1,4 @@
 message CurrentReading {
-   required float current = 1;
-   required fixed64 timestamp_millis_unix_epoch = 2;
+   required float current = 1 [default = -9999];
+   required fixed64 timestamp_ms = 2 [default = 0];
 }

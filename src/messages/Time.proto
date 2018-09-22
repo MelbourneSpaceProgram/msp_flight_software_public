@@ -1,4 +1,4 @@
 message Time {
-    required fixed64 timestamp_millis_unix_epoch = 1;
-    required bool is_valid = 2;
+    required fixed64 timestamp_ms = 1 [default = 0];
+    required bool is_valid = 2 [default = false];
 }

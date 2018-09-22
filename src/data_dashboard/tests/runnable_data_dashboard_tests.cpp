@@ -22,7 +22,7 @@ TEST(HardwareInLoop, TransmitMessage) {
 
     SensorReading test_sensor_reading_message;
     test_sensor_reading_message.value = 987654321;
-    test_sensor_reading_message.timestamp_millis_unix_epoch = 554455445;
+    test_sensor_reading_message.timestamp_ms = 554455445;
 
     RunnableDataDashboard::TransmitMessage(
         kTestSensorReadingCode, SensorReading_size, SensorReading_fields,
@@ -40,12 +40,12 @@ TEST(HardwareInLoop, TransmitMessage) {
     pb_decode(&stream, SensorReading_fields, &reading);
 
     DOUBLES_EQUAL(987654321, reading.value, 0.01);
-    CHECK_EQUAL(554455445, reading.timestamp_millis_unix_epoch);
+    CHECK_EQUAL(554455445, reading.timestamp_ms);
 
     // Reset the test value on the DebugClient end.
     // Stateful tests are no fun.
     test_sensor_reading_message.value = 0;
-    test_sensor_reading_message.timestamp_millis_unix_epoch = 0;
+    test_sensor_reading_message.timestamp_ms = 0;
     RunnableDataDashboard::TransmitMessage(
         kTestSensorReadingCode, SensorReading_size, SensorReading_fields,
         &test_sensor_reading_message);

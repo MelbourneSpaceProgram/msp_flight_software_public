@@ -30,7 +30,7 @@ TEST(MeasurableManager, TestManagerRead) {
     Time timestamp = measurable->GetTimestamp();
     CHECK(timestamp.is_valid)
 
-    DOUBLES_EQUAL(now.timestamp_millis_unix_epoch,
-                  timestamp.timestamp_millis_unix_epoch, 10);
+    DOUBLES_EQUAL(now.timestamp_ms,
+                  timestamp.timestamp_ms, 10);
     DOUBLES_EQUAL(25, cdh_temp, 10);
 }

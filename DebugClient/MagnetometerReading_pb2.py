@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='MagnetometerReading.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\x19MagnetometerReading.proto\"[\n\x13MagnetometerReading\x12\t\n\x01x\x18\x01 \x02(\x01\x12\t\n\x01y\x18\x02 \x02(\x01\x12\t\n\x01z\x18\x03 \x02(\x01\x12#\n\x1btimestamp_millis_unix_epoch\x18\x04 \x02(\x06')
+  serialized_pb=_b('\n\x19MagnetometerReading.proto\"[\n\x13MagnetometerReading\x12\t\n\x01x\x18\x01 \x02(\x01\x12\t\n\x01y\x18\x02 \x02(\x01\x12\t\n\x01z\x18\x03 \x02(\x01\x12#\n\x1btimestamp_ms\x18\x04 \x02(\x06')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -55,7 +55,7 @@ _MAGNETOMETERREADING = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='timestamp_millis_unix_epoch', full_name='MagnetometerReading.timestamp_millis_unix_epoch', index=3,
+      name='timestamp_ms', full_name='MagnetometerReading.timestamp_ms', index=3,
       number=4, type=6, cpp_type=4, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,

@@ -1,3 +1,3 @@
 message EnableDataloggerCommandPayload {
-  required bool datalogger_enabled = 1;
+  required bool datalogger_enabled = 1 [default = true];
 }

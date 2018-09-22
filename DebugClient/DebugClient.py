@@ -141,13 +141,13 @@ def testLoop(debug_serial_port, logger, mc):
                         struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0]
                     magnetometer_reading.z = \
                         struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0]
-                    magnetometer_reading.timestamp_millis_unix_epoch = \
+                    magnetometer_reading.timestamp_ms = \
                         round(time.time()*1000)
                 else:
                     magnetometer_reading.x = 0
                     magnetometer_reading.y = 0
                     magnetometer_reading.z = 0
-                    magnetometer_reading.timestamp_millis_unix_epoch = \
+                    magnetometer_reading.timestamp_ms = \
                         round(time.time()*1000)
 
                 logger.info("Sending message: " + str(magnetometer_reading))
@@ -273,7 +273,7 @@ def testLoop(debug_serial_port, logger, mc):
 
                 test_message_value = test_sensor_reading.value
                 test_message_timestamp = \
-                    test_sensor_reading.timestamp_millis_unix_epoch
+                    test_sensor_reading.timestamp_ms
 
 
             elif message_code == \
@@ -282,7 +282,7 @@ def testLoop(debug_serial_port, logger, mc):
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
                 test_sensor_reading.value = test_message_value
-                test_sensor_reading.timestamp_millis_unix_epoch = \
+                test_sensor_reading.timestamp_ms = \
                                             test_message_timestamp
                 send_message(debug_serial_port, 0x0A,
                              test_sensor_reading.SerializeToString())
@@ -294,7 +294,7 @@ def testLoop(debug_serial_port, logger, mc):
 
                 test_sensor_reading = SensorReading_pb2.SensorReading()
                 test_sensor_reading.value = 1234
-                test_sensor_reading.timestamp_millis_unix_epoch = 4321
+                test_sensor_reading.timestamp_ms = 4321
                 send_message(debug_serial_port, 0x0B,
                              test_sensor_reading.SerializeToString())
 
@@ -358,7 +358,7 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>d',
                                    location_reading.altitude_above_ellipsoid_km))
                 mc.set("Location_Timestamp_Millis_Unix_Epoch",
-                       struct.pack('>Q',location_reading.timestamp_millis_unix_epoch))
+                       struct.pack('>Q',location_reading.timestamp_ms))
 
 
             else:

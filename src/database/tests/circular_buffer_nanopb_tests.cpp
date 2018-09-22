@@ -34,7 +34,7 @@ TEST(CircularBuffer, WriteAndRead) {
     dummy_magnetometer_reading.x = 1;
     dummy_magnetometer_reading.y = 2;
     dummy_magnetometer_reading.z = 3;
-    dummy_magnetometer_reading.timestamp_millis_unix_epoch = 123;
+    dummy_magnetometer_reading.timestamp_ms = 123;
     CircularBufferNanopb(MagnetometerReading)::WriteMessage(
         file_name, dummy_magnetometer_reading);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
@@ -42,7 +42,7 @@ TEST(CircularBuffer, WriteAndRead) {
     dummy_magnetometer_reading.x = 4;
     dummy_magnetometer_reading.y = 5;
     dummy_magnetometer_reading.z = 6;
-    dummy_magnetometer_reading.timestamp_millis_unix_epoch = 456;
+    dummy_magnetometer_reading.timestamp_ms = 456;
     CircularBufferNanopb(MagnetometerReading)::WriteMessage(
         file_name, dummy_magnetometer_reading);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
@@ -50,7 +50,7 @@ TEST(CircularBuffer, WriteAndRead) {
     dummy_magnetometer_reading.x = 7;
     dummy_magnetometer_reading.y = 8;
     dummy_magnetometer_reading.z = 9;
-    dummy_magnetometer_reading.timestamp_millis_unix_epoch = 789;
+    dummy_magnetometer_reading.timestamp_ms = 789;
     CircularBufferNanopb(MagnetometerReading)::WriteMessage(
         file_name, dummy_magnetometer_reading);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
@@ -58,7 +58,7 @@ TEST(CircularBuffer, WriteAndRead) {
     dummy_magnetometer_reading.x = 10;
     dummy_magnetometer_reading.y = 11;
     dummy_magnetometer_reading.z = 12;
-    dummy_magnetometer_reading.timestamp_millis_unix_epoch = 101112;
+    dummy_magnetometer_reading.timestamp_ms = 101112;
     CircularBufferNanopb(MagnetometerReading)::WriteMessage(
         file_name, dummy_magnetometer_reading);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
@@ -66,7 +66,7 @@ TEST(CircularBuffer, WriteAndRead) {
     dummy_magnetometer_reading.x = 13;
     dummy_magnetometer_reading.y = 14;
     dummy_magnetometer_reading.z = 15;
-    dummy_magnetometer_reading.timestamp_millis_unix_epoch = 131415;
+    dummy_magnetometer_reading.timestamp_ms = 131415;
     CircularBufferNanopb(MagnetometerReading)::WriteMessage(
         file_name, dummy_magnetometer_reading);
     CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
@@ -78,7 +78,7 @@ TEST(CircularBuffer, WriteAndRead) {
     DOUBLES_EQUAL(14, dummy_magnetometer_reading.y, 0.01);
     DOUBLES_EQUAL(15, dummy_magnetometer_reading.z, 0.01);
     DOUBLES_EQUAL(131415,
-                  dummy_magnetometer_reading.timestamp_millis_unix_epoch, 0.01);
+                  dummy_magnetometer_reading.timestamp_ms, 0.01);
 
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
@@ -86,7 +86,7 @@ TEST(CircularBuffer, WriteAndRead) {
     DOUBLES_EQUAL(4, dummy_magnetometer_reading.x, 0.01);
     DOUBLES_EQUAL(5, dummy_magnetometer_reading.y, 0.01);
     DOUBLES_EQUAL(6, dummy_magnetometer_reading.z, 0.01);
-    DOUBLES_EQUAL(456, dummy_magnetometer_reading.timestamp_millis_unix_epoch,
+    DOUBLES_EQUAL(456, dummy_magnetometer_reading.timestamp_ms,
                   0.01);
 
     dummy_magnetometer_reading =
@@ -95,7 +95,7 @@ TEST(CircularBuffer, WriteAndRead) {
     DOUBLES_EQUAL(7, dummy_magnetometer_reading.x, 0.01);
     DOUBLES_EQUAL(8, dummy_magnetometer_reading.y, 0.01);
     DOUBLES_EQUAL(9, dummy_magnetometer_reading.z, 0.01);
-    DOUBLES_EQUAL(789, dummy_magnetometer_reading.timestamp_millis_unix_epoch,
+    DOUBLES_EQUAL(789, dummy_magnetometer_reading.timestamp_ms,
                   0.01);
 
     dummy_magnetometer_reading =
@@ -105,7 +105,7 @@ TEST(CircularBuffer, WriteAndRead) {
     DOUBLES_EQUAL(11, dummy_magnetometer_reading.y, 0.01);
     DOUBLES_EQUAL(12, dummy_magnetometer_reading.z, 0.01);
     DOUBLES_EQUAL(101112,
-                  dummy_magnetometer_reading.timestamp_millis_unix_epoch, 0.01);
+                  dummy_magnetometer_reading.timestamp_ms, 0.01);
 
     dummy_magnetometer_reading =
         CircularBufferNanopb(MagnetometerReading)::ReadMessage(file_name);
@@ -114,5 +114,5 @@ TEST(CircularBuffer, WriteAndRead) {
     DOUBLES_EQUAL(14, dummy_magnetometer_reading.y, 0.01);
     DOUBLES_EQUAL(15, dummy_magnetometer_reading.z, 0.01);
     DOUBLES_EQUAL(131415,
-                  dummy_magnetometer_reading.timestamp_millis_unix_epoch, 0.01);
+                  dummy_magnetometer_reading.timestamp_ms, 0.01);
 }

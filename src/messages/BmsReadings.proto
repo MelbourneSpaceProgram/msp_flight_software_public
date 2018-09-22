@@ -21,5 +21,6 @@ message BmsReadings {
 	required uint32 v_in_uvcl_setting = 20 [default = 9999];
 	required double v_charge_dac = 21 [default = -9999];
 	required double i_charge_dac = 22 [default = -9999];
-	required bool telemetry_valid = 23 [default = false]; 
+	required bool telemetry_valid = 23 [default = false];
+	required fixed64 timestamp_ms = 24 [default = 0]; 
 }

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Time.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\nTime.proto\"+\n\x04Time\x12#\n\x1btimestamp_millis_unix_epoch\x18\x01 \x02(\x06')
+  serialized_pb=_b('\n\nTime.proto\"+\n\x04Time\x12#\n\x1btimestamp_ms\x18\x01 \x02(\x06')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -34,7 +34,7 @@ _TIME = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='timestamp_millis_unix_epoch', full_name='Time.timestamp_millis_unix_epoch', index=0,
+      name='timestamp_ms', full_name='Time.timestamp_ms', index=0,
       number=1, type=6, cpp_type=4, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,

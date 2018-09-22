@@ -12,14 +12,14 @@ void SatelliteTimeSource::SetTime(RTime time) {
     time_t epoch_seconds = Rtc::RTimeToEpoch(time);
 
     if (epoch_seconds != (time_t)-1) {
-        satellite_time.timestamp_millis_unix_epoch =
+        satellite_time.timestamp_ms =
             (uint64_t)epoch_seconds * 1000;
         satellite_time.is_valid = true;
         // TODO(akremor): Pull this from the RTC clock interrupt (once
         // configured)
     } else {
         Log_error0("Unable to convert from RTime -> tm");
-        satellite_time.timestamp_millis_unix_epoch = NULL;
+        satellite_time.timestamp_ms = NULL;
         satellite_time.is_valid = false;
     }
 }
@@ -37,7 +37,7 @@ Time SatelliteTimeSource::GetTime() {
 }
 
 uint64_t SatelliteTimeSource::TimeDifferenceMilli(Time start, Time end) {
-    return end.timestamp_millis_unix_epoch - start.timestamp_millis_unix_epoch;
+    return end.timestamp_ms - start.timestamp_ms;
 }
 
 void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
@@ -58,8 +58,8 @@ void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
 
     if (init_time.is_valid) {
         rtc_time_reliable = true;
-        while ((cur_time.timestamp_millis_unix_epoch -
-                init_time.timestamp_millis_unix_epoch) < delay_ms) {
+        while ((cur_time.timestamp_ms -
+                init_time.timestamp_ms) < delay_ms) {
             cur_time = SatelliteTimeSource::GetTime();
 
             if (!cur_time.is_valid) {

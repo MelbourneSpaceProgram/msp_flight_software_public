@@ -163,8 +163,8 @@ void RunnableOrientationControl::ControlOrientation() {
             // (current_time.is_valid). Also appears as if tle_last_updated can
             // be accessed before it is initialised
             time_since_tle_updated_millis =
-                current_time.timestamp_millis_unix_epoch -
-                tle_last_updated.timestamp_millis_unix_epoch;
+                current_time.timestamp_ms -
+                tle_last_updated.timestamp_ms;
             location_estimator.UpdateLocation(time_since_tle_updated_millis);
 
             // Write calculated position to data dashboard
@@ -176,8 +176,8 @@ void RunnableOrientationControl::ControlOrientation() {
             location_reading.altitude_above_ellipsoid_km =
                 location_estimator.GetAltitudeAboveEllipsoidKm();
             // TODO (rskew) generate timestamp
-            location_reading.timestamp_millis_unix_epoch =
-                current_time.timestamp_millis_unix_epoch;
+            location_reading.timestamp_ms =
+                current_time.timestamp_ms;
             RunnableDataDashboard::TransmitMessage(
                 kLocationReadingCode, LocationReading_size,
                 LocationReading_fields, &location_reading);

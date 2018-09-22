@@ -1,6 +1,6 @@
 message TorqueOutputReading {
-    required double x = 1;
-    required double y = 2;
-    required double z = 3;
-    required fixed64 timestamp_millis_unix_epoch = 4;
+    required double x = 1 [default = -9999];
+    required double y = 2 [default = -9999];
+    required double z = 3 [default = -9999];
+    required fixed64 timestamp_ms = 4 [default = 0];
 }

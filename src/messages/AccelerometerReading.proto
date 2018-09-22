@@ -2,5 +2,5 @@ message AccelerometerReading {
    required float x = 1 [default = -9999];
    required float y = 2 [default = -9999];
    required float z = 3 [default = -9999];
-   required fixed64 timestamp_millis_unix_epoch = 4 [default = 0];
+   required fixed64 timestamp_ms = 4 [default = 0];
 }

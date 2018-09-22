@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='LocationReading.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\x15LocationReading.proto\"\x9a\x01\n\x0fLocationReading\x12\"\n\x1alattitude_geodetic_degrees\x18\x01 \x02(\x01\x12\x19\n\x11longitude_degrees\x18\x02 \x02(\x01\x12#\n\x1b\x61ltitude_above_ellipsoid_km\x18\x03 \x02(\x01\x12#\n\x1btimestamp_millis_unix_epoch\x18\x04 \x02(\x06')
+  serialized_pb=_b('\n\x15LocationReading.proto\"\x9a\x01\n\x0fLocationReading\x12\"\n\x1alattitude_geodetic_degrees\x18\x01 \x02(\x01\x12\x19\n\x11longitude_degrees\x18\x02 \x02(\x01\x12#\n\x1b\x61ltitude_above_ellipsoid_km\x18\x03 \x02(\x01\x12#\n\x1btimestamp_ms\x18\x04 \x02(\x06')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -55,7 +55,7 @@ _LOCATIONREADING = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='timestamp_millis_unix_epoch', full_name='LocationReading.timestamp_millis_unix_epoch', index=3,
+      name='timestamp_ms', full_name='LocationReading.timestamp_ms', index=3,
       number=4, type=6, cpp_type=4, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,

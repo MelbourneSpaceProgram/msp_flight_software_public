@@ -32,7 +32,7 @@ TEST(DebugInterface, TestRequestMessageFromSimulator) {
     pb_decode(&stream, SensorReading_fields, &reading);
 
     DOUBLES_EQUAL(1234, reading.value, 1.0);
-    CHECK_EQUAL(4321, reading.timestamp_millis_unix_epoch);
+    CHECK_EQUAL(4321, reading.timestamp_ms);
 }
 
 TEST(DebugInterface, TestPostMessageToDebugClient) {
@@ -40,7 +40,7 @@ TEST(DebugInterface, TestPostMessageToDebugClient) {
 
     SensorReading test_sensor_reading;
     test_sensor_reading.value = -999;
-    test_sensor_reading.timestamp_millis_unix_epoch = 123456789;
+    test_sensor_reading.timestamp_ms = 123456789;
 
     uint8_t buffer[SensorReading_size];
     uint8_t receive_buffer[SensorReading_size];
@@ -70,13 +70,13 @@ TEST(DebugInterface, TestPostMessageToDebugClient) {
 
     DOUBLES_EQUAL(-999, test_sensor_reading_received.value, 1);
     CHECK_EQUAL(123456789,
-                test_sensor_reading_received.timestamp_millis_unix_epoch);
+                test_sensor_reading_received.timestamp_ms);
 
     // Reset the test value on the DebugClient end.
     // Stateful tests are no fun.
     SensorReading reset_test_sensor_reading;
     reset_test_sensor_reading.value = 0;
-    reset_test_sensor_reading.timestamp_millis_unix_epoch = 0;
+    reset_test_sensor_reading.timestamp_ms = 0;
 
     uint8_t reset_buffer[SensorReading_size];
     pb_ostream_t reset_stream =
