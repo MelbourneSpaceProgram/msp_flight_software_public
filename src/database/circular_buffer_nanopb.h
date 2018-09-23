@@ -47,22 +47,28 @@ class CircularBufferNanopb {
         File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenAlwaysMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
-        // TODO(akremor): Need to develop a fix for the below
-        // It is API version dependent which means it breaks some builds
-        // uint32_t file_size_in_bytes = file_handle.fsize;
-        uint32_t file_size_in_bytes = 0;
-        // If file is empty, initialise metadata
-        // TODO (rskew) check that metadata is valid
-        if (file_size_in_bytes < kEncodedHeaderSize) {
-            SetBufferLengthInMessages(file_handle, buffer_length_in_messages);
-            SetCountMessagesWritten(file_handle, 0);
-            SetWriteIndex(file_handle, kEncodedHeaderSize);
-            SetReadIndex(file_handle, kEncodedHeaderSize);
+        try {
+            // TODO(akremor): Need to develop a fix for the below
+            // It is API version dependent which means it breaks some builds
+            // uint32_t file_size_in_bytes = file_handle.fsize;
+            uint32_t file_size_in_bytes = 0;
+            // If file is empty, initialise metadata
+            // TODO (rskew) check that metadata is valid
+            if (file_size_in_bytes < kEncodedHeaderSize) {
+                SetBufferLengthInMessages(file_handle,
+                                          buffer_length_in_messages);
+                SetCountMessagesWritten(file_handle, 0);
+                SetWriteIndex(file_handle, kEncodedHeaderSize);
+                SetReadIndex(file_handle, kEncodedHeaderSize);
+            }
+
+            // If the file already exists, do nothing
+
+            SdCard::FileClose(file_handle);
+        } catch (etl::exception &e) {
+            SdCard::FileClose(file_handle);
+            throw;
         }
-
-        // If the file already exists, do nothing
-
-        SdCard::FileClose(file_handle);
     }
 
     static void WriteMessage(const char *file_name,
@@ -70,94 +76,112 @@ class CircularBufferNanopb {
         File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
+        try {
+            // Serialise
+            byte buffer[NanopbMessageType_size];
+            NanopbEncode(NanopbMessageType)(buffer, message);
 
-        // Serialise
-        byte buffer[NanopbMessageType_size];
-        NanopbEncode(NanopbMessageType)(buffer, message);
+            // Write to file
+            uint32_t write_index_bytes = GetWriteIndex(file_handle);
+            SdCard::FileSeek(file_handle, write_index_bytes);
+            for (uint16_t i = 0; i < NanopbMessageType_size; i++) {
+                WriteByte(file_handle, buffer[i]);
+            }
+            uint32_t count_messages_written =
+                GetCountMessagesWritten(file_handle);
+            // Check for overflow
+            if (count_messages_written + 1 != 0) {
+                SetCountMessagesWritten(file_handle,
+                                        count_messages_written + 1);
+            }
 
-        // Write to file
-        uint32_t write_index_bytes = GetWriteIndex(file_handle);
-        SdCard::FileSeek(file_handle, write_index_bytes);
-        for (uint16_t i = 0; i < NanopbMessageType_size; i++) {
-            WriteByte(file_handle, buffer[i]);
+            // Increment write index and wrap
+            write_index_bytes += 2 * NanopbMessageType_size;
+            uint32_t buffer_length_in_messages =
+                GetBufferLengthInMessages(file_handle);
+            if (write_index_bytes >
+                2 * (buffer_length_in_messages - 1) * NanopbMessageType_size +
+                    kEncodedHeaderSize) {
+                write_index_bytes = kEncodedHeaderSize;
+            }
+            SetWriteIndex(file_handle, write_index_bytes);
+
+            SdCard::FileClose(file_handle);
+        } catch (etl::exception &e) {
+            SdCard::FileClose(file_handle);
+            throw;
         }
-        uint32_t count_messages_written = GetCountMessagesWritten(file_handle);
-        // Check for overflow
-        if (count_messages_written + 1 != 0) {
-            SetCountMessagesWritten(file_handle, count_messages_written + 1);
-        }
-
-        // Increment write index and wrap
-        write_index_bytes += 2 * NanopbMessageType_size;
-        uint32_t buffer_length_in_messages =
-            GetBufferLengthInMessages(file_handle);
-        if (write_index_bytes >
-            2 * (buffer_length_in_messages - 1) * NanopbMessageType_size +
-                kEncodedHeaderSize) {
-            write_index_bytes = kEncodedHeaderSize;
-        }
-        SetWriteIndex(file_handle, write_index_bytes);
-
-        SdCard::FileClose(file_handle);
     }
 
     static NanopbMessageType ReadMessage(const char *file_name) {
         File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
-        // TODO (rskew) check for successful file open
+        try {
+            // TODO (rskew) check for successful file open
 
-        // Read from file
-        uint32_t read_index_bytes = GetReadIndex(file_handle);
-        SdCard::FileSeek(file_handle, read_index_bytes);
-        byte hamming_encoded_buffer[2 * NanopbMessageType_size];
-        SdCard::FileRead(file_handle, hamming_encoded_buffer,
-                         2 * NanopbMessageType_size);
+            // Read from file
+            uint32_t read_index_bytes = GetReadIndex(file_handle);
+            SdCard::FileSeek(file_handle, read_index_bytes);
+            byte hamming_encoded_buffer[2 * NanopbMessageType_size];
+            SdCard::FileRead(file_handle, hamming_encoded_buffer,
+                             2 * NanopbMessageType_size);
 
-        // Increment write index and wrap
-        read_index_bytes += 2 * NanopbMessageType_size;
-        uint32_t buffer_length_in_messages =
-            GetBufferLengthInMessages(file_handle);
-        uint32_t count_messages_written = GetCountMessagesWritten(file_handle);
-        if (read_index_bytes >
-                2 * (buffer_length_in_messages - 1) * NanopbMessageType_size +
-                    kEncodedHeaderSize ||
-            read_index_bytes >
-                2 * count_messages_written * NanopbMessageType_size +
-                    kEncodedHeaderSize) {
-            read_index_bytes = kEncodedHeaderSize;
-        }
-        SetReadIndex(file_handle, read_index_bytes);
-
-        // Hamming decode
-        byte hamming_decoded_buffer[NanopbMessageType_size];
-        bool valid_decodings[NanopbMessageType_size];
-        HammingCoder::DecodeByteArray(
-            hamming_decoded_buffer, NanopbMessageType_size, valid_decodings,
-            hamming_encoded_buffer, 2 * NanopbMessageType_size);
-        for (uint16_t i = 0; i < NanopbMessageType_size; i++) {
-            if (valid_decodings[i] == false) {
-                etl::exception e("Failed to decode hamming encoded message",
-                                 __FILE__, __LINE__);
-                throw e;
+            // Increment write index and wrap
+            read_index_bytes += 2 * NanopbMessageType_size;
+            uint32_t buffer_length_in_messages =
+                GetBufferLengthInMessages(file_handle);
+            uint32_t count_messages_written =
+                GetCountMessagesWritten(file_handle);
+            if (read_index_bytes > 2 * (buffer_length_in_messages - 1) *
+                                           NanopbMessageType_size +
+                                       kEncodedHeaderSize ||
+                read_index_bytes >
+                    2 * count_messages_written * NanopbMessageType_size +
+                        kEncodedHeaderSize) {
+                read_index_bytes = kEncodedHeaderSize;
             }
+            SetReadIndex(file_handle, read_index_bytes);
+
+            // Hamming decode
+            byte hamming_decoded_buffer[NanopbMessageType_size];
+            bool valid_decodings[NanopbMessageType_size];
+            HammingCoder::DecodeByteArray(
+                hamming_decoded_buffer, NanopbMessageType_size, valid_decodings,
+                hamming_encoded_buffer, 2 * NanopbMessageType_size);
+            for (uint16_t i = 0; i < NanopbMessageType_size; i++) {
+                if (valid_decodings[i] == false) {
+                    etl::exception e("Failed to decode hamming encoded message",
+                                     __FILE__, __LINE__);
+                    throw e;
+                }
+            }
+
+            // Deserialise
+            NanopbMessageType message_struct =
+                NanopbDecode(NanopbMessageType)(hamming_decoded_buffer);
+
+            SdCard::FileClose(file_handle);
+            return message_struct;
+        } catch (etl::exception &e) {
+            SdCard::FileClose(file_handle);
+            throw;
         }
-
-        // Deserialise
-        NanopbMessageType message_struct =
-            NanopbDecode(NanopbMessageType)(hamming_decoded_buffer);
-
-        SdCard::FileClose(file_handle);
-        return message_struct;
     }
 
     static uint32_t ReadCountMessagesWritten(const char *file_name) {
         File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
-        uint32_t count_messages_written = GetCountMessagesWritten(file_handle);
-        SdCard::FileClose(file_handle);
-        return count_messages_written;
+        try {
+            uint32_t count_messages_written =
+                GetCountMessagesWritten(file_handle);
+            SdCard::FileClose(file_handle);
+            return count_messages_written;
+        } catch (etl::exception &e) {
+            SdCard::FileClose(file_handle);
+            throw;
+        }
     }
 
     // TODO (rskew) return header struct
@@ -165,12 +189,18 @@ class CircularBufferNanopb {
         File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
-        uint32_t buffer_length_in_messages =
-            GetBufferLengthInMessages(file_handle);
-        uint32_t count_messages_written = GetCountMessagesWritten(file_handle);
-        uint32_t write_index = GetWriteIndex(file_handle);
-        uint32_t read_index = GetReadIndex(file_handle);
-        SdCard::FileClose(file_handle);
+        try {
+            uint32_t buffer_length_in_messages =
+                GetBufferLengthInMessages(file_handle);
+            uint32_t count_messages_written =
+                GetCountMessagesWritten(file_handle);
+            uint32_t write_index = GetWriteIndex(file_handle);
+            uint32_t read_index = GetReadIndex(file_handle);
+            SdCard::FileClose(file_handle);
+        } catch (etl::exception &e) {
+            SdCard::FileClose(file_handle);
+            throw;
+        }
     }
 
    private:
