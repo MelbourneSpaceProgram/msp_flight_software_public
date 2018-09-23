@@ -34,7 +34,6 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
-#include <src/telecomms/lithium_commands/fast_pa_command.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -199,6 +198,7 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
+        SdCard::Init();
         SdCard::SdOpen();
         if (kFormatSdOnStartup) {
             SdCard::Format();

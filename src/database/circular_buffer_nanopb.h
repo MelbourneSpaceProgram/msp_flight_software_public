@@ -44,7 +44,7 @@ class CircularBufferNanopb {
    public:
     static void Create(const char *file_name,
                        uint32_t buffer_length_in_messages) {
-        File file_handle = SdCard::FileOpen(
+        File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenAlwaysMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
         // TODO(akremor): Need to develop a fix for the below
@@ -67,7 +67,7 @@ class CircularBufferNanopb {
 
     static void WriteMessage(const char *file_name,
                              const NanopbMessageType message) {
-        File file_handle = SdCard::FileOpen(
+        File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
 
@@ -102,7 +102,7 @@ class CircularBufferNanopb {
     }
 
     static NanopbMessageType ReadMessage(const char *file_name) {
-        File file_handle = SdCard::FileOpen(
+        File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
         // TODO (rskew) check for successful file open
@@ -152,7 +152,7 @@ class CircularBufferNanopb {
     }
 
     static uint32_t ReadCountMessagesWritten(const char *file_name) {
-        File file_handle = SdCard::FileOpen(
+        File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
         uint32_t count_messages_written = GetCountMessagesWritten(file_handle);
@@ -162,7 +162,7 @@ class CircularBufferNanopb {
 
     // TODO (rskew) return header struct
     static void ReadHeader(const char *file_name) {
-        File file_handle = SdCard::FileOpen(
+        File *file_handle = SdCard::FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
         uint32_t buffer_length_in_messages =
@@ -174,32 +174,32 @@ class CircularBufferNanopb {
     }
 
    private:
-    static void WriteByte(File &file_handle, byte unencoded_byte) {
+    static void WriteByte(File *file_handle, byte unencoded_byte) {
         HammingEncodedByte hamming_encoded_byte;
         hamming_encoded_byte = HammingCoder::Encode(unencoded_byte);
         SdCard::FileWrite(file_handle, hamming_encoded_byte.codewords, 2);
     }
 
-    static uint32_t GetBufferLengthInMessages(File &file_handle) {
+    static uint32_t GetBufferLengthInMessages(File *file_handle) {
         // buffer_length_in_messages is the first encoded uint32_t in the file,
         // starting byte 0
         return ReadUint32_t(file_handle, 0);
     }
 
-    static void SetBufferLengthInMessages(File &file_handle,
+    static void SetBufferLengthInMessages(File *file_handle,
                                           uint32_t buffer_length_in_messages) {
         // buffer_length_in_messages is the first encoded uint32_t in the
         // file, starting byte 0
         WriteUint32_t(file_handle, 0, buffer_length_in_messages);
     }
 
-    static uint32_t GetCountMessagesWritten(File &file_handle) {
+    static uint32_t GetCountMessagesWritten(File *file_handle) {
         // count_messages_written is the second encoded uint32_t in the
         // file, starting byte 8
         return ReadUint32_t(file_handle, 2 * sizeof(uint32_t));
     }
 
-    static void SetCountMessagesWritten(File &file_handle,
+    static void SetCountMessagesWritten(File *file_handle,
                                         uint32_t count_messages_written) {
         // count_messages_written is the second encoded uint32_t in
         // the file, starting byte 8
@@ -207,31 +207,31 @@ class CircularBufferNanopb {
                       count_messages_written);
     }
 
-    static uint32_t GetWriteIndex(File &file_handle) {
+    static uint32_t GetWriteIndex(File *file_handle) {
         // write_index is the third encoded uint32_t in the
         // file, starting byte 16
         return ReadUint32_t(file_handle, 2 * 2 * sizeof(uint32_t));
     }
 
-    static void SetWriteIndex(File &file_handle, uint32_t write_index_bytes) {
+    static void SetWriteIndex(File *file_handle, uint32_t write_index_bytes) {
         // write_index is the third encoded uint32_t in the
         // file, starting byte 16
         WriteUint32_t(file_handle, 2 * 2 * sizeof(uint32_t), write_index_bytes);
     }
 
-    static uint32_t GetReadIndex(File &file_handle) {
+    static uint32_t GetReadIndex(File *file_handle) {
         // read_index is the fourth encoded uint32_t in
         // the file, starting byte 24
         return ReadUint32_t(file_handle, 2 * 3 * sizeof(uint32_t));
     }
 
-    static void SetReadIndex(File &file_handle, uint32_t read_index_bytes) {
+    static void SetReadIndex(File *file_handle, uint32_t read_index_bytes) {
         // read_index is the fourth encoded uint32_t
         // in the file, starting byte 24
         WriteUint32_t(file_handle, 2 * 3 * sizeof(uint32_t), read_index_bytes);
     }
 
-    static uint32_t ReadUint32_t(File &file_handle, uint32_t index_bytes) {
+    static uint32_t ReadUint32_t(File *file_handle, uint32_t index_bytes) {
         byte byte_array[sizeof(uint32_t)];
         bool valid_decodings[sizeof(uint32_t)];
         byte hamming_encoded_byte_array[2 * sizeof(uint32_t)];
@@ -253,7 +253,7 @@ class CircularBufferNanopb {
         return ByteArrayToUint32_t(byte_array);
     }
 
-    static void WriteUint32_t(File &file_handle, uint32_t index_bytes,
+    static void WriteUint32_t(File *file_handle, uint32_t index_bytes,
                               uint32_t value_to_write) {
         byte write_buffer[4];
         Uint32_tToByteArray(value_to_write, write_buffer);

@@ -33,15 +33,10 @@ TEST_GROUP(SdCard) {
 };
 
 TEST(SdCard, FatFsReadWrite) {
-    File src;
-    try {
-        src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
-                                            SdCard::kFileReadMode |
-                                            SdCard::kFileCreateAlwaysMode);
-    } catch (etl::exception& e) {
-        // Likely SD card missing
-        FAIL("Uncaught exception in test");
-    }
+    File *src, *dst;
+    src = SdCard::FileOpen(input_file, SdCard::kFileWriteMode |
+                                           SdCard::kFileReadMode |
+                                           SdCard::kFileCreateAlwaysMode);
 
     CHECK_EQUAL(strlen(text_array),
                 SdCard::FileWrite(src, text_array, strlen(text_array)));
@@ -49,21 +44,29 @@ TEST(SdCard, FatFsReadWrite) {
     SdCard::FileSeek(src, 0);
     SdCard::FileClose(src);
 
-    src = SdCard::FileOpen(input_file, SdCard::kFileReadMode);
-
-    File dst = SdCard::FileOpen(
-        output_file, SdCard::kFileCreateAlwaysMode | SdCard::kFileWriteMode);
     char copy_buffer[copy_buffer_size + 1];
 
     // Copy the contents from the src to the dst
     uint64_t total_bytes_copied = 0;
     while (true) {
-        uint32_t bytes_read = SdCard::FileRead(src, copy_buffer, copy_buffer_size);
+        src = SdCard::FileOpen(input_file, SdCard::kFileReadMode);
+        SdCard::FileSeek(src, total_bytes_copied);
+        uint32_t bytes_read =
+            SdCard::FileRead(src, copy_buffer, copy_buffer_size);
+        SdCard::FileClose(src);
+
         if (bytes_read == 0) {
             break;
         }
 
-        uint32_t bytes_written = SdCard::FileWrite(dst, copy_buffer, bytes_read);
+        dst = SdCard::FileOpen(output_file, SdCard::kFileCreateAlwaysMode |
+                                                SdCard::kFileWriteMode);
+        SdCard::FileSeek(dst, total_bytes_copied);
+        uint32_t bytes_written =
+            SdCard::FileWrite(dst, copy_buffer, bytes_read);
+        SdCard::FileFlush(dst);
+        SdCard::FileClose(dst);
+
         if (bytes_written < bytes_read) {
             Log_error0("SD Card full");
             break;
@@ -71,13 +74,11 @@ TEST(SdCard, FatFsReadWrite) {
         total_bytes_copied += bytes_written;
     }
 
-    SdCard::FileFlush(dst);
-
-    // -1 required to account for the NULL terminator that is in the char array but not written to file
+    // -1 required to account for the NULL terminator that is in the char array
+    // but not written to file
+    src = SdCard::FileOpen(input_file, SdCard::kFileReadMode);
     CHECK_EQUAL(sizeof(text_array) / sizeof(char) - 1, SdCard::FileSize(src));
-
     SdCard::FileClose(src);
-    SdCard::FileClose(dst);
 
     dst = SdCard::FileOpen(output_file, SdCard::kFileReadMode);
 
