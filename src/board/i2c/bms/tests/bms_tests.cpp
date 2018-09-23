@@ -97,31 +97,44 @@ TEST(Bms, TestBmsReadingsMeasurable) {
 
     CHECK_FALSE(bms_readings.system_status ==
                 BmsReadings_system_status_default);
-    CHECK(bms_readings.system_status == 0 || bms_readings.system_status == 1);
+    CHECK(bms_readings.system_status ==
+              BmsReadings_SystemStatus_kChargeDisable ||
+          bms_readings.system_status == BmsReadings_SystemStatus_kChargeEnable);
 
     CHECK_FALSE(bms_readings.charger_state ==
                 BmsReadings_charger_state_default);
-    CHECK(bms_readings.charger_state == Bms::kBigShortFault ||
-          bms_readings.charger_state == Bms::kBatMissingFault ||
-          bms_readings.charger_state == Bms::kMaxChargeTimeFault ||
-          bms_readings.charger_state == Bms::kCOverXTerm ||
-          bms_readings.charger_state == Bms::kTimerTerm ||
-          bms_readings.charger_state == Bms::KNtcPause ||
-          bms_readings.charger_state == Bms::kCcCvCharge ||
-          bms_readings.charger_state == Bms::kPrecharge ||
-          bms_readings.charger_state == Bms::kChargerSuspended ||
-          bms_readings.charger_state == Bms::kAbsorbCharge ||
-          bms_readings.charger_state == Bms::kEqualizeCharge ||
-          bms_readings.charger_state == Bms::kInvalidChargerState);
+    CHECK(
+        bms_readings.charger_state == BmsReadings_ChargerState_kBigShortFault ||
+        bms_readings.charger_state ==
+            BmsReadings_ChargerState_kBatMissingFault ||
+        bms_readings.charger_state ==
+            BmsReadings_ChargerState_kMaxChargeTimeFault ||
+        bms_readings.charger_state == BmsReadings_ChargerState_kCOverXTerm ||
+        bms_readings.charger_state == BmsReadings_ChargerState_kTimerTerm ||
+        bms_readings.charger_state == BmsReadings_ChargerState_kNtcPause ||
+        bms_readings.charger_state == BmsReadings_ChargerState_kCcCvCharge ||
+        bms_readings.charger_state == BmsReadings_ChargerState_kPrecharge ||
+        bms_readings.charger_state ==
+            BmsReadings_ChargerState_kChargerSuspended ||
+        bms_readings.charger_state == BmsReadings_ChargerState_kAbsorbCharge ||
+        bms_readings.charger_state ==
+            BmsReadings_ChargerState_kEqualizeCharge ||
+        bms_readings.charger_state ==
+            BmsReadings_ChargerState_kInvalidChargerState);
 
     CHECK_FALSE(bms_readings.charge_status ==
                 BmsReadings_charge_status_default);
-    CHECK(bms_readings.charge_status == Bms::kConstantVoltage ||
-          bms_readings.charge_status == Bms::kConstantCurrent ||
-          bms_readings.charge_status == Bms::kIinLimitActive ||
-          bms_readings.charge_status == Bms::kVinLimitActive ||
-          bms_readings.charge_status == Bms::kNotCharging ||
-          bms_readings.charge_status == Bms::kError);
+    CHECK(bms_readings.charge_status ==
+              BmsReadings_ChargeStatus_kConstantVoltage ||
+          bms_readings.charge_status ==
+              BmsReadings_ChargeStatus_kConstantCurrent ||
+          bms_readings.charge_status ==
+              BmsReadings_ChargeStatus_kIinLimitActive ||
+          bms_readings.charge_status ==
+              BmsReadings_ChargeStatus_kVinLimitActive ||
+          bms_readings.charge_status == BmsReadings_ChargeStatus_kNotCharging ||
+          bms_readings.charge_status ==
+              BmsReadings_ChargeStatus_kChargingError);
 
     CHECK_FALSE(bms_readings.charger_config ==
                 BmsReadings_charger_config_default);
@@ -150,7 +163,7 @@ TEST(Bms, TestBms) {
                  Bms::kRechargeThresholdConfigurationLBValue),
                 bms.GetRechargeThreshold());
 
-    CHECK(Bms::kError != bms.GetChargeStatus());
+    CHECK(BmsReadings_ChargeStatus_kChargingError != bms.GetChargeStatus());
 }
 
 TEST(Bms, TestBmsDieTemperatureRead) {

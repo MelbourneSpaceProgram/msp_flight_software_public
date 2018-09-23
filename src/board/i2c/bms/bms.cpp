@@ -104,9 +104,9 @@ BmsReadings Bms::GetBmsReadings() {
     bms_readings.die_temperature = GetDieTemp();
     bms_readings.battery_temperature = GetBatteryTemp();
     bms_readings.jeita_region = GetJeitaRegion();
-    bms_readings.system_status = static_cast<uint16_t>(GetSystemStatus());
-    bms_readings.charger_state = static_cast<uint16_t>(GetChargerState());
-    bms_readings.charge_status = static_cast<uint16_t>(GetChargeStatus());
+    bms_readings.system_status = GetSystemStatus();
+    bms_readings.charger_state = GetChargerState();
+    bms_readings.charge_status = GetChargeStatus();
     bms_readings.recharge_threshold = GetRechargeThreshold();
     bms_readings.charger_config = GetChargerConfig();
     bms_readings.c_over_x_threshold = GetCOverXThreshold();
@@ -170,22 +170,22 @@ uint16_t Bms::GetJeitaRegion() {
         BmsReadings_jeita_region_default);
 }
 
-Bms::SystemStatus Bms::GetSystemStatus() {
-    return GetFromRegisterAndConvert<Bms::SystemStatus>(
+BmsReadings_SystemStatus Bms::GetSystemStatus() {
+    return GetFromRegisterAndConvert<BmsReadings_SystemStatus>(
         kSystemStatusRegisterLocation, &ConvertToSystemStatus,
-        static_cast<Bms::SystemStatus>(BmsReadings_system_status_default));
+        BmsReadings_system_status_default);
 }
 
-Bms::ChargerState Bms::GetChargerState() {
-    return GetFromRegisterAndConvert<Bms::ChargerState>(
+BmsReadings_ChargerState Bms::GetChargerState() {
+    return GetFromRegisterAndConvert<BmsReadings_ChargerState>(
         kChargerStateRegisterLocation, &ConvertToChargerState,
-        static_cast<Bms::ChargerState>(BmsReadings_charger_state_default));
+        BmsReadings_charger_state_default);
 }
 
-Bms::ChargeStatus Bms::GetChargeStatus() {
-    return GetFromRegisterAndConvert<Bms::ChargeStatus>(
+BmsReadings_ChargeStatus Bms::GetChargeStatus() {
+    return GetFromRegisterAndConvert<BmsReadings_ChargeStatus>(
         kChargeStatusRegisterLocation, &ConvertToChargeStatus,
-        static_cast<Bms::ChargeStatus>(BmsReadings_charge_status_default));
+        BmsReadings_charge_status_default);
 }
 
 double Bms::GetRechargeThreshold() {
@@ -312,39 +312,38 @@ uint16_t Bms::ConvertToJeitaRegion(etl::array<byte, 2>& read_buffer) {
     return jeita_region_register_value & kJeitaRegionBitMask;
 }
 
-Bms::SystemStatus Bms::ConvertToSystemStatus(etl::array<byte, 2>& read_buffer) {
+BmsReadings_SystemStatus Bms::ConvertToSystemStatus(etl::array<byte, 2>& read_buffer) {
     uint16_t system_status_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
     if (system_status_register_value & kChargeEnableBitMask) {
-        return kChargeEnable;
+        return BmsReadings_SystemStatus_kChargeEnable;
     } else {
-        return kChargeDisable;
+        return BmsReadings_SystemStatus_kChargeDisable;
     }
 }
 
-Bms::ChargerState Bms::ConvertToChargerState(etl::array<byte, 2>& read_buffer) {
+BmsReadings_ChargerState Bms::ConvertToChargerState(etl::array<byte, 2>& read_buffer) {
     uint16_t charger_state_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
-    // TODO(hugorilla): perform check on charger_state_register value
-    return static_cast<Bms::ChargerState>(charger_state_register_value);
+    return static_cast<BmsReadings_ChargerState>(charger_state_register_value);
 }
 
-Bms::ChargeStatus Bms::ConvertToChargeStatus(etl::array<byte, 2>& read_buffer) {
+BmsReadings_ChargeStatus Bms::ConvertToChargeStatus(etl::array<byte, 2>& read_buffer) {
     uint16_t charge_status_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
     if (charge_status_register_value & kConstantVoltageBitMask)
-        return kConstantVoltage;
+        return BmsReadings_ChargeStatus_kConstantVoltage;
     else if (charge_status_register_value & kConstantCurrentBitMask)
-        return kConstantCurrent;
+        return BmsReadings_ChargeStatus_kConstantCurrent;
     else if (charge_status_register_value & kIinLimitActiveBitMask)
-        return kIinLimitActive;
+        return BmsReadings_ChargeStatus_kIinLimitActive;
     else if (charge_status_register_value & kVinLimitActiveBitMask)
-        return kVinLimitActive;
+        return BmsReadings_ChargeStatus_kVinLimitActive;
     else if ((charge_status_register_value & kChargeStatusBitMask) ==
              kChargeStatusNotCharging)
-        return kNotCharging;
+        return BmsReadings_ChargeStatus_kNotCharging;
     else
-        return kError;
+        return BmsReadings_ChargeStatus_kChargingError;
 }
 
 double Bms::ConvertToRechargeThreshold(etl::array<byte, 2>& read_buffer) {

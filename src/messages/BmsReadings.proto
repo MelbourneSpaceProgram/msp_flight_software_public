@@ -7,9 +7,35 @@ message BmsReadings {
 	required double die_temperature = 6 [default = -9999];
 	required double battery_temperature = 7 [default = -9999];
 	required uint32 jeita_region = 8 [default = 9999];
-	required uint32 system_status = 9 [default = 9999];
-	required uint32 charger_state = 10 [default = 9999];
-	required uint32 charge_status = 11 [default = 9999];
+	enum SystemStatus {
+		kChargeDisable = 0;
+		kChargeEnable = 1;
+	}	
+	required SystemStatus system_status = 9 [default = kChargeDisable];
+	enum ChargerState {
+		kBigShortFault = 0x0001;
+		kBatMissingFault = 0x0002;
+		kMaxChargeTimeFault = 0x0004;
+		kCOverXTerm = 0x0008;
+		kTimerTerm = 0x0010;
+		kNtcPause = 0x0020;
+		kCcCvCharge = 0x0040;
+		kPrecharge = 0x0080;
+		kChargerSuspended = 0x0100;
+		kAbsorbCharge = 0x0200;
+		kEqualizeCharge = 0x0400;
+		kInvalidChargerState = 0xffff;
+	}
+	required ChargerState charger_state = 10 [default = kInvalidChargerState];
+	enum ChargeStatus {
+		kConstantVoltage = 0;
+		kConstantCurrent = 1;
+		kIinLimitActive = 2;
+		kVinLimitActive = 3;
+		kNotCharging = 4;
+		kChargingError = 5;
+	}
+	required ChargeStatus charge_status = 11 [default = kChargingError];
 	required double recharge_threshold  = 12 [default = -9999];
 	required uint32 charger_config = 13 [default = 9999];
 	required uint32 c_over_x_threshold = 14 [default = 9999];

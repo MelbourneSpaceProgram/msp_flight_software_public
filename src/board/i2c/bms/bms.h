@@ -17,32 +17,6 @@ class Bms : public I2cDevice {
     bool WriteToRegister(byte register_location, byte lower_byte,
                          byte upper_byte);
 
-    enum ChargeStatus {
-        kConstantVoltage,
-        kConstantCurrent,
-        kIinLimitActive,
-        kVinLimitActive,
-        kNotCharging,
-        kError
-    };
-
-    enum ChargerState {
-        kBigShortFault = 0x0001,
-        kBatMissingFault = 0x0002,
-        kMaxChargeTimeFault = 0x0004,
-        kCOverXTerm = 0x0008,
-        kTimerTerm = 0x0010,
-        KNtcPause = 0x0020,
-        kCcCvCharge = 0x0040,
-        kPrecharge = 0x0080,
-        kChargerSuspended = 0x0100,
-        kAbsorbCharge = 0x0200,
-        kEqualizeCharge = 0x0400,
-        kInvalidChargerState = 0xffff
-    };
-
-    enum SystemStatus { kChargeEnable, kChargeDisable };
-
     bool SelectRegister(byte register_address);
     bool ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
 
@@ -55,9 +29,9 @@ class Bms : public I2cDevice {
     double GetDieTemp();
     double GetBatteryTemp();
     uint16_t GetJeitaRegion();
-    SystemStatus GetSystemStatus();
-    ChargerState GetChargerState();
-    ChargeStatus GetChargeStatus();
+    BmsReadings_SystemStatus GetSystemStatus();
+    BmsReadings_ChargerState GetChargerState();
+    BmsReadings_ChargeStatus GetChargeStatus();
     double GetRechargeThreshold();
     uint16_t GetChargerConfig();
     uint16_t GetCOverXThreshold();
@@ -110,11 +84,11 @@ class Bms : public I2cDevice {
     static double ConvertToDieTemperature(etl::array<byte, 2>& read_buffer);
     static double ConvertToBatteryTemperature(etl::array<byte, 2>& read_buffer);
     static uint16_t ConvertToJeitaRegion(etl::array<byte, 2>& read_buffer);
-    static Bms::SystemStatus ConvertToSystemStatus(
+    static BmsReadings_SystemStatus ConvertToSystemStatus(
         etl::array<byte, 2>& read_buffer);
-    static Bms::ChargerState ConvertToChargerState(
+    static BmsReadings_ChargerState ConvertToChargerState(
         etl::array<byte, 2>& read_buffer);
-    static Bms::ChargeStatus ConvertToChargeStatus(
+    static BmsReadings_ChargeStatus ConvertToChargeStatus(
         etl::array<byte, 2>& read_buffer);
     static double ConvertToRechargeThreshold(etl::array<byte, 2>& read_buffer);
     static uint16_t ConvertToChargerConfig(etl::array<byte, 2>& read_buffer);
