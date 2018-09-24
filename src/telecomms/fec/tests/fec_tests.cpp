@@ -4,6 +4,7 @@
 #include <src/telecomms/fec/rs8.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>

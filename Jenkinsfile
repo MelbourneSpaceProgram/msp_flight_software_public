@@ -18,7 +18,7 @@ pipeline {
                 sh 'mkdir checker_output'
                 // Check conditional branches for "#define A" only. This doesn't exist, which means we skip the poor-scaling of checking all possible
                 // configurations, with the trade-off of weaker static analysis results.
-                sh 'cppcheck -DA --enable=warning,performance,style,portability --inconclusive --xml --xml-version=2 . 2> ./checker_output/cppcheck.xml'
+                sh 'cppcheck -DA --enable=warning,performance,style,portability --inconclusive --quiet --xml --xml-version=2 . 2> ./checker_output/cppcheck.xml'
                 step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'CppLint', pattern: '**/checker_output/cpplint.txt']], unHealthy: ''])
                 sh 'cppcheck-htmlreport --source-encoding="iso8859-1" --title="MSP" --source-dir=. --report-dir=./checker_output/ --file=./checker_output/cppcheck.xml' 
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: './checker_output/', reportFiles: 'index.html', reportName: 'Static Analysis', reportTitles: ''])
@@ -43,29 +43,30 @@ pipeline {
             }
         }
     
-        stage('Build') { 
+        stage('Build GCC') { 
             agent {
                 label 'AWS_Docker_Agent'
             }
 			environment {
-				container_uuid = "${BUILD_TAG}-PR${CHANGE_ID}"
 				docker_name = org.apache.commons.lang.RandomStringUtils.random(20, true, true)
 			}
             steps {
                 sh '''
-                    tar cvf CDH_software.tar.gz -C ${WORKSPACE} .
-                    sudo docker run -td --name ${docker_name} ccsv8_msp432e
+                    tar cf CDH_software.tar.gz -C ${WORKSPACE} .
+                    sudo docker run -td -e CCACHE_DIR=/ccache --mount source=ccache,target=/ccache --name ${docker_name} ccsv8_msp432e_gnu
+                    sudo docker exec -t $docker_name ccache -s
                     sudo docker cp ${WORKSPACE}/CDH_software.tar.gz $docker_name:/root/
-		    sudo docker exec -t $docker_name mkdir /root/flight_software
+		    		sudo docker exec -t $docker_name mkdir /root/flight_software
                     sudo docker exec -t $docker_name tar -xf /root/CDH_software.tar.gz -C /root/flight_software/
-                    sudo docker exec -t $docker_name /opt/ti/ccsv8/eclipse/eclipse -noSplash -data /root/ws -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "Tests MSP432E"
+                    sudo docker exec -t $docker_name /opt/ti/ccsv8/eclipse/eclipse -noSplash -data /root/ws -application com.ti.ccstudio.apps.projectBuild -ccs.workspace -ccs.configuration "zCoverity"
+                    sudo docker exec -t $docker_name ccache -s
 		    '''
     	    }
             post {
                 always {
-		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'Texas Instruments Code Composer Studio (C/C++)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
+		    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: '', consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
                     sh '''
-                      sudo docker rm -f ${docker_name}
+                     sudo docker rm -f ${docker_name}
                     '''
                 }
             }

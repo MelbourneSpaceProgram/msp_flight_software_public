@@ -10,6 +10,7 @@
 #include <src/util/nanopb_utils.h>
 #include <stdio.h>
 #include <xdc/runtime/Log.h>
+#include <src/database/circular_buffer_nanopb.h>
 
 #define RetrieveAndSendDataMacro(NanopbMessageType)                  \
     RetrieveAndSendData<NanopbMessageType, NanopbMessageType##_size, \

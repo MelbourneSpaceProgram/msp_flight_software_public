@@ -14,6 +14,7 @@
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
 #include <utility>
+#include <memory>
 
 PayloadProcessor::PayloadProcessor() {}
 

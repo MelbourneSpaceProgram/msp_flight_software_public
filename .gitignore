@@ -53,7 +53,7 @@ src/sysbios/sysbios.aem4f
 WinBuild/
 TIRTOS Build/
 Orbit/
-Coverity/
+zCoverity/
 Unit tests (MSP432E)/
 Tests MSP432E/
 

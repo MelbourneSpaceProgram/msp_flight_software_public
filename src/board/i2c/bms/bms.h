@@ -132,7 +132,6 @@ class Bms : public I2cDevice {
     static const byte kIchargeJeita2to4RegisterLocation = 0x28;
     static const byte kChargerConfigBitsRegisterLocation = 0x29;
     static const byte kRechargeThresholdRegisterLocation = 0x2E;
-    static const byte kChargerStateRegisterLocation = 0x34;
     static const byte kChargeStatusRegisterLocation = 0x35;
     static const byte kSystemStatusRegisterLocation = 0x39;
     static const byte kVbatRegisterLocation = 0x3A;
@@ -175,7 +174,14 @@ class Bms : public I2cDevice {
     static const double kConversionCoefficientB = 0.00026265;
     static const double kConversionCoefficientC = 0.00000011875;
     static const double kKelvinToCelciusOffset = 273.15;
-    static const double kRSnsbResistance = 0.033;
+
+    // HUGO'S CONSTANTS (should probably be renamed by someone who knows BMS
+    // terminology better!)
+    static const byte kChargerStateRegisterLocation = 0x34;
+    static const byte kChargerConfigRegisterLocation = 0x29;
+    static const byte kConfigurationBitsRegisterLocation = 0x14;
+
+    static constexpr double kRSnsbResistance = 0.033;
     static const double kRSnsiResistance = 0.002;
     static const double kLithiumBatteryVoltageConversionFactor = 0.000192264;
     static const double kBatteryCurrentConversionFactor =

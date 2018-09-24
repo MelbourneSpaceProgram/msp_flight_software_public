@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/util/string_hex.h>
 
 // Prepend 0x to each contiguous pair of chars (representing a single hex
@@ -7,7 +8,7 @@ std::string StringHex::StringToHex(const std::string& input) {
     size_t len = input.length();
 
     if (len & 1) {
-        throw std::invalid_argument("odd length");
+        throw etl::exception("Odd length", __FILE__, __LINE__);
     }
 
     std::string output;
@@ -18,13 +19,13 @@ std::string StringHex::StringToHex(const std::string& input) {
         const char* p = std::lower_bound(lut, lut + 16, a);
 
         if (*p != a) {
-            throw std::invalid_argument("not a hex digit");
+            throw etl::exception("Not a hex digit", __FILE__, __LINE__);
         }
         char b = input[i + 1];
         const char* q = std::lower_bound(lut, lut + 16, b);
 
         if (*q != b) {
-            throw std::invalid_argument("not a hex digit");
+            throw etl::exception("Not a hex digit", __FILE__, __LINE__);
         }
         output.push_back(((p - lut) << 4) | (q - lut));
     }

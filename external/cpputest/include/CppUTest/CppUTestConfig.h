@@ -28,6 +28,11 @@
 #ifndef CPPUTESTCONFIG_H_
 #define CPPUTESTCONFIG_H_
 
+#ifdef GCC_COMPILER
+#define CPPUTEST_MEM_LEAK_DETECTION_DISABLED
+#define CPPUTEST_USE_LONG_LONG
+#endif
+
 #ifndef CPPUTEST_USE_OWN_CONFIGURATION
 #include "CppUTestGeneratedConfig.h"
 #endif
@@ -172,7 +177,8 @@
  * Works on non-Visual C++ compilers and Visual C++ 2008 and newer
  */
 
-#if CPPUTEST_USE_STD_C_LIB && (!defined(_MSC_VER) || (_MSC_VER >= 1800)) && (!defined(__APPLE__))
+#if !defined(GCC_COMPILER) && CPPUTEST_USE_STD_C_LIB && \
+    (!defined(_MSC_VER) || (_MSC_VER >= 1800)) && (!defined(__APPLE__))
 #define CPPUTEST_HAVE_FENV
 #if defined(__WATCOMC__) || defined(__ARMEL__) || defined(__m68k__)
 #define CPPUTEST_FENV_IS_WORKING_PROPERLY 0
