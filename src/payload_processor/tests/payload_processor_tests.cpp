@@ -4,17 +4,25 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
+#include <src/database/circular_buffer_nanopb.h>
+#include <src/database/sd_card.h>
+#include <src/messages/CurrentReading.pb.h>
+#include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/lithium_beacon_period_command.h>
+#include <src/payload_processor/commands/science_data_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
+#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_id.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/message_codes.h>
 #include <src/util/nanopb_utils.h>
+#include <src/util/satellite_time_source.h>
+#include <stdio.h>
 #include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Mailbox.h>
 
 TEST_GROUP(PayloadProcessor){};
 
@@ -166,4 +174,38 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
         injected_beacon_period);
     CHECK(payload_processor.ParseAndExecuteCommands(buffer));
     CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), kNominalBeaconPeriodMs);
+}
+
+TEST(PayloadProcessor, TestScienceDataCommand) {
+    // Generate a fake science data command
+    byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
+
+    // Set command code - indicates a science data command
+    buffer[0] = kScienceDataCommand;
+    buffer[1] = 0;
+
+    // Put requested ID in the buffer
+    buffer[3] = kTestCurrent;
+    buffer[4] = 0;
+
+    // Put requested timestamp in the buffer
+    Time requested_time = SatelliteTimeSource::GetTime();
+    NanopbEncode(Time)(
+        buffer + PayloadProcessor::GetCommandCodeLength() + sizeof(uint16_t),
+        requested_time);
+
+    // Create a CircularBuffer and put a value in it
+    char filename[4];
+    sprintf(filename, "%3d", kTestCurrent);
+    CircularBufferNanopb(CurrentReading)::Create(filename, 10);
+
+    CurrentReading test_current =
+        I2cMeasurableManager::GetInstance()->ReadI2cMeasurable<CurrentReading>(
+            kComInI2, 0);
+    CircularBufferNanopb(CurrentReading)::WriteMessage(filename, test_current);
+
+    PayloadProcessor payload_processor;
+    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+
+    SdCard::GetInstance()->FileDelete(filename);
 }

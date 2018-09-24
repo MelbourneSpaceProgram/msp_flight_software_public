@@ -380,7 +380,7 @@ I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id, Bms *bms) {
 }
 
 void I2cMeasurableManager::CheckValidId(MeasurableId id) {
-    if (id > kMaxMeasurables - 1) {
+    if (id >= kMeasurableIdEnd) {
         etl::exception e("Measurable ID outside max size", __FILE__, __LINE__);
         throw e;
     } else if (measurables.at(id) != NULL) {

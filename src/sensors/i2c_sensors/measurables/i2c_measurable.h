@@ -60,4 +60,4 @@ class I2cMeasurable : public GenericMeasurable<TimestampedNanopbType> {
     bool first_reading;
 };
 
-#endif  // STimestampedNanopbTypeC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
+#endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_

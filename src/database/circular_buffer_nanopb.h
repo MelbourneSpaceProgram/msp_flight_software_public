@@ -208,6 +208,50 @@ class CircularBufferNanopb {
         }
     }
 
+    static NanopbMessageType Search(const char *file_name,
+                                    uint64_t timestamp_ms) {
+        SdCard *sd = SdCard::GetInstance();
+        File *file_handle = sd->FileOpen(
+            file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
+                           SdCard::kFileReadMode);
+        try {
+            uint32_t saved_read_index = GetReadIndex(file_handle);
+            uint32_t messages_written = GetCountMessagesWritten(file_handle);
+            if (messages_written == 0) {
+                throw etl::exception(
+                    "No messages in the circular buffer being searched",
+                    __FILE__, __LINE__);
+            }
+
+            SetReadIndex(file_handle, kEncodedHeaderSize);
+            sd->FileClose(file_handle);
+            NanopbMessageType reading =
+                CircularBufferNanopb(NanopbMessageType)::ReadMessage(file_name);
+
+            file_handle = sd->FileOpen(
+                file_name, SdCard::kFileOpenExistingMode |
+                               SdCard::kFileWriteMode | SdCard::kFileReadMode);
+            while (GetReadIndex(file_handle) < messages_written &&
+                   reading.timestamp_ms < timestamp_ms) {
+                sd->FileClose(file_handle);
+                reading = CircularBufferNanopb(NanopbMessageType)::ReadMessage(
+                    file_name);
+                file_handle =
+                    sd->FileOpen(file_name, SdCard::kFileOpenExistingMode |
+                                                SdCard::kFileWriteMode |
+                                                SdCard::kFileReadMode);
+            }
+            // Will return the first reading after passing the requested time
+            // or the last reading, if none exists
+            SetReadIndex(file_handle, saved_read_index);
+            sd->FileClose(file_handle);
+            return reading;
+        } catch (etl::exception &e) {
+            sd->FileClose(file_handle);
+            throw;
+        }
+    }
+
    private:
     static void WriteByte(File *file_handle, byte unencoded_byte) {
         SdCard *sd = SdCard::GetInstance();

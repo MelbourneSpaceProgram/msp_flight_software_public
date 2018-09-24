@@ -41,7 +41,8 @@ enum DebugMessageVersion { kV1 = 0 };
 enum PayloadType {
     kMspTestPayloadCode = 4,
     kBeaconPayloadCode = 5,
-    kTestOnesPayloadCode = 6
+    kTestOnesPayloadCode = 6,
+    kSciencePayloadCode = 7
 };
 
 enum Commands {
@@ -51,7 +52,7 @@ enum Commands {
     kTleUpdateCommand = 3,
     kForceResetCommand = 4,
     kLithiumBeaconPeriodCommand = 5,
-    kScienceCommand = 6,
+    kScienceDataCommand = 6,
     kLithiumFastPaCommand = 7,
     kLithiumTestCommand = 8,
     kDeployAntennaCommand = 9,

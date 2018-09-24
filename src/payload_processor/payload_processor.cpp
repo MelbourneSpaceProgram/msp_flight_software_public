@@ -7,6 +7,7 @@
 #include <src/payload_processor/commands/lithium_enable_command.h>
 #include <src/payload_processor/commands/lithium_set_pa_command.h>
 #include <src/payload_processor/commands/lithium_test_command.h>
+#include <src/payload_processor/commands/science_data_command.h>
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
@@ -61,6 +62,8 @@ Command* PayloadProcessor::CreateCommand(uint16_t command_code, byte* payload) {
             return new EnableDataloggerCommand(payload);
         case kFormatSdCommand:
             return new FormatSdCommand(payload);
+        case kScienceDataCommand:
+            return new ScienceDataCommand(payload);
         default:
             // TODO(dingbenjamin): Put erroneous command ID in exception
             etl::exception e("Could not parse command code", __FILE__,
