@@ -16,10 +16,8 @@ void RunnableTimeSource::UpdateSatelliteTime() {
     I2c bus(I2C_BUS_A);
     // TODO(akremor): Move this address centrally
     I2cMultiplexer multiplexer(&bus, 0x76);
-    Rtc rtc(&bus, 0x69);
+    Rtc rtc(&bus, 0x69, &multiplexer, I2cMultiplexer::kMuxChannel0);
     while (1) {
-        multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel0);
-
         RTime time;
         try {
             time = rtc.GetTime();
@@ -30,8 +28,6 @@ void RunnableTimeSource::UpdateSatelliteTime() {
             continue;
         }
 
-        // TODO(akremor): Thread safety issue here
-        multiplexer.CloseAllChannels();
         if (rtc.ValidTime(time)) {
             SatelliteTimeSource::SetTime(time);
         }

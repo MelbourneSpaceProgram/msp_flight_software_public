@@ -15,7 +15,18 @@ void I2cMultiplexer::OpenChannel(MuxChannel channel) const {
     } else {
         byte write_buffer = GetChannelStates();
         write_buffer |= (1 << static_cast<uint8_t>(channel));
-        GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
+
+        bool success = GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
+
+        if (!success){
+            Log_error1("Mux failed to open channel for channel %d", channel);
+        }
+
+        byte channel_states = GetChannelStates();
+
+        if (write_buffer != channel_states){
+            Log_error3("Mux responded but channel not open (race condition?): got %d, expected %d", channel, channel_states, write_buffer);
+        }
     }
 }
 
@@ -82,6 +93,10 @@ void I2cMultiplexer::CloseAllChannels() const {
 
 byte I2cMultiplexer::GetChannelStates() const {
     byte read_buffer = 0;
-    GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1);
+    bool success = GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1);
+
+    if(!success){
+        Log_error0("Unable to get channel states for mux");
+    }
     return read_buffer;
 }
