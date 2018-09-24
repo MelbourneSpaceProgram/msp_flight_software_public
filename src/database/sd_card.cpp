@@ -10,29 +10,31 @@
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
 
-GateMutexPri_Params SdCard::mutex_params = {NULL};
-GateMutexPri_Handle SdCard::sd_mutex = NULL;
-bool SdCard::initialised = false;
-SdHandle SdCard::handle = NULL;
-File *SdCard::open_file = NULL;
-IArg SdCard::key = NULL;
-bool SdCard::is_locked = false;
+SdCard *SdCard::instance = NULL;
 
-void SdCard::Init() {
-    if (!initialised) {
-        GateMutexPri_Params_init(&mutex_params);
-        sd_mutex = GateMutexPri_create(&mutex_params, NULL);
-        if (sd_mutex == NULL) {
-            throw etl::exception("Failed to create SD card mutex", __FILE__,
-                                 __LINE__);
-        }
-        initialised = true;
+SdCard *SdCard::GetInstance() {
+    if (instance == NULL) {
+        instance = new SdCard();
+    }
+    return instance;
+}
+SdCard::SdCard()
+    : handle(NULL),
+      mutex_params({NULL}),
+      sd_mutex(NULL),
+      key(NULL),
+      is_locked(NULL),
+      open_file(NULL) {
+    GateMutexPri_Params_init(&mutex_params);
+    sd_mutex = GateMutexPri_create(&mutex_params, NULL);
+    if (sd_mutex == NULL) {
+        throw etl::exception("Failed to create SD card mutex", __FILE__,
+                             __LINE__);
     }
 }
 
 // TODO(dingbenjamin): Parameterize
 SdHandle SdCard::SdOpen() {
-    assert(initialised);
     if (!kSdCardAvailable) {
         Log_info0("SdCard not available");
     }
@@ -45,7 +47,6 @@ SdHandle SdCard::SdOpen() {
 }
 
 void SdCard::SdClose(SdHandle handle) {
-    assert(initialised);
     if (is_locked) {
         throw etl::exception("Cannot close SD card, there is a file open",
                              __FILE__, __LINE__);
@@ -56,7 +57,6 @@ void SdCard::SdClose(SdHandle handle) {
 
 // TODO(dingbenjamin): Print file name in exceptions
 File *SdCard::FileOpen(const char *path, byte mode) {
-    assert(initialised);
     Lock();
     open_file = new File;
     FResult result = f_open(open_file, path, mode);
@@ -73,9 +73,8 @@ File *SdCard::FileOpen(const char *path, byte mode) {
 }
 
 uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
-                           uint32_t num_bytes) {
+                           uint32_t num_bytes) const {
     // Don't need a lock check as the file handle itself is the key
-    assert(initialised);
     uint32_t bytes_written;
     FResult result = f_write(f, write_buffer, num_bytes, &bytes_written);
     if (result != FR_OK) {
@@ -84,9 +83,9 @@ uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
     return bytes_written;
 }
 
-uint32_t SdCard::FileRead(File *f, void *read_buffer, uint32_t num_bytes) {
+uint32_t SdCard::FileRead(File *f, void *read_buffer,
+                          uint32_t num_bytes) const {
     // Don't need a lock check as the file handle itself is the key
-    assert(initialised);
     uint32_t bytes_read;
     FResult result = f_read(f, read_buffer, num_bytes, &bytes_read);
     if (result != FR_OK) {
@@ -95,18 +94,16 @@ uint32_t SdCard::FileRead(File *f, void *read_buffer, uint32_t num_bytes) {
     return bytes_read;
 }
 
-void SdCard::FileFlush(File *f) {
+void SdCard::FileFlush(File *f) const {
     // Don't need a lock check as the file handle itself is the key
-    assert(initialised);
     FResult result = f_sync(f);
     if (result != FR_OK) {
         throw etl::exception("Error flushing to file", __FILE__, __LINE__);
     }
 }
 
-void SdCard::FileSeek(File *f, uint32_t dest) {
+void SdCard::FileSeek(File *f, uint32_t dest) const {
     // Don't need a lock check as the file handle itself is the key
-    assert(initialised);
     FResult result = f_lseek(f, dest);
     if (result != FR_OK) {
         throw etl::exception("Error seeking in file", __FILE__, __LINE__);
@@ -114,7 +111,6 @@ void SdCard::FileSeek(File *f, uint32_t dest) {
 }
 
 void SdCard::FileClose(File *f) {
-    assert(initialised);
     if (open_file == NULL) {
         throw etl::exception("No file currently open", __FILE__, __LINE__);
     } else if (f != open_file) {
@@ -130,8 +126,7 @@ void SdCard::FileClose(File *f) {
     Unlock();
 }
 
-void SdCard::FileDelete(const char *path) {
-    assert(initialised);
+void SdCard::FileDelete(const char *path) const {
     if (is_locked)
         throw etl::exception("Cannot delete files while a file is open",
                              __FILE__, __LINE__);
@@ -141,14 +136,12 @@ void SdCard::FileDelete(const char *path) {
     }
 }
 
-uint32_t SdCard::FileSize(File *f) {
-    assert(initialised);
+uint32_t SdCard::FileSize(File *f) const {
     FSIZE_t size = f_size(f);
     return static_cast<uint32_t>(size);
 }
 
 void SdCard::Format() {
-    assert(initialised);
     Lock();
     byte work[FF_MAX_SS];
     Log_info0("Formatting SD Card");
@@ -177,7 +170,7 @@ void SdCard::Unlock() {
         Log_error0("Tried to unlock the SD card when it was already unlocked");
         return;
     }
-    GateMutexPri_leave(sd_mutex, key);
     is_locked = false;
+    GateMutexPri_leave(sd_mutex, key);
     key = NULL;
 }

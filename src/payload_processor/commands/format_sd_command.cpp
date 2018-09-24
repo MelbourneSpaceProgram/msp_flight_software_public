@@ -19,8 +19,9 @@ bool FormatSdCommand::ExecuteCommand() {
         Log_info0("Disabling data logger temporarily");
         RunnableSystemHealthCheck::EnableDatalogger(false);
         // Wait for the datalogger to finish an iteration
-        TaskUtils::SleepMilli(10000);
-        SdCard::Format();
+        TaskUtils::SleepMilli(
+            RunnableSystemHealthCheck::kHealthCheckPeriodMillis * 10);
+        SdCard::GetInstance()->Format();
     } catch (etl::exception& e) {
         Log_info0("Re-enabling data logger");
         RunnableSystemHealthCheck::EnableDatalogger(true);

@@ -22,32 +22,33 @@ class SdCard {
     static const byte kFileWrittenMode = 0x20;
     static const byte kFileDirtyMode = 0x40;
 
-    static void Init();
-    static SdHandle SdOpen();
-    static void SdClose(SdHandle handle);
-    static File *FileOpen(const char *path, byte mode);
-    static void FileClose(File *f);
-    static uint32_t FileWrite(File *f, const void *write_buffer,
-                              uint32_t num_bytes);
-    static uint32_t FileRead(File *f, void *read_buffer, uint32_t num_bytes);
-    static void FileFlush(File *f);
-    static void FileSeek(File *f, uint32_t dest);
-    static void FileDelete(const char *path);
-    static uint32_t FileSize(File *f);
-    static void Format();
+    static SdCard *GetInstance();
+    SdHandle SdOpen();
+    void SdClose(SdHandle handle);
+    File *FileOpen(const char *path, byte mode);
+    void FileClose(File *f);
+    uint32_t FileWrite(File *f, const void *write_buffer,
+                       uint32_t num_bytes) const;
+    uint32_t FileRead(File *f, void *read_buffer, uint32_t num_bytes) const;
+    void FileFlush(File *f) const;
+    void FileSeek(File *f, uint32_t dest) const;
+    void FileDelete(const char *path) const;
+    uint32_t FileSize(File *f) const;
+    void Format();
 
    private:
+    SdCard();
+    static SdCard *instance;
     static const uint8_t kDriveNum = 0;
-    static SdHandle handle;
+    SdHandle handle;
     // TODO(dingbenjamin): Timeout the mutex access so a task can't hog the SD
     // card
-    static GateMutexPri_Params mutex_params;
-    static GateMutexPri_Handle sd_mutex;
-    static IArg key;
-    static bool initialised;
-    static bool is_locked;
-    static File *open_file;
-    static void Lock();
-    static void Unlock();
+    GateMutexPri_Params mutex_params;
+    GateMutexPri_Handle sd_mutex;
+    IArg key;
+    bool is_locked;
+    File *open_file;
+    void Lock();
+    void Unlock();
 };
 #endif  // SRC_DATABASE_SDCARD_H_

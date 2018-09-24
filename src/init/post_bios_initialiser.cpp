@@ -198,10 +198,10 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        SdCard::Init();
-        SdCard::SdOpen();
+        SdCard* sd = SdCard::GetInstance();
+        sd->SdOpen();
         if (kFormatSdOnStartup) {
-            SdCard::Format();
+            sd->Format();
         }
     } catch (etl::exception& e) {
         EtlUtils::LogException(e);
