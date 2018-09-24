@@ -79,6 +79,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 LogMeasurableMacro(CurrentReading)(kComInI2);
                 LogMeasurableMacro(CurrentReading)(kComOutI2);
                 LogMeasurableMacro(TemperatureReading)(kComT1);
+                LogMeasurableMacro(TemperatureReading)(kComT2);
             }
 
             if (kEpsBoardAvailable) {
