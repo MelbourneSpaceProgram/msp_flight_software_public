@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='PwmOutputReading.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\x16PwmOutputReading.proto\"X\n\x10PwmOutputReading\x12\t\n\x01x\x18\x01 \x02(\x01\x12\t\n\x01y\x18\x02 \x02(\x01\x12\t\n\x01z\x18\x03 \x02(\x01\x12#\n\x1btimestamp_ms\x18\x04 \x02(\x06')
+  serialized_pb=_b('\n\x16PwmOutputReading.proto\"a\n\x10PwmOutputReading\x12\x10\n\x01x\x18\x01 \x02(\x01:\x05-9999\x12\x10\n\x01y\x18\x02 \x02(\x01:\x05-9999\x12\x10\n\x01z\x18\x03 \x02(\x01:\x05-9999\x12\x17\n\x0ctimestamp_ms\x18\x04 \x02(\x06:\x01\x30')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -36,28 +36,28 @@ _PWMOUTPUTREADING = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='x', full_name='PwmOutputReading.x', index=0,
       number=1, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='y', full_name='PwmOutputReading.y', index=1,
       number=2, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='z', full_name='PwmOutputReading.z', index=2,
       number=3, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='timestamp_ms', full_name='PwmOutputReading.timestamp_ms', index=3,
       number=4, type=6, cpp_type=4, label=2,
-      has_default_value=False, default_value=0,
+      has_default_value=True, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -74,7 +74,7 @@ _PWMOUTPUTREADING = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=26,
-  serialized_end=114,
+  serialized_end=123,
 )
 
 DESCRIPTOR.message_types_by_name['PwmOutputReading'] = _PWMOUTPUTREADING

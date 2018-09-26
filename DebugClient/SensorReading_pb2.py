@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='SensorReading.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\x13SensorReading.proto\"C\n\rSensorReading\x12\r\n\x05value\x18\x01 \x02(\x01\x12#\n\x1btimestamp_ms\x18\x02 \x02(\x06')
+  serialized_pb=_b('\n\x13SensorReading.proto\">\n\rSensorReading\x12\x14\n\x05value\x18\x01 \x02(\x01:\x05-9999\x12\x17\n\x0ctimestamp_ms\x18\x02 \x02(\x06:\x01\x30')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -36,14 +36,14 @@ _SENSORREADING = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='value', full_name='SensorReading.value', index=0,
       number=1, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='timestamp_ms', full_name='SensorReading.timestamp_ms', index=1,
       number=2, type=6, cpp_type=4, label=2,
-      has_default_value=False, default_value=0,
+      has_default_value=True, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -60,7 +60,7 @@ _SENSORREADING = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=23,
-  serialized_end=90,
+  serialized_end=85,
 )
 
 DESCRIPTOR.message_types_by_name['SensorReading'] = _SENSORREADING
