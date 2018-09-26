@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Time.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\nTime.proto\"+\n\x04Time\x12#\n\x1btimestamp_ms\x18\x01 \x02(\x06')
+  serialized_pb=_b('\n\nTime.proto\"8\n\x04Time\x12\x17\n\x0ctimestamp_ms\x18\x01 \x02(\x06:\x01\x30\x12\x17\n\x08is_valid\x18\x02 \x02(\x08:\x05\x66\x61lse')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -36,7 +36,14 @@ _TIME = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='timestamp_ms', full_name='Time.timestamp_ms', index=0,
       number=1, type=6, cpp_type=4, label=2,
-      has_default_value=False, default_value=0,
+      has_default_value=True, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='is_valid', full_name='Time.is_valid', index=1,
+      number=2, type=8, cpp_type=7, label=2,
+      has_default_value=True, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -53,7 +60,7 @@ _TIME = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=14,
-  serialized_end=57,
+  serialized_end=70,
 )
 
 DESCRIPTOR.message_types_by_name['Time'] = _TIME

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='StateMachineStateReading.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\x1eStateMachineStateReading.proto\"N\n\x18StateMachineStateReading\x12\r\n\x05state\x18\x01 \x02(\x05\x12#\n\x1btimestamp_ms\x18\x02 \x02(\x06')
+  serialized_pb=_b('\n\x1eStateMachineStateReading.proto\"I\n\x18StateMachineStateReading\x12\x14\n\x05state\x18\x01 \x02(\x05:\x05-9999\x12\x17\n\x0ctimestamp_ms\x18\x02 \x02(\x06:\x01\x30')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -36,14 +36,14 @@ _STATEMACHINESTATEREADING = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='state', full_name='StateMachineStateReading.state', index=0,
       number=1, type=5, cpp_type=1, label=2,
-      has_default_value=False, default_value=0,
+      has_default_value=True, default_value=-9999,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='timestamp_ms', full_name='StateMachineStateReading.timestamp_ms', index=1,
       number=2, type=6, cpp_type=4, label=2,
-      has_default_value=False, default_value=0,
+      has_default_value=True, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -60,7 +60,7 @@ _STATEMACHINESTATEREADING = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=34,
-  serialized_end=112,
+  serialized_end=107,
 )
 
 DESCRIPTOR.message_types_by_name['StateMachineStateReading'] = _STATEMACHINESTATEREADING
