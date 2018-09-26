@@ -147,7 +147,7 @@ def main():
     # Run Memcached on another terminal with:
     #     memcached -vv
     if useMemcached:
-        mc = mcClient(('localhost',11211))
+        mc = mcClient(('52.64.73.104',20328))
         mc.set('hello',
                'you should see this on the Memcached stdout when run with -vv')
 
