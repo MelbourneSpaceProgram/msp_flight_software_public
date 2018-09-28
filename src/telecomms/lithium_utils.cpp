@@ -22,6 +22,19 @@ bool LithiumUtils::IsValidHeader(const byte* received) {
     return true;
 }
 
+bool LithiumUtils::CheckTailChecksum(const byte* payload,
+                                     uint16_t lithium_payload_size) {
+    byte checksum[2];
+    // Check the checksum over the Lithium payload except for the two sync bytes
+    // He and the two tail checksum bytes
+    LithiumUtils::CalcChecksum(checksum, payload + 2, lithium_payload_size - 4);
+    if (!(checksum[0] == payload[lithium_payload_size - 2] &&
+          checksum[1] == payload[lithium_payload_size - 1])) {
+        return false;
+    }
+    return true;
+}
+
 bool LithiumUtils::IsAck(const byte* received) {
     if (received[4] == 0x0a && received[5] == 0x0a) {
         // Ack
