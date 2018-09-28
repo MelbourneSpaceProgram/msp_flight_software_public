@@ -135,7 +135,7 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run controller
         double signed_pwm_output_data[3][1];
         Matrix signed_pwm_output(signed_pwm_output_data);
-        BDotController::ComputeControl(geomag, b_dot_estimate,
+        BDotController::ComputeControl( b_dot_estimate,
                                        signed_pwm_output);
 
         // Use magnetorquer driver to set magnetorquer power.
