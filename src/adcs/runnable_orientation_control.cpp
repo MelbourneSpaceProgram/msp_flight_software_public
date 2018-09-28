@@ -10,6 +10,7 @@
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/init/init.h>
+#include <src/messages/BDotEstimate.pb.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
@@ -130,6 +131,17 @@ void RunnableOrientationControl::ControlOrientation() {
         Matrix b_dot_estimate(b_dot_estimate_data);
         b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
+        BDotEstimate b_dot_estimate_pb;
+        b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
+        b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
+        b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
+
+        if (kHilAvailable) {
+            RunnableDataDashboard::TransmitMessage(
+                kBDotEstimateCode, BDotEstimate_size, BDotEstimate_fields,
+                &b_dot_estimate_pb);
+        }
+
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
 
         // Run controller
@@ -163,8 +175,7 @@ void RunnableOrientationControl::ControlOrientation() {
             // (current_time.is_valid). Also appears as if tle_last_updated can
             // be accessed before it is initialised
             time_since_tle_updated_millis =
-                current_time.timestamp_ms -
-                tle_last_updated.timestamp_ms;
+                current_time.timestamp_ms - tle_last_updated.timestamp_ms;
             location_estimator.UpdateLocation(time_since_tle_updated_millis);
 
             // Write calculated position to data dashboard
@@ -176,8 +187,7 @@ void RunnableOrientationControl::ControlOrientation() {
             location_reading.altitude_above_ellipsoid_km =
                 location_estimator.GetAltitudeAboveEllipsoidKm();
             // TODO (rskew) generate timestamp
-            location_reading.timestamp_ms =
-                current_time.timestamp_ms;
+            location_reading.timestamp_ms = current_time.timestamp_ms;
             RunnableDataDashboard::TransmitMessage(
                 kLocationReadingCode, LocationReading_size,
                 LocationReading_fields, &location_reading);

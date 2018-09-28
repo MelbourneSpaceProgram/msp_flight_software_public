@@ -51,3 +51,9 @@ fabric.properties
 # Virtual Environment
 venv/*
 venv
+
+# Compiled python files
+*.pyc
+
+# Emacs temp files
+*.swp

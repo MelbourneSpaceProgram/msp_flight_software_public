@@ -10,6 +10,7 @@ import PwmOutputReading_pb2
 import SensorReading_pb2
 import StateMachineStateReading_pb2
 import TorqueOutputReading_pb2
+import BDotEstimate_pb2
 import Tle_pb2
 import Time_pb2
 import LocationReading_pb2
@@ -246,7 +247,7 @@ def testLoop(debug_serial_port, logger, mc):
                 mc.set("Satellite_PWM_Z",
                        struct.pack('>d',pwm_output_reading.z))
 
-                print("Logging pwm reading to CSV")
+                logger.info("Logging pwm reading to CSV")
                 log_to_csv(pwm_output_reading, session_timestamp)
 
 
@@ -260,7 +261,7 @@ def testLoop(debug_serial_port, logger, mc):
                 mc.set("Magnetometer_X",
                        struct.pack('>d',magnetometer_reading_echo.x))
 
-                print("Logging magnetometer reading to CSV")
+                logger.info("Logging magnetometer reading to CSV")
                 log_to_csv(magnetometer_reading_echo, session_timestamp)
 
 
@@ -276,6 +277,24 @@ def testLoop(debug_serial_port, logger, mc):
                        struct.pack('>d',magnetometer_reading_echo.y))
                 mc.set("Calibrated_Magnetometer_Z",
                        struct.pack('>d',magnetometer_reading_echo.z))
+
+
+            elif message_code == \
+                message_codes["b_dot_estimate_code"]:
+                b_dot_estimate = \
+                    BDotEstimate_pb2.BDotEstimate()
+                b_dot_estimate.ParseFromString(payload)
+                logger.info("Received message data: " + \
+                            str(b_dot_estimate))
+                mc.set("B_Dot_Estimate_X",
+                       struct.pack('>d',b_dot_estimate.x))
+                mc.set("B_Dot_Estimate_Y",
+                       struct.pack('>d',b_dot_estimate.y))
+                mc.set("B_Dot_Estimate_Z",
+                       struct.pack('>d',b_dot_estimate.z))
+
+                logger.info("Logging b-dot estimate to CSV")
+                log_to_csv(b_dot_estimate, session_timestamp)
 
 
             elif message_code == \
@@ -374,7 +393,7 @@ def testLoop(debug_serial_port, logger, mc):
                 mc.set("Location_Timestamp_Millis_Unix_Epoch",
                        struct.pack('>Q',location_reading.timestamp_ms))
 
-                print("Logging location reading to CSV")
+                logger.info("Logging location reading to CSV")
                 log_to_csv(location_reading, session_timestamp)
 
 

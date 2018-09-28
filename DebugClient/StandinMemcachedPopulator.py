@@ -41,6 +41,12 @@ if __name__ == "__main__":
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0])
             print(struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0])
 
+        if mc.get("B_Dot_Estimate_X"):
+            print("On-board estimate of BDot:")
+            print(struct.unpack('>d', mc.get("B_Dot_Estimate_X"))[0])
+            print(struct.unpack('>d', mc.get("B_Dot_Estimate_Y"))[0])
+            print(struct.unpack('>d', mc.get("B_Dot_Estimate_Z"))[0])
+
         if mc.get("Simulation_Torque_X"):
             print("Torque output from flight computer:")
             print(struct.unpack('>d', mc.get("Simulation_Torque_X"))[0])
