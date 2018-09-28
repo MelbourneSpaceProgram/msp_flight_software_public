@@ -1,6 +1,7 @@
 #ifndef SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
 #define SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
 
+#include <src/config/unit_tests.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
@@ -52,16 +53,18 @@ class I2cMeasurableManager {
             if (time.is_valid) {
                 earliest_acceptable_ms = time.timestamp_ms - max_cache_ms;
             } else {
-                Log_error0(
-                    "Failed to acquire time for cache, taking new sensor "
-                    "reading");
+                if (kI2cAvailable) {
+                    Log_error0(
+                        "Failed to acquire time for cache, taking new sensor "
+                        "reading");
+                }
                 earliest_acceptable_ms = 0;
             }
 
             uint64_t cache_time_ms = i2c_measurable->GetReading().timestamp_ms;
             if (i2c_measurable->first_reading ||
                 (!always_use_cached &&
-                 (cache_time_ms > earliest_acceptable_ms))) {
+                 (cache_time_ms >= earliest_acceptable_ms))) {
                 // TODO(dingbenjamin): Lock the relevant bus/sensor with a
                 // semaphore
                 i2c_measurable->TakeReading();
