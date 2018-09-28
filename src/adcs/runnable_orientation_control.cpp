@@ -68,15 +68,10 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     BDotEstimator b_dot_estimator(50, 4000);
-    LocationEstimator location_estimator;
 
     StateManager* state_manager = StateManager::GetStateManager();
     I2cMeasurableManager* measurable_manager =
         I2cMeasurableManager::GetInstance();
-
-    Time tle_last_updated;
-    Time current_time;
-    double time_since_tle_updated_millis;
 
     if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
               measurable_manager->GetMeasurable<MagnetometerReading>(
@@ -147,8 +142,7 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run controller
         double signed_pwm_output_data[3][1];
         Matrix signed_pwm_output(signed_pwm_output_data);
-        BDotController::ComputeControl( b_dot_estimate,
-                                       signed_pwm_output);
+        BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
 
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]
@@ -156,41 +150,5 @@ void RunnableOrientationControl::ControlOrientation() {
         MagnetorquerControl::SetMagnetorquersPowerFraction(
             signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
             signed_pwm_output.Get(2, 0));
-
-        if (kTcomBoardAvailable) {
-            if (location_estimator.CheckForUpdatedTle()) {
-                tle_last_updated = SatelliteTimeSource::GetTime();
-                // TODO (rskew) notify tle state machine
-            }
-        } else if (kHilAvailable) {
-            location_estimator.RequestTleFromDebugClient();
-            tle_last_updated = SatelliteTimeSource::GetTime();
-            // TODO (rskew) notify tle state machine
-        }
-
-        if (adcs_state == kAdcsNominal) {
-            // Calculate position
-            current_time = SatelliteTimeSource::GetTime();
-            // TODO(rskew): Need to check if the returned time was valid
-            // (current_time.is_valid). Also appears as if tle_last_updated can
-            // be accessed before it is initialised
-            time_since_tle_updated_millis =
-                current_time.timestamp_ms - tle_last_updated.timestamp_ms;
-            location_estimator.UpdateLocation(time_since_tle_updated_millis);
-
-            // Write calculated position to data dashboard
-            LocationReading location_reading = LocationReading_init_zero;
-            location_reading.lattitude_geodetic_degrees =
-                location_estimator.GetLattitudeGeodeticDegrees();
-            location_reading.longitude_degrees =
-                location_estimator.GetLongitudeDegrees();
-            location_reading.altitude_above_ellipsoid_km =
-                location_estimator.GetAltitudeAboveEllipsoidKm();
-            // TODO (rskew) generate timestamp
-            location_reading.timestamp_ms = current_time.timestamp_ms;
-            RunnableDataDashboard::TransmitMessage(
-                kLocationReadingCode, LocationReading_size,
-                LocationReading_fields, &location_reading);
-        }
     }
 }
