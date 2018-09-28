@@ -54,14 +54,18 @@ class RunnableSystemHealthCheck : public Runnable {
         if (kLogToSd) {
             char file_name[4];
             snprintf(file_name, sizeof(file_name), "%03d", id);
-            // TODO(dingbenjamin): Exception handle here
-            CircularBufferNanopb<
-                NanopbMessageType, NanopbMessageType_size,
-                NanopbMessageType_fields>::Create(file_name,
-                                                  kCircularBufferMessageLength);
-            CircularBufferNanopb<
-                NanopbMessageType, NanopbMessageType_size,
-                NanopbMessageType_fields>::WriteMessage(file_name, pb_reading);
+            try {
+                CircularBufferNanopb<NanopbMessageType, NanopbMessageType_size,
+                                     NanopbMessageType_fields>::
+                    Create(file_name, kCircularBufferMessageLength);
+                CircularBufferNanopb<
+                    NanopbMessageType, NanopbMessageType_size,
+                    NanopbMessageType_fields>::WriteMessage(file_name,
+                                                            pb_reading);
+            } catch (etl::exception& e) {
+                EtlUtils::LogException(e);
+                Log_error1("CircularBuffer failure for measurable id %d", id);
+            }
         };
 
         if (kLogToUart) {
