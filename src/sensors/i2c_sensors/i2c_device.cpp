@@ -1,3 +1,4 @@
+#include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
 
 GateMutexPri_Params mutex_params = {NULL};
@@ -7,8 +8,7 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
                      const I2cMultiplexer* multiplexer,
                      I2cMultiplexer::MuxChannel channel)
     : bus(bus), address(address), multiplexer(multiplexer), channel(channel) {
-
-    if (i2c_mutex == NULL){
+    if (i2c_mutex == NULL) {
         GateMutexPri_Params_init(&mutex_params);
         i2c_mutex = GateMutexPri_create(&mutex_params, NULL);
         if (i2c_mutex == NULL) {
@@ -18,13 +18,13 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
 }
 
 void I2cDevice::MuxSelect() const {
-    if (multiplexer != NULL) {
+    if (multiplexer != NULL && kI2cAvailable) {
         multiplexer->OpenChannel(channel);
     }
 }
 
 void I2cDevice::MuxDeselect() const {
-    if (multiplexer != NULL) {
+    if (multiplexer != NULL && kI2cAvailable) {
         multiplexer->CloseChannel(channel);
     }
 }
