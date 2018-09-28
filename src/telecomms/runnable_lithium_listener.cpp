@@ -82,10 +82,16 @@ void RunnableLithiumListener::Receive() {
                 }
                 mailbox = Lithium::GetInstance()->GetCommandResponseMailbox();
             }
-
-            // Post payload/uplink to appropriate mailbox
-            Mailbox_post(mailbox, read_buffer + Lithium::kLithiumHeaderSize,
-                         BIOS_WAIT_FOREVER);
+            if (LithiumUtils::CheckTailChecksum(
+                    read_buffer, payload_size + Lithium::kLithiumHeaderSize +
+                                     Lithium::kLithiumTailSize)) {
+                // Post payload/uplink to appropriate mailbox
+                Mailbox_post(mailbox, read_buffer + Lithium::kLithiumHeaderSize,
+                             BIOS_WAIT_FOREVER);
+            } else {
+                Log_error0(
+                    "Incoming packet tail checksum check failed, ignored");
+            }
         } else if (payload_size > Lithium::kMaxReceivedUartSize) {
             Log_error0("Incoming uplink too large, ignored");
         }
