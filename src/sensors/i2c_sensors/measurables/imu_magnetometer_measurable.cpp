@@ -5,37 +5,17 @@
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
-#include <src/util/etl_utils.h>
 #include <src/util/message_codes.h>
-
-const char* ImuMagnetometerMeasurable::kCalibrationReadingsBufferFileName =
-    "magcal.pb";
 
 ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
     MPU9250MotionTracker* imu_sensor, const Matrix& frame_mapping,
-    const Matrix& initial_biases, const Matrix& initial_scale_factors)
+    const Matrix& initial_biases, const Matrix& initial_scale_factors,
+    const char* calibration_readings_buffer_filename)
     : I2cMeasurable<MagnetometerReading>(imu_sensor,
                                          MagnetometerReading_init_default),
       magnetometer_to_body_frame_transform(frame_mapping),
-      magnetometer_calibration(initial_biases, initial_scale_factors),
-      can_calibrate(true) {
-    if (kSdCardAvailable) {
-        try {
-            CircularBufferNanopb(MagnetometerReading)::Create(
-                kCalibrationReadingsBufferFileName,
-                kCalibrationReadingsBufferSizeInReadings);
-        } catch (etl::exception& e) {
-            EtlUtils::LogException(e);
-            Log_error0(
-                "Disabling magnetometer calibration due to Circular Buffer/SD "
-                "error");
-            can_calibrate = false;
-        }
-    } else {
-        Log_info0("Disabling magnetometer calibration due to no SD card");
-        can_calibrate = false;
-    }
-}
+      magnetometer_calibration(initial_biases, initial_scale_factors,
+                               calibration_readings_buffer_filename) {}
 
 // Get readings from the hardware magnetometer and the simulation.
 // Fuse the hardware and simulation readings for the controller, and
@@ -73,15 +53,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         last_reading.z = last_reading.z + simulation_reading.z;
     }
 
-    if (can_calibrate) {
-        // Write to circular buffer for calibration.
-        // TODO (rskew) catch exceptions for pb encode error, sdcard write
-        // error,
-        CircularBufferNanopb(MagnetometerReading)::WriteMessage(
-            kCalibrationReadingsBufferFileName, last_reading);
-
-        // Apply calibration operations
-    }
+    magnetometer_calibration.Store(last_reading);
 
     magnetometer_calibration.Apply(last_reading);
 
@@ -102,79 +74,5 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
 }
 
 bool ImuMagnetometerMeasurable::Calibrate() {
-    if (!kSdCardAvailable) {
-        return false;
-    }
-
-    // If the buffer doesn't have enough readings the
-    // calibration could be invalid
-    if (CircularBufferNanopb(MagnetometerReading)::ReadCountMessagesWritten(
-            kCalibrationReadingsBufferFileName) <
-        MagnetometerCalibration::kMinimumSamplesForValidCalibration) {
-        Log_info0(
-            "Not enough samples inthe circular buffer to calibrate the "
-            "magnetometer");
-        return false;
-    }
-
-    for (uint32_t i = 0; i < kCalibrationReadingsBufferSizeInReadings /
-                                 MagnetometerCalibration::kBatchSizeInReadings;
-         i++) {
-        // read data from circular buffer
-        MagnetometerReading magnetometer_readings_batch
-            [MagnetometerCalibration::kBatchSizeInReadings];
-        for (uint8_t j = 0; j < MagnetometerCalibration::kBatchSizeInReadings;
-             j++) {
-            try {
-                magnetometer_readings_batch[j] =
-                    GetReadingFromBuffer(kCalibrationReadingsBufferFileName);
-            } catch (etl::exception& e) {
-                Log_info0(
-                    "Unable to read from magnetometer calibration circular "
-                    "buffer");
-                return false;
-            }
-        }
-
-        double magnetometer_readings_batch_matrix_data
-            [MagnetometerCalibration::kBatchSizeInReadings][3];
-        Matrix magnetometer_readings_batch_matrix(
-            magnetometer_readings_batch_matrix_data);
-        for (uint16_t i = 0; i < MagnetometerCalibration::kBatchSizeInReadings;
-             i++) {
-            magnetometer_readings_batch_matrix.Set(
-                i, 0, magnetometer_readings_batch[i].x);
-            magnetometer_readings_batch_matrix.Set(
-                i, 1, magnetometer_readings_batch[i].y);
-            magnetometer_readings_batch_matrix.Set(
-                i, 2, magnetometer_readings_batch[i].z);
-        }
-        magnetometer_calibration.AggregateReadings(
-            magnetometer_readings_batch_matrix);
-    }
-
-    magnetometer_calibration.ComputeCalibrationParameters();
-
-    return true;
-}
-
-MagnetometerReading ImuMagnetometerMeasurable::GetReadingFromBuffer(
-    const char* file_name) {
-    // Try to read from the buffer a number of times before giving up
-    for (int i = 0; i < ImuMagnetometerMeasurable::kBufferReadAttempts; i++) {
-        try {
-            return CircularBufferNanopb(MagnetometerReading)::ReadMessage(
-                file_name);
-        } catch (etl::exception& e) {
-            // If the Hamming decoding fails, discard the
-            // message and read another one.
-            continue;
-            // Note: if too many readings fail, the calibration could
-            // not have enough samples and be invalid.
-            // This is considered unlikely.
-        }
-    }
-    etl::exception e("Unable to read valid data from buffer", __FILE__,
-                     __LINE__);
-    throw e;
+    return magnetometer_calibration.Calibrate();
 }

@@ -186,9 +186,10 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     const Matrix initial_scale_factors_bus_a(
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
         initial_scale_factors_bus_a_data);
+
     AddImuMagnetometerMeasurable(
         kFsImuMagno1, fs_imu_1, kImuAToBodyFrameTransform, initial_biases_bus_a,
-        initial_scale_factors_bus_a);
+        initial_scale_factors_bus_a, MagnetometerCalibration::kBufferFilenameA);
 
     MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
@@ -205,7 +206,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         initial_scale_factors_bus_b_data);
     AddImuMagnetometerMeasurable(
         kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform, initial_biases_bus_b,
-        initial_scale_factors_bus_b);
+        initial_scale_factors_bus_b, MagnetometerCalibration::kBufferFilenameA);
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
@@ -415,10 +416,12 @@ void I2cMeasurableManager::AddImuTemperatureMeasurable(
 void I2cMeasurableManager::AddImuMagnetometerMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor,
     const Matrix &frame_mapping, const Matrix &initial_biases,
-    const Matrix &initial_scale_factors) {
+    const Matrix &initial_scale_factors,
+    const char *calibration_readings_buffer_filename) {
     CheckValidId(id);
     ImuMagnetometerMeasurable *magnetometer = new ImuMagnetometerMeasurable(
-        imu_sensor, frame_mapping, initial_biases, initial_scale_factors);
+        imu_sensor, frame_mapping, initial_biases, initial_scale_factors,
+        calibration_readings_buffer_filename);
     measurables[id] = magnetometer;
 }
 

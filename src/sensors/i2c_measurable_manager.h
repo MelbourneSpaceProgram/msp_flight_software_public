@@ -106,11 +106,11 @@ class I2cMeasurableManager {
                                       MPU9250MotionTracker *imu_sensor);
     void AddImuTemperatureMeasurable(MeasurableId id,
                                      MPU9250MotionTracker *imu_sensor);
-    void AddImuMagnetometerMeasurable(MeasurableId id,
-                                      MPU9250MotionTracker *imu_sensor,
-                                      const Matrix &frame_mapping,
-                                      const Matrix &initial_biases,
-                                      const Matrix &initial_scale_factors);
+    void AddImuMagnetometerMeasurable(
+        MeasurableId id, MPU9250MotionTracker *imu_sensor,
+        const Matrix &frame_mapping, const Matrix &initial_biases,
+        const Matrix &initial_scale_factors,
+        const char *calibration_readings_buffer_filename);
     void CheckValidId(MeasurableId id);
 
     static I2cMeasurableManager *instance;

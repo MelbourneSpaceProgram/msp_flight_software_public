@@ -83,7 +83,8 @@ TEST(MagnetometerCalibration, TestComputeAggregatedReadings) {
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
         initial_scale_factors_bus_a_dummy_data);
     MagnetometerCalibration magnetometer_calibration(
-        initial_biases_bus_a, initial_scale_factors_bus_a);
+        initial_biases_bus_a, initial_scale_factors_bus_a,
+        MagnetometerCalibration::kBufferFilenameA);
     magnetometer_calibration.AggregateReadings(test_calibration_values);
     for (uint8_t i = 0; i < 10; i++) {
         for (uint8_t j = 0; j < 10; j++) {
@@ -118,7 +119,8 @@ TEST(MagnetometerCalibration, TestMagnetometerCalibration) {
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusA,
         initial_scale_factors_bus_a_data);
     MagnetometerCalibration magnetometer_calibration(
-        initial_biases_bus_a, initial_scale_factors_bus_a);
+        initial_biases_bus_a, initial_scale_factors_bus_a,
+        MagnetometerCalibration::kBufferFilenameA);
 
     uint8_t number_of_test_samples = 40;
     for (uint8_t i = 0; i < number_of_test_samples;

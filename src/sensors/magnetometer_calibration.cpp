@@ -5,13 +5,34 @@
 #include <external/magnetometer_calibration_library/magnetometer_calibration_library.h>
 #include <math.h>
 #include <src/config/satellite.h>
+#include <src/config/unit_tests.h>
+#include <src/database/circular_buffer_nanopb.h>
 #include <src/sensors/magnetometer_calibration.h>
+#include <src/util/etl_utils.h>
+#include <xdc/runtime/Log.h>
+
+const char *MagnetometerCalibration::kBufferFilenameA = "magcalA.pb";
+const char *MagnetometerCalibration::kBufferFilenameB = "magcalB.pb";
 
 MagnetometerCalibration::MagnetometerCalibration(
-    const Matrix &initial_biases, const Matrix &initial_scale_factors)
+    const Matrix &initial_biases, const Matrix &initial_scale_factors,
+    const char *calibration_readings_buffer_filename)
     : biases(initial_biases, biases_data),
       scale_factors(initial_scale_factors, scale_factors_data),
-      aggregated_readings(aggregated_readings_data) {}
+      aggregated_readings(aggregated_readings_data),
+      calibration_readings_buffer_filename(
+          calibration_readings_buffer_filename) {
+    if (kSdCardAvailable) {
+        try {
+            CircularBufferNanopb(MagnetometerReading)::Create(
+                calibration_readings_buffer_filename,
+                kCalibrationReadingsBufferSizeInReadings);
+        } catch (etl::exception &e) {
+            EtlUtils::LogException(e);
+            Log_error0("Circular Buffer/SD error");
+        }
+    }
+}
 
 void MagnetometerCalibration::AggregateReadings(const Matrix &mag_data) {
     NewStackMatrixMacro(D, 10, kBatchSizeInReadings);
@@ -184,4 +205,105 @@ void MagnetometerCalibration::Apply(
         shifted_scaled_magnetometer_reading.Get(1, 0);
     magnetometer_reading_struct.z =
         shifted_scaled_magnetometer_reading.Get(2, 0);
+}
+
+bool MagnetometerCalibration::Calibrate() {
+    if (!kSdCardAvailable || kInstantDeploymentWaits) {
+        return false;
+    }
+
+    // If the buffer doesn't have enough readings the
+    // calibration could be invalid
+    try {
+        uint16_t n_messages_written =
+            CircularBufferNanopb(MagnetometerReading)::ReadCountMessagesWritten(
+                calibration_readings_buffer_filename);
+
+        if (n_messages_written <
+            MagnetometerCalibration::kMinimumSamplesForValidCalibration) {
+            Log_warning0(
+                "Not enough samples in the circular buffer to calibrate the "
+                "magnetometer");
+            return false;
+        }
+    } catch (etl::exception &e) {
+        Log_error0("Could not read from circular buffer");
+        return false;
+    }
+
+    for (uint32_t i = 0; i < kCalibrationReadingsBufferSizeInReadings /
+                                 MagnetometerCalibration::kBatchSizeInReadings;
+         i++) {
+        // read data from circular buffer
+        MagnetometerReading magnetometer_readings_batch
+            [MagnetometerCalibration::kBatchSizeInReadings];
+        for (uint8_t j = 0; j < MagnetometerCalibration::kBatchSizeInReadings;
+             j++) {
+            try {
+                magnetometer_readings_batch[j] =
+                    GetReadingFromBuffer(calibration_readings_buffer_filename);
+            } catch (etl::exception &e) {
+                Log_info0(
+                    "Unable to read from magnetometer calibration circular "
+                    "buffer");
+                return false;
+            }
+        }
+
+        double magnetometer_readings_batch_matrix_data
+            [MagnetometerCalibration::kBatchSizeInReadings][3];
+        Matrix magnetometer_readings_batch_matrix(
+            magnetometer_readings_batch_matrix_data);
+        for (uint16_t i = 0; i < MagnetometerCalibration::kBatchSizeInReadings;
+             i++) {
+            magnetometer_readings_batch_matrix.Set(
+                i, 0, magnetometer_readings_batch[i].x);
+            magnetometer_readings_batch_matrix.Set(
+                i, 1, magnetometer_readings_batch[i].y);
+            magnetometer_readings_batch_matrix.Set(
+                i, 2, magnetometer_readings_batch[i].z);
+        }
+        AggregateReadings(magnetometer_readings_batch_matrix);
+    }
+
+    ComputeCalibrationParameters();
+
+    return true;
+}
+
+MagnetometerReading MagnetometerCalibration::GetReadingFromBuffer(
+    const char *file_name) {
+    // Try to read from the buffer a number of times before giving up
+    for (uint8_t i = 0; i < kBufferReadAttempts; i++) {
+        try {
+            return CircularBufferNanopb(MagnetometerReading)::ReadMessage(
+                file_name);
+        } catch (etl::exception &e) {
+            // If the Hamming decoding fails, discard the
+            // message and read another one.
+            // Note: if too many readings fail, the calibration could
+            // not have enough samples and be invalid.
+            // This is considered unlikely.
+            continue;
+        }
+    }
+    etl::exception e("Unable to read valid data from buffer", __FILE__,
+                     __LINE__);
+    throw e;
+}
+
+bool MagnetometerCalibration::Store(MagnetometerReading magnetometer_reading) {
+    try {
+        // Write to circular buffer for calibration.
+        // TODO (rskew) catch exceptions for pb encode error, sdcard write
+        // error,
+        CircularBufferNanopb(MagnetometerReading)::WriteMessage(
+            calibration_readings_buffer_filename, magnetometer_reading);
+
+        // Apply calibration operations
+    } catch (etl::exception &e) {
+        Log_error0("Can't write to circular buffer");
+        return false;
+    }
+    return true;
 }
