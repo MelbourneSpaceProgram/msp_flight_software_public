@@ -610,13 +610,12 @@ void MagnetometerCalibrationLibrary::BackSubstitution(double *H,
     // Start Backsubstitution
 
     for (row = n - 1; row >= 0; row--) {
-        if (eigen_imag[row] == 0.0) {
-            BackSubstitute_Real_Vector(H, eigen_real, eigen_imag, row,
-                                       zero_tolerance, n);
-        } else if (eigen_imag[row] < 0.0) {
-            BackSubstitute_Complex_Vector(H, eigen_real, eigen_imag, row,
-                                          zero_tolerance, n);
-        }
+        // rskew Melbourne Space Program change:
+        // Remove option to use BackSubstitute_Complex_Vector as
+        // it had a code path that used an uninitialized variable
+        // as determined by Coverity
+        BackSubstitute_Real_Vector(H, eigen_real, eigen_imag, row,
+                                   zero_tolerance, n);
     }
 }
 
