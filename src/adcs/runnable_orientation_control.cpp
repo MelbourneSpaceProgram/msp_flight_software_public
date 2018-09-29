@@ -7,6 +7,7 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/init/init.h>
@@ -67,7 +68,9 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 }
 
 void RunnableOrientationControl::ControlOrientation() {
-    BDotEstimator b_dot_estimator(50, 4000);
+    BDotEstimator b_dot_estimator(
+        RunnableOrientationControl::kControlLoopPeriodMicros * 1e-3,
+        kBDotEstimatorTimeConstantMillis);
 
     StateManager* state_manager = StateManager::GetStateManager();
     I2cMeasurableManager* measurable_manager =
