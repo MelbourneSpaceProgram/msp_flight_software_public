@@ -12,9 +12,6 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
       magnetometer_to_body_frame_transform(frame_mapping),
       magnetometer_calibration(initial_biases, initial_scale_factors) {}
 
-// Get readings from the hardware magnetometer and the simulation.
-// Fuse the hardware and simulation readings for the controller, and
-// echo readings to the DebugClient.
 MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     MPU9250MotionTracker* imu_sensor =
         static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
@@ -32,33 +29,8 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     last_reading.y = reading_body_frame.Get(1, 0);
     last_reading.z = reading_body_frame.Get(2, 0);
 
-    if (kHilAvailable) {
-        // Echo reading to DebugClient
-        PostNanopbToSimMacro(MagnetometerReading, kMagnetometerReadingCode,
-                             last_reading);
-    }
-
-    if (kHilAvailable) {
-        MagnetometerReading simulation_reading = TakeSimulationReading();
-        // Combine readings.
-        // The static hardware reading will be calibrated out, and the
-        // true hardware noise will be added to the simulated reading.
-        last_reading.x = last_reading.x + simulation_reading.x;
-        last_reading.y = last_reading.y + simulation_reading.y;
-        last_reading.z = last_reading.z + simulation_reading.z;
-    }
-
+    // Apply calibration operations
     magnetometer_calibration.Apply(last_reading);
 
-    if (kHilAvailable) {
-        PostNanopbToSimMacro(MagnetometerReading,
-                             kCalibratedMagnetometerReadingCode, last_reading);
-    }
-
     return last_reading;
-}
-
-MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
-    return RequestNanopbFromSimMacro(MagnetometerReading,
-                                     kMagnetometerReadingRequestCode);
 }

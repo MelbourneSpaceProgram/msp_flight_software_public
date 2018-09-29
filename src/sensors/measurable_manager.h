@@ -4,8 +4,8 @@
 #include <src/config/satellite.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_sensors/adc.h>
-#include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/measurable_id.h>
+#include <src/sensors/nanopb_measurable.h>
 #include <src/util/matrix.h>
 #include <src/util/msp_exception.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
@@ -122,6 +122,7 @@ class MeasurableManager {
                                       const Matrix &frame_mapping,
                                       const Matrix &initial_biases,
                                       const Matrix &initial_scale_factors);
+    void AddSimImuMagnetometerMeasurable(MeasurableId id);
     void CheckValidId(MeasurableId id);
 
     static MeasurableManager *instance;

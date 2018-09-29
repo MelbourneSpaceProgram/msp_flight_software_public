@@ -21,6 +21,7 @@
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/util/satellite_power.h>
+#include <src/sensors/software_sensor/simulation_magnetometer_measurable.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
 
@@ -206,6 +207,7 @@ void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddImuMagnetometerMeasurable(
         kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform, initial_biases_bus_b,
         initial_scale_factors_bus_b);
+    AddSimImuMagnetometerMeasurable(kFsImuMagnoSim);
 }
 
 void MeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
@@ -420,6 +422,13 @@ void MeasurableManager::AddImuMagnetometerMeasurable(
     ImuMagnetometerMeasurable *magnetometer = new ImuMagnetometerMeasurable(
         imu_sensor, frame_mapping, initial_biases, initial_scale_factors);
     measurables[id] = magnetometer;
+}
+
+void MeasurableManager::AddSimImuMagnetometerMeasurable(MeasurableId id) {
+    CheckValidId(id);
+    SimulationMagnetometerMeasurable *sim_magnetometer =
+        new SimulationMagnetometerMeasurable();
+    measurables[id] = sim_magnetometer;
 }
 
 BmsBatteryTemperatureMeasurable *MeasurableManager::AddBmsBatteryTempMeasurable(

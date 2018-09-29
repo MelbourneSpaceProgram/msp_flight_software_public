@@ -16,7 +16,11 @@ class I2cMeasurable : public NanopbMeasurable<TimestampedNanopbType> {
           sensor(sensor) {}
 
     TimestampedNanopbType TakeDirectNanopbReading() {
-        return TakeDirectI2cReading();
+        if (kI2cAvailable) {
+            return TakeDirectI2cReading();
+        } else {
+            return this->failure_reading;
+        }
     }
 
     virtual TimestampedNanopbType TakeDirectI2cReading() = 0;

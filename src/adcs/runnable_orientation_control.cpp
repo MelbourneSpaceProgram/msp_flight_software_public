@@ -17,6 +17,7 @@
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
+#include <src/sensors/software_sensor/simulation_magnetometer_measurable.h>
 #include <src/util/matrix.h>
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
@@ -89,6 +90,14 @@ void RunnableOrientationControl::ControlOrientation() {
             MagnetometerReading magnetometer_reading =
                 measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
                     kFsImuMagno2, 0);
+
+            MagnetometerReading simulation_magnetometer_reading =
+              measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+                                                                            kFsImuMagnoSim, 0);
+
+            // Use the simulation reading
+            // TODO (rskew) use hardware readings for flight configuration
+            magnetometer_reading = simulation_magnetometer_reading;
 
             if (kHilAvailable) {
                 // Echo magnetometer reading to DebugClient

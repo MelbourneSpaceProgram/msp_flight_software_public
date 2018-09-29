@@ -34,7 +34,6 @@ class NanopbMeasurable : public GenericMeasurable<TimestampedNanopbType> {
             this->last_reading = failure_reading;
             this->last_reading.timestamp_ms =
                 SatelliteTimeSource::GetTime().timestamp_ms;
-            // TODO (rskew) stop lots of logs when kI2cAvailable == false
             MspException::LogException(e, kFailedMeasurableReadingCatch);
             Log_error1("Failed to read from %s",
                        (xdc_IArg)(GetInfoString().c_str()));
@@ -47,8 +46,10 @@ class NanopbMeasurable : public GenericMeasurable<TimestampedNanopbType> {
     virtual TimestampedNanopbType TakeDirectNanopbReading() = 0;
     virtual std::string GetInfoString() = 0;
 
-   private:
+   protected:
     TimestampedNanopbType failure_reading;
+
+   private:
     bool first_reading;
 };
 

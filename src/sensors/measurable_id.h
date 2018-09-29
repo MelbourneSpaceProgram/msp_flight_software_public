@@ -196,6 +196,7 @@ enum MeasurableId {
     kEpsBmsVoltagesReading2 = 189,
     kTestCurrent = 190,
     // Add new measurables below this line only
+    kFsImuMagnoSim = 191,
     kMeasurableIdEnd
 };
 
