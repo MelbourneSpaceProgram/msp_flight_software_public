@@ -124,12 +124,19 @@ void RunnableOrientationControl::ControlOrientation() {
         Matrix geomag(geomag_data);
         double b_dot_estimate_data[3][1];
         Matrix b_dot_estimate(b_dot_estimate_data);
-        b_dot_estimator.Estimate(geomag, b_dot_estimate);
+        BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
 
-        BDotEstimate b_dot_estimate_pb;
-        b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
-        b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
-        b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
+        // Failed readings return a value of (-9999.0,-9999.0,-9999.0) which
+        // winds up the BDotEstimator.
+        if (geomag.Get(0, 0) !=
+            measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
+                ->GetFailureReading()
+                .x) {
+            b_dot_estimator.Estimate(geomag, b_dot_estimate);
+            b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
+            b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
+            b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
+        }
 
         if (kHilAvailable) {
             RunnableDataDashboard::TransmitMessage(

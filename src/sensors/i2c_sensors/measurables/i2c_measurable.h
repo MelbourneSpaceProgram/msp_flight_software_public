@@ -50,14 +50,17 @@ class I2cMeasurable : public GenericMeasurable<TimestampedNanopbType> {
     }
 
     TimestampedNanopbType GetReading() { return this->last_reading; }
+    const TimestampedNanopbType GetFailureReading() {
+        return this->failure_reading;
+    }
     virtual TimestampedNanopbType TakeDirectI2cReading() = 0;
 
    protected:
     I2cDevice* sensor;
 
    private:
-    TimestampedNanopbType failure_reading;
     bool first_reading;
+    const TimestampedNanopbType failure_reading;
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
