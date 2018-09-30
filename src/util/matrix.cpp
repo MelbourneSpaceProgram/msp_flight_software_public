@@ -2,7 +2,7 @@
 #include <math.h>
 #include <src/util/matrix.h>
 
-void Matrix::Slice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
+void Matrix::CopySlice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
                    uint8_t column_end, const Matrix &A) {
     if (row_start >= A.GetNRows() || row_end >= A.GetNRows() ||
         row_end < row_start || column_start >= A.GetNColumns() ||

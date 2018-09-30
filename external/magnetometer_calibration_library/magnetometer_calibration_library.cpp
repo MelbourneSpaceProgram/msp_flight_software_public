@@ -42,16 +42,16 @@ void MagnetometerCalibrationLibrary::ComputeMatrixSS(const Matrix &S,
                                                      Matrix &SS, Matrix &S22a) {
     double S11_data[6][6];
     Matrix S11(S11_data);
-    S11.Slice(0, 5, 0, 5, S);
+    S11.CopySlice(0, 5, 0, 5, S);
     double S12_data[6][4];
     Matrix S12(S12_data);
-    S12.Slice(0, 5, 6, 9, S);
+    S12.CopySlice(0, 5, 6, 9, S);
     double S12t_data[4][6];
     Matrix S12t(S12t_data);
-    S12t.Slice(6, 9, 0, 5, S);
+    S12t.CopySlice(6, 9, 0, 5, S);
     double S22_data[4][4];
     Matrix S22(S22_data);
-    S22.Slice(6, 9, 6, 9, S);
+    S22.CopySlice(6, 9, 6, 9, S);
 
     double S22_1_data[4][4];
     Matrix S22_1(S22_1_data);

@@ -71,7 +71,7 @@ TEST(Matrix, TestSlice) {
     double m22_slice_data[2][2];
     Matrix m22_slice(m22_slice_data);
     m22_slice.Fill(0);
-    m22_slice.Slice(1, 2, 1, 2, m44);
+    m22_slice.CopySlice(1, 2, 1, 2, m44);
 
     double m22_expected_data[2][2] = {{6, 7}, {10, 11}};
     Matrix m22_expected(m22_expected_data);

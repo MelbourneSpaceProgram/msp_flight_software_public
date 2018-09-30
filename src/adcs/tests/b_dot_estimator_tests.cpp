@@ -34,8 +34,8 @@ TEST(BDotEstimator, TestBDotEstimator) {
     Matrix output_expected(output_expected_data);
 
     for (uint8_t i = 0; i < 9; i++) {
-        input.Slice(0, 2, i, i, input_total);
-        output_expected.Slice(0, 2, i, i, output_expected_total);
+        input.CopySlice(0, 2, i, i, input_total);
+        output_expected.CopySlice(0, 2, i, i, output_expected_total);
         b_dot_estimator.Estimate(input, output);
 
         CHECK(output_expected.IsEqual(output));

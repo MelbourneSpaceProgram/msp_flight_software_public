@@ -24,7 +24,6 @@ class Matrix {
         }
     }
 
-    // TODO(rskew) implement copy constructor in matrix.cpp
     template <uint8_t rows, uint8_t columns>
     Matrix(const Matrix &A, double (&init_data)[rows][columns] = NULL) {
         if (init_data == NULL) {
@@ -50,7 +49,7 @@ class Matrix {
         }
     }
 
-    void Slice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
+    void CopySlice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
                uint8_t column_end, const Matrix &A);
 
     uint8_t GetNRows() const;
@@ -103,7 +102,7 @@ class Matrix {
 
         augmented.RowReduce();
 
-        Slice(0, size - 1, size, 2 * size - 1, augmented);
+        CopySlice(0, size - 1, size, 2 * size - 1, augmented);
     }
 
     void QuaternionNormalise(const Matrix &q);

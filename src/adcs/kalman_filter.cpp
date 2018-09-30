@@ -201,7 +201,7 @@ void KalmanFilter::ComputeK(Matrix &K_out, const Matrix &H) {
     // Put it all together
     double HPH_transpose_plus_R_inv_data[6][6];
     Matrix HPH_transpose_plus_R_inv(HPH_transpose_plus_R_inv_data);
-    HPH_transpose_plus_R_inv.Slice(0, 5, 6, 11, augmented);
+    HPH_transpose_plus_R_inv.CopySlice(0, 5, 6, 11, augmented);
 
     K_out.Multiply(PH_transpose, HPH_transpose_plus_R_inv);
 }
