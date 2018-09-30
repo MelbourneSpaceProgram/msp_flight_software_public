@@ -177,6 +177,9 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
 }
 
 TEST(PayloadProcessor, TestScienceDataCommand) {
+    if (!kSdCardAvailable) {
+        TEST_EXIT
+    }
     // Generate a fake science data command
     byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
 
