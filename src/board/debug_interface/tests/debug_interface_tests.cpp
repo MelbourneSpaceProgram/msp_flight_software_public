@@ -68,15 +68,14 @@ TEST(DebugInterface, TestPostMessageToDebugClient) {
     pb_decode(&receive_stream, SensorReading_fields,
               &test_sensor_reading_received);
 
-    DOUBLES_EQUAL(-999, test_sensor_reading_received.value, 1);
-    CHECK_EQUAL(123456789,
-                test_sensor_reading_received.timestamp_ms);
-
     // Reset the test value on the DebugClient end.
     // Stateful tests are no fun.
     SensorReading reset_test_sensor_reading;
     reset_test_sensor_reading.value = 0;
     reset_test_sensor_reading.timestamp_ms = 0;
+
+    DOUBLES_EQUAL(-999, test_sensor_reading_received.value, 1);
+    CHECK_EQUAL(123456789, test_sensor_reading_received.timestamp_ms);
 
     uint8_t reset_buffer[SensorReading_size];
     pb_ostream_t reset_stream =
@@ -90,4 +89,29 @@ TEST(DebugInterface, TestPostMessageToDebugClient) {
     }
     debug_stream->PostMessageToDebugClient(kTestSensorReadingCode,
                                            SensorReading_size, reset_buffer);
+}
+
+TEST(DebugInterface, TestMacrosAndTemplates) {
+    double test_value = 987654321;
+    uint64_t test_timestamp = 554455445;
+
+    SensorReading test_sensor_reading_message;
+    test_sensor_reading_message.value = test_value;
+    test_sensor_reading_message.timestamp_ms = test_timestamp;
+
+    PostNanopbToSimMacro(SensorReading, kTestSensorReadingCode,
+                         test_sensor_reading_message);
+
+    SensorReading reading =
+        RequestNanopbFromSimMacro(SensorReading, kTestSensorReadingRequestCode);
+
+    // Reset the test value on the DebugClient end.
+    // Stateful tests are no fun.
+    test_sensor_reading_message.value = 0;
+    test_sensor_reading_message.timestamp_ms = 0;
+    PostNanopbToSimMacro(SensorReading, kTestSensorReadingCode,
+                         test_sensor_reading_message);
+
+    DOUBLES_EQUAL(test_value, reading.value, 0.01);
+    CHECK_EQUAL(test_timestamp, reading.timestamp_ms);
 }

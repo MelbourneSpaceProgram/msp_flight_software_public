@@ -22,6 +22,10 @@ import os
 import subprocess
 from messagecodes import message_codes
 
+### Constants
+sync_byte_1 = bytes(b'\xaf')
+sync_byte_2 = bytes(b'\xfa')
+
 def message_log_dir():
     repo_dir = \
         subprocess.run(['git', 'rev-parse', '--show-toplevel'],
@@ -45,7 +49,7 @@ logger.addHandler(console_logger)
 Receives messages from the MSP432 and responds when appropriate.
 
 Stores/retrieves data from the Memcached buffer for transfers with
-the HIL simulation and the data dashboard.
+the HIL simulation.
 """
 
 console_logger = logging.StreamHandler()
@@ -64,6 +68,18 @@ def send_message(debug_serial_port, messageCode, serialisedMessage):
 def wait_for_message(debug_serial_port):
 
     try:
+        # Use sync bytes to align
+        serial_byte = debug_serial_port.read(1)
+        while serial_byte != sync_byte_1:
+            serial_byte = debug_serial_port.read(1)
+            logger.debug("received serial byte " + str(serial_byte))
+            logger.debug("Chewing a byte looking for sync")
+        # The first sync byte has now been read
+
+        serial_byte = debug_serial_port.read(1)
+        if serial_byte != sync_byte_2:
+            return (None, None, None)
+
         # Read response code
         message_code = int.from_bytes(debug_serial_port.read(1), byteorder='big')
         if message_code == 0:

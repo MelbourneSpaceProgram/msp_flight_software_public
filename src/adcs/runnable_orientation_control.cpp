@@ -10,7 +10,6 @@
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
-#include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/init/init.h>
 #include <src/messages/BDotEstimate.pb.h>
 #include <src/messages/LocationReading.pb.h>
@@ -115,10 +114,9 @@ void RunnableOrientationControl::ControlOrientation() {
                 kFsImuMagno2, 0);
 
         if (kHilAvailable) {
-            // Echo magnetometer reading to data dashboard
-            RunnableDataDashboard::TransmitMessage(
-                kMagnetometerReadingCode, MagnetometerReading_size,
-                MagnetometerReading_fields, &magnetometer_reading);
+            // Echo magnetometer reading to DebugClient
+            PostNanopbToSimMacro(MagnetometerReading, kMagnetometerReadingCode,
+                                 magnetometer_reading);
         }
 
         // Run estimator
@@ -143,9 +141,8 @@ void RunnableOrientationControl::ControlOrientation() {
         }
 
         if (kHilAvailable) {
-            RunnableDataDashboard::TransmitMessage(
-                kBDotEstimateCode, BDotEstimate_size, BDotEstimate_fields,
-                &b_dot_estimate_pb);
+            PostNanopbToSimMacro(BDotEstimate, kBDotEstimateCode,
+                                 b_dot_estimate_pb);
         }
 
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)

@@ -37,18 +37,7 @@ bool LocationEstimator::CheckForUpdatedTle() {
 }
 
 void LocationEstimator::RequestTleFromDebugClient() {
-    DebugStream* debug_stream = DebugStream::GetInstance();
-    byte buffer[Tle_size];
-    debug_stream->RequestMessageFromSimulator(kTleRequestCode, buffer,
-                                              Tle_size);
-    pb_istream_t stream = pb_istream_from_buffer(buffer, Tle_size);
-    Tle tle = Tle_init_zero;
-    bool status = pb_decode(&stream, Tle_fields, &tle);
-    if (!status) {
-        etl::exception e("pb_decode failed", __FILE__, __LINE__);
-        throw e;
-    }
-
+    Tle tle = RequestNanopbFromSimMacro(Tle, kTleRequestCode);
     StoreTle(tle);
 }
 

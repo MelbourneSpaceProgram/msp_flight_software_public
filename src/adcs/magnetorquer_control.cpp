@@ -2,9 +2,9 @@
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
+#include <src/board/debug_interface/debug_stream.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
-#include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
 #include <ti/drivers/GPIO.h>
@@ -118,9 +118,8 @@ void MagnetorquerControl::PushDebugMessage(float x, float y, float z) {
     pwm_output_reading.y = y;
     pwm_output_reading.z = z;
 
-    RunnableDataDashboard::TransmitMessage(
-        kPwmOutputReadingCode, PwmOutputReading_size, PwmOutputReading_fields,
-        &pwm_output_reading);
+    PostNanopbToSimMacro(PwmOutputReading, kPwmOutputReadingCode,
+                         pwm_output_reading);
 }
 
 void MagnetorquerControl::SetPolarity(MagnetorquerAxis axis, bool positive) {

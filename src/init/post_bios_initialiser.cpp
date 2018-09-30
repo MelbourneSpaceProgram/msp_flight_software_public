@@ -7,7 +7,6 @@
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
-#include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/eeprom.h>
 #include <src/database/sd_card.h>
 #include <src/init/post_bios_initialiser.h>
@@ -121,13 +120,6 @@ void PostBiosInitialiser::InitPayloadProcessor() {
         2048, "PayloadProcessor", 6, new RunnablePayloadProcessor());
 
     payload_processor_task->Start();
-}
-
-void PostBiosInitialiser::InitDataDashboard() {
-    // TODO(rskew) review priority
-    TaskHolder* data_dashboard_task =
-        new TaskHolder(4096, "DataDashboard", 2, new RunnableDataDashboard());
-    data_dashboard_task->Start();
 }
 
 void PostBiosInitialiser::InitOrientationControl() {
@@ -280,9 +272,6 @@ void PostBiosInitialiser::PostBiosInit() {
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
-        if (kHilAvailable) {
-            InitDataDashboard();
-        }
 
         if (kRunMagnetorquersAtConstantPower == false) {
             InitPreDeploymentMagnetometerPoller();

@@ -2,7 +2,6 @@
 #include <external/nanopb/pb_encode.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
-#include <src/data_dashboard/runnable_data_dashboard.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
@@ -59,10 +58,9 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     last_reading.z = reading_body_frame.Get(2, 0);
 
     if (kHilAvailable) {
-        // Echo reading to data dashboard
-        RunnableDataDashboard::TransmitMessage(
-            kMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &last_reading);
+        // Echo reading to DebugClient
+        PostNanopbToSimMacro(MagnetometerReading, kMagnetometerReadingCode,
+                             last_reading);
     }
 
     if (kHilAvailable) {
@@ -88,37 +86,17 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     magnetometer_calibration.Apply(last_reading);
 
     if (kHilAvailable) {
-        RunnableDataDashboard::TransmitMessage(
-            kCalibratedMagnetometerReadingCode, MagnetometerReading_size,
-            MagnetometerReading_fields, &last_reading);
+        PostNanopbToSimMacro(MagnetometerReading,
+                             kCalibratedMagnetometerReadingCode, last_reading);
     }
 
     return last_reading;
 }
 
 MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
-    DebugStream* debug_stream = DebugStream::GetInstance();
     uint8_t buffer[MagnetometerReading_size];
-    MagnetometerReading simulation_reading;
-
-    bool success = debug_stream->RequestMessageFromSimulator(
-        kMagnetometerReadingRequestCode, buffer, MagnetometerReading_size);
-
-    if (success) {
-        pb_istream_t stream =
-            pb_istream_from_buffer(buffer, MagnetometerReading_size);
-
-        bool status =
-            pb_decode(&stream, MagnetometerReading_fields, &simulation_reading);
-        if (!status) {
-            etl::exception e("pb_decode failed", __FILE__, __LINE__);
-            throw e;
-        }
-    } else {
-        etl::exception e("Failed to request message from simulator", __FILE__,
-                         __LINE__);
-        throw e;
-    }
+    MagnetometerReading simulation_reading = RequestNanopbFromSimMacro(
+        MagnetometerReading, kMagnetometerReadingRequestCode);
 
     return simulation_reading;
 }

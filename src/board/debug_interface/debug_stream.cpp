@@ -3,6 +3,7 @@
 #include <src/messages/serialised_message_builder.h>
 #include <src/messages/test_message.h>
 #include <src/util/message_codes.h>
+#include <src/util/nanopb_utils.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -31,13 +32,18 @@ DebugStream *DebugStream::GetInstance() {
 bool DebugStream::RequestMessageFromSimulator(byte message_code,
                                               byte *response_buffer,
                                               uint8_t response_size) {
-    uint8_t message_header[2];
-    message_header[0] = message_code;
-    message_header[1] = 0x00;
+    byte message_header[4];
+    message_header[0] = kSyncByte1;
+    message_header[1] = kSyncByte2;
+    message_header[2] = message_code;
+    message_header[3] = 0x00;
 
     // Entering critical section
     Semaphore_pend(bus_available, BIOS_WAIT_FOREVER);
-    debug_uart.PerformWriteTransaction(message_header, 2);
+    int err = debug_uart.PerformWriteTransaction(message_header, 4);
+    if (err == -1) {
+        return false;
+    }
     int bytes_read =
         debug_uart.PerformReadTransaction(response_buffer, response_size);
     Semaphore_post(bus_available);
@@ -50,13 +56,15 @@ bool DebugStream::RequestMessageFromSimulator(byte message_code,
 void DebugStream::PostMessageToDebugClient(byte message_code,
                                            uint8_t payload_size,
                                            byte *payload) {
-    uint8_t message_header[2];
-    message_header[0] = message_code;
-    message_header[1] = payload_size;
+    byte message_header[4];
+    message_header[0] = kSyncByte1;
+    message_header[1] = kSyncByte2;
+    message_header[2] = message_code;
+    message_header[3] = payload_size;
 
     // Entering critical section
     Semaphore_pend(bus_available, BIOS_WAIT_FOREVER);
-    debug_uart.PerformWriteTransaction(message_header, 2);
+    debug_uart.PerformWriteTransaction(message_header, 4);
     debug_uart.PerformWriteTransaction(payload, payload_size);
     Semaphore_post(bus_available);
     // Exited critical section
