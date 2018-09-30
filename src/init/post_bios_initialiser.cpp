@@ -43,7 +43,7 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
 }
 
 Uart* PostBiosInitialiser::InitDebugUart() {
-    Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
+    Uart* debug_uart = new Uart(UMBILICAL_SIM);
     debug_uart->SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
@@ -218,7 +218,7 @@ void PostBiosInitialiser::InitTimeSource() {
 }
 
 void PostBiosInitialiser::InitConsoleUart() {
-    Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
+    Uart* debug_uart = new Uart(UMBILICAL_SIM);
     debug_uart->SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))

@@ -10,7 +10,7 @@
 
 DebugStream *DebugStream::instance = NULL;
 
-DebugStream::DebugStream() : debug_uart(UMBILICAL_SIM) {
+DebugStream::DebugStream() : debug_uart(UMBILICAL_CONSOLE) {
     debug_uart.SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))

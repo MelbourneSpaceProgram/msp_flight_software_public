@@ -5,18 +5,18 @@
 // Please look in console_config.txt
 static constexpr bool kVerboseUnitTests = false;
 
-static constexpr bool kEpsBoardAvailable = true;
-static constexpr bool kCdhBoardAvailable = true;
-static constexpr bool kFsBoardAvailable = true;
-static constexpr bool kTcomBoardAvailable = true;
-static constexpr bool kUtilitiesBoardAvailable = true;
+static constexpr bool kEpsBoardAvailable = false;
+static constexpr bool kCdhBoardAvailable = false;
+static constexpr bool kFsBoardAvailable = false;
+static constexpr bool kTcomBoardAvailable = false;
+static constexpr bool kUtilitiesBoardAvailable = false;
 
-static constexpr bool kXPosAvailable = true;
-static constexpr bool kXNegAvailable = true;
-static constexpr bool kYPosAvailable = true;
-static constexpr bool kYNegAvailable = true;
-static constexpr bool kZPosAvailable = true;
-static constexpr bool kZNegAvailable = true;
+static constexpr bool kXPosAvailable = false;
+static constexpr bool kXNegAvailable = false;
+static constexpr bool kYPosAvailable = false;
+static constexpr bool kYNegAvailable = false;
+static constexpr bool kZPosAvailable = false;
+static constexpr bool kZNegAvailable = false;
 
 static constexpr bool kLithiumFlashTestEnabled = false;
 static constexpr bool kForceResetCommandEnabled =
@@ -26,10 +26,10 @@ static constexpr bool kForceResetCommandEnabled =
 static constexpr bool kEepromAvailable =
     false;  // It is actually available but there is a resource conflict with
             // the SD cards as they share the same bus
-static constexpr bool kI2cAvailable = true;
-static constexpr bool kSdCardAvailable = true;
+static constexpr bool kI2cAvailable = false;
+static constexpr bool kSdCardAvailable = false;
 static constexpr bool kHilAvailable = false;
-static constexpr bool kBmsAvailable = true;
+static constexpr bool kBmsAvailable = false;
 static constexpr bool kAntennaAvailable = false;
 static constexpr bool kDitlMode = false;
 
