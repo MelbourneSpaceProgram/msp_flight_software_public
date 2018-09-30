@@ -40,29 +40,23 @@ void MagnetometerCalibrationLibrary::InitialiseMatrixC(Matrix &C) {
 
 void MagnetometerCalibrationLibrary::ComputeMatrixSS(const Matrix &S,
                                                      Matrix &SS, Matrix &S22a) {
-    double S11_data[6][6];
-    Matrix S11(S11_data);
+    NewStackMatrixMacro(S11, 6, 6);
     S11.CopySlice(0, 5, 0, 5, S);
-    double S12_data[6][4];
-    Matrix S12(S12_data);
+    NewStackMatrixMacro(S12, 6, 4);
     S12.CopySlice(0, 5, 6, 9, S);
-    double S12t_data[4][6];
-    Matrix S12t(S12t_data);
+    NewStackMatrixMacro(S12t, 4, 6);
     S12t.CopySlice(6, 9, 0, 5, S);
-    double S22_data[4][4];
-    Matrix S22(S22_data);
+    NewStackMatrixMacro(S22, 4, 4);
     S22.CopySlice(6, 9, 6, 9, S);
 
-    double S22_1_data[4][4];
-    Matrix S22_1(S22_1_data);
+    NewStackMatrixMacro(S22_1, 4, 4);
     S22_1.InvertMatrix<4>(S22);
 
     // Calculate S22a = S22_1 * S12t   4*6 = 4x4 * 4x6   C = AB
     S22a.Multiply(S22_1, S12t);
 
     // Then calculate S22b = S12 * S22a      ( 6x6 = 6x4 * 4x6)
-    double S22b_data[6][6];
-    Matrix S22b(S22b_data);
+    NewStackMatrixMacro(S22b, 6, 6);
     S22b.Multiply(S12, S22a);
 
     // Calculate SS = S11 - S22b
@@ -74,8 +68,7 @@ void MagnetometerCalibrationLibrary::CalculateEigenVector1(const Matrix &SS,
                                                            Matrix &v1) {
     uint8_t i, j, index;
     double maxVal, norm;
-    double E_data[6][6];
-    Matrix E(E_data);
+    NewStackMatrixMacro(E, 6, 6);
 
     E.Multiply(C, SS);
 
@@ -120,12 +113,9 @@ void MagnetometerCalibrationLibrary::CalculateEigenVector1(const Matrix &SS,
 void MagnetometerCalibrationLibrary::InitialiseEigenVector(const Matrix &SS,
                                                            const Matrix &S22a,
                                                            Matrix &v) {
-    double C_data[6][6];
-    double v1_data[6][1];
-    double v2_data[4][1];
-    Matrix v1(v1_data);
-    Matrix v2(v2_data);
-    Matrix C(C_data);
+    NewStackMatrixMacro(v1, 6, 1);
+    NewStackMatrixMacro(v2, 4, 1);
+    NewStackMatrixMacro(C, 6, 6);
 
     // Create pre-inverted constraint matrix C
     InitialiseMatrixC(C);
@@ -148,18 +138,15 @@ void MagnetometerCalibrationLibrary::InitialiseEigenVector(const Matrix &SS,
 double MagnetometerCalibrationLibrary::CalculateHMB(const Matrix &B_est,
                                                     const Matrix &Q,
                                                     const Matrix &v) {
-    double Bt_data[1][3];
-    Matrix Bt(Bt_data);
+    NewStackMatrixMacro(Bt, 1, 3);
     Bt.Transpose(B_est);
 
     // First calculate QB = Q * B   ( 3x1 = 3x3 * 3x1)
-    double QB_data[3][1];
-    Matrix QB(QB_data);
+    NewStackMatrixMacro(QB, 3, 1);
     QB.Multiply(Q, B_est);
 
     // Then calculate btqb = BT * QB    ( 1x1 = 1x3 * 3x1)
-    double btqb_data[1][1];
-    Matrix btqb(btqb_data);
+    NewStackMatrixMacro(btqb, 1, 1);
     btqb.Multiply(Bt, QB);
 
     // Calculate hmb = sqrt(btqb - J).

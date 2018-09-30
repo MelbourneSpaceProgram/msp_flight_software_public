@@ -122,12 +122,12 @@ void RunnableOrientationControl::ControlOrientation() {
         }
 
         // Run estimator
-        double geomag_data[3][1] = {{magnetometer_reading.x},
-                                    {magnetometer_reading.y},
-                                    {magnetometer_reading.z}};
-        Matrix geomag(geomag_data);
-        double b_dot_estimate_data[3][1];
-        Matrix b_dot_estimate(b_dot_estimate_data);
+
+        NewStackMatrixMacro(geomag, 3, 1);
+        geomag.Set(0,0,magnetometer_reading.x);
+        geomag.Set(1,0,magnetometer_reading.y);
+        geomag.Set(2,0,magnetometer_reading.z);
+        NewStackMatrixMacro(b_dot_estimate, 3, 1);
         BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
 
         // Failed readings return a value of (-9999.0,-9999.0,-9999.0) which
@@ -151,8 +151,7 @@ void RunnableOrientationControl::ControlOrientation() {
         // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
 
         // Run controller
-        double signed_pwm_output_data[3][1];
-        Matrix signed_pwm_output(signed_pwm_output_data);
+        NewStackMatrixMacro(signed_pwm_output, 3, 1);
         BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
 
         // Use magnetorquer driver to set magnetorquer power.

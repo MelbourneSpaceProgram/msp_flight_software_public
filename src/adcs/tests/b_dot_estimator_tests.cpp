@@ -26,12 +26,9 @@ TEST(BDotEstimator, TestBDotEstimator) {
          3.461384790821122, 2.458424969520964, 1.456467606729316}};
     Matrix output_expected_total(output_expected_total_data);
 
-    double output_data[3][1];
-    Matrix output(output_data);
-    double input_data[3][1];
-    Matrix input(input_data);
-    double output_expected_data[3][1];
-    Matrix output_expected(output_expected_data);
+    NewStackMatrixMacro(output, 3, 1);
+    NewStackMatrixMacro(input, 3, 1);
+    NewStackMatrixMacro(output_expected, 3, 1);
 
     for (uint8_t i = 0; i < 9; i++) {
         input.CopySlice(0, 2, i, i, input_total);
@@ -42,8 +39,7 @@ TEST(BDotEstimator, TestBDotEstimator) {
     }
 
     // test failure on wrong sized args
-    double m32_data[3][2];
-    Matrix m32(m32_data);
+    NewStackMatrixMacro(m32, 3, 2);
 
     CHECK_THROWS(etl::exception, b_dot_estimator.Estimate(m32, output));
     CHECK_THROWS(etl::exception, b_dot_estimator.Estimate(input, m32));

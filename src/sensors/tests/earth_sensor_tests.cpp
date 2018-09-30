@@ -26,8 +26,7 @@ TEST(EarthSensor, TestCalculateNadirVector) {
     // Data obtained from MATLAB script code of the running algorithm
     double nadir_expected_data_1[3][1] = {
         {-0.404816393349314}, {-0.859347789667761}, {0.4033108072669962}};
-    double nadir_vector_data[3][1];
-    Matrix nadir_vector(nadir_vector_data);
+    NewStackMatrixMacro(nadir_vector, 3, 1);
     Matrix nadir_expected_1(nadir_expected_data_1);
     EarthSensor earth_sensor;
 

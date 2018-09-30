@@ -11,11 +11,9 @@ TEST(KalmanFilter, PredictAndUpdate) {
     Matrix r2(r2_data);
     double q0_data[4][1] = {{0}, {0}, {0}, {1}};
     Matrix q0(q0_data);
-    double P0_data[3][3];
-    Matrix P0(P0_data);
+    NewStackMatrixMacro(P0, 3, 3);
     P0.Fill(0);
-    double Q0_data[3][3];
-    Matrix Q0(Q0_data);
+    NewStackMatrixMacro(Q0, 3, 3);
     Q0.Identity();
     Q0.MultiplyScalar(Q0, 0.1);
     double R0_data[6][6];
@@ -31,8 +29,7 @@ TEST(KalmanFilter, PredictAndUpdate) {
     double q_prior_estimate_expected_data[4][1] = {
         {0}, {0.0109}, {-0.0022}, {1}};
     Matrix q_prior_estimate_expected(q_prior_estimate_expected_data);
-    double P_prior_expected_data[3][3];
-    Matrix P_prior_expected(P_prior_expected_data);
+    NewStackMatrixMacro(P_prior_expected, 3, 3);
     P_prior_expected.Identity();
     P_prior_expected.MultiplyScalar(P_prior_expected, 0.005);
     double q_posterior_estimate_expected_data[4][1] = {

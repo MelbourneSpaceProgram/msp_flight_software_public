@@ -43,8 +43,7 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
     //   'a', 'b' and 'c' components may not make a right-handed coordinate
     //   system. Therefore, the transformation from the body frame to the
     //   magnetorquer 'frame' may not be a pure rotation.
-    double magnetorquer_power_body_frame_data[3][1];
-    Matrix magnetorquer_power_body_frame(magnetorquer_power_body_frame_data);
+    NewStackMatrixMacro(magnetorquer_power_body_frame, 3, 1);
     magnetorquer_power_body_frame.Set(0, 0, x);
     magnetorquer_power_body_frame.Set(1, 0, y);
     magnetorquer_power_body_frame.Set(2, 0, z);

@@ -244,8 +244,7 @@ void Matrix::RotationMatrixFromQuaternion(const Matrix &q) {
             __FILE__, __LINE__);
         throw e;
     }
-    double q_normed_data[4][1];
-    Matrix q_normed(q_normed_data);
+    NewStackMatrixMacro(q_normed, 4, 1);
 
     q_normed.QuaternionNormalise(q);
 

@@ -7,10 +7,9 @@
 TEST_GROUP(BDotController){};
 
 TEST(BDotController, SaturationInEachAxis) {
-    double b_dot_data[3][1] = {{-100}, {-100}, {-100}};
-    Matrix b_dot(b_dot_data);
-    double signed_pwm_data[3][1];
-    Matrix signed_pwm(signed_pwm_data);
+    NewStackMatrixMacro(b_dot, 3, 1);
+    b_dot.Fill(-100);
+    NewStackMatrixMacro(signed_pwm, 3, 1);
 
     BDotController::ComputeControl(b_dot, signed_pwm);
 
@@ -20,10 +19,8 @@ TEST(BDotController, SaturationInEachAxis) {
 }
 
 TEST(BDotController, SignedPwmInExpectedDirection) {
-    double b_dot_data[3][1];
-    Matrix b_dot(b_dot_data);
-    double signed_pwm_data[3][1];
-    Matrix signed_pwm(signed_pwm_data);
+    NewStackMatrixMacro(b_dot, 3, 1);
+    NewStackMatrixMacro(signed_pwm, 3, 1);
     double bdot_est = 1E-6;
     b_dot.Set(0, 0, bdot_est);
     b_dot.Set(1, 0, bdot_est);
@@ -61,12 +58,10 @@ TEST(BDotController, SignedPwmInExpectedDirection) {
 }
 
 TEST(BDotController, InvalidInputSize) {
-    double b_dot_data[3][1] = {{-100}, {-100}, {-100}};
-    Matrix b_dot(b_dot_data);
-    double signed_pwm_data[3][1];
-    Matrix signed_pwm(signed_pwm_data);
-    double m32_data[3][2];
-    Matrix m32(m32_data);
+    NewStackMatrixMacro(b_dot, 3, 1);
+    b_dot.Fill(-100);
+    NewStackMatrixMacro(signed_pwm, 3, 1);
+    NewStackMatrixMacro(m32, 3, 2);
 
     CHECK_THROWS(etl::exception,
                  BDotController::ComputeControl(m32, signed_pwm));

@@ -14,8 +14,7 @@ MagnetometerCalibration::MagnetometerCalibration(
       aggregated_readings(aggregated_readings_data) {}
 
 void MagnetometerCalibration::AggregateReadings(const Matrix &mag_data) {
-    double D_data[10][kBatchSizeInReadings];
-    Matrix D(D_data);
+    NewStackMatrixMacro(D, 10, kBatchSizeInReadings);
     for (uint8_t i = 0; i < kBatchSizeInReadings; i++) {
         double x = mag_data.Get(i, 0);
         double y = mag_data.Get(i, 1);
@@ -31,11 +30,9 @@ void MagnetometerCalibration::AggregateReadings(const Matrix &mag_data) {
         D.Set(8, i, 2.0 * z);
         D.Set(9, i, 1.0);
     }
-    double Dt_data[kBatchSizeInReadings][10];
-    Matrix Dt(Dt_data);
+    NewStackMatrixMacro(Dt, kBatchSizeInReadings, 10);
     Dt.Transpose(D);
-    double batch_aggregated_readings_data[10][10];
-    Matrix batch_aggregated_readings(batch_aggregated_readings_data);
+    NewStackMatrixMacro(batch_aggregated_readings, 10, 10);
     batch_aggregated_readings.Multiply(D, Dt);
     // Matrix operations cannot be assumed to work in-place in general.
     // Add is ok.
@@ -45,38 +42,32 @@ void MagnetometerCalibration::AggregateReadings(const Matrix &mag_data) {
 void MagnetometerCalibration::GenerateScaleFactors(double *eigen_real3,
                                                    double hmb,
                                                    const Matrix &SSSS) {
-    double Dz_data[3][3];
-    Matrix Dz(Dz_data);
+    NewStackMatrixMacro(Dz, 3, 3);
     Dz.Fill(0);
     Dz.Set(0, 0, sqrt(eigen_real3[0]));
     Dz.Set(1, 1, sqrt(eigen_real3[1]));
     Dz.Set(2, 2, sqrt(eigen_real3[2]));
 
-    double vdz_data[3][3];
-    Matrix vdz(vdz_data);
+    NewStackMatrixMacro(vdz, 3, 3);
     vdz.Multiply(SSSS, Dz);
 
-    double SSSS_transpose_data[3][3];
-    Matrix SSSS_transpose(SSSS_transpose_data);
+    NewStackMatrixMacro(SSSS_transpose, 3, 3);
     SSSS_transpose.Transpose(SSSS);
 
-    double SQ_data[3][3];
-    Matrix SQ(SQ_data);
+    NewStackMatrixMacro(SQ, 3, 3);
     SQ.Multiply(vdz, SSSS_transpose);
 
     scale_factors.MultiplyScalar(SQ, MagnetometerCalibrationLibrary::kHm / hmb);
 }
 
 void MagnetometerCalibration::GenerateBiases(const Matrix &v, const Matrix &Q) {
-    double U_data[3][1];
-    Matrix U(U_data);
+    NewStackMatrixMacro(U, 3, 1);
 
     U.Set(0, 0, v.Get(6, 0));
     U.Set(1, 0, v.Get(7, 0));
     U.Set(2, 0, v.Get(8, 0));
 
-    double Q_data[3][3];
-    Matrix Q_1(Q_data);
+    NewStackMatrixMacro(Q_1, 3, 3);
     Q_1.InvertMatrix<3>(Q);
 
     // Calculate B = Q-1 * U   ( 3x1 = 3x3 * 3x1)
@@ -88,14 +79,10 @@ void MagnetometerCalibration::GenerateBiases(const Matrix &v, const Matrix &Q) {
 
 void MagnetometerCalibration::ComputeCalibrationParameters() {
     uint8_t i, j;
-    double S22a_data[4][6];
-    double v_data[10][1];
-    double Q_data[3][3];
-    double SS_data[6][6];
-    Matrix S22a(S22a_data);
-    Matrix v(v_data);
-    Matrix Q(Q_data);
-    Matrix SS(SS_data);
+    NewStackMatrixMacro(S22a, 4, 6);
+    NewStackMatrixMacro(v, 10, 1);
+    NewStackMatrixMacro(Q, 3, 3);
+    NewStackMatrixMacro(SS, 6, 6);
 
     MagnetometerCalibrationLibrary::ComputeMatrixSS(aggregated_readings, SS,
                                                     S22a);
@@ -123,8 +110,7 @@ void MagnetometerCalibration::ComputeCalibrationParameters() {
 
     if (!kUsePreFlightMagnetometerCalibrationScaleFactors) {
         double hmb, norm1, norm2, norm3;
-        double SSSS_data[3][3];
-        Matrix SSSS(SSSS_data);
+        NewStackMatrixMacro(SSSS, 3, 3);
 
         hmb = MagnetometerCalibrationLibrary::CalculateHMB(biases, Q, v);
 
@@ -180,19 +166,15 @@ Matrix MagnetometerCalibration::GetAggregatedReadings() const {
 
 void MagnetometerCalibration::Apply(
     MagnetometerReading &magnetometer_reading_struct) {
-    double magnetometer_reading_data[3][1];
-    Matrix magnetometer_reading(magnetometer_reading_data);
+    NewStackMatrixMacro(magnetometer_reading, 3, 1);
     magnetometer_reading.Set(0, 0, magnetometer_reading_struct.x);
     magnetometer_reading.Set(1, 0, magnetometer_reading_struct.y);
     magnetometer_reading.Set(2, 0, magnetometer_reading_struct.z);
 
-    double shifted_magnetometer_reading_data[3][1];
-    Matrix shifted_magnetometer_reading(shifted_magnetometer_reading_data);
+    NewStackMatrixMacro(shifted_magnetometer_reading, 3, 1);
     shifted_magnetometer_reading.Subtract(magnetometer_reading, biases);
 
-    double shifted_scaled_magnetometer_reading_data[3][1];
-    Matrix shifted_scaled_magnetometer_reading(
-        shifted_scaled_magnetometer_reading_data);
+    NewStackMatrixMacro(shifted_scaled_magnetometer_reading, 3, 1);
     shifted_scaled_magnetometer_reading.Multiply(scale_factors,
                                                  shifted_magnetometer_reading);
 

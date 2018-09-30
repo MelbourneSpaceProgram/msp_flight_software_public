@@ -94,12 +94,10 @@ class Matrix {
 
     template <uint8_t size>
     void InvertMatrix(const Matrix &A) {
-        double augmented_data[size][2 * size];
-        Matrix augmented(augmented_data);
+        NewStackMatrixMacro(augmented, size, 2*size);
         augmented.CopyInto(0, 0, A);
 
-        double identity_data[size][size];
-        Matrix identity(identity_data);
+        NewStackMatrixMacro(identity, size, size);
         identity.Identity();
         augmented.CopyInto(0, size, identity);
 

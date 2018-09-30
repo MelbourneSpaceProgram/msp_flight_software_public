@@ -23,27 +23,18 @@ EarthSensor::EarthSensor()
       nadir_vector(nadir_vector_data) {}
 
 void EarthSensor::CalculateNadirVector() {
-    double x_component_data[3][1];
-    Matrix x_component(x_component_data);
-    double y_component_data[3][1];
-    Matrix y_component(y_component_data);
-    double z_component_data[3][1];
-    Matrix z_component(z_component_data);
+    NewStackMatrixMacro(x_component, 3, 1);
+    NewStackMatrixMacro(y_component, 3, 1);
+    NewStackMatrixMacro(z_component, 3, 1);
 
-    double pos_x_component_data[3][1];
-    Matrix pos_x_component(pos_x_component_data);
-    double neg_x_component_data[3][1];
-    Matrix neg_x_component(neg_x_component_data);
+    NewStackMatrixMacro(pos_x_component, 3, 1);
+    NewStackMatrixMacro(neg_x_component, 3, 1);
 
-    double pos_y_component_data[3][1];
-    Matrix pos_y_component(pos_y_component_data);
-    double neg_y_component_data[3][1];
-    Matrix neg_y_component(neg_y_component_data);
+    NewStackMatrixMacro(pos_y_component, 3, 1);
+    NewStackMatrixMacro(neg_y_component, 3, 1);
 
-    double neg_z_a_component_data[3][1];
-    Matrix neg_z_a_component(neg_z_a_component_data);
-    double neg_z_b_component_data[3][1];
-    Matrix neg_z_b_component(neg_z_b_component_data);
+    NewStackMatrixMacro(neg_z_a_component, 3, 1);
+    NewStackMatrixMacro(neg_z_b_component, 3, 1);
 
     pos_x_component.MultiplyScalar(pos_x_sensor.GetSideNormal(),
                                    cos(pos_x_sensor.GetAngleToNadir()));

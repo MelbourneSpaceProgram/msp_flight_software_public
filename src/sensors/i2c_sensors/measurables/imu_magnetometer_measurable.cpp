@@ -47,13 +47,11 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     MagnetometerReading raw_reading = imu_sensor->TakeMagnetometerReading();
 
     // Apply change of frame from magnetometer frame to satellite body frame
-    double reading_magnetometer_frame_data[3][1];
-    Matrix reading_magnetometer_frame(reading_magnetometer_frame_data);
+    NewStackMatrixMacro(reading_magnetometer_frame, 3, 1);
     reading_magnetometer_frame.Set(0, 0, raw_reading.x);
     reading_magnetometer_frame.Set(1, 0, raw_reading.y);
     reading_magnetometer_frame.Set(2, 0, raw_reading.z);
-    double reading_body_frame_data[3][1];
-    Matrix reading_body_frame(reading_body_frame_data);
+    NewStackMatrixMacro(reading_body_frame, 3, 1);
     reading_body_frame.Multiply(magnetometer_to_body_frame_transform,
                                 reading_magnetometer_frame);
     last_reading.x = reading_body_frame.Get(0, 0);

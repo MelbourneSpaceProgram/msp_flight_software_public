@@ -13,11 +13,9 @@ KalmanFilter::KalmanFilter(uint16_t sample_time_millis, Matrix &r1, Matrix &r2,
 
 void KalmanFilter::Predict(const Matrix &omega) {
     // Propagation for quaternion q
-    double q_delta_data[4][1];
-    Matrix q_delta(q_delta_data);
+    NewStackMatrixMacro(q_delta, 4, 1);
 
-    double Xi_data[4][3];
-    Matrix Xi(Xi_data);
+    NewStackMatrixMacro(Xi, 4, 3);
 
     ComputeXi(Xi, q_estimate);
     q_delta.Multiply(Xi, omega);
@@ -27,20 +25,15 @@ void KalmanFilter::Predict(const Matrix &omega) {
     q_estimate.Add(q_estimate, q_delta);
 
     // Propagation for error covariance P
-    double F_data[3][3];
-    Matrix F(F_data);
-    double F_transpose_data[3][3];
-    Matrix F_transpose(F_transpose_data);
+    NewStackMatrixMacro(F, 3, 3);
+    NewStackMatrixMacro(F_transpose, 3, 3);
 
     ComputeF(F, omega);
     F_transpose.Transpose(F);
 
-    double FP_data[3][3];
-    Matrix FP(FP_data);
-    double PF_transpose_data[3][3];
-    Matrix PF_transpose(PF_transpose_data);
-    double FP_PF_transpose_Q_deltat_data[3][3];
-    Matrix FP_PF_transpose_Q_deltat(FP_PF_transpose_Q_deltat_data);
+    NewStackMatrixMacro(FP, 3, 3);
+    NewStackMatrixMacro(PF_transpose, 3, 3);
+    NewStackMatrixMacro(FP_PF_transpose_Q_deltat, 3, 3);
 
     FP.Multiply(F, P);
     PF_transpose.Multiply(P, F_transpose);
@@ -53,23 +46,18 @@ void KalmanFilter::Predict(const Matrix &omega) {
 }
 
 void KalmanFilter::Update(const Matrix &y) {
-    double H_data[6][3];
-    Matrix H(H_data);
+    NewStackMatrixMacro(H, 6, 3);
     ComputeH(H, q_estimate);
 
-    double K_data[3][6];
-    Matrix K(K_data);
+    NewStackMatrixMacro(K, 3, 6);
     ComputeK(K, H);
 
-    double dx_data[3][1];
-    Matrix dx(dx_data);
+    NewStackMatrixMacro(dx, 3, 1);
     Computedx(dx, K, y);
 
     // Quaternion update
-    double q_delta_data[4][1];
-    Matrix q_delta(q_delta_data);
-    double Xi_data[4][3];
-    Matrix Xi(Xi_data);
+    NewStackMatrixMacro(q_delta, 4, 1);
+    NewStackMatrixMacro(Xi, 4, 3);
 
     ComputeXi(Xi, q_estimate);
 
@@ -81,18 +69,15 @@ void KalmanFilter::Update(const Matrix &y) {
     q_estimate.QuaternionNormalise(q_estimate);
 
     // Error covariance update
-    double I_minus_KH_data[3][3];
-    Matrix I_minus_KH(I_minus_KH_data);
-    double identity_33_data[3][3];
-    Matrix identity_33(identity_33_data);
+    NewStackMatrixMacro(I_minus_KH, 3, 3);
+    NewStackMatrixMacro(identity_33, 3, 3);
 
     identity_33.Identity();
 
     I_minus_KH.Multiply(K, H);
     I_minus_KH.Subtract(identity_33, I_minus_KH);
 
-    double I_minus_KH_P_data[3][3];
-    Matrix I_minus_KH_P(I_minus_KH_P_data);
+    NewStackMatrixMacro(I_minus_KH_P, 3, 3);
 
     I_minus_KH_P.Multiply(I_minus_KH, P);
     P.CopyInto(0, 0, I_minus_KH_P);
@@ -115,18 +100,14 @@ void KalmanFilter::ComputeXi(Matrix &Xi_out, const Matrix &q) {
 
 /* Compute the output function */
 void KalmanFilter::Computeh(Matrix &h_out, const Matrix &q) {
-    double rotation_matrix_transpose_data[3][3];
-    Matrix rotation_matrix_transpose(rotation_matrix_transpose_data);
-    double rotation_matrix_data[3][3];
-    Matrix rotation_matrix(rotation_matrix_data);
+    NewStackMatrixMacro(rotation_matrix_transpose, 3, 3);
+    NewStackMatrixMacro(rotation_matrix, 3, 3);
 
     rotation_matrix_transpose.RotationMatrixFromQuaternion(q);
     rotation_matrix.Transpose(rotation_matrix_transpose);
 
-    double h1_data[3][1];
-    Matrix h1(h1_data);
-    double h2_data[3][1];
-    Matrix h2(h2_data);
+    NewStackMatrixMacro(h1, 3, 1);
+    NewStackMatrixMacro(h2, 3, 1);
 
     h1.Multiply(rotation_matrix, ref1);
     h2.Multiply(rotation_matrix, ref2);
@@ -141,26 +122,20 @@ void KalmanFilter::ComputeF(Matrix &F_out, const Matrix &omega) {
 
 /* Compute the output Jacobian */
 void KalmanFilter::ComputeH(Matrix &H_out, const Matrix &q) {
-    double rotation_matrix_transpose_data[3][3];
-    Matrix rotation_matrix_transpose(rotation_matrix_transpose_data);
-    double rotation_matrix_data[3][3];
-    Matrix rotation_matrix(rotation_matrix_data);
+    NewStackMatrixMacro(rotation_matrix_transpose, 3, 3);
+    NewStackMatrixMacro(rotation_matrix, 3, 3);
 
     rotation_matrix_transpose.RotationMatrixFromQuaternion(q);
     rotation_matrix.Transpose(rotation_matrix_transpose);
 
-    double rotated_ref1_data[3][1];
-    Matrix rotated_ref1(rotated_ref1_data);
-    double rotated_ref2_data[3][1];
-    Matrix rotated_ref2(rotated_ref2_data);
+    NewStackMatrixMacro(rotated_ref1, 3, 1);
+    NewStackMatrixMacro(rotated_ref2, 3, 1);
 
     rotated_ref1.Multiply(rotation_matrix, ref1);
     rotated_ref2.Multiply(rotation_matrix, ref2);
 
-    double H1_data[3][3];
-    Matrix H1(H1_data);
-    double H2_data[3][3];
-    Matrix H2(H2_data);
+    NewStackMatrixMacro(H1, 3, 3);
+    NewStackMatrixMacro(H2, 3, 3);
 
     H1.SkewSymmetricFill(rotated_ref1);
     H2.SkewSymmetricFill(rotated_ref2);
@@ -170,37 +145,30 @@ void KalmanFilter::ComputeH(Matrix &H_out, const Matrix &q) {
 
 /* Compute the Kalman gain */
 void KalmanFilter::ComputeK(Matrix &K_out, const Matrix &H) {
-    double H_transpose_data[3][6];
-    Matrix H_transpose(H_transpose_data);
-    double PH_transpose_data[3][6];
-    Matrix PH_transpose(PH_transpose_data);
-    double HPH_transpose_data[6][6];
-    Matrix HPH_transpose(HPH_transpose_data);
+    NewStackMatrixMacro(H_transpose, 3, 6);
+    NewStackMatrixMacro(PH_transpose, 3, 6);
+    NewStackMatrixMacro(HPH_transpose, 6, 6);
 
     H_transpose.Transpose(H);
     PH_transpose.Multiply(P, H_transpose);
     HPH_transpose.Multiply(H, PH_transpose);
 
-    double HPH_transpose_plus_R_data[6][6];
-    Matrix HPH_transpose_plus_R(HPH_transpose_plus_R_data);
+    NewStackMatrixMacro(HPH_transpose_plus_R, 6, 6);
 
     HPH_transpose_plus_R.Add(HPH_transpose, R);
 
     // Invert (H*P*H_tranpose + R)
-    double augmented_data[6][12];
-    Matrix augmented(augmented_data);
+    NewStackMatrixMacro(augmented, 6, 12);
     augmented.CopyInto(0, 0, HPH_transpose_plus_R);
 
-    double identity_66_data[6][6];
-    Matrix identity_66(identity_66_data);
+    NewStackMatrixMacro(identity_66, 6, 6);
     identity_66.Identity();
     augmented.CopyInto(0, 6, identity_66);
 
     augmented.RowReduce();
 
     // Put it all together
-    double HPH_transpose_plus_R_inv_data[6][6];
-    Matrix HPH_transpose_plus_R_inv(HPH_transpose_plus_R_inv_data);
+    NewStackMatrixMacro(HPH_transpose_plus_R_inv, 6, 6);
     HPH_transpose_plus_R_inv.CopySlice(0, 5, 6, 11, augmented);
 
     K_out.Multiply(PH_transpose, HPH_transpose_plus_R_inv);
@@ -208,10 +176,8 @@ void KalmanFilter::ComputeK(Matrix &K_out, const Matrix &H) {
 
 /* Compute the state update */
 void KalmanFilter::Computedx(Matrix dx_out, const Matrix &K, const Matrix &y) {
-    double dy_data[6][1];
-    Matrix dy(dy_data);
-    double h_data[6][1];
-    Matrix h(h_data);
+    NewStackMatrixMacro(dy, 6, 1);
+    NewStackMatrixMacro(h, 6, 1);
 
     Computeh(h, q_estimate);
 
