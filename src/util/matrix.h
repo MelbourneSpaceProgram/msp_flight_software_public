@@ -4,6 +4,9 @@
 #include <external/etl/exception.h>
 #include <src/util/data_types.h>
 
+#define NewStackMatrixMacro(name, n_rows, n_cols) \
+    double name##_data[n_rows][n_cols]; Matrix name(name##_data);
+
 class Matrix {
    public:
     template <uint8_t rows, uint8_t columns>
