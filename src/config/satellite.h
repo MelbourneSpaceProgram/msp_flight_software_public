@@ -23,11 +23,7 @@ static float kMagnetorquerPowerFractionX = 1.0;
 static float kMagnetorquerPowerFractionY = 1.0;
 static float kMagnetorquerPowerFractionZ = 1.0;
 
-// Tuning parameters for orientation control
-const uint16_t kBDotEstimatorTimeConstantMillis = 4000;
-
-const double kBDotControllerGains[3] = {60000.0, 60000.0, 60000.0};
-
+// The strength of the magnetorquers
 const double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.05};
 
 // Mapping from magnetometer frames to satellite body frame

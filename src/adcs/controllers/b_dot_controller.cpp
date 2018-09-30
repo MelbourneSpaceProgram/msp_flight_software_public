@@ -1,5 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/adcs/controllers/b_dot_controller.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/util/matrix.h>
 #include <src/util/physical_constants.h>

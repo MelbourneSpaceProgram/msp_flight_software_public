@@ -5,6 +5,7 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/satellite.h>
