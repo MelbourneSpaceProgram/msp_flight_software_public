@@ -49,7 +49,7 @@ pipeline {
             }
 			environment {
 				container_uuid = "${BUILD_TAG}-PR${CHANGE_ID}"
-				docker_name = "${GIT_COMMIT}_${BUILD_ID}_${container_uuid}"
+				docker_name = org.apache.commons.lang.RandomStringUtils.random(20, true, true)
 			}
             steps {
                 sh '''
