@@ -4,6 +4,8 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
+class Command;
+
 class PayloadProcessor {
    public:
     PayloadProcessor();
@@ -13,6 +15,7 @@ class PayloadProcessor {
 
    private:
     bool ParseNextCommandAndExecute(byte& index, byte* payload);
+    static Command* CreateCommand(uint16_t command_code, byte* payload);
     static const byte kCommandCodeLength = 2;
     static const uint8_t kEndTerminator = 0;
 };
