@@ -11,12 +11,12 @@
 #include <src/telecomms/lithium_commands/telemetry_query_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
+#include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
-#include <src/telecomms/lithium_configuration.h>
 
 Lithium* Lithium::instance = NULL;
 uint8_t Lithium::tx_count = 0;
@@ -67,9 +67,8 @@ Lithium::Lithium()
 }
 
 bool Lithium::DoCommand(LithiumCommand* command) const {
-    // TODO(akremor): The location of this conditional isn't accurate given its
-    // naming
-    if (!lithium_transmit_enabled) {
+    if (command->GetCommandCode() == kTransmitCommandCode &&
+        !lithium_transmit_enabled) {
         Log_info0("Attempted to transmit, but transmit disabled");
         return false;
     }
