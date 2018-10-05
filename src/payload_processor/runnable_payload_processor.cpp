@@ -40,7 +40,7 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
         // On upload we pad the start with 128 bytes
         // TODO(crozone): Make 127 and 255 a constant somewhere
         byte decode_block[255];
-        memset(decode_block, 0, 255 * sizeof(byte));
+        memset(decode_block, 0, sizeof(decode_block));
 
         // Copy the MSP body into the payload such that it is prefixed with 127
         // bytes of padding
@@ -63,8 +63,6 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
 
         // Verifying that the payload is legitimate (i.e. authenticating it
         // with sha1-hmac), by hashing over the length, sequence, and message.
-        std::string msp_signature(reinterpret_cast<char *>(&packet_body),
-                                  kMspSignatureBytes);
 
         int16_t msp_packet_len =
             static_cast<int16_t>(packet_body[kMspSignatureBytes]) -
@@ -76,34 +74,65 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
             Log_error2("Payload length too short! (%d bytes < %d)",
                        msp_packet_len, 0);
             continue;
-        } else if (msp_packet_len > 96) {
+        } else if (msp_packet_len > (96 - kMspSignatureBytes)) {
             Log_error2("Payload length too long! (%d bytes > %d)",
-                       msp_packet_len, 96);
+                       msp_packet_len, (96 - kMspSignatureBytes));
             continue;
         }
 
+        // This is the signature embedded in the payload, of length 4.
+        byte* msp_signature = &packet_body[0];
+
+        // This is the payload of the packet, after the signature.
         byte *msp_packet = &packet_body[kMspSignatureBytes];
         std::string hash_key = kHmacKey;
 
-        // Produce the sha1-hmac hash and truncate down to the the first 4
-        // bytes (8 chars)
+        // Produce the sha1-hmac hash
         std::string hash =
             hmac<SHA1>(msp_packet, static_cast<size_t>(msp_packet_len),
-                       &hash_key[0], hash_key.size())
-                .substr(0, kNumBytesTruncated * kNumCharsPerByte);
+                       &hash_key[0], hash_key.size());
 
-        // Convert hash chars into hex form (i.e. 0x__0x__..)
-        std::string hex_hash = StringHex::StringToHex(hash);
+        byte calculated_short_hash[kMspSignatureBytes];
+        memset(calculated_short_hash, 0, sizeof(calculated_short_hash));
+
+        // hash is a hex encoded string
+        // Convert the first 8 characters of hash from hex string
+        // representation into a raw byte array (4 bytes).
+        for(int i = 0; i < kMspSignatureBytes; i++) {
+            // Convert upper/leftmost character to upper nibble of byte
+            char hash_char_upper = hash.at(i);
+            if(hash_char_upper >= '0' && hash_char_upper <= '9') {
+                calculated_short_hash[i] |= (hash_char_upper - '0') << 4;
+            }
+            else if(hash_char_upper >= 'A' && hash_char_upper <= 'F') {
+                calculated_short_hash[i] |= (hash_char_upper - 'A' + 10) << 4;
+            }
+            else if(hash_char_upper >= 'a' && hash_char_upper <= 'f') {
+                calculated_short_hash[i] |= (hash_char_upper - 'a' + 10) << 4;
+            }
+
+            // Convert lower/rightmost character to lower nibble of byte
+            char hash_char_lower = hash.at(i + 1);
+            if(hash_char_lower >= '0' && hash_char_lower <= '9') {
+                calculated_short_hash[i] |= (hash_char_lower - '0') & 0x0F;
+            }
+            else if(hash_char_lower >= 'A' && hash_char_lower <= 'F') {
+                calculated_short_hash[i] |= (hash_char_lower - 'A' + 10) & 0x0F;
+            }
+            else if(hash_char_lower >= 'a' && hash_char_lower <= 'f') {
+                calculated_short_hash[i] |= (hash_char_lower - 'a' + 10) & 0x0F;
+            }
+        }
 
         // Verify that the hash matches the signature
-        if (msp_signature.compare(hex_hash) == 0) {
+        if (memcmp(msp_signature, calculated_short_hash, kMspSignatureBytes) == 0) {
             byte *msp_payload = &packet_body[kMspSignatureBytes + kLengthBytes +
                                              kSequenceNumberBytes];
             payload_processor.ParseAndExecuteCommands(msp_payload);
         } else {
-            // TODO(danieL632): c++ style static_cast<xdc_IArg> not working
-            Log_error2("Signature does not match hash: sig = %s - hash = %s",
-                       (xdc_IArg)msp_signature.c_str(), (xdc_IArg)hash.c_str());
+            Log_error2("Signature does not match hash: sig = %02x%02x%02x%02x - hash = %02x%02x%02x%02x",
+                       msp_signature[0], msp_signature[1], msp_signature[2], msp_signature[3],
+                       calculated_short_hash[0], calculated_short_hash[1], calculated_short_hash[2], calculated_short_hash[3]);
         }
     }
 }
