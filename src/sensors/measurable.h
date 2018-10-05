@@ -7,6 +7,7 @@ class Observer;
 
 class Measurable {
    public:
+    virtual ~Measurable(){};
     virtual bool TakeReading() = 0;
     bool AddObserver(Observer* observer);
     bool HasNewReading();
