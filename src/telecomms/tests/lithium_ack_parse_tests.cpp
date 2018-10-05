@@ -4,15 +4,14 @@
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 
-// TODO(akremor): Test naming and file naming not great
-TEST_GROUP(LithiumAck){};
+TEST_GROUP(LithiumAckParse){};
 
-TEST(LithiumAck, TestNoOpAck) {
+TEST(LithiumAckParse, TestNoOpAckParse) {
     byte mock_ack[8] = {0x48, 0x65, 0x20, 0x01, 0x0a, 0x0a, 0x35, 0xa1};
     CHECK(LithiumUtils::IsValidHeader(mock_ack));
 }
 
-TEST(LithiumAck, TestGetConfigAck) {
+TEST(LithiumAckParse, TestGetConfigAckParse) {
     GetConfigurationCommand config_command;
     // Data recorded from UART communications with Lithium
     byte mock_ack[44] = {0x48, 0x65, 0x20, 0x05, 0x00, 0x22, 0x47, 0xb1, 0x00,
@@ -25,17 +24,17 @@ TEST(LithiumAck, TestGetConfigAck) {
                 LithiumUtils::GetPayloadSize(mock_ack));
 }
 
-TEST(LithiumAck, TestResetSystemAck) {
+TEST(LithiumAckParse, TestResetSystemAckParse) {
     byte mock_ack[8] = {0x48, 0x65, 0x20, 0x02, 0x0a, 0x0a, 0x36, 0xa4};
     CHECK(LithiumUtils::IsValidHeader(mock_ack));
 }
 
-TEST(LithiumAck, TestTransmitAck) {
+TEST(LithiumAckParse, TestTransmitAckParse) {
     byte mock_ack[8] = {0x48, 0x65, 0x20, 0x03, 0x0a, 0x0a, 0x37, 0xa7};
     CHECK(LithiumUtils::IsValidHeader(mock_ack));
 }
 
-TEST(LithiumAck, TestFailNoOpAck) {
+TEST(LithiumAckParse, TestFailNoOpAckParse) {
     byte invalid_sync_a[8] = {0x49, 0x65, 0x20, 0x01, 0x0a, 0x0a, 0x35, 0xa1};
     CHECK_FALSE(LithiumUtils::IsValidHeader(invalid_sync_a));
 
@@ -50,7 +49,7 @@ TEST(LithiumAck, TestFailNoOpAck) {
     CHECK_FALSE(LithiumUtils::IsValidHeader(invalid_checksum));
 }
 
-TEST(LithiumAck, TestFailGetConfigAck) {
+TEST(LithiumAckParse, TestFailGetConfigAckParse) {
     GetConfigurationCommand get_config;
 
     byte invalid_sync_a[44] = {
