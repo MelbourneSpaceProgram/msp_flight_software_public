@@ -1,5 +1,5 @@
 #include <CppUTest/TestHarness.h>
-#include <external/hmac/hmac.h>
+#include <src/util/hmac.h>
 #include <external/hmac/sha1.h>
 #include <src/config/unit_tests.h>
 #include <src/payload_processor/runnable_payload_processor.h>
@@ -20,96 +20,25 @@ TEST_GROUP(Sha1Hmac){};
 
 // Test case 1 where the signature should equal the hmac output
 TEST(Sha1Hmac, TestSha1HmacValid1) {
-    // the packet signature (i.e. the expected output)
-    std::string msp_signature("\x5c\x90\xca\xe3");
-
-    // input1: length byte(1), sequence bytes(2), payload bytes(remaining)
+    // input1: signature[4] + length[1] + sequence[2], data[6] = MspPacket[13]
     // input2: hash key
-    byte msp_packet[] = {0x0d, 0x01, 0x00, 0x03, 0x00, 0x08, 0x00, 0x00, 0x00};
-    uint8_t msp_packet_len = (static_cast<uint8_t>(msp_packet[0])) -
-                             RunnablePayloadProcessor::kMspSignatureBytes;
-    std::string hash_key = "SuperSecretKey";
+    byte msp_packet[13] = {
+             0x5c, 0x90, 0xca, 0xe3, // HMAC checksum
+             13, // Length
+             0x01, 0x00, // Sequence
+             0x03, 0x00, 0x08, 0x00, 0x00, 0x00 // Data
+    };
 
-    // output - keeping only the first 4 bytes (8 chars)
-    std::string hash =
-        hmac<SHA1>(&msp_packet, msp_packet_len, &hash_key[0], hash_key.size());
-    std::string hash_truncated = hash.substr(0, 8);
-    std::string hex_hash = StringHex::StringToHex(hash_truncated);
+    // Length of the MSP packet, including the signature.
+    int16_t msp_packet_length = RunnablePayloadProcessor::GetMspPacketLength(msp_packet, 13);
+    CHECK(msp_packet_length < 0);
 
-    // STATUS: Not Working!
-    CHECK(hex_hash.compare(msp_signature) == 0);
+    // Ensure HMAC matches.
+    CHECK(RunnablePayloadProcessor::CheckHmac(msp_packet, msp_packet_length));
 }
 
-// Test case 2 where the signature should equal the hmac output
-TEST(Sha1Hmac, TestSha1HmacValid2) {
-    // the packet signature (i.e. the expected output)
-    std::string msp_signature("\xa0\x0e\x9a\x62");
-
-    // input1: length byte(1), sequence bytes(2), payload bytes(remaining)
-    // input2: hash key
-    byte msp_packet[] = {
-        0x53, 0x01, 0x00, 0xff, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0xf0, 0x3f, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x19,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x40, 0x21, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x10, 0x40, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x14, 0x40, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x40, 0x39,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x40, 0x41, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x20, 0x40, 0x00, 0x00};
-    uint8_t msp_packet_len = (static_cast<uint8_t>(msp_packet[0])) -
-                             RunnablePayloadProcessor::kMspSignatureBytes;
-    std::string hash_key = "SuperSecretKey";
-
-    // output - keeping only the first 4 bytes (8 chars)
-    std::string hash =
-        hmac<SHA1>(&msp_packet, msp_packet_len, &hash_key[0], hash_key.size());
-    std::string hash_truncated = hash.substr(0, 8);
-    std::string hex_hash = StringHex::StringToHex(hash_truncated);
-
-    CHECK(hex_hash.compare(msp_signature) == 0);
-}
-
-// Test case 3 where the signature should equal the hmac output
-TEST(Sha1Hmac, TestSha1HmacValid3) {
-    // the packet signature (i.e. the expected output)
-    std::string msp_signature("\xf2\x56\xe5\x52");
-
-    // input1: length byte(1), sequence bytes(2), payload bytes(remaining)
-    // input2: hash key
-    byte msp_packet[] = {0x27, 0x03, 0x00, 0xff, 0x00, 0x0d, 0x0d, 0x00, 0x00,
-                         0x00, 0x11, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                         0x00, 0x19, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                         0x00, 0x25, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
-    uint8_t msp_packet_len = (static_cast<uint8_t>(msp_packet[0])) -
-                             RunnablePayloadProcessor::kMspSignatureBytes;
-    std::string hash_key = "SuperSecretKey";
-
-    // output - keeping only the first 4 bytes (8 chars)
-    std::string hash =
-        hmac<SHA1>(&msp_packet, msp_packet_len, &hash_key[0], hash_key.size());
-    std::string hash_truncated = hash.substr(0, 8);
-    std::string hex_hash = StringHex::StringToHex(hash_truncated);
-
-    CHECK(hex_hash.compare(msp_signature) == 0);
-}
-
-// Test for a case where the signature should not equal the hmac output
-TEST(Sha1Hmac, TestSha1HmacInvalid) {
-    // the packet signature (i.e. the expected output)
-    std::string msp_signature(
-        "\x5c\x90\xca\xe4");  // last byte should be e3, not e4
-
-    // input1: length byte(1), sequence bytes(2), payload bytes(remaining)
-    // input2: hash key
-    byte msp_packet[] = {0x0d, 0x01, 0x00, 0x03, 0x00, 0x08, 0x00, 0x00, 0x00};
-    uint8_t msp_packet_len = (static_cast<uint8_t>(msp_packet[0])) -
-                             RunnablePayloadProcessor::kMspSignatureBytes;
-    std::string hash_key = "SuperSecretKey";
-
-    // output - keeping only the first 4 bytes (8 chars)
-    std::string hash =
-        hmac<SHA1>(&msp_packet, msp_packet_len, &hash_key[0], hash_key.size());
-    std::string hash_truncated = hash.substr(0, 8);
-    std::string hex_hash = StringHex::StringToHex(hash_truncated);
-
-    CHECK(hex_hash.compare(msp_signature) != 0);
-}
+// TODO(crozone): Rewrite other HMAC tests based on the above test.
+//
+// TODO(crozone): Test case 2 where the signature should equal the hmac output
+// TODO(crozone): Test case 3 where the signature should equal the hmac output
+// TODO(crozone): Test for a case where the signature should not equal the hmac output

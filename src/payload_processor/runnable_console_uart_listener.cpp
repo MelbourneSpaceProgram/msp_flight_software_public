@@ -33,7 +33,7 @@ void RunnableConsoleUartListener::Listen() {
     while (1) {
         byte header_buffer[5];
         byte payload_buffer[Lithium::kMaxReceivedUplinkSize -
-                            RunnablePayloadProcessor::kAx25Bytes];
+                            RunnablePayloadProcessor::kUplinkAx25Length];
 
         // Grab sync characters (first two bytes of header/packet) one char at
         // a time. Not two at a time so we can 'burn off' additional characters
@@ -68,13 +68,13 @@ void RunnableConsoleUartListener::Listen() {
                 // Create fake AX.25 bytes for the payload processor to throw
                 // away
                 byte fake_ax25_payload[sizeof(payload_buffer) +
-                                       RunnablePayloadProcessor::kAx25Bytes];
+                                       RunnablePayloadProcessor::kUplinkAx25Length];
                 memset(fake_ax25_payload, 0x00,
-                       RunnablePayloadProcessor::kAx25Bytes);
-                memcpy(fake_ax25_payload + RunnablePayloadProcessor::kAx25Bytes,
+                       RunnablePayloadProcessor::kUplinkAx25Length);
+                memcpy(fake_ax25_payload + RunnablePayloadProcessor::kUplinkAx25Length,
                        payload_buffer,
                        Lithium::kMaxReceivedUplinkSize -
-                           RunnablePayloadProcessor::kAx25Bytes);
+                           RunnablePayloadProcessor::kUplinkAx25Length);
                 Mailbox_post(Lithium::GetInstance()->GetUplinkMailbox(),
                              fake_ax25_payload, BIOS_WAIT_FOREVER);
         }

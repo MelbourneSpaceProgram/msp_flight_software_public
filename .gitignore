@@ -39,6 +39,9 @@ src/makefile.libs
 src/sysbios/makefile
 src/sysbios/sysbios.aem4f
 
+# Visual Studio 2015 and VS Code cache/options directory
+.vs/
+.vscode/
 
 # Vim temporary files
 *~
