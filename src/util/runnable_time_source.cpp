@@ -14,9 +14,8 @@ fnptr RunnableTimeSource::GetRunnablePointer() {
 
 void RunnableTimeSource::UpdateSatelliteTime() {
     I2c bus(I2C_BUS_A);
-    // TODO(akremor): Move this address centrally
-    I2cMultiplexer multiplexer(&bus, 0x76);
-    Rtc rtc(&bus, 0x69, &multiplexer, I2cMultiplexer::kMuxChannel0);
+    I2cMultiplexer multiplexer(&bus, kMuxAddress);
+    Rtc rtc(&bus, kRtcAddress, &multiplexer, I2cMultiplexer::kMuxChannel0);
     while (1) {
         RTime time;
         try {
@@ -24,7 +23,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         } catch (etl::exception e) {
             EtlUtils::LogException(e);
             Log_error0("Unable to retrieve time from RTC");
-            TaskUtils::SleepMilli(5000);
+            TaskUtils::SleepMilli(kTimeUpdatePeriod);
             continue;
         }
 
@@ -32,6 +31,6 @@ void RunnableTimeSource::UpdateSatelliteTime() {
             SatelliteTimeSource::SetTime(time);
         }
 
-        TaskUtils::SleepMilli(5000);
+        TaskUtils::SleepMilli(kTimeUpdatePeriod);
     }
 }
