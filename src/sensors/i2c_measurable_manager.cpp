@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/board/i2c/bms/bms.h>
 #include <src/config/satellite.h>
 #include <src/sensors/i2c_measurable_manager.h>
@@ -18,6 +19,7 @@
 #include <src/sensors/measurable_id.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_manager.h>
+#include <src/util/etl_utils.h>
 
 I2cMeasurableManager *I2cMeasurableManager::instance = NULL;
 
@@ -28,7 +30,15 @@ I2cMeasurableManager *I2cMeasurableManager::GetInstance() {
     return instance;
 }
 
-I2cMeasurableManager::I2cMeasurableManager() { measurables.fill(NULL); }
+I2cMeasurableManager::I2cMeasurableManager()
+    : telecomms_initialised(false),
+      power_initialised(false),
+      flight_systems_initialised(false),
+      utilities_initialised(false),
+      cdh_initialised(false),
+      panels_initialised(false) {
+    measurables.fill(NULL);
+}
 
 void I2cMeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
                                 const I2c *bus_c, const I2c *bus_d) {
@@ -40,12 +50,56 @@ void I2cMeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
     I2cMultiplexer *mux_a = new I2cMultiplexer(bus_a, 0x76);
     I2cMultiplexer *mux_c = new I2cMultiplexer(bus_c, 0x71);
 
-    InitTelecomms(mux_a);
-    InitPower(mux_a);
-    InitFlightSystems(mux_a);
-    InitCdh(mux_a);
-    InitUtilities(mux_c);
-    InitSolarPanels(mux_c);
+    bool success = true;
+
+    // TODO(dingbenjamin): Gracefully terminate failure of subsystem
+    // initialisation by deleting heap allocated objects
+    try {
+        if (!telecomms_initialised) InitTelecomms(mux_a);
+    } catch (etl::exception &e) {
+        EtlUtils::LogException(e);
+        success = false;
+    }
+
+    try {
+        if (!power_initialised) InitPower(mux_a);
+    } catch (etl::exception &e) {
+        EtlUtils::LogException(e);
+        success = false;
+    }
+
+    try {
+        if (!flight_systems_initialised) InitFlightSystems(mux_a);
+    } catch (etl::exception &e) {
+        EtlUtils::LogException(e);
+        success = false;
+    }
+
+    try {
+        if (!cdh_initialised) InitCdh(mux_a);
+    } catch (etl::exception &e) {
+        EtlUtils::LogException(e);
+        success = false;
+    }
+
+    try {
+        if (!telecomms_initialised) InitUtilities(mux_c);
+    } catch (etl::exception &e) {
+        EtlUtils::LogException(e);
+        success = false;
+    }
+
+    try {
+        if (!panels_initialised) InitSolarPanels(mux_c);
+    } catch (etl::exception &e) {
+        EtlUtils::LogException(e);
+        success = false;
+    }
+
+    if (!success) {
+        throw etl::exception("Failed to fully initialise Measurable Manager",
+                             __FILE__, __LINE__);
+    }
 }
 
 void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
@@ -73,6 +127,8 @@ void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
 
     AddTemperature(kComT1, comms_temp_1);
     AddTemperature(kComT2, comms_temp_2);
+
+    telecomms_initialised = true;
 }
 
 void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
@@ -123,6 +179,8 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     AddBmsDieTempMeasurable(kEpsBmsDieT2, bms_bus_c);
     AddBmsReadingsMeasurable(kEpsBmsReadings1, bms_bus_d);
     AddBmsReadingsMeasurable(kEpsBmsReadings2, bms_bus_c);
+
+    power_initialised = true;
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -190,6 +248,8 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddImuMagnetometerMeasurable(
         kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform, initial_biases_bus_b,
         initial_scale_factors_bus_b);
+
+    flight_systems_initialised = true;
 }
 
 void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
@@ -199,12 +259,16 @@ void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
     Mcp9808 *util_temp =
         new Mcp9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel1);
     AddTemperature(kUtilT, util_temp);
+
+    utilities_initialised = true;
 }
 
 void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
     Mcp9808 *cdh_temp_1 =
         new Mcp9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
     AddTemperature(kCdhT, cdh_temp_1);
+
+    cdh_initialised = true;
 }
 
 void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
@@ -300,6 +364,8 @@ void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
     AddVoltage(kZNegSolarV, z_neg_adc, kAdcP2NGnd, 2.0);
     AddCurrent(kZNegI, z_neg_adc, kAdcP1NGnd, 0.285714, 0);
     AddCurrent(kZNegSolarI, z_neg_adc, kAdcP3NGnd, 0.285714, 0);
+
+    panels_initialised = true;
 }
 
 void I2cMeasurableManager::AddVoltage(MeasurableId id, Adc *adc,

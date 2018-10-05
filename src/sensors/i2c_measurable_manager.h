@@ -107,6 +107,7 @@ class I2cMeasurableManager {
                                       const Matrix &initial_biases,
                                       const Matrix &initial_scale_factors);
     void CheckValidId(MeasurableId id);
+    void DeleteMeasurable(MeasurableId id);
 
     static I2cMeasurableManager *instance;
     static const uint16_t kMaxMeasurables = 400;
@@ -115,6 +116,13 @@ class I2cMeasurableManager {
     const I2c *bus_b;
     const I2c *bus_c;
     const I2c *bus_d;
+
+    bool telecomms_initialised;
+    bool power_initialised;
+    bool flight_systems_initialised;
+    bool utilities_initialised;
+    bool cdh_initialised;
+    bool panels_initialised;
 
     etl::array<Measurable *, kMaxMeasurables> measurables;
 };
