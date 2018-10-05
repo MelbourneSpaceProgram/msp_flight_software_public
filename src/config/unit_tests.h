@@ -18,8 +18,6 @@ static const bool kYNegAvailable = true;
 static const bool kZPosAvailable = true;
 static const bool kZNegAvailable = true;
 
-// TODO(akremor): Begin deprecating these once we are comfortable with hardware
-// stability
 static const bool kLithiumFlashTestEnabled = false;
 static const bool kForceResetCommandEnabled =
     false;  // It will reset the satellite
