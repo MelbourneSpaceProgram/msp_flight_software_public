@@ -38,6 +38,13 @@
     CircularBufferNanopb<NanopbMessageType, NanopbMessageType##_size, \
                          NanopbMessageType##_fields>
 
+typedef struct CircularBufferHeader {
+    uint32_t buffer_length_in_messages;
+    uint32_t count_messages_written;
+    uint32_t write_index;
+    uint32_t read_index;
+} CircularBufferHeader;
+
 template <typename NanopbMessageType, uint16_t NanopbMessageType_size,
           const pb_field_t *NanopbMessageType_fields>
 class CircularBufferNanopb {
@@ -54,7 +61,6 @@ class CircularBufferNanopb {
             // uint32_t file_size_in_bytes = file_handle.fsize;
             uint32_t file_size_in_bytes = 0;
             // If file is empty, initialise metadata
-            // TODO (rskew) check that metadata is valid
             if (file_size_in_bytes < kEncodedHeaderSize) {
                 SetBufferLengthInMessages(file_handle,
                                           buffer_length_in_messages);
@@ -64,7 +70,6 @@ class CircularBufferNanopb {
             }
 
             // If the file already exists, do nothing
-
             sd->FileClose(file_handle);
         } catch (etl::exception &e) {
             sd->FileClose(file_handle);
@@ -121,8 +126,6 @@ class CircularBufferNanopb {
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
                            SdCard::kFileReadMode);
         try {
-            // TODO (rskew) check for successful file open
-
             // Read from file
             uint32_t read_index_bytes = GetReadIndex(file_handle);
             sd->FileSeek(file_handle, read_index_bytes);
@@ -188,8 +191,7 @@ class CircularBufferNanopb {
         }
     }
 
-    // TODO (rskew) return header struct
-    static void ReadHeader(const char *file_name) {
+    static CircularBufferHeader ReadHeader(const char *file_name) {
         SdCard *sd = SdCard::GetInstance();
         File *file_handle = sd->FileOpen(
             file_name, SdCard::kFileOpenExistingMode | SdCard::kFileWriteMode |
@@ -202,6 +204,10 @@ class CircularBufferNanopb {
             uint32_t write_index = GetWriteIndex(file_handle);
             uint32_t read_index = GetReadIndex(file_handle);
             sd->FileClose(file_handle);
+            CircularBufferHeader header = {buffer_length_in_messages,
+                                           count_messages_written, write_index,
+                                           read_index};
+            return header;
         } catch (etl::exception &e) {
             sd->FileClose(file_handle);
             throw;
