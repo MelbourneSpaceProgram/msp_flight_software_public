@@ -1,0 +1,6 @@
+message BmsOperationValuesReading {
+	required double recharge_threshold  = 1 [default = -9999];
+	required uint32 c_over_x_threshold = 2 [default = 9999];
+	required int32 q_count_prescale_factor = 3 [default = -9999];
+	required fixed64 timestamp_ms = 4 [default = 0];
+}	

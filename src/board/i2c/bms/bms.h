@@ -2,7 +2,12 @@
 #define SRC_BOARD_I2C_BMS_BMS_H_
 
 #include <external/etl/array.h>
-#include <src/messages/BmsReadings.pb.h>
+#include <src/messages/BmsChargingInfoReading.pb.h>
+#include <src/messages/BmsCurrentsReading.pb.h>
+#include <src/messages/BmsOperationValuesReading.pb.h>
+#include <src/messages/BmsSettingsReading.pb.h>
+#include <src/messages/BmsTemperatureReading.pb.h>
+#include <src/messages/BmsVoltagesReading.pb.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/data_types.h>
 #include <string>
@@ -10,6 +15,30 @@
 class I2c;
 
 class Bms : public I2cDevice {
+    // TODO(hugorilla): clean up private-public-private mess by making the Bms
+    // TEST a friend class
+   private:
+    /* Coulomb counting constants */
+    static const uint16_t kQCountFullCharge = 60000;
+    static const uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
+    static const uint16_t kQCountPrescaleFactor = 28;
+
+    /* bit masks */
+    static const uint16_t kTelemetryValidBitMask = 0x0001;
+    static const uint16_t kConstantVoltageBitMask = 0x0001;
+    static const uint16_t kConstantCurrentBitMask = 0x0002;
+    static const uint16_t kIinLimitActiveBitMask = 0x0004;
+    static const uint16_t kVinLimitActiveBitMask = 0x0008;
+    static const uint16_t kChargeStatusBitMask = 0x000F;
+    static const uint16_t kChargeStatusNotCharging = 0x0000;
+    static const uint16_t kChargeEnableBitMask = 0x2000;
+    static const uint16_t kJeitaRegionBitMask = 0x0007;
+    static const uint16_t kChargerConfigBitMask = 0x0007;
+    static const uint16_t kVchargeSettingBitMask = 0x001F;
+    static const uint16_t kIchargeTargetBitMask = 0x000F;
+    static const uint16_t kUpperByteBitMask = 0xFF00;
+    static const uint16_t kLowerByteBitMask = 0x00FF;
+
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
@@ -20,7 +49,13 @@ class Bms : public I2cDevice {
     bool SelectRegister(byte register_address);
     bool ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer);
 
-    BmsReadings GetBmsReadings();
+    /* get methods */
+    BmsSettingsReading GetBmsSettingsReading();
+    BmsChargingInfoReading GetBmsChargingInfoReading();
+    BmsOperationValuesReading GetBmsOperationValuesReading();
+    BmsTemperatureReading GetBmsTemperatureReading();
+    BmsVoltagesReading GetBmsVoltagesReading();
+    BmsCurrentsReading GetBmsCurrentsReading();
     double GetBatteryVoltage();
     double GetBatteryCurrent();
     double GetSystemVoltage();
@@ -29,9 +64,9 @@ class Bms : public I2cDevice {
     double GetDieTemp();
     double GetBatteryTemp();
     uint16_t GetJeitaRegion();
-    BmsReadings_SystemStatus GetSystemStatus();
-    BmsReadings_ChargerState GetChargerState();
-    BmsReadings_ChargeStatus GetChargeStatus();
+    BmsChargingInfoReading_SystemStatus GetSystemStatus();
+    BmsChargingInfoReading_ChargerState GetChargerState();
+    BmsChargingInfoReading_ChargeStatus GetChargeStatus();
     double GetRechargeThreshold();
     uint16_t GetChargerConfig();
     uint16_t GetCOverXThreshold();
@@ -41,9 +76,10 @@ class Bms : public I2cDevice {
     uint16_t GetQCount();
     uint16_t GetQCountPrescaleFactor();
     uint16_t GetVinUvclSetting();
-    double GetVchargeDac();
-    double GetIchargeDac();
     bool GetTelemetryValid();
+
+    bool GetFirstChargeComplete();
+    int32_t GetQCountDelta();
 
     /* initial configuration values */
     static const byte kChargerConfigBitsConfigurationValue =
@@ -63,8 +99,10 @@ class Bms : public I2cDevice {
     static const byte kMaxCvTimeConfigurationValue = 0x00;
     static const byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
     static const byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
-    static const byte kQCountRegisterConfigurationLBValue = 0x00;
-    static const byte kQCountRegisterConfigurationUBValue = 0x00;
+    static const byte kQCountRegisterConfigurationLBValue =
+        (Bms::kQCountInitial & kLowerByteBitMask);
+    static const byte kQCountRegisterConfigurationUBValue =
+        (Bms::kQCountInitial & kUpperByteBitMask) >> 8;
     static const byte kConfigBitsConfigurationLBValue = 0x04;
     static const byte kConfigBitsConfigurationUBValue = 0x00;
     static const byte kVchargeSettingConfigurationValue = 0x13;
@@ -75,7 +113,7 @@ class Bms : public I2cDevice {
     static const byte kVinUvclSettingConfigurationValue = 0xFF;
 
    private:
-    // conversion methods
+    /* conversion methods */
     static double ConvertToBatteryVoltage(etl::array<byte, 2>& read_buffer);
     static double ConvertToBatteryCurrent(etl::array<byte, 2>& read_buffer);
     static double ConvertToSystemVoltage(etl::array<byte, 2>& read_buffer);
@@ -84,11 +122,11 @@ class Bms : public I2cDevice {
     static double ConvertToDieTemperature(etl::array<byte, 2>& read_buffer);
     static double ConvertToBatteryTemperature(etl::array<byte, 2>& read_buffer);
     static uint16_t ConvertToJeitaRegion(etl::array<byte, 2>& read_buffer);
-    static BmsReadings_SystemStatus ConvertToSystemStatus(
+    static BmsChargingInfoReading_SystemStatus ConvertToSystemStatus(
         etl::array<byte, 2>& read_buffer);
-    static BmsReadings_ChargerState ConvertToChargerState(
+    static BmsChargingInfoReading_ChargerState ConvertToChargerState(
         etl::array<byte, 2>& read_buffer);
-    static BmsReadings_ChargeStatus ConvertToChargeStatus(
+    static BmsChargingInfoReading_ChargeStatus ConvertToChargeStatus(
         etl::array<byte, 2>& read_buffer);
     static double ConvertToRechargeThreshold(etl::array<byte, 2>& read_buffer);
     static uint16_t ConvertToChargerConfig(etl::array<byte, 2>& read_buffer);
@@ -100,8 +138,6 @@ class Bms : public I2cDevice {
     static uint16_t ConvertToQCountPrescaleFactor(
         etl::array<byte, 2>& read_buffer);
     static uint16_t ConvertToVinUvclSetting(etl::array<byte, 2>& read_buffer);
-    static double ConvertToVchargeDac(etl::array<byte, 2>& read_buffer);
-    static double ConvertToIchargeDac(etl::array<byte, 2>& read_buffer);
     static bool ConvertToTelemetryValid(etl::array<byte, 2>& read_buffer);
 
     template <class T>
@@ -115,6 +151,8 @@ class Bms : public I2cDevice {
         }
         return failed_reading_value;
     }
+
+    bool first_charge_complete;
 
     /* register locations */
     static const byte kQCountPrescaleFactorRegisterLocation = 0x12;
@@ -143,23 +181,7 @@ class Bms : public I2cDevice {
     static const byte kNtcRatioRegisterLocation = 0x40;
     static const byte kJeitaRegionRegisterLocation = 0x42;
     static const byte kChemCellsRegisterLocation = 0x43;
-    static const byte kIchargeDacRegisterLocation = 0x44;
-    static const byte kVchargeDacRegisterLocation = 0x45;
     static const byte kMeasSysValidRegisterLocation = 0x4A;
-
-    /* bit masks */
-    static const uint16_t kTelemetryValidBitMask = 0x0001;
-    static const uint16_t kConstantVoltageBitMask = 0x0001;
-    static const uint16_t kConstantCurrentBitMask = 0x0002;
-    static const uint16_t kIinLimitActiveBitMask = 0x0004;
-    static const uint16_t kVinLimitActiveBitMask = 0x0008;
-    static const uint16_t kChargeStatusBitMask = 0x000F;
-    static const uint16_t kChargeStatusNotCharging = 0x0000;
-    static const uint16_t kChargeEnableBitMask = 0x2000;
-    static const uint16_t kJeitaRegionBitMask = 0x0007;
-    static const uint16_t kChargerConfigBitMask = 0x0007;
-    static const uint16_t kVchargeSettingBitMask = 0x001F;
-    static const uint16_t kIchargeTargetBitMask = 0x000F;
 
     /* conversion constants */
     static const double kVchargeDivisionFactor = 80.0;
@@ -175,8 +197,7 @@ class Bms : public I2cDevice {
     static const double kConversionCoefficientC = 0.00000011875;
     static const double kKelvinToCelciusOffset = 273.15;
 
-    // HUGO'S CONSTANTS (should probably be renamed by someone who knows BMS
-    // terminology better!)
+    // miscellaneous constants
     static const byte kChargerStateRegisterLocation = 0x34;
     static const byte kChargerConfigRegisterLocation = 0x29;
     static const byte kConfigurationBitsRegisterLocation = 0x14;

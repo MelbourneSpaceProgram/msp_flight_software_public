@@ -1,0 +1,5 @@
+message BmsCurrentsReading {
+	required double battery_current = 1 [default = -9999];
+	required double input_current = 2 [default = -9999];
+	required fixed64 timestamp_ms = 3 [default = 0];
+}

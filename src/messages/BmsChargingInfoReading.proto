@@ -1,0 +1,35 @@
+message BmsChargingInfoReading {
+	enum SystemStatus {
+		kChargeDisable = 0;
+		kChargeEnable = 1;
+	}	
+	required SystemStatus system_status = 1 [default = kChargeDisable];
+	enum ChargerState {
+		kBigShortFault = 0x0001;
+		kBatMissingFault = 0x0002;
+		kMaxChargeTimeFault = 0x0004;
+		kCOverXTerm = 0x0008;
+		kTimerTerm = 0x0010;
+		kNtcPause = 0x0020;
+		kCcCvCharge = 0x0040;
+		kPrecharge = 0x0080;
+		kChargerSuspended = 0x0100;
+		kAbsorbCharge = 0x0200;
+		kEqualizeCharge = 0x0400;
+		kInvalidChargerState = 0xffff;
+	}
+	required ChargerState charger_state = 2 [default = kInvalidChargerState];
+	enum ChargeStatus {
+		kConstantVoltage = 0;
+		kConstantCurrent = 1;
+		kIinLimitActive = 2;
+		kVinLimitActive = 3;
+		kNotCharging = 4;
+		kChargingError = 5;
+	}
+	required ChargeStatus charge_status = 3 [default = kChargingError];
+	required uint32 q_count = 4 [default = 9999];
+	required int32 q_count_delta = 5 [default = -9999];
+	required bool first_charge_complete = 6 [default = false];
+	required fixed64 timestamp_ms = 7 [default = 0];
+}	

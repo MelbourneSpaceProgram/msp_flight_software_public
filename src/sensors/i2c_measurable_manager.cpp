@@ -4,8 +4,13 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_charging_info_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_currents_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_die_temperature_measurable.h>
-#include <src/sensors/i2c_sensors/measurables/bms_readings_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_operation_values_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_settings_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_temperature_measurable.h>
+#include <src/sensors/i2c_sensors/measurables/bms_voltages_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/current_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_accelerometer_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/imu_gyroscope_measurable.h>
@@ -117,12 +122,21 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     battery_temp_state_machine->RegisterWithSensor(
         AddBmsBatteryTempMeasurable(kEpsBmsBatT2, bms_bus_c));
 
+    // TODO(hugorilla): Remove redundant BMS measurables here
     AddTemperature(kEpsT1, power_temp_1);
     AddTemperature(kEpsT2, power_temp_2);
     AddBmsDieTempMeasurable(kEpsBmsDieT1, bms_bus_d);
     AddBmsDieTempMeasurable(kEpsBmsDieT2, bms_bus_c);
-    AddBmsReadingsMeasurable(kEpsBmsReadings1, bms_bus_d);
-    AddBmsReadingsMeasurable(kEpsBmsReadings2, bms_bus_c);
+    AddBmsSettingsMeasurable(kEpsBmsSettingsReading1, bms_bus_d);
+    AddBmsSettingsMeasurable(kEpsBmsSettingsReading2, bms_bus_c);
+    AddBmsChargingInfoMeasurable(kEpsBmsChargingInfoReading1, bms_bus_d);
+    AddBmsChargingInfoMeasurable(kEpsBmsChargingInfoReading2, bms_bus_c);
+    AddBmsTemperatureMeasurable(kEpsBmsTemperatureReading1, bms_bus_d);
+    AddBmsTemperatureMeasurable(kEpsBmsTemperatureReading2, bms_bus_c);
+    AddBmsVoltagesMeasurable(kEpsBmsVoltagesReading1, bms_bus_d);
+    AddBmsVoltagesMeasurable(kEpsBmsVoltagesReading2, bms_bus_c);
+    AddBmsCurrentsMeasurable(kEpsBmsCurrentsReading1, bms_bus_d);
+    AddBmsCurrentsMeasurable(kEpsBmsCurrentsReading2, bms_bus_c);
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -332,10 +346,38 @@ void I2cMeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {
     measurables[id] = temp;
 }
 
-void I2cMeasurableManager::AddBmsReadingsMeasurable(MeasurableId id, Bms *bms) {
+void I2cMeasurableManager::AddBmsSettingsMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
-    BmsReadingsMeasurable *temp = new BmsReadingsMeasurable(bms);
-    measurables[id] = temp;
+    BmsSettingsMeasurable *bms_settings = new BmsSettingsMeasurable(bms);
+    measurables[id] = bms_settings;
+}
+
+void I2cMeasurableManager::AddBmsChargingInfoMeasurable(MeasurableId id,
+                                                        Bms *bms) {
+    CheckValidId(id);
+    BmsChargingInfoMeasurable *bms_charging_info =
+        new BmsChargingInfoMeasurable(bms);
+    measurables[id] = bms_charging_info;
+}
+
+void I2cMeasurableManager::AddBmsTemperatureMeasurable(MeasurableId id,
+                                                       Bms *bms) {
+    CheckValidId(id);
+    BmsTemperatureMeasurable *bms_temperatures =
+        new BmsTemperatureMeasurable(bms);
+    measurables[id] = bms_temperatures;
+}
+
+void I2cMeasurableManager::AddBmsVoltagesMeasurable(MeasurableId id, Bms *bms) {
+    CheckValidId(id);
+    BmsVoltagesMeasurable *bms_voltages = new BmsVoltagesMeasurable(bms);
+    measurables[id] = bms_voltages;
+}
+
+void I2cMeasurableManager::AddBmsCurrentsMeasurable(MeasurableId id, Bms *bms) {
+    CheckValidId(id);
+    BmsCurrentsMeasurable *bms_currents = new BmsCurrentsMeasurable(bms);
+    measurables[id] = bms_currents;
 }
 
 void I2cMeasurableManager::AddImuGyrometerMeasurable(

@@ -183,6 +183,18 @@ enum MeasurableId {
     kConsoleMessage = 176,
     kTestCurrent = 177,
     // Add new measurables below this line only
+    kEpsBmsChargingInfoReading1 = 177,
+    kEpsBmsCurrentsReading1 = 178,
+    kEpsBmsOperationValuesReading1 = 179,
+    kEpsBmsSettingsReading1 = 180,
+    kEpsBmsTemperatureReading1 = 181,
+    kEpsBmsVoltagesReading1 = 182,
+    kEpsBmsChargingInfoReading2 = 183,
+    kEpsBmsCurrentsReading2 = 184,
+    kEpsBmsOperationValuesReading2 = 185,
+    kEpsBmsSettingsReading2 = 186,
+    kEpsBmsTemperatureReading2 = 187,
+    kEpsBmsVoltagesReading2 = 188,
     kMeasurableIdEnd
 };
 

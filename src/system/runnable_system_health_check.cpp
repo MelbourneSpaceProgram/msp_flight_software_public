@@ -2,7 +2,12 @@
 #include <src/board/uart/uart.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>
-#include <src/messages/BmsReadings.pb.h>
+#include <src/messages/BmsChargingInfoReading.pb.h>
+#include <src/messages/BmsCurrentsReading.pb.h>
+#include <src/messages/BmsOperationValuesReading.pb.h>
+#include <src/messages/BmsSettingsReading.pb.h>
+#include <src/messages/BmsTemperatureReading.pb.h>
+#include <src/messages/BmsVoltagesReading.pb.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
@@ -99,8 +104,24 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 LogMeasurableMacro(VoltageReading)(kEpsBoostOutV2);
                 LogMeasurableMacro(VoltageReading)(kEpsRail1);
                 LogMeasurableMacro(VoltageReading)(kEpsRail2);
-                LogMeasurableMacro(BmsReadings)(kEpsBmsReadings1);
-                LogMeasurableMacro(BmsReadings)(kEpsBmsReadings2);
+                LogMeasurableMacro(BmsChargingInfoReading)(
+                    kEpsBmsChargingInfoReading1);
+                LogMeasurableMacro(BmsCurrentsReading)(kEpsBmsCurrentsReading1);
+                LogMeasurableMacro(BmsOperationValuesReading)(
+                    kEpsBmsOperationValuesReading1);
+                LogMeasurableMacro(BmsSettingsReading)(kEpsBmsSettingsReading1);
+                LogMeasurableMacro(BmsTemperatureReading)(
+                    kEpsBmsTemperatureReading1);
+                LogMeasurableMacro(BmsVoltagesReading)(kEpsBmsVoltagesReading1);
+                LogMeasurableMacro(BmsChargingInfoReading)(
+                    kEpsBmsChargingInfoReading2);
+                LogMeasurableMacro(BmsCurrentsReading)(kEpsBmsCurrentsReading2);
+                LogMeasurableMacro(BmsOperationValuesReading)(
+                    kEpsBmsOperationValuesReading2);
+                LogMeasurableMacro(BmsSettingsReading)(kEpsBmsSettingsReading2);
+                LogMeasurableMacro(BmsTemperatureReading)(
+                    kEpsBmsTemperatureReading2);
+                LogMeasurableMacro(BmsVoltagesReading)(kEpsBmsVoltagesReading2);
             }
 
             if (kXPosAvailable) {

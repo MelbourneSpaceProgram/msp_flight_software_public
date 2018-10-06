@@ -94,7 +94,12 @@ class I2cMeasurableManager {
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
         MeasurableId id, Bms *temp_sensor);
-    void AddBmsReadingsMeasurable(MeasurableId id, Bms *bms);
+    void AddBmsSettingsMeasurable(MeasurableId id, Bms *bms);
+    void AddBmsChargingInfoMeasurable(MeasurableId id, Bms *bms);
+    void AddBmsOperationValuesMeasurable(MeasurableId id, Bms *bms);
+    void AddBmsTemperatureMeasurable(MeasurableId id, Bms *bms);
+    void AddBmsVoltagesMeasurable(MeasurableId id, Bms *bms);
+    void AddBmsCurrentsMeasurable(MeasurableId id, Bms *bms);
     void AddImuGyrometerMeasurable(MeasurableId id,
                                    MPU9250MotionTracker *imu_sensor);
     void AddImuAcceleromterMeasurable(MeasurableId id,

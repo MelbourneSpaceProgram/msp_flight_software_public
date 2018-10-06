@@ -18,181 +18,358 @@ TEST_GROUP(Bms) {
     };
 };
 
-TEST(Bms, TestBmsReadingsMeasurable) {
+TEST(Bms, TestBmsChargingInfoRead) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
-    BmsReadings bms_readings =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsReadings>(kEpsBmsReadings1,
-                                                               1);
+    BmsChargingInfoReading bms_charging_info_reading_1 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsChargingInfoReading>(
+            kEpsBmsChargingInfoReading1, 1);
+    BmsChargingInfoReading bms_charging_info_reading_2 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsChargingInfoReading>(
+            kEpsBmsChargingInfoReading2, 1);
 
-    // check continuous measurements are sensible
-    CHECK_FALSE(bms_readings.battery_voltage ==
-                BmsReadings_battery_voltage_default);
-    DOUBLES_EQUAL(0, bms_readings.battery_voltage, 3.9);
+    // BMS 1 tests
+    CHECK_FALSE(bms_charging_info_reading_1.system_status ==
+                BmsChargingInfoReading_system_status_default);
+    CHECK(bms_charging_info_reading_1.system_status ==
+              BmsChargingInfoReading_SystemStatus_kChargeDisable ||
+          bms_charging_info_reading_1.system_status ==
+              BmsChargingInfoReading_SystemStatus_kChargeEnable);
 
-    CHECK_FALSE(bms_readings.battery_current ==
-                BmsReadings_battery_current_default);
-    DOUBLES_EQUAL(0, bms_readings.battery_current, 4.0);
+    CHECK_FALSE(bms_charging_info_reading_1.charger_state ==
+                BmsChargingInfoReading_charger_state_default);
+    CHECK(bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kBigShortFault ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kBatMissingFault ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kMaxChargeTimeFault ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kCOverXTerm ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kTimerTerm ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kNtcPause ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kCcCvCharge ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kPrecharge ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kChargerSuspended ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kAbsorbCharge ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kEqualizeCharge ||
+          bms_charging_info_reading_1.charger_state ==
+              BmsChargingInfoReading_ChargerState_kInvalidChargerState);
 
-    CHECK_FALSE(bms_readings.system_voltage ==
-                BmsReadings_system_voltage_default);
-    DOUBLES_EQUAL(0, bms_readings.system_voltage, 6.0);
+    CHECK_FALSE(bms_charging_info_reading_1.charge_status ==
+                BmsChargingInfoReading_charge_status_default);
+    CHECK(bms_charging_info_reading_1.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kConstantVoltage ||
+          bms_charging_info_reading_1.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kConstantCurrent ||
+          bms_charging_info_reading_1.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kIinLimitActive ||
+          bms_charging_info_reading_1.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kVinLimitActive ||
+          bms_charging_info_reading_1.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kNotCharging ||
+          bms_charging_info_reading_1.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kChargingError);
 
-    CHECK_FALSE(bms_readings.input_voltage ==
-                BmsReadings_input_current_default);
-    DOUBLES_EQUAL(0, bms_readings.input_voltage, 6.0);
-
-    CHECK_FALSE(bms_readings.input_current ==
-                BmsReadings_input_current_default);
-    DOUBLES_EQUAL(0, bms_readings.input_current, 1.0);
-
-    CHECK_FALSE(bms_readings.die_temperature ==
-                BmsReadings_die_temperature_default);
-    DOUBLES_EQUAL(5, bms_readings.die_temperature, 55);
-
-    CHECK_FALSE(bms_readings.battery_temperature ==
-                BmsReadings_battery_temperature_default);
-    DOUBLES_EQUAL(5, bms_readings.battery_temperature, 55);
-
-    CHECK_FALSE(bms_readings.recharge_threshold ==
-                BmsReadings_recharge_threshold_default);
-    DOUBLES_EQUAL(0, bms_readings.recharge_threshold, 3.8);
-
-    // check configured members have retained configuration value
-    CHECK_FALSE(bms_readings.c_over_x_threshold ==
-                BmsReadings_c_over_x_threshold_default);
-    CHECK(bms_readings.c_over_x_threshold ==
-          ((Bms::kCOverXThresholdConfigurationUBValue << 8) |
-           Bms::kCOverXThresholdConfigurationLBValue));
-
-    CHECK_FALSE(bms_readings.v_charge_setting ==
-                BmsReadings_v_charge_setting_default);
-    CHECK(bms_readings.v_charge_setting ==
-          Bms::kVchargeSettingConfigurationValue);
-
-    CHECK_FALSE(bms_readings.config_bits == BmsReadings_config_bits_default);
-    CHECK(bms_readings.config_bits ==
-          ((Bms::kConfigBitsConfigurationUBValue << 8) |
-           Bms::kConfigBitsConfigurationLBValue));
-
-    CHECK_FALSE(bms_readings.q_count == BmsReadings_q_count_default);
-    CHECK(bms_readings.q_count ==
+    CHECK_FALSE(bms_charging_info_reading_1.q_count ==
+                BmsChargingInfoReading_q_count_default);
+    CHECK(bms_charging_info_reading_1.q_count ==
           ((Bms::kQCountRegisterConfigurationUBValue << 8) |
            Bms::kQCountRegisterConfigurationLBValue));
 
-    CHECK_FALSE(bms_readings.q_count_prescale_factor ==
-                BmsReadings_q_count_prescale_factor_default);
-    CHECK(bms_readings.q_count_prescale_factor ==
+    // BMS 2 tests
+    CHECK_FALSE(bms_charging_info_reading_2.system_status ==
+                BmsChargingInfoReading_system_status_default);
+    CHECK(bms_charging_info_reading_2.system_status ==
+              BmsChargingInfoReading_SystemStatus_kChargeDisable ||
+          bms_charging_info_reading_2.system_status ==
+              BmsChargingInfoReading_SystemStatus_kChargeEnable);
+
+    CHECK_FALSE(bms_charging_info_reading_2.charger_state ==
+                BmsChargingInfoReading_charger_state_default);
+    CHECK(bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kBigShortFault ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kBatMissingFault ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kMaxChargeTimeFault ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kCOverXTerm ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kTimerTerm ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kNtcPause ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kCcCvCharge ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kPrecharge ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kChargerSuspended ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kAbsorbCharge ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kEqualizeCharge ||
+          bms_charging_info_reading_2.charger_state ==
+              BmsChargingInfoReading_ChargerState_kInvalidChargerState);
+
+    CHECK_FALSE(bms_charging_info_reading_2.charge_status ==
+                BmsChargingInfoReading_charge_status_default);
+    CHECK(bms_charging_info_reading_2.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kConstantVoltage ||
+          bms_charging_info_reading_2.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kConstantCurrent ||
+          bms_charging_info_reading_2.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kIinLimitActive ||
+          bms_charging_info_reading_2.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kVinLimitActive ||
+          bms_charging_info_reading_2.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kNotCharging ||
+          bms_charging_info_reading_2.charge_status ==
+              BmsChargingInfoReading_ChargeStatus_kChargingError);
+
+    CHECK_FALSE(bms_charging_info_reading_2.q_count ==
+                BmsChargingInfoReading_q_count_default);
+    CHECK(bms_charging_info_reading_2.q_count ==
+          ((Bms::kQCountRegisterConfigurationUBValue << 8) |
+           Bms::kQCountRegisterConfigurationLBValue));
+
+    // TODO(hugorilla): include 'first_charge_complete' and 'qcount_delta'
+    // measurements (if deemed necessary)
+    // TODO(hugorilla): Check timestamps
+}
+
+TEST(Bms, TestBmsCurrentsReading) {
+    I2cMeasurableManager* i2c_measurable_manager =
+        I2cMeasurableManager::GetInstance();
+    BmsCurrentsReading bms_currents_reading_1 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsCurrentsReading>(
+            kEpsBmsCurrentsReading1, 1);
+    BmsCurrentsReading bms_currents_reading_2 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsCurrentsReading>(
+            kEpsBmsCurrentsReading2, 1);
+
+    // BMS 1 tests
+    CHECK_FALSE(bms_currents_reading_1.battery_current ==
+                BmsCurrentsReading_battery_current_default);
+    DOUBLES_EQUAL(0, bms_currents_reading_1.battery_current, 4.0);
+
+    CHECK_FALSE(bms_currents_reading_1.input_current ==
+                BmsCurrentsReading_input_current_default);
+    DOUBLES_EQUAL(0, bms_currents_reading_1.input_current, 1.0);
+
+    // BMS 2 tests
+    CHECK_FALSE(bms_currents_reading_2.battery_current ==
+                BmsCurrentsReading_battery_current_default);
+    DOUBLES_EQUAL(0, bms_currents_reading_2.battery_current, 4.0);
+
+    CHECK_FALSE(bms_currents_reading_2.input_current ==
+                BmsCurrentsReading_input_current_default);
+    DOUBLES_EQUAL(0, bms_currents_reading_2.input_current, 1.0);
+
+    // TODO(hugorilla): Check timestamps
+}
+
+TEST(Bms, TestBmsOperationValuesReading) {
+    I2cMeasurableManager* i2c_measurable_manager =
+        I2cMeasurableManager::GetInstance();
+    BmsOperationValuesReading bms_operation_values_reading_1 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsOperationValuesReading>(
+            kEpsBmsOperationValuesReading1, 1);
+    BmsOperationValuesReading bms_operation_values_reading_2 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsOperationValuesReading>(
+            kEpsBmsOperationValuesReading2, 1);
+
+    // BMS 1 tests
+    CHECK_FALSE(bms_operation_values_reading_1.recharge_threshold ==
+                BmsOperationValuesReading_recharge_threshold_default);
+    DOUBLES_EQUAL(0, bms_operation_values_reading_1.recharge_threshold, 3.8);
+
+    CHECK_FALSE(bms_operation_values_reading_1.c_over_x_threshold ==
+                BmsOperationValuesReading_c_over_x_threshold_default);
+    CHECK(bms_operation_values_reading_1.c_over_x_threshold ==
+          ((Bms::kCOverXThresholdConfigurationUBValue << 8) |
+           Bms::kCOverXThresholdConfigurationLBValue));
+
+    CHECK_FALSE(bms_operation_values_reading_1.q_count_prescale_factor ==
+                BmsOperationValuesReading_q_count_prescale_factor_default);
+    CHECK(bms_operation_values_reading_1.q_count_prescale_factor ==
           ((Bms::kQCountPrescaleFactorConfigurationUBValue << 8) |
            Bms::kQCountPrescaleFactorConfigurationLBValue));
 
-    CHECK_FALSE(bms_readings.v_in_uvcl_setting ==
-                BmsReadings_v_in_uvcl_setting_default);
-    CHECK(bms_readings.v_in_uvcl_setting ==
+    // BMS 2 tests
+    CHECK_FALSE(bms_operation_values_reading_2.recharge_threshold ==
+                BmsOperationValuesReading_recharge_threshold_default);
+    DOUBLES_EQUAL(0, bms_operation_values_reading_2.recharge_threshold, 3.8);
+
+    CHECK_FALSE(bms_operation_values_reading_2.c_over_x_threshold ==
+                BmsOperationValuesReading_c_over_x_threshold_default);
+    CHECK(bms_operation_values_reading_2.c_over_x_threshold ==
+          ((Bms::kCOverXThresholdConfigurationUBValue << 8) |
+           Bms::kCOverXThresholdConfigurationLBValue));
+
+    CHECK_FALSE(bms_operation_values_reading_2.q_count_prescale_factor ==
+                BmsOperationValuesReading_q_count_prescale_factor_default);
+    CHECK(bms_operation_values_reading_2.q_count_prescale_factor ==
+          ((Bms::kQCountPrescaleFactorConfigurationUBValue << 8) |
+           Bms::kQCountPrescaleFactorConfigurationLBValue));
+
+    // TODO(hugorilla): Check timestamps
+}
+
+TEST(Bms, TestBmsSettingsRead) {
+    I2cMeasurableManager* i2c_measurable_manager =
+        I2cMeasurableManager::GetInstance();
+    BmsSettingsReading bms_settings_reading_1 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsSettingsReading>(
+            kEpsBmsSettingsReading1, 1);
+    BmsSettingsReading bms_settings_reading_2 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsSettingsReading>(
+            kEpsBmsSettingsReading2, 1);
+
+    // BMS 1 tests
+    CHECK_FALSE(bms_settings_reading_1.v_charge_setting ==
+                BmsSettingsReading_v_charge_setting_default);
+    CHECK(bms_settings_reading_1.v_charge_setting ==
+          Bms::kVchargeSettingConfigurationValue);
+
+    CHECK_FALSE(bms_settings_reading_1.i_charge_target ==
+                BmsSettingsReading_i_charge_target_default);
+    CHECK(bms_settings_reading_1.i_charge_target ==
+          Bms::kIChargeTargetConfigurationValue);
+
+    CHECK_FALSE(bms_settings_reading_1.v_in_uvcl_setting ==
+                BmsSettingsReading_v_in_uvcl_setting_default);
+    CHECK(bms_settings_reading_1.v_in_uvcl_setting ==
           Bms::kVinUvclSettingConfigurationValue);
 
-    // check read-only members correspond to possible register values
-    CHECK_FALSE(bms_readings.jeita_region == BmsReadings_jeita_region_default);
-    CHECK(bms_readings.jeita_region >= 1 && bms_readings.jeita_region <= 7);
+    CHECK_FALSE(bms_settings_reading_1.charger_config ==
+                BmsSettingsReading_charger_config_default);
+    CHECK(bms_settings_reading_1.charger_config <= 7);
 
-    CHECK_FALSE(bms_readings.system_status ==
-                BmsReadings_system_status_default);
-    CHECK(bms_readings.system_status ==
-              BmsReadings_SystemStatus_kChargeDisable ||
-          bms_readings.system_status == BmsReadings_SystemStatus_kChargeEnable);
+    CHECK_FALSE(bms_settings_reading_1.config_bits ==
+                BmsSettingsReading_config_bits_default);
+    CHECK(bms_settings_reading_1.config_bits ==
+          ((Bms::kConfigBitsConfigurationUBValue << 8) |
+           Bms::kConfigBitsConfigurationLBValue));
 
-    CHECK_FALSE(bms_readings.charger_state ==
-                BmsReadings_charger_state_default);
-    CHECK(
-        bms_readings.charger_state == BmsReadings_ChargerState_kBigShortFault ||
-        bms_readings.charger_state ==
-            BmsReadings_ChargerState_kBatMissingFault ||
-        bms_readings.charger_state ==
-            BmsReadings_ChargerState_kMaxChargeTimeFault ||
-        bms_readings.charger_state == BmsReadings_ChargerState_kCOverXTerm ||
-        bms_readings.charger_state == BmsReadings_ChargerState_kTimerTerm ||
-        bms_readings.charger_state == BmsReadings_ChargerState_kNtcPause ||
-        bms_readings.charger_state == BmsReadings_ChargerState_kCcCvCharge ||
-        bms_readings.charger_state == BmsReadings_ChargerState_kPrecharge ||
-        bms_readings.charger_state ==
-            BmsReadings_ChargerState_kChargerSuspended ||
-        bms_readings.charger_state == BmsReadings_ChargerState_kAbsorbCharge ||
-        bms_readings.charger_state ==
-            BmsReadings_ChargerState_kEqualizeCharge ||
-        bms_readings.charger_state ==
-            BmsReadings_ChargerState_kInvalidChargerState);
+    CHECK(bms_settings_reading_1.telemetry_valid);
 
-    CHECK_FALSE(bms_readings.charge_status ==
-                BmsReadings_charge_status_default);
-    CHECK(bms_readings.charge_status ==
-              BmsReadings_ChargeStatus_kConstantVoltage ||
-          bms_readings.charge_status ==
-              BmsReadings_ChargeStatus_kConstantCurrent ||
-          bms_readings.charge_status ==
-              BmsReadings_ChargeStatus_kIinLimitActive ||
-          bms_readings.charge_status ==
-              BmsReadings_ChargeStatus_kVinLimitActive ||
-          bms_readings.charge_status == BmsReadings_ChargeStatus_kNotCharging ||
-          bms_readings.charge_status ==
-              BmsReadings_ChargeStatus_kChargingError);
+    // BMS 2 tests
+    CHECK_FALSE(bms_settings_reading_2.v_charge_setting ==
+                BmsSettingsReading_v_charge_setting_default);
+    CHECK(bms_settings_reading_2.v_charge_setting ==
+          Bms::kVchargeSettingConfigurationValue);
 
-    CHECK_FALSE(bms_readings.charger_config ==
-                BmsReadings_charger_config_default);
-    CHECK(bms_readings.charger_config <= 7);
+    CHECK_FALSE(bms_settings_reading_2.i_charge_target ==
+                BmsSettingsReading_i_charge_target_default);
+    CHECK(bms_settings_reading_2.i_charge_target ==
+          Bms::kIChargeTargetConfigurationValue);
 
-    CHECK_FALSE(bms_readings.v_charge_dac == BmsReadings_v_charge_dac_default);
-    CHECK(bms_readings.v_charge_dac <= 63);
+    CHECK_FALSE(bms_settings_reading_2.v_in_uvcl_setting ==
+                BmsSettingsReading_v_in_uvcl_setting_default);
+    CHECK(bms_settings_reading_2.v_in_uvcl_setting ==
+          Bms::kVinUvclSettingConfigurationValue);
 
-    CHECK_FALSE(bms_readings.i_charge_dac == BmsReadings_i_charge_dac_default);
-    CHECK(bms_readings.i_charge_dac <= 31);
+    CHECK_FALSE(bms_settings_reading_2.charger_config ==
+                BmsSettingsReading_charger_config_default);
+    CHECK(bms_settings_reading_1.charger_config <= 7);
 
-    // check i2c is working
-    CHECK(bms_readings.telemetry_valid);
+    CHECK_FALSE(bms_settings_reading_2.config_bits ==
+                BmsSettingsReading_config_bits_default);
+    CHECK(bms_settings_reading_2.config_bits ==
+          ((Bms::kConfigBitsConfigurationUBValue << 8) |
+           Bms::kConfigBitsConfigurationLBValue));
+
+    CHECK(bms_settings_reading_2.telemetry_valid);
+
+    // TODO(hugorilla): Check timestamps
 }
 
-TEST(Bms, TestBms) {
-    I2c bus_d(I2C_BUS_D);
-    Bms bms(&bus_d, test_bms_address);
-
-    CHECK_EQUAL(Bms::kVinUvclSettingConfigurationValue,
-                bms.GetVinUvclSetting());
-    CHECK_EQUAL(Bms::kVchargeSettingConfigurationValue,
-                bms.GetVchargeSetting());
-    CHECK_EQUAL(Bms::kIChargeTargetConfigurationValue, bms.GetIchargeTarget());
-    CHECK_EQUAL((Bms::kRechargeThresholdConfigurationUBValue << 8 |
-                 Bms::kRechargeThresholdConfigurationLBValue),
-                bms.GetRechargeThreshold());
-
-    CHECK(BmsReadings_ChargeStatus_kChargingError != bms.GetChargeStatus());
-}
-
-TEST(Bms, TestBmsDieTemperatureRead) {
+TEST(Bms, TestBmsTemperatureReading) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
-    double temp = i2c_measurable_manager
-                      ->ReadI2cMeasurable<TemperatureReading>(kEpsBmsDieT1, 1)
-                      .temp;
-    DOUBLES_EQUAL(25, temp, 50);
+
+    BmsTemperatureReading bms_temperature_reading_1 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsTemperatureReading>(
+            kEpsBmsTemperatureReading1, 1);
+    BmsTemperatureReading bms_temperature_reading_2 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsTemperatureReading>(
+            kEpsBmsTemperatureReading2, 1);
+
+    // BMS 1 tests
+    CHECK_FALSE(bms_temperature_reading_1.die_temperature ==
+                BmsTemperatureReading_die_temperature_default);
+    DOUBLES_EQUAL(5, bms_temperature_reading_1.die_temperature, 55);
+
+    CHECK_FALSE(bms_temperature_reading_1.battery_temperature ==
+                BmsTemperatureReading_battery_temperature_default);
+    DOUBLES_EQUAL(5, bms_temperature_reading_1.battery_temperature, 55);
+
+    CHECK_FALSE(bms_temperature_reading_1.jeita_region ==
+                BmsTemperatureReading_jeita_region_default);
+    CHECK(bms_temperature_reading_1.jeita_region >= 1 &&
+          bms_temperature_reading_1.jeita_region <= 7);
+
+    // BMS 2 tests
+    CHECK_FALSE(bms_temperature_reading_2.die_temperature ==
+                BmsTemperatureReading_die_temperature_default);
+    DOUBLES_EQUAL(5, bms_temperature_reading_2.die_temperature, 55);
+
+    CHECK_FALSE(bms_temperature_reading_2.battery_temperature ==
+                BmsTemperatureReading_battery_temperature_default);
+    DOUBLES_EQUAL(5, bms_temperature_reading_2.battery_temperature, 55);
+
+    CHECK_FALSE(bms_temperature_reading_2.jeita_region ==
+                BmsTemperatureReading_jeita_region_default);
+    CHECK(bms_temperature_reading_2.jeita_region >= 1 &&
+          bms_temperature_reading_2.jeita_region <= 7);
+
+    // TODO(hugorilla): Check timestamps
 }
 
-TEST(Bms, TestBmsBatteryTemperatureRead) {
+TEST(Bms, TestBmsVoltagesReading) {
     I2cMeasurableManager* i2c_measurable_manager =
         I2cMeasurableManager::GetInstance();
-    double temp = i2c_measurable_manager
-                      ->ReadI2cMeasurable<TemperatureReading>(kEpsBmsBatT1, 1)
-                      .temp;
-    DOUBLES_EQUAL(25, temp, 50);
-}
 
-TEST(Bms, TestJeitaRegion) {
-    I2c bus_d(I2C_BUS_D);
-    Bms bms(&bus_d, test_bms_address);
+    BmsVoltagesReading bms_voltages_reading_1 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsVoltagesReading>(
+            kEpsBmsVoltagesReading1, 1);
+    BmsVoltagesReading bms_voltages_reading_2 =
+        i2c_measurable_manager->ReadI2cMeasurable<BmsVoltagesReading>(
+            kEpsBmsVoltagesReading2, 1);
 
-    uint16_t jeita_region = 3;
-    double v_charge = 3.6;
-    double i_charge = 1.0;
+    // BMS 1 tests
+    CHECK_FALSE(bms_voltages_reading_1.battery_voltage ==
+                BmsVoltagesReading_battery_voltage_default);
+    DOUBLES_EQUAL(0, bms_voltages_reading_1.battery_voltage, 3.9);
 
-    CHECK_EQUAL(jeita_region, bms.GetJeitaRegion());
-    DOUBLES_EQUAL(v_charge, bms.GetVchargeDac(), 0.5);
-    DOUBLES_EQUAL(i_charge, bms.GetIchargeDac(), 0.5);
+    CHECK_FALSE(bms_voltages_reading_1.system_voltage ==
+                BmsVoltagesReading_system_voltage_default);
+    DOUBLES_EQUAL(0, bms_voltages_reading_1.system_voltage, 6.0);
+
+    CHECK_FALSE(bms_voltages_reading_1.input_voltage ==
+                BmsVoltagesReading_input_voltage_default);
+    DOUBLES_EQUAL(0, bms_voltages_reading_1.input_voltage, 6.0);
+
+    // BMS 2 tests
+    CHECK_FALSE(bms_voltages_reading_2.battery_voltage ==
+                BmsVoltagesReading_battery_voltage_default);
+    DOUBLES_EQUAL(0, bms_voltages_reading_2.battery_voltage, 3.9);
+
+    CHECK_FALSE(bms_voltages_reading_2.system_voltage ==
+                BmsVoltagesReading_system_voltage_default);
+    DOUBLES_EQUAL(0, bms_voltages_reading_2.system_voltage, 6.0);
+
+    CHECK_FALSE(bms_voltages_reading_2.input_voltage ==
+                BmsVoltagesReading_input_voltage_default);
+    DOUBLES_EQUAL(0, bms_voltages_reading_2.input_voltage, 6.0);
+
+    // TODO(hugorilla): Check timestamps
 }

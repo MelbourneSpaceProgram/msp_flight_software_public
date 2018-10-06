@@ -1,0 +1,9 @@
+message BmsSettingsReading {
+	required uint32 charger_config = 1 [default = 9999];
+	required uint32 v_charge_setting = 2 [default = 9999];
+	required uint32 i_charge_target = 3 [default = 9999];
+	required uint32 config_bits = 4 [default = 9999];
+	required uint32 v_in_uvcl_setting = 5 [default = 9999];
+	required bool telemetry_valid = 6 [default = false];
+	required fixed64 timestamp_ms = 7 [default = 0];
+}

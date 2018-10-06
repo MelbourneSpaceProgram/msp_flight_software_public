@@ -2,7 +2,12 @@
 #include <external/nanopb/pb_decode.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/AccelerometerReading.pb.h>
-#include <src/messages/BmsReadings.pb.h>
+#include <src/messages/BmsChargingInfoReading.pb.h>
+#include <src/messages/BmsCurrentsReading.pb.h>
+#include <src/messages/BmsOperationValuesReading.pb.h>
+#include <src/messages/BmsSettingsReading.pb.h>
+#include <src/messages/BmsTemperatureReading.pb.h>
+#include <src/messages/BmsVoltagesReading.pb.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
@@ -42,7 +47,15 @@ bool ScienceDataCommand::ExecuteCommand() {
         return true;
     if (RetrieveAndSendDataMacro(TorqueOutputReading)(requested_id))
         return true;
-    if (RetrieveAndSendDataMacro(BmsReadings)(requested_id)) return true;
+    if (RetrieveAndSendDataMacro(BmsChargingInfoReading)(requested_id))
+        return true;
+    if (RetrieveAndSendDataMacro(BmsCurrentsReading)(requested_id)) return true;
+    if (RetrieveAndSendDataMacro(BmsOperationValuesReading)(requested_id))
+        return true;
+    if (RetrieveAndSendDataMacro(BmsSettingsReading)(requested_id)) return true;
+    if (RetrieveAndSendDataMacro(BmsTemperatureReading)(requested_id))
+        return true;
+    if (RetrieveAndSendDataMacro(BmsVoltagesReading)(requested_id)) return true;
     if (RetrieveAndSendDataMacro(StateMachineStateReading)(requested_id))
         return true;
 

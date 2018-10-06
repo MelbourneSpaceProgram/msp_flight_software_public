@@ -1,0 +1,6 @@
+message BmsTemperatureReading {
+	required double die_temperature = 1 [default = -9999];
+	required double battery_temperature = 2 [default = -9999];
+	required uint32 jeita_region = 3 [default = 9999];
+	required fixed64 timestamp_ms = 4 [default = 0];
+}

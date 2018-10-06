@@ -1,0 +1,6 @@
+message BmsVoltagesReading {
+	required double battery_voltage = 1 [default = -9999];
+	required double system_voltage = 2 [default = -9999];
+	required double input_voltage = 3 [default = -9999];
+	required fixed64 timestamp_ms = 4 [default = 0];
+}

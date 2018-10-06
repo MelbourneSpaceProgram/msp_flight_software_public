@@ -4,7 +4,8 @@
 
 Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
-    : I2cDevice(bus, address, multiplexer, channel) {
+    : I2cDevice(bus, address, multiplexer, channel),
+      first_charge_complete(false) {
     SetConfiguration();
 }
 
@@ -93,172 +94,201 @@ bool Bms::ReadFromCurrentRegister(etl::array<byte, 2>& read_buffer) {
     return false;
 }
 
-// TODO(hugorilla): Remove casts if possible to include enums in nanopb message
-BmsReadings Bms::GetBmsReadings() {
-    BmsReadings bms_readings;
-    bms_readings.battery_voltage = GetBatteryVoltage();
-    bms_readings.battery_current = GetBatteryCurrent();
-    bms_readings.system_voltage = GetSystemVoltage();
-    bms_readings.input_voltage = GetInputVoltage();
-    bms_readings.input_current = GetInputCurrent();
-    bms_readings.die_temperature = GetDieTemp();
-    bms_readings.battery_temperature = GetBatteryTemp();
-    bms_readings.jeita_region = GetJeitaRegion();
-    bms_readings.system_status = GetSystemStatus();
-    bms_readings.charger_state = GetChargerState();
-    bms_readings.charge_status = GetChargeStatus();
-    bms_readings.recharge_threshold = GetRechargeThreshold();
-    bms_readings.charger_config = GetChargerConfig();
-    bms_readings.c_over_x_threshold = GetCOverXThreshold();
-    bms_readings.v_charge_setting = GetVchargeSetting();
-    bms_readings.i_charge_target = GetIchargeTarget();
-    bms_readings.config_bits = static_cast<uint16_t>(GetConfigBits());
-    bms_readings.q_count = GetQCount();
-    bms_readings.q_count_prescale_factor = GetQCountPrescaleFactor();
-    bms_readings.v_in_uvcl_setting = GetVinUvclSetting();
-    bms_readings.v_charge_dac = GetVchargeDac();
-    bms_readings.i_charge_dac = GetIchargeDac();
-    bms_readings.telemetry_valid = GetTelemetryValid();
-    return bms_readings;
+/* get methods */
+BmsOperationValuesReading Bms::GetBmsOperationValuesReading() {
+    BmsOperationValuesReading bms_operation_values_reading;
+    bms_operation_values_reading.c_over_x_threshold = GetCOverXThreshold();
+    bms_operation_values_reading.recharge_threshold = GetRechargeThreshold();
+    bms_operation_values_reading.q_count_prescale_factor =
+        GetQCountPrescaleFactor();
+    bms_operation_values_reading.timestamp_ms =
+        BmsOperationValuesReading_timestamp_ms_default;
+    return bms_operation_values_reading;
+}
+
+BmsSettingsReading Bms::GetBmsSettingsReading() {
+    BmsSettingsReading bms_settings_reading;
+    bms_settings_reading.charger_config = GetChargerConfig();
+    bms_settings_reading.v_charge_setting = GetVchargeSetting();
+    bms_settings_reading.i_charge_target = GetIchargeTarget();
+    bms_settings_reading.config_bits = GetConfigBits();
+    bms_settings_reading.v_in_uvcl_setting = GetVinUvclSetting();
+    bms_settings_reading.telemetry_valid = GetTelemetryValid();
+    bms_settings_reading.timestamp_ms = BmsSettingsReading_timestamp_ms_default;
+    return bms_settings_reading;
+}
+
+BmsChargingInfoReading Bms::GetBmsChargingInfoReading() {
+    BmsChargingInfoReading bms_charging_info_reading;
+    bms_charging_info_reading.system_status = GetSystemStatus();
+    bms_charging_info_reading.charge_status = GetChargeStatus();
+    bms_charging_info_reading.charger_state = GetChargerState();
+    bms_charging_info_reading.q_count = GetQCount();
+    bms_charging_info_reading.q_count_delta = GetQCountDelta();
+    bms_charging_info_reading.first_charge_complete = GetFirstChargeComplete();
+    bms_charging_info_reading.timestamp_ms =
+        BmsChargingInfoReading_timestamp_ms_default;
+    return bms_charging_info_reading;
+}
+
+BmsTemperatureReading Bms::GetBmsTemperatureReading() {
+    BmsTemperatureReading bms_temperature_reading;
+    bms_temperature_reading.battery_temperature = GetBatteryTemp();
+    bms_temperature_reading.die_temperature = GetDieTemp();
+    bms_temperature_reading.jeita_region = GetJeitaRegion();
+    bms_temperature_reading.timestamp_ms =
+        BmsTemperatureReading_timestamp_ms_default;
+    return bms_temperature_reading;
+}
+
+BmsVoltagesReading Bms::GetBmsVoltagesReading() {
+    BmsVoltagesReading bms_voltages_reading;
+    bms_voltages_reading.battery_voltage = GetBatteryVoltage();
+    bms_voltages_reading.system_voltage = GetSystemVoltage();
+    bms_voltages_reading.input_voltage = GetInputVoltage();
+    bms_voltages_reading.timestamp_ms = BmsVoltagesReading_timestamp_ms_default;
+    return bms_voltages_reading;
+}
+
+BmsCurrentsReading Bms::GetBmsCurrentsReading() {
+    BmsCurrentsReading bms_currents_reading;
+    bms_currents_reading.battery_current = GetBatteryCurrent();
+    bms_currents_reading.input_current = GetInputCurrent();
+    bms_currents_reading.timestamp_ms = BmsCurrentsReading_timestamp_ms_default;
+    return bms_currents_reading;
 }
 
 double Bms::GetBatteryVoltage() {
     return GetFromRegisterAndConvert<double>(
         kVbatRegisterLocation, &ConvertToBatteryVoltage,
-        BmsReadings_battery_voltage_default);
+        BmsVoltagesReading_battery_voltage_default);
 }
 
 double Bms::GetBatteryCurrent() {
     return GetFromRegisterAndConvert<double>(
         kIbatRegisterLocation, &ConvertToBatteryCurrent,
-        BmsReadings_battery_current_default);
+        BmsCurrentsReading_battery_current_default);
 }
 
 double Bms::GetSystemVoltage() {
     return GetFromRegisterAndConvert<double>(
         kVsysRegisterLocation, &ConvertToSystemVoltage,
-        BmsReadings_system_voltage_default);
+        BmsVoltagesReading_system_voltage_default);
 }
 
 double Bms::GetInputVoltage() {
-    return GetFromRegisterAndConvert<double>(kVinRegisterLocation,
-                                             &ConvertToInputVoltage,
-                                             BmsReadings_input_voltage_default);
+    return GetFromRegisterAndConvert<double>(
+        kVinRegisterLocation, &ConvertToInputVoltage,
+        BmsVoltagesReading_input_voltage_default);
 }
 
 double Bms::GetInputCurrent() {
-    return GetFromRegisterAndConvert<double>(kIinRegisterLocation,
-                                             &ConvertToInputCurrent,
-                                             BmsReadings_input_current_default);
+    return GetFromRegisterAndConvert<double>(
+        kIinRegisterLocation, &ConvertToInputCurrent,
+        BmsCurrentsReading_input_current_default);
 }
 
 double Bms::GetDieTemp() {
     return GetFromRegisterAndConvert<double>(
         kDieTempRegisterLocation, &ConvertToDieTemperature,
-        BmsReadings_die_temperature_default);
+        BmsTemperatureReading_die_temperature_default);
 }
 
 double Bms::GetBatteryTemp() {
     return GetFromRegisterAndConvert<double>(
         kNtcRatioRegisterLocation, &ConvertToBatteryTemperature,
-        BmsReadings_battery_temperature_default);
+        BmsTemperatureReading_battery_temperature_default);
 }
 
 uint16_t Bms::GetJeitaRegion() {
     return GetFromRegisterAndConvert<uint16_t>(
         kJeitaRegionRegisterLocation, &ConvertToJeitaRegion,
-        BmsReadings_jeita_region_default);
+        BmsTemperatureReading_jeita_region_default);
 }
 
-BmsReadings_SystemStatus Bms::GetSystemStatus() {
-    return GetFromRegisterAndConvert<BmsReadings_SystemStatus>(
+BmsChargingInfoReading_SystemStatus Bms::GetSystemStatus() {
+    return GetFromRegisterAndConvert<BmsChargingInfoReading_SystemStatus>(
         kSystemStatusRegisterLocation, &ConvertToSystemStatus,
-        BmsReadings_system_status_default);
+        BmsChargingInfoReading_system_status_default);
 }
 
-BmsReadings_ChargerState Bms::GetChargerState() {
-    return GetFromRegisterAndConvert<BmsReadings_ChargerState>(
+BmsChargingInfoReading_ChargerState Bms::GetChargerState() {
+    return GetFromRegisterAndConvert<BmsChargingInfoReading_ChargerState>(
         kChargerStateRegisterLocation, &ConvertToChargerState,
-        BmsReadings_charger_state_default);
+        BmsChargingInfoReading_charger_state_default);
 }
 
-BmsReadings_ChargeStatus Bms::GetChargeStatus() {
-    return GetFromRegisterAndConvert<BmsReadings_ChargeStatus>(
+BmsChargingInfoReading_ChargeStatus Bms::GetChargeStatus() {
+    return GetFromRegisterAndConvert<BmsChargingInfoReading_ChargeStatus>(
         kChargeStatusRegisterLocation, &ConvertToChargeStatus,
-        BmsReadings_charge_status_default);
+        BmsChargingInfoReading_charge_status_default);
 }
 
 double Bms::GetRechargeThreshold() {
     return GetFromRegisterAndConvert<double>(
         kRechargeThresholdRegisterLocation, &ConvertToRechargeThreshold,
-        BmsReadings_recharge_threshold_default);
+        BmsOperationValuesReading_recharge_threshold_default);
 }
 
 uint16_t Bms::GetChargerConfig() {
     return GetFromRegisterAndConvert<uint16_t>(
         kChargerConfigBitsRegisterLocation, &ConvertToChargerConfig,
-        BmsReadings_charger_config_default);
+        BmsSettingsReading_charger_config_default);
 }
 
 uint16_t Bms::GetCOverXThreshold() {
     return GetFromRegisterAndConvert<uint16_t>(
         kCOverXThresholdRegisterLocation, &ConvertToCOverXThreshold,
-        BmsReadings_c_over_x_threshold_default);
+        BmsOperationValuesReading_c_over_x_threshold_default);
 }
 
 uint16_t Bms::GetVchargeSetting() {
     return GetFromRegisterAndConvert<uint16_t>(
         kVchargeSettingRegisterLocation, &ConvertToVchargeSetting,
-        BmsReadings_v_charge_setting_default);
+        BmsSettingsReading_v_charge_setting_default);
 }
 
 uint16_t Bms::GetIchargeTarget() {
     return GetFromRegisterAndConvert<uint16_t>(
         kIchargeTargetRegisterLocation, &ConvertToIchargeTarget,
-        BmsReadings_i_charge_target_default);
+        BmsSettingsReading_i_charge_target_default);
 }
 
 uint16_t Bms::GetConfigBits() {
-    return GetFromRegisterAndConvert<uint16_t>(kConfigBitsRegisterLocation,
-                                               &ConvertToConfigBits,
-                                               BmsReadings_config_bits_default);
+    return GetFromRegisterAndConvert<uint16_t>(
+        kConfigBitsRegisterLocation, &ConvertToConfigBits,
+        BmsSettingsReading_config_bits_default);
 }
 
 uint16_t Bms::GetQCount() {
     return GetFromRegisterAndConvert<uint16_t>(
-        kQCountRegisterLocation, &ConvertToQCount, BmsReadings_q_count_default);
+        kQCountRegisterLocation, &ConvertToQCount,
+        BmsChargingInfoReading_q_count_default);
 }
 
 uint16_t Bms::GetQCountPrescaleFactor() {
     return GetFromRegisterAndConvert<uint16_t>(
         kQCountPrescaleFactorRegisterLocation, &ConvertToQCountPrescaleFactor,
-        BmsReadings_q_count_prescale_factor_default);
+        BmsOperationValuesReading_q_count_prescale_factor_default);
 }
 
 uint16_t Bms::GetVinUvclSetting() {
     return GetFromRegisterAndConvert<uint16_t>(
         kVinUvclSettingRegisterLocation, &ConvertToVinUvclSetting,
-        BmsReadings_v_in_uvcl_setting_default);
-}
-
-double Bms::GetVchargeDac() {
-    return GetFromRegisterAndConvert<double>(kVchargeDacRegisterLocation,
-                                             &ConvertToVchargeDac,
-                                             BmsReadings_v_charge_dac_default);
-}
-
-double Bms::GetIchargeDac() {
-    return GetFromRegisterAndConvert<double>(kVchargeDacRegisterLocation,
-                                             &ConvertToIchargeDac,
-                                             BmsReadings_i_charge_dac_default);
+        BmsSettingsReading_v_in_uvcl_setting_default);
 }
 
 bool Bms::GetTelemetryValid() {
-    return GetFromRegisterAndConvert<bool>(kMeasSysValidRegisterLocation,
-                                           &ConvertToTelemetryValid,
-                                           BmsReadings_telemetry_valid_default);
+    return GetFromRegisterAndConvert<bool>(
+        kMeasSysValidRegisterLocation, &ConvertToTelemetryValid,
+        BmsSettingsReading_telemetry_valid_default);
 }
 
+bool Bms::GetFirstChargeComplete() { return first_charge_complete; }
+
+int32_t Bms::GetQCountDelta() { return GetQCount() - kQCountInitial; }
+
+/* conversion methods */
 double Bms::ConvertToBatteryVoltage(etl::array<byte, 2>& read_buffer) {
     int16_t v_bat_register_value =
         (read_buffer[1] << 8) | read_buffer[0];  // two's complement
@@ -312,38 +342,42 @@ uint16_t Bms::ConvertToJeitaRegion(etl::array<byte, 2>& read_buffer) {
     return jeita_region_register_value & kJeitaRegionBitMask;
 }
 
-BmsReadings_SystemStatus Bms::ConvertToSystemStatus(etl::array<byte, 2>& read_buffer) {
+BmsChargingInfoReading_SystemStatus Bms::ConvertToSystemStatus(
+    etl::array<byte, 2>& read_buffer) {
     uint16_t system_status_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
     if (system_status_register_value & kChargeEnableBitMask) {
-        return BmsReadings_SystemStatus_kChargeEnable;
+        return BmsChargingInfoReading_SystemStatus_kChargeEnable;
     } else {
-        return BmsReadings_SystemStatus_kChargeDisable;
+        return BmsChargingInfoReading_SystemStatus_kChargeDisable;
     }
 }
 
-BmsReadings_ChargerState Bms::ConvertToChargerState(etl::array<byte, 2>& read_buffer) {
+BmsChargingInfoReading_ChargerState Bms::ConvertToChargerState(
+    etl::array<byte, 2>& read_buffer) {
     uint16_t charger_state_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
-    return static_cast<BmsReadings_ChargerState>(charger_state_register_value);
+    return static_cast<BmsChargingInfoReading_ChargerState>(
+        charger_state_register_value);
 }
 
-BmsReadings_ChargeStatus Bms::ConvertToChargeStatus(etl::array<byte, 2>& read_buffer) {
+BmsChargingInfoReading_ChargeStatus Bms::ConvertToChargeStatus(
+    etl::array<byte, 2>& read_buffer) {
     uint16_t charge_status_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
     if (charge_status_register_value & kConstantVoltageBitMask)
-        return BmsReadings_ChargeStatus_kConstantVoltage;
+        return BmsChargingInfoReading_ChargeStatus_kConstantVoltage;
     else if (charge_status_register_value & kConstantCurrentBitMask)
-        return BmsReadings_ChargeStatus_kConstantCurrent;
+        return BmsChargingInfoReading_ChargeStatus_kConstantCurrent;
     else if (charge_status_register_value & kIinLimitActiveBitMask)
-        return BmsReadings_ChargeStatus_kIinLimitActive;
+        return BmsChargingInfoReading_ChargeStatus_kIinLimitActive;
     else if (charge_status_register_value & kVinLimitActiveBitMask)
-        return BmsReadings_ChargeStatus_kVinLimitActive;
+        return BmsChargingInfoReading_ChargeStatus_kVinLimitActive;
     else if ((charge_status_register_value & kChargeStatusBitMask) ==
              kChargeStatusNotCharging)
-        return BmsReadings_ChargeStatus_kNotCharging;
+        return BmsChargingInfoReading_ChargeStatus_kNotCharging;
     else
-        return BmsReadings_ChargeStatus_kChargingError;
+        return BmsChargingInfoReading_ChargeStatus_kChargingError;
 }
 
 double Bms::ConvertToRechargeThreshold(etl::array<byte, 2>& read_buffer) {
@@ -397,20 +431,6 @@ uint16_t Bms::ConvertToQCountPrescaleFactor(etl::array<byte, 2>& read_buffer) {
 uint16_t Bms::ConvertToVinUvclSetting(etl::array<byte, 2>& read_buffer) {
     uint16_t v_in_uvcl_register_value = (read_buffer[1] << 8) | read_buffer[0];
     return v_in_uvcl_register_value;
-}
-
-double Bms::ConvertToVchargeDac(etl::array<byte, 2>& read_buffer) {
-    uint16_t v_charge_dac_register_value =
-        (read_buffer[1] << 8) | read_buffer[0];
-    return (v_charge_dac_register_value / kVchargeDivisionFactor) +
-           kVchargeAdditionFactor;
-}
-
-double Bms::ConvertToIchargeDac(etl::array<byte, 2>& read_buffer) {
-    uint16_t i_charge_dac_register_value =
-        (read_buffer[1] << 8) | read_buffer[0];
-    return (i_charge_dac_register_value + kIchargeAdditionFactor) *
-           kIchargeMultiplicationFactor;
 }
 
 bool Bms::ConvertToTelemetryValid(etl::array<byte, 2>& read_buffer) {
