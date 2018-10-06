@@ -12,7 +12,7 @@ class RunnableConsoleUartListener : public Runnable {
     fnptr GetRunnablePointer();
 
    private:
-    static void Listen();
+    static void Listen(uintptr_t arg1, uintptr_t arg2);
     static bool ReadUart(byte* read_buffer, uint8_t size);
     static Uart* debug_uart;
 

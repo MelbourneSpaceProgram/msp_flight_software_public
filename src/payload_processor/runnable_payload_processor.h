@@ -15,7 +15,7 @@ class RunnablePayloadProcessor : public Runnable {
     static const uint8_t kNumCharsPerByte = 2;  // (byte in hex representation)
 
    private:
-    static void ExecuteCommandsInLithiumPayload();
+    static void ExecuteCommandsInLithiumPayload(uintptr_t arg1, uintptr_t arg2);
 };
 
 #endif  //  SRC_PAYLOAD_PROCESSOR_RUNNABLE_PAYLOAD_PROCESSOR_H_

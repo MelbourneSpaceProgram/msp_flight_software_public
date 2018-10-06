@@ -12,7 +12,7 @@ RunnableBeacon::RunnableBeacon() {}
 
 fnptr RunnableBeacon::GetRunnablePointer() { return &Beacon; }
 
-void RunnableBeacon::Beacon() {
+void RunnableBeacon::Beacon(uintptr_t arg1, uintptr_t arg2) {
     Lithium *lithium = Lithium::GetInstance();
 
     while (1) {

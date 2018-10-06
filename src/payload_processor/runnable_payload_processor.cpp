@@ -19,7 +19,8 @@ fnptr RunnablePayloadProcessor::GetRunnablePointer() {
     return &RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload;
 }
 
-void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
+void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload(uintptr_t arg1,
+                                                               uintptr_t arg2) {
     PayloadProcessor payload_processor;
     byte lithium_payload[Lithium::kMaxReceivedUplinkSize];
     Mailbox_Handle payload_mailbox_handle =

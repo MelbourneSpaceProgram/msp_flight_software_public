@@ -66,7 +66,8 @@ void RunnableSystemHealthCheck::EnableDatalogger(bool enable_logger) {
     datalogger_enabled = enable_logger;
 }
 
-void RunnableSystemHealthCheck::SystemHealthCheck() {
+void RunnableSystemHealthCheck::SystemHealthCheck(uintptr_t arg1,
+                                                  uintptr_t arg2) {
     while (1) {
         if (datalogger_enabled) {
             if (kTcomBoardAvailable) {

@@ -20,7 +20,7 @@ bool RunnableLithiumListener::ReadLithiumUart(byte* read_buffer, uint8_t size) {
                        read_buffer, size);
 }
 
-void RunnableLithiumListener::Receive() {
+void RunnableLithiumListener::Receive(uintptr_t arg1, uintptr_t arg2) {
     byte read_buffer[Lithium::kMaxReceivedUartSize] = {0};
     while (1) {
         // Grab sync characters (first two bytes of header/packet) one char at a

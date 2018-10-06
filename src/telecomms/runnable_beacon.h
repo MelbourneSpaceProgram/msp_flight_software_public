@@ -14,7 +14,7 @@ class RunnableBeacon : public Runnable {
     fnptr GetRunnablePointer();
 
    private:
-    static void Beacon();
+    static void Beacon(uintptr_t arg1, uintptr_t arg2);
     static uint32_t beacon_period_ms;
 };
 

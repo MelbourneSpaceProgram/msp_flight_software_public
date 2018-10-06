@@ -5,9 +5,9 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
-#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/init/init.h>
@@ -67,7 +67,8 @@ void RunnableOrientationControl::OrientationControlTimerISR(
     Semaphore_post((Semaphore_Handle)orientation_control_timer_semaphore);
 }
 
-void RunnableOrientationControl::ControlOrientation() {
+void RunnableOrientationControl::ControlOrientation(uintptr_t arg1,
+                                                    uintptr_t arg2) {
     BDotEstimator b_dot_estimator(
         RunnableOrientationControl::kControlLoopPeriodMicros * 1e-3,
         kBDotEstimatorTimeConstantMillis);
@@ -122,9 +123,9 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run estimator
 
         NewStackMatrixMacro(geomag, 3, 1);
-        geomag.Set(0,0,magnetometer_reading.x);
-        geomag.Set(1,0,magnetometer_reading.y);
-        geomag.Set(2,0,magnetometer_reading.z);
+        geomag.Set(0, 0, magnetometer_reading.x);
+        geomag.Set(1, 0, magnetometer_reading.y);
+        geomag.Set(2, 0, magnetometer_reading.z);
         NewStackMatrixMacro(b_dot_estimate, 3, 1);
         BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
 

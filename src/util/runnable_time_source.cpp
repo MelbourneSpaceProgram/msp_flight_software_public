@@ -12,7 +12,7 @@ fnptr RunnableTimeSource::GetRunnablePointer() {
     return &RunnableTimeSource::UpdateSatelliteTime;
 }
 
-void RunnableTimeSource::UpdateSatelliteTime() {
+void RunnableTimeSource::UpdateSatelliteTime(uintptr_t arg1, uintptr_t arg2) {
     I2c bus(I2C_BUS_A);
     // TODO(akremor): Move this address centrally
     I2cMultiplexer multiplexer(&bus, 0x76);

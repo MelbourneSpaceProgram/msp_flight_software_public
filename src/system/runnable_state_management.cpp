@@ -10,7 +10,7 @@ fnptr RunnableStateManagement::GetRunnablePointer() {
     return &RunnableStateManagement::StateManagement;
 }
 
-void RunnableStateManagement::StateManagement() {
+void RunnableStateManagement::StateManagement(uintptr_t arg1, uintptr_t arg2) {
     StateManager* state_manager = StateManager::GetStateManager();
 
     while (1) {

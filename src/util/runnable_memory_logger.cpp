@@ -13,7 +13,7 @@ fnptr RunnableMemoryLogger::GetRunnablePointer() {
     return &RunnableMemoryLogger::LogMemoryStats;
 }
 
-void RunnableMemoryLogger::LogMemoryStats() {
+void RunnableMemoryLogger::LogMemoryStats(uintptr_t arg1, uintptr_t arg2) {
     Memory_Stats mem_stats;
     Task_Object* task;
     while (1) {

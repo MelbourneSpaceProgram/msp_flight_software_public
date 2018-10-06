@@ -29,7 +29,7 @@ bool RunnableConsoleUartListener::ReadUart(byte* read_buffer, uint8_t size) {
     return size == debug_uart->PerformReadTransaction(read_buffer, size);
 }
 
-void RunnableConsoleUartListener::Listen() {
+void RunnableConsoleUartListener::Listen(uintptr_t arg1, uintptr_t arg2) {
     while (1) {
         byte header_buffer[5];
         byte payload_buffer[Lithium::kMaxReceivedUplinkSize -

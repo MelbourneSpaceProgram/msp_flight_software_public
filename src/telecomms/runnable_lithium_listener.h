@@ -7,7 +7,7 @@ class RunnableLithiumListener : public Runnable {
     RunnableLithiumListener();
 
    private:
-    static void Receive();
+    static void Receive(uintptr_t arg1, uintptr_t arg2);
     // ENSURE THAT THE LITHIUM UART HANDLE HAS A TIMEOUT SET
     static bool ReadLithiumUart(byte* read_buffer, uint8_t size);
 };

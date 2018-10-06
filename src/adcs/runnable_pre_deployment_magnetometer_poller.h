@@ -13,7 +13,7 @@ class RunnablePreDeploymentMagnetometerPoller : public Runnable {
     static Semaphore_Handle kill_task_on_orientation_control_begin_semaphore;
 
    private:
-    static void PollMagnetometer();
+    static void PollMagnetometer(uintptr_t arg1, uintptr_t arg2);
 
     static const uint16_t kSleepPeriodMillis = 1000;
 };

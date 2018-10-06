@@ -9,7 +9,7 @@ class RunnableStateManagement : public Runnable {
     RunnableStateManagement();
 
    private:
-    static void StateManagement();
+    static void StateManagement(uintptr_t arg1, uintptr_t arg2);
 };
 
 #endif  //  SRC_SYSTEM_TASKS_RUNNABLE_STATE_MANAGEMENT_H_

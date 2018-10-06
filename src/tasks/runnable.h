@@ -1,11 +1,14 @@
 #ifndef SRC_TASKS_RUNNABLE_H_
 #define SRC_TASKS_RUNNABLE_H_
 
-typedef void (*fnptr)(void);
+#include <ti/sysbios/knl/Task.h>
+
+typedef Task_FuncPtr fnptr;
+// Equivalent of below
+// typedef void (*fnptr)(uintptr_t, uintptr_t);
 
 class Runnable {
    public:
-    // TODO(dingbenjamin): Change fnptr signature to be task ptr
     virtual fnptr GetRunnablePointer() = 0;
     virtual ~Runnable();
 };

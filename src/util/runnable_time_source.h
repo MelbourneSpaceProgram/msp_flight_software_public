@@ -8,7 +8,7 @@ class RunnableTimeSource : public Runnable {
     fnptr GetRunnablePointer();
 
    private:
-    static void UpdateSatelliteTime();
+    static void UpdateSatelliteTime(uintptr_t arg1, uintptr_t arg2);
 };
 
 #endif  // SRC_UTIL_RUNNABLE_TIME_SOURCE_H_

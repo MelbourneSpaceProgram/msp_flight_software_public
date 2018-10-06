@@ -14,7 +14,7 @@ class RunnableOrientationControl : public Runnable {
         UArg orientation_control_timer_semaphore);
 
    private:
-    static void ControlOrientation();
+    static void ControlOrientation(uintptr_t arg1, uintptr_t arg2);
 
     static Semaphore_Handle control_loop_timer_semaphore;
     static const uint16_t kOperationDisableWaitTime = 500;

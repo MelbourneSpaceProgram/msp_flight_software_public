@@ -13,7 +13,7 @@ class RunnableMemoryLogger : public Runnable {
     RunnableMemoryLogger();
 
    private:
-    static void LogMemoryStats();
+    static void LogMemoryStats(uintptr_t arg1, uintptr_t arg2);
     static void PrintTaskInfo(Task_Handle task);
     static const uint32_t kMemoryLoggerRunPeriod = 60000;
 };

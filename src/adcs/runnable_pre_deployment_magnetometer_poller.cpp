@@ -31,7 +31,8 @@ void RunnablePreDeploymentMagnetometerPoller::
             0, &kill_task_on_orientation_control_begin_semaphore_params, NULL);
 }
 
-void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
+void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer(uintptr_t arg1,
+                                                               uintptr_t arg2) {
     I2cMeasurableManager* measurable_manager =
         I2cMeasurableManager::GetInstance();
 
