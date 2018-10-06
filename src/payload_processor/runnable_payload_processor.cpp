@@ -130,7 +130,7 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
                                              kSequenceNumberBytes];
             payload_processor.ParseAndExecuteCommands(msp_payload);
         } else {
-            Log_error2("Signature does not match hash: sig = %02x%02x%02x%02x - hash = %02x%02x%02x%02x",
+            Log_error8("Signature does not match hash: sig = %02x%02x%02x%02x - hash = %02x%02x%02x%02x",
                        msp_signature[0], msp_signature[1], msp_signature[2], msp_signature[3],
                        calculated_short_hash[0], calculated_short_hash[1], calculated_short_hash[2], calculated_short_hash[3]);
         }
