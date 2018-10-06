@@ -11,7 +11,7 @@ byte *TransmitCommand::DoFec(byte *payload) {
 	byte payload_parity[Rs8::kParityLength] = {0};
 	byte payload_fec[Rs8::kBlockLength] = {0};
 	Rs8::Encode(payload, payload_parity);
-	memcpy(payload_fec, payload, Rs8::kDataLength)
+	memcpy(payload_fec, payload, Rs8::kDataLength);
 	memcpy(&payload_fec[Rs8::kDataLength], payload_parity, Rs8::kParityLength);
 	// Do stuff with payload_fec...
 }
