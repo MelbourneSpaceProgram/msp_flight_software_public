@@ -100,7 +100,7 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
         // representation into a raw byte array (4 bytes).
         for(int i = 0; i < kMspSignatureBytes; i++) {
             // Convert upper/leftmost character to upper nibble of byte
-            char hash_char_upper = hash.at(i);
+            char hash_char_upper = hash.at(i * 2);
             if(hash_char_upper >= '0' && hash_char_upper <= '9') {
                 calculated_short_hash[i] |= (hash_char_upper - '0') << 4;
             }
@@ -112,7 +112,7 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
             }
 
             // Convert lower/rightmost character to lower nibble of byte
-            char hash_char_lower = hash.at(i + 1);
+            char hash_char_lower = hash.at((i * 2) + 1);
             if(hash_char_lower >= '0' && hash_char_lower <= '9') {
                 calculated_short_hash[i] |= (hash_char_lower - '0') & 0x0F;
             }
