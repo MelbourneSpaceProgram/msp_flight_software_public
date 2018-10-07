@@ -1,7 +1,5 @@
 #include <src/board/i2c/bms/bms.h>
 #include <src/config/satellite.h>
-#include <src/sensors/i2c_measurable_manager.h>
-#include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/bms_charging_info_measurable.h>
@@ -21,22 +19,23 @@
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 #include <src/system/state_manager.h>
 
-I2cMeasurableManager *I2cMeasurableManager::instance = NULL;
+MeasurableManager *MeasurableManager::instance = NULL;
 
-I2cMeasurableManager *I2cMeasurableManager::GetInstance() {
+MeasurableManager *MeasurableManager::GetInstance() {
     if (instance == NULL) {
-        instance = new I2cMeasurableManager();
+        instance = new MeasurableManager();
     }
     return instance;
 }
 
-I2cMeasurableManager::I2cMeasurableManager() { measurables.fill(NULL); }
+MeasurableManager::MeasurableManager() { measurables.fill(NULL); }
 
-void I2cMeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
-                                const I2c *bus_c, const I2c *bus_d) {
+void MeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
+                             const I2c *bus_c, const I2c *bus_d) {
     this->bus_a = bus_a;
     this->bus_b = bus_b;
     this->bus_c = bus_c;
@@ -53,7 +52,7 @@ void I2cMeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
     InitSolarPanels(mux_c);
 }
 
-void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
+void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
     Adc *comms_adc_1 =
         new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel3);
     comms_adc_1->SetGainAmplifierLevel(kAdc4v096);
@@ -80,7 +79,7 @@ void I2cMeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
     AddTemperature(kComT2, comms_temp_2);
 }
 
-void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
+void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     Adc *power_adc_1 =
         new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel2);
     power_adc_1->SetGainAmplifierLevel(kAdc2v048);
@@ -141,7 +140,7 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     AddBmsOperationValuesMeasurable(kEpsBmsOperationValuesReading2, bms_bus_c);
 }
 
-void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
+void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     Adc *fs_adc_x = new Adc(bus_a, 0x48, mux_a, I2cMultiplexer::kMuxChannel1);
     fs_adc_x->SetGainAmplifierLevel(kAdc4v096);
     Adc *fs_adc_y = new Adc(bus_a, 0x49, mux_a, I2cMultiplexer::kMuxChannel1);
@@ -209,7 +208,7 @@ void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         initial_scale_factors_bus_b, MagnetometerCalibration::kBufferFilenameA);
 }
 
-void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
+void MeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
     Adc *util_adc_1 = new Adc(bus_c, 0x49, mux_c, I2cMultiplexer::kMuxChannel1);
     AddVoltage(kUtilHeatV, util_adc_1, kAdcP3NGnd, 1);
 
@@ -218,13 +217,13 @@ void I2cMeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
     AddTemperature(kUtilT, util_temp);
 }
 
-void I2cMeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
+void MeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {
     Mcp9808 *cdh_temp_1 =
         new Mcp9808(bus_a, 0x1A, mux_a, I2cMultiplexer::kMuxChannel0);
     AddTemperature(kCdhT, cdh_temp_1);
 }
 
-void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
+void MeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
     Mcp9808 *x_pos_temp_1 =
         new Mcp9808(bus_c, 0x19, mux_c, I2cMultiplexer::kMuxChannel4);
     Mcp9808 *x_pos_temp_2 =
@@ -319,44 +318,43 @@ void I2cMeasurableManager::InitSolarPanels(const I2cMultiplexer *mux_c) {
     AddCurrent(kZNegSolarI, z_neg_adc, kAdcP3NGnd, 0.285714, 0);
 }
 
-void I2cMeasurableManager::AddVoltage(MeasurableId id, Adc *adc,
-                                      AdcMuxMode line, float scaling_factor) {
+void MeasurableManager::AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line,
+                                   float scaling_factor) {
     CheckValidId(id);
     VoltageMeasurable *voltage =
         new VoltageMeasurable(adc, line, scaling_factor);
     measurables[id] = voltage;
 }
 
-void I2cMeasurableManager::AddCurrent(MeasurableId id, Adc *adc,
-                                      AdcMuxMode line, float scaling_factor,
-                                      float zero_bias_point) {
+void MeasurableManager::AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line,
+                                   float scaling_factor,
+                                   float zero_bias_point) {
     CheckValidId(id);
     CurrentMeasurable *current =
         new CurrentMeasurable(adc, line, scaling_factor, zero_bias_point);
     measurables[id] = current;
 }
 
-void I2cMeasurableManager::AddTemperature(MeasurableId id,
-                                          Mcp9808 *temp_sensor) {
+void MeasurableManager::AddTemperature(MeasurableId id, Mcp9808 *temp_sensor) {
     CheckValidId(id);
     TemperatureMeasurable *temp = new TemperatureMeasurable(temp_sensor);
     measurables[id] = temp;
 }
 
-void I2cMeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {
+void MeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsDieTemperatureMeasurable *temp = new BmsDieTemperatureMeasurable(bms);
     measurables[id] = temp;
 }
 
-void I2cMeasurableManager::AddBmsSettingsMeasurable(MeasurableId id, Bms *bms) {
+void MeasurableManager::AddBmsSettingsMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsSettingsMeasurable *bms_settings = new BmsSettingsMeasurable(bms);
     measurables[id] = bms_settings;
 }
 
-void I2cMeasurableManager::AddBmsChargingInfoMeasurable(MeasurableId id,
-                                                        Bms *bms) {
+void MeasurableManager::AddBmsChargingInfoMeasurable(MeasurableId id,
+                                                     Bms *bms) {
     CheckValidId(id);
     BmsChargingInfoMeasurable *bms_charging_info =
         new BmsChargingInfoMeasurable(bms);
@@ -379,26 +377,26 @@ void I2cMeasurableManager::AddBmsTemperatureMeasurable(MeasurableId id,
     measurables[id] = bms_temperatures;
 }
 
-void I2cMeasurableManager::AddBmsVoltagesMeasurable(MeasurableId id, Bms *bms) {
+void MeasurableManager::AddBmsVoltagesMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsVoltagesMeasurable *bms_voltages = new BmsVoltagesMeasurable(bms);
     measurables[id] = bms_voltages;
 }
 
-void I2cMeasurableManager::AddBmsCurrentsMeasurable(MeasurableId id, Bms *bms) {
+void MeasurableManager::AddBmsCurrentsMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsCurrentsMeasurable *bms_currents = new BmsCurrentsMeasurable(bms);
     measurables[id] = bms_currents;
 }
 
-void I2cMeasurableManager::AddImuGyrometerMeasurable(
+void MeasurableManager::AddImuGyrometerMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor) {
     CheckValidId(id);
     ImuGyroscopeMeasurable *gyro = new ImuGyroscopeMeasurable(imu_sensor);
     measurables[id] = gyro;
 }
 
-void I2cMeasurableManager::AddImuAcceleromterMeasurable(
+void MeasurableManager::AddImuAcceleromterMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor) {
     CheckValidId(id);
     ImuAccelerometerMeasurable *accelerometer =
@@ -406,14 +404,14 @@ void I2cMeasurableManager::AddImuAcceleromterMeasurable(
     measurables[id] = accelerometer;
 }
 
-void I2cMeasurableManager::AddImuTemperatureMeasurable(
+void MeasurableManager::AddImuTemperatureMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor) {
     CheckValidId(id);
     ImuTemperatureMeasurable *temp = new ImuTemperatureMeasurable(imu_sensor);
     measurables[id] = temp;
 }
 
-void I2cMeasurableManager::AddImuMagnetometerMeasurable(
+void MeasurableManager::AddImuMagnetometerMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor,
     const Matrix &frame_mapping, const Matrix &initial_biases,
     const Matrix &initial_scale_factors,
@@ -425,8 +423,8 @@ void I2cMeasurableManager::AddImuMagnetometerMeasurable(
     measurables[id] = magnetometer;
 }
 
-BmsBatteryTemperatureMeasurable *
-I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id, Bms *bms) {
+BmsBatteryTemperatureMeasurable *MeasurableManager::AddBmsBatteryTempMeasurable(
+    MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsBatteryTemperatureMeasurable *temp =
         new BmsBatteryTemperatureMeasurable(bms);
@@ -434,7 +432,7 @@ I2cMeasurableManager::AddBmsBatteryTempMeasurable(MeasurableId id, Bms *bms) {
     return temp;
 }
 
-void I2cMeasurableManager::CheckValidId(MeasurableId id) {
+void MeasurableManager::CheckValidId(MeasurableId id) {
     if (id >= kMeasurableIdEnd) {
         etl::exception e("Measurable ID outside max size", __FILE__, __LINE__);
         throw e;

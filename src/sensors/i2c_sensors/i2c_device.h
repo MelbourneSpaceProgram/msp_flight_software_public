@@ -3,6 +3,7 @@
 
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
+#include <string>
 
 class I2c;
 
@@ -16,6 +17,7 @@ class I2cDevice {
     uint8_t GetI2cAddress() const;
     const I2cMultiplexer* GetI2cMultiplexer() const;
     I2cMultiplexer::MuxChannel GetMultiplexerChannel() const;
+    std::string GetInfoString() const;
 
     bool PerformWriteTransaction(byte address, byte* write_buffer,
                                  uint16_t write_buffer_length) const;
@@ -36,6 +38,8 @@ class I2cDevice {
     const I2c* bus;
     void MuxSelect() const;
     void MuxDeselect() const;
+    std::string info_string;
+    constexpr static kInfoStringLength = 40;
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_I2C_DEVICE_H_

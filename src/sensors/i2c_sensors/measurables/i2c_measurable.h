@@ -2,65 +2,30 @@
 #define SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
 
 #include <external/etl/exception.h>
-#include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/generic_measurable.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
+#include <src/sensors/nanopb_measurable.h>
 #include <src/util/satellite_time_source.h>
 #include <xdc/runtime/Log.h>
 
 template <typename TimestampedNanopbType>
-class I2cMeasurable : public GenericMeasurable<TimestampedNanopbType> {
-    friend class I2cMeasurableManager;
-
+class I2cMeasurable : public NanopbMeasurable<TimestampedNanopbType> {
    public:
     I2cMeasurable(I2cDevice* sensor, TimestampedNanopbType failure_reading)
         : sensor(sensor),
-          failure_reading(failure_reading),
-          first_reading(true) {}
-    virtual ~I2cMeasurable() {}
+          NanopbMeasurable<TimestampedNanopbType>(failure_reading) {}
 
-    bool TakeReading() {
-        try {
-            this->last_reading =
-                TakeDirectI2cReading();  // Throws exception on failure
-
-            Time current_time = SatelliteTimeSource::GetTime();
-            if (current_time.is_valid) {
-                this->last_reading.timestamp_ms = current_time.timestamp_ms;
-            } else {
-                this->last_reading.timestamp_ms = 0;
-            }
-
-            this->NotifyObservers();
-            return true;
-        } catch (etl::exception e) {
-            this->last_reading = failure_reading;
-            this->last_reading.timestamp_ms =
-                SatelliteTimeSource::GetTime().timestamp_ms;
-            if (kI2cAvailable) {
-                Log_error3(
-                    "Failed to read from sensor 0x%02x on bus %c (mux line "
-                    "0x%02x)",
-                    sensor->GetI2cAddress(), sensor->GetI2cBus()->GetBusLabel(),
-                    sensor->GetMultiplexerChannel());
-            }
-            return false;
-        }
+    TimestampedNanopbType TakeDirectNanopbReading() {
+        return TakeDirectI2cReading();
     }
 
-    TimestampedNanopbType GetReading() { return this->last_reading; }
-    const TimestampedNanopbType GetFailureReading() {
-        return this->failure_reading;
-    }
     virtual TimestampedNanopbType TakeDirectI2cReading() = 0;
+
+    std::string GetInfoString() { return sensor->GetInfoString(); }
 
    protected:
     I2cDevice* sensor;
-
-   private:
-    bool first_reading;
-    const TimestampedNanopbType failure_reading;
 };
 
-#endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_I2C_MEASURABLE_H_
+#endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_NANOPB_MEASURABLE_H_

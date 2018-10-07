@@ -1,5 +1,6 @@
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
+#include <cstdio>
 
 GateMutexPri_Params mutex_params = {NULL};
 GateMutexPri_Handle i2c_mutex = NULL;
@@ -7,7 +8,7 @@ GateMutexPri_Handle i2c_mutex = NULL;
 I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
                      const I2cMultiplexer* multiplexer,
                      I2cMultiplexer::MuxChannel channel)
-    : bus(bus), address(address), multiplexer(multiplexer), channel(channel) {
+  : bus(bus), address(address), multiplexer(multiplexer), channel(channel), info_string("", kInfoStringLength) {
     if (i2c_mutex == NULL) {
         GateMutexPri_Params_init(&mutex_params);
         i2c_mutex = GateMutexPri_create(&mutex_params, NULL);
@@ -15,6 +16,14 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
             throw etl::exception("Failed to create mutex.", __FILE__, __LINE__);
         }
     }
+
+    // Create info string for adding to logs
+    char temp_string[kInfoStringLength];
+    snprintf(temp_string, sizeof(temp_string),
+             "Sensor 0x%02x on bus %c (mux line "
+             "0x%02x)",
+             address, bus->GetBusLabel(), channel);
+    info_string.copy(temp_string, 0, kInfoStringLength);
 }
 
 void I2cDevice::MuxSelect() const {
@@ -41,8 +50,10 @@ I2cMultiplexer::MuxChannel I2cDevice::GetMultiplexerChannel() const {
     return channel;
 }
 
+std::string I2cDevice::GetInfoString() const { return info_string; }
+
 bool I2cDevice::PerformWriteTransaction(byte address, byte* write_buffer,
-                                        uint16_t write_buffer_length) const {
+                                   uint16_t write_buffer_length) const {
     IArg key = GateMutexPri_enter(i2c_mutex);
     bool success;
     MuxSelect();

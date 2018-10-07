@@ -1,5 +1,5 @@
-#ifndef SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
-#define SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
+#ifndef SRC_SENSORS_NANOPB_MEASURABLE_MANAGER_H_
+#define SRC_SENSORS_NANOPB_MEASURABLE_MANAGER_H_
 
 #include <src/config/unit_tests.h>
 #include <src/messages/Time.pb.h>
@@ -17,32 +17,33 @@ class Bms;
 class MPU9250MotionTracker;
 class BmsBatteryTemperatureMeasurable;
 
-class I2cMeasurableManager {
+class MeasurableManager {
    public:
-    static I2cMeasurableManager *GetInstance();
+    static MeasurableManager *GetInstance();
     void Init(const I2c *bus_a, const I2c *bus_b, const I2c *bus_c,
               const I2c *bus_d);
 
     template <class TimestampedNanopbType>
-    I2cMeasurable<TimestampedNanopbType> *GetMeasurable(uint16_t id) {
-        I2cMeasurable<TimestampedNanopbType> *i2c_measurable =
-            dynamic_cast<I2cMeasurable<TimestampedNanopbType> *>(
+    NanopbMeasurable<TimestampedNanopbType> *GetMeasurable(uint16_t id) {
+        NanopbMeasurable<TimestampedNanopbType> *nanopb_measurable =
+            dynamic_cast<NanopbMeasurable<TimestampedNanopbType> *>(
                 measurables.at(id));
-        if (i2c_measurable == NULL) {
+        if (nanopb_measurable == NULL) {
             etl::exception e("Cannot cast to specified measurable type",
                              __FILE__, __LINE__);
             throw e;
         }
-        return i2c_measurable;
+        return nanopb_measurable;
     }
 
     template <class TimestampedNanopbType>
-    TimestampedNanopbType ReadI2cMeasurable(uint16_t id, uint64_t max_cache_ms,
-                                            bool always_use_cached = false) {
+    TimestampedNanopbType ReadNanopbMeasurable(uint16_t id,
+                                               uint64_t max_cache_ms,
+                                               bool always_use_cached = false) {
         Measurable *measurable = measurables.at(id);
-        I2cMeasurable<TimestampedNanopbType> *i2c_measurable =
-            dynamic_cast<I2cMeasurable<TimestampedNanopbType> *>(measurable);
-        if (i2c_measurable == NULL) {
+        NanopbMeasurable<TimestampedNanopbType> *nanopb_measurable =
+            dynamic_cast<NanopbMeasurable<TimestampedNanopbType> *>(measurable);
+        if (nanopb_measurable == NULL) {
             throw etl::exception("Cannot cast to specified measurable type",
                                  __FILE__, __LINE__);
         }
@@ -61,23 +62,24 @@ class I2cMeasurableManager {
                 earliest_acceptable_ms = 0;
             }
 
-            uint64_t cache_time_ms = i2c_measurable->GetReading().timestamp_ms;
-            if (i2c_measurable->first_reading ||
+            uint64_t cache_time_ms =
+                nanopb_measurable->GetReading().timestamp_ms;
+            if (nanopb_measurable->first_reading ||
                 (!always_use_cached &&
                  (cache_time_ms <= earliest_acceptable_ms))) {
                 // TODO(dingbenjamin): Lock the relevant bus/sensor with a
                 // semaphore
-                i2c_measurable->TakeReading();
-                i2c_measurable->first_reading = false;
+                nanopb_measurable->TakeReading();
+                nanopb_measurable->first_reading = false;
             }
-            return i2c_measurable->GetReading();
+            return nanopb_measurable->GetReading();
         } catch (etl::exception &e) {
-            return i2c_measurable->failure_reading;
+            return nanopb_measurable->failure_reading;
         }
     }
 
    private:
-    I2cMeasurableManager();
+    MeasurableManager();
 
     void InitTelecomms(const I2cMultiplexer *mux_a);
     void InitPower(const I2cMultiplexer *mux_a);
@@ -113,7 +115,7 @@ class I2cMeasurableManager {
         const char *calibration_readings_buffer_filename);
     void CheckValidId(MeasurableId id);
 
-    static I2cMeasurableManager *instance;
+    static MeasurableManager *instance;
     static const uint16_t kMaxMeasurables = 400;
 
     const I2c *bus_a;
@@ -124,4 +126,4 @@ class I2cMeasurableManager {
     etl::array<Measurable *, kMaxMeasurables> measurables;
 };
 
-#endif  // SRC_SENSORS_I2C_MEASURABLE_MANAGER_H_
+#endif  // SRC_SENSORS_NANOPB_MEASURABLE_MANAGER_H_
