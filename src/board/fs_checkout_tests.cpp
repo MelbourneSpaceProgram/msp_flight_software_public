@@ -3,7 +3,7 @@
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/TemperatureReading.pb.h>
 #include <src/messages/VoltageReading.pb.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
 
 TEST_GROUP(FsCheckout) {
@@ -14,69 +14,69 @@ TEST_GROUP(FsCheckout) {
     };
 };
 
-static I2cMeasurableManager* i2c_measurable_manager =
-    I2cMeasurableManager::GetInstance();
+static MeasurableManager* measurable_manager =
+    MeasurableManager::GetInstance();
 
 TEST(FsCheckout, CanSenseHBridgeXTemperature) {
     TemperatureReading fs_hb_xt =
-        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kFsHbXT,
+        measurable_manager->ReadNanopbMeasurable<TemperatureReading>(kFsHbXT,
                                                                       0);
     DOUBLES_EQUAL(20, fs_hb_xt.temp, 45);
 }
 
 TEST(FsCheckout, CanSenseHBridgeYTemperature) {
     TemperatureReading fs_hb_yt =
-        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kFsHbYT,
+        measurable_manager->ReadNanopbMeasurable<TemperatureReading>(kFsHbYT,
                                                                       0);
     DOUBLES_EQUAL(20, fs_hb_yt.temp, 45);
 }
 
 TEST(FsCheckout, CanSenseHBridgeZTemperature) {
     TemperatureReading fs_hb_zt =
-        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kFsHbZT,
+        measurable_manager->ReadNanopbMeasurable<TemperatureReading>(kFsHbZT,
                                                                       0);
     DOUBLES_EQUAL(20, fs_hb_zt.temp, 45);
 }
 
 TEST(FsCheckout, CanSenseMagTorqXVoltage) {
     VoltageReading voltage_a =
-        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kFsTorquerXAV,
+        measurable_manager->ReadNanopbMeasurable<VoltageReading>(kFsTorquerXAV,
                                                                   0);
     DOUBLES_EQUAL(2.5, voltage_a.voltage, 3);
 
     VoltageReading voltage_b =
-        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kFsTorquerXBV,
+        measurable_manager->ReadNanopbMeasurable<VoltageReading>(kFsTorquerXBV,
                                                                   0);
     DOUBLES_EQUAL(2.5, voltage_b.voltage, 3);
 }
 
 TEST(FsCheckout, CanSenseMagTorqYVoltage) {
     VoltageReading voltage_a =
-        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kFsTorquerYAV,
+        measurable_manager->ReadNanopbMeasurable<VoltageReading>(kFsTorquerYAV,
                                                                   0);
     DOUBLES_EQUAL(2.5, voltage_a.voltage, 3);
 
     VoltageReading voltage_b =
-        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kFsTorquerYBV,
+        measurable_manager->ReadNanopbMeasurable<VoltageReading>(kFsTorquerYBV,
                                                                   0);
     DOUBLES_EQUAL(2.5, voltage_b.voltage, 3);
 }
 
 TEST(FsCheckout, CanSenseMagTorqZVoltage) {
     VoltageReading voltage_a =
-        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kFsTorquerZAV,
+        measurable_manager->ReadNanopbMeasurable<VoltageReading>(kFsTorquerZAV,
                                                                   0);
     DOUBLES_EQUAL(2.5, voltage_a.voltage, 3);
 
     VoltageReading voltage_b =
-        i2c_measurable_manager->ReadI2cMeasurable<VoltageReading>(kFsTorquerZBV,
+        measurable_manager->ReadNanopbMeasurable<VoltageReading>(kFsTorquerZBV,
                                                                   0);
     DOUBLES_EQUAL(2.5, voltage_b.voltage, 3);
 }
 
 TEST(FsCheckout, Imu1) {
     TemperatureReading temperature =
-        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kFsImuT1,
+        measurable_manager->ReadNanopbMeasurable<TemperatureReading>(kFsImuT1,
                                                                       0);
 
     DOUBLES_EQUAL(25, temperature.temp, 45);
@@ -84,7 +84,7 @@ TEST(FsCheckout, Imu1) {
 
 TEST(FsCheckout, Imu2) {
     TemperatureReading temperature =
-        i2c_measurable_manager->ReadI2cMeasurable<TemperatureReading>(kFsImuT2,
+        measurable_manager->ReadNanopbMeasurable<TemperatureReading>(kFsImuT2,
                                                                       0);
 
     DOUBLES_EQUAL(25, temperature.temp, 45);
@@ -92,28 +92,28 @@ TEST(FsCheckout, Imu2) {
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentX) {
     CurrentReading current =
-        i2c_measurable_manager->ReadI2cMeasurable<CurrentReading>(kFsTorquerXI,
+        measurable_manager->ReadNanopbMeasurable<CurrentReading>(kFsTorquerXI,
                                                                   0);
     DOUBLES_EQUAL(0.75, current.current, 0.76);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentTotal) {
     CurrentReading current =
-        i2c_measurable_manager->ReadI2cMeasurable<CurrentReading>(
+        measurable_manager->ReadNanopbMeasurable<CurrentReading>(
             kFsTorquerTotalI, 0);
     DOUBLES_EQUAL(2, current.current, 2.01);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentY) {
     CurrentReading current =
-        i2c_measurable_manager->ReadI2cMeasurable<CurrentReading>(kFsTorquerYI,
+        measurable_manager->ReadNanopbMeasurable<CurrentReading>(kFsTorquerYI,
                                                                   0);
     DOUBLES_EQUAL(0.75, current.current, 0.76);
 }
 
 TEST(FsCheckout, CanSenseFsTorquerCurrentZ) {
     CurrentReading current =
-        i2c_measurable_manager->ReadI2cMeasurable<CurrentReading>(kFsTorquerZI,
+        measurable_manager->ReadNanopbMeasurable<CurrentReading>(kFsTorquerZI,
                                                                   0);
     DOUBLES_EQUAL(0.75, current.current, 0.76);
 }

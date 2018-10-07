@@ -361,16 +361,15 @@ void MeasurableManager::AddBmsChargingInfoMeasurable(MeasurableId id,
     measurables[id] = bms_charging_info;
 }
 
-void I2cMeasurableManager::AddBmsOperationValuesMeasurable(MeasurableId id,
-                                                           Bms *bms) {
+void MeasurableManager::AddBmsOperationValuesMeasurable(MeasurableId id,
+                                                        Bms *bms) {
     CheckValidId(id);
     BmsOperationValuesMeasurable *bms_operation_values =
         new BmsOperationValuesMeasurable(bms);
     measurables[id] = bms_operation_values;
 }
 
-void I2cMeasurableManager::AddBmsTemperatureMeasurable(MeasurableId id,
-                                                       Bms *bms) {
+void MeasurableManager::AddBmsTemperatureMeasurable(MeasurableId id, Bms *bms) {
     CheckValidId(id);
     BmsTemperatureMeasurable *bms_temperatures =
         new BmsTemperatureMeasurable(bms);

@@ -15,9 +15,9 @@
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
-#include <src/sensors/i2c_measurable_manager.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/sensors/measurable_id.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/system/state_definitions.h>
 #include <src/system/state_manager.h>
 #include <src/system/system_state_machines/power_state_machine.h>
@@ -73,8 +73,8 @@ void RunnableOrientationControl::ControlOrientation() {
         kBDotEstimatorTimeConstantMillis);
 
     StateManager* state_manager = StateManager::GetStateManager();
-    I2cMeasurableManager* measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager =
+        MeasurableManager::GetInstance();
 
     if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
               measurable_manager->GetMeasurable<MagnetometerReading>(
@@ -110,7 +110,7 @@ void RunnableOrientationControl::ControlOrientation() {
         // TODO (rskew) fuse readings from both magnetometers giving redundancy
         // TODO(rskew) handle exception from magnetometer overflow
         MagnetometerReading magnetometer_reading =
-            measurable_manager->ReadI2cMeasurable<MagnetometerReading>(
+            measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
                 kFsImuMagno2, 0);
 
         if (kHilAvailable) {

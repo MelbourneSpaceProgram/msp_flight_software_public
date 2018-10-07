@@ -4,7 +4,7 @@
 #include <external/etl/array.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/message.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/telecomms/msp_payloads/transmit_payload.h>
 #include <src/util/data_types.h>
 #include <stdint.h>
@@ -116,7 +116,7 @@ class BeaconPayload : public TransmitPayload {
    private:
     template <typename T>
     static T ReadCachedMeasurable(uint16_t measurable_id) {
-        return I2cMeasurableManager::GetInstance()->ReadI2cMeasurable<T>(
+        return MeasurableManager::GetInstance()->ReadNanopbMeasurable<T>(
             measurable_id, 0, true);
     }
 

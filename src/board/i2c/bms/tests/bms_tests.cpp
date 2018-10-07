@@ -5,7 +5,7 @@
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/TemperatureReading.pb.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 
 // Address value must be changed for each BMS.
 static const byte test_bms_address = 0x68;
@@ -19,13 +19,12 @@ TEST_GROUP(Bms) {
 };
 
 TEST(Bms, TestBmsChargingInfoRead) {
-    I2cMeasurableManager* i2c_measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     BmsChargingInfoReading bms_charging_info_reading_1 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsChargingInfoReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsChargingInfoReading>(
             kEpsBmsChargingInfoReading1, 1);
     BmsChargingInfoReading bms_charging_info_reading_2 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsChargingInfoReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsChargingInfoReading>(
             kEpsBmsChargingInfoReading2, 1);
 
     // BMS 1 tests
@@ -146,13 +145,12 @@ TEST(Bms, TestBmsChargingInfoRead) {
 }
 
 TEST(Bms, TestBmsCurrentsReading) {
-    I2cMeasurableManager* i2c_measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     BmsCurrentsReading bms_currents_reading_1 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsCurrentsReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsCurrentsReading>(
             kEpsBmsCurrentsReading1, 1);
     BmsCurrentsReading bms_currents_reading_2 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsCurrentsReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsCurrentsReading>(
             kEpsBmsCurrentsReading2, 1);
 
     // BMS 1 tests
@@ -177,13 +175,12 @@ TEST(Bms, TestBmsCurrentsReading) {
 }
 
 TEST(Bms, TestBmsOperationValuesReading) {
-    I2cMeasurableManager* i2c_measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     BmsOperationValuesReading bms_operation_values_reading_1 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsOperationValuesReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsOperationValuesReading>(
             kEpsBmsOperationValuesReading1, 1);
     BmsOperationValuesReading bms_operation_values_reading_2 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsOperationValuesReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsOperationValuesReading>(
             kEpsBmsOperationValuesReading2, 1);
 
     // BMS 1 tests
@@ -224,13 +221,12 @@ TEST(Bms, TestBmsOperationValuesReading) {
 }
 
 TEST(Bms, TestBmsSettingsRead) {
-    I2cMeasurableManager* i2c_measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     BmsSettingsReading bms_settings_reading_1 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsSettingsReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsSettingsReading>(
             kEpsBmsSettingsReading1, 1);
     BmsSettingsReading bms_settings_reading_2 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsSettingsReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsSettingsReading>(
             kEpsBmsSettingsReading2, 1);
 
     // BMS 1 tests
@@ -293,14 +289,13 @@ TEST(Bms, TestBmsSettingsRead) {
 }
 
 TEST(Bms, TestBmsTemperatureReading) {
-    I2cMeasurableManager* i2c_measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
     BmsTemperatureReading bms_temperature_reading_1 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsTemperatureReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsTemperatureReading>(
             kEpsBmsTemperatureReading1, 1);
     BmsTemperatureReading bms_temperature_reading_2 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsTemperatureReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsTemperatureReading>(
             kEpsBmsTemperatureReading2, 1);
 
     // BMS 1 tests
@@ -335,14 +330,13 @@ TEST(Bms, TestBmsTemperatureReading) {
 }
 
 TEST(Bms, TestBmsVoltagesReading) {
-    I2cMeasurableManager* i2c_measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
     BmsVoltagesReading bms_voltages_reading_1 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsVoltagesReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsVoltagesReading>(
             kEpsBmsVoltagesReading1, 1);
     BmsVoltagesReading bms_voltages_reading_2 =
-        i2c_measurable_manager->ReadI2cMeasurable<BmsVoltagesReading>(
+        measurable_manager->ReadNanopbMeasurable<BmsVoltagesReading>(
             kEpsBmsVoltagesReading2, 1);
 
     // BMS 1 tests

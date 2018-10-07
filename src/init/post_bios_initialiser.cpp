@@ -16,7 +16,7 @@
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_console_uart_listener.h>
 #include <src/payload_processor/runnable_payload_processor.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/system/runnable_state_management.h>
 #include <src/system/runnable_system_health_check.h>
 #include <src/system/state_manager.h>
@@ -76,7 +76,7 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
     }
 
     try {
-        I2cMeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
+        MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
     } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
         // Pass exceptions up so that an incompletely initialised

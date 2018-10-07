@@ -14,7 +14,7 @@
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/sensors/measurable_id.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
@@ -195,9 +195,9 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
 
         // Put requested timestamp in the buffer
         Time requested_time = SatelliteTimeSource::GetTime();
-        NanopbEncode(Time)(buffer + PayloadProcessor::GetCommandCodeLength() +
-                               sizeof(uint16_t),
-                           requested_time);
+        NanopbEncode(Time)(
+            buffer + PayloadProcessor::GetCommandCodeLength() + sizeof(uint16_t),
+            requested_time);
 
         // Create a CircularBuffer and put a value in it
         char filename[4];
@@ -205,17 +205,16 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
         CircularBufferNanopb(CurrentReading)::Create(filename, 10);
 
         CurrentReading test_current =
-            I2cMeasurableManager::GetInstance()
-                ->ReadI2cMeasurable<CurrentReading>(kComInI2, 0);
-        CircularBufferNanopb(CurrentReading)::WriteMessage(filename,
-                                                           test_current);
+            MeasurableManager::GetInstance()->ReadNanopbMeasurable<CurrentReading>(
+                kComInI2, 0);
+        CircularBufferNanopb(CurrentReading)::WriteMessage(filename, test_current);
 
         PayloadProcessor payload_processor;
         CHECK(payload_processor.ParseAndExecuteCommands(buffer));
 
         SdCard::GetInstance()->FileDelete(filename);
-    } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
-        FAIL("Uncaught exception in test");
-    }
+        } catch (etl::exception& e) {
+            EtlUtils::LogException(e);
+            FAIL("Uncaught exception in test");
+        }
 }

@@ -1,7 +1,7 @@
 #include <CppUTest/TestHarness.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/TemperatureReading.pb.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/util/satellite_time_source.h>
@@ -15,7 +15,7 @@ TEST_GROUP(MeasurableManager) {
 };
 
 TEST(MeasurableManager, TestManagerRead) {
-    I2cMeasurableManager *manager = I2cMeasurableManager::GetInstance();
+    MeasurableManager *manager = MeasurableManager::GetInstance();
     // Manager needs to be already initialised in PostBiosInit
 
     TemperatureMeasurable *measurable = dynamic_cast<TemperatureMeasurable *>(
@@ -27,7 +27,7 @@ TEST(MeasurableManager, TestManagerRead) {
     CHECK(now.is_valid);
 
     TemperatureReading cdh_temp =
-        manager->ReadI2cMeasurable<TemperatureReading>(kCdhT, 0);
+        manager->ReadNanopbMeasurable<TemperatureReading>(kCdhT, 0);
 
     CHECK(cdh_temp.timestamp_ms != 0)
 

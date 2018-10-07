@@ -1,4 +1,4 @@
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/sensors/measurable_id.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 
@@ -17,8 +17,8 @@ void BatteryTempStateMachine::Update() {
     }
 
     BatteryIndex id;
-    I2cMeasurableManager* measurable_manager =
-        I2cMeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager =
+        MeasurableManager::GetInstance();
     BmsBatteryTemperatureMeasurable* battery_1_sensor =
         dynamic_cast<BmsBatteryTemperatureMeasurable*>(
             measurable_manager->GetMeasurable<double>(kEpsBmsBatT1));

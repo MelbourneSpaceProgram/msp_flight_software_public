@@ -6,7 +6,7 @@
 #include <src/config/satellite.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/Time.pb.h>
-#include <src/sensors/i2c_measurable_manager.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/tasks/runnable.h>
 #include <src/util/etl_utils.h>
 #include <src/util/nanopb_utils.h>
@@ -45,9 +45,9 @@ class RunnableSystemHealthCheck : public Runnable {
     template <typename NanopbMessageType, uint16_t NanopbMessageType_size,
               const pb_field_t* NanopbMessageType_fields>
     static void LogMeasurable(uint16_t id) {
-        I2cMeasurableManager* manager = I2cMeasurableManager::GetInstance();
+        MeasurableManager* manager = MeasurableManager::GetInstance();
         NanopbMessageType pb_reading =
-            manager->ReadI2cMeasurable<NanopbMessageType>(id, 0);
+            manager->ReadNanopbMeasurable<NanopbMessageType>(id, 0);
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
 
