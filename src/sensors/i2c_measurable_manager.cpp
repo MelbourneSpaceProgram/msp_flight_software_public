@@ -137,6 +137,8 @@ void I2cMeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     AddBmsVoltagesMeasurable(kEpsBmsVoltagesReading2, bms_bus_c);
     AddBmsCurrentsMeasurable(kEpsBmsCurrentsReading1, bms_bus_d);
     AddBmsCurrentsMeasurable(kEpsBmsCurrentsReading2, bms_bus_c);
+    AddBmsOperationValuesMeasurable(kEpsBmsOperationValuesReading1, bms_bus_d);
+    AddBmsOperationValuesMeasurable(kEpsBmsOperationValuesReading2, bms_bus_c);
 }
 
 void I2cMeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
@@ -358,6 +360,14 @@ void I2cMeasurableManager::AddBmsChargingInfoMeasurable(MeasurableId id,
     BmsChargingInfoMeasurable *bms_charging_info =
         new BmsChargingInfoMeasurable(bms);
     measurables[id] = bms_charging_info;
+}
+
+void I2cMeasurableManager::AddBmsOperationValuesMeasurable(MeasurableId id,
+                                                           Bms *bms) {
+    CheckValidId(id);
+    BmsOperationValuesMeasurable *bms_operation_values =
+        new BmsOperationValuesMeasurable(bms);
+    measurables[id] = bms_operation_values;
 }
 
 void I2cMeasurableManager::AddBmsTemperatureMeasurable(MeasurableId id,
