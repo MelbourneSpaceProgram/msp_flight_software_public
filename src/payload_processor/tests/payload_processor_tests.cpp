@@ -18,6 +18,7 @@
 #include <src/sensors/measurable_id.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
+#include <src/util/etl_utils.h>
 #include <src/util/message_codes.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_time_source.h>
@@ -177,38 +178,44 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
 }
 
 TEST(PayloadProcessor, TestScienceDataCommand) {
-    if (!kSdCardAvailable) {
-        TEST_EXIT
+    try {
+        if (!kSdCardAvailable) {
+            TEST_EXIT
+        }
+        // Generate a fake science data command
+        byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
+
+        // Set command code - indicates a science data command
+        buffer[0] = kScienceDataCommand;
+        buffer[1] = 0;
+
+        // Put requested ID in the buffer
+        buffer[3] = kTestCurrent;
+        buffer[4] = 0;
+
+        // Put requested timestamp in the buffer
+        Time requested_time = SatelliteTimeSource::GetTime();
+        NanopbEncode(Time)(buffer + PayloadProcessor::GetCommandCodeLength() +
+                               sizeof(uint16_t),
+                           requested_time);
+
+        // Create a CircularBuffer and put a value in it
+        char filename[4];
+        sprintf(filename, "%3d", kTestCurrent);
+        CircularBufferNanopb(CurrentReading)::Create(filename, 10);
+
+        CurrentReading test_current =
+            I2cMeasurableManager::GetInstance()
+                ->ReadI2cMeasurable<CurrentReading>(kComInI2, 0);
+        CircularBufferNanopb(CurrentReading)::WriteMessage(filename,
+                                                           test_current);
+
+        PayloadProcessor payload_processor;
+        CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+
+        SdCard::GetInstance()->FileDelete(filename);
+    } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
+        FAIL("Uncaught exception in test");
     }
-    // Generate a fake science data command
-    byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
-
-    // Set command code - indicates a science data command
-    buffer[0] = kScienceDataCommand;
-    buffer[1] = 0;
-
-    // Put requested ID in the buffer
-    buffer[3] = kTestCurrent;
-    buffer[4] = 0;
-
-    // Put requested timestamp in the buffer
-    Time requested_time = SatelliteTimeSource::GetTime();
-    NanopbEncode(Time)(
-        buffer + PayloadProcessor::GetCommandCodeLength() + sizeof(uint16_t),
-        requested_time);
-
-    // Create a CircularBuffer and put a value in it
-    char filename[4];
-    sprintf(filename, "%3d", kTestCurrent);
-    CircularBufferNanopb(CurrentReading)::Create(filename, 10);
-
-    CurrentReading test_current =
-        I2cMeasurableManager::GetInstance()->ReadI2cMeasurable<CurrentReading>(
-            kComInI2, 0);
-    CircularBufferNanopb(CurrentReading)::WriteMessage(filename, test_current);
-
-    PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
-
-    SdCard::GetInstance()->FileDelete(filename);
 }
