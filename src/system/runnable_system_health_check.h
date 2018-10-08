@@ -51,7 +51,7 @@ class RunnableSystemHealthCheck : public Runnable {
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
 
-        if (kLogToSd) {
+        if (kLogToSd && kSdCardAvailable) {
             char file_name[4];
             snprintf(file_name, sizeof(file_name), "%03d", id);
             try {
