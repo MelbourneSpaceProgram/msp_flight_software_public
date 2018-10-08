@@ -117,7 +117,8 @@ void PostBiosInitialiser::InitBeacon() {
 
 void PostBiosInitialiser::InitPayloadProcessor() {
     TaskHolder* payload_processor_task = new TaskHolder(
-        2048, "PayloadProcessor", 6, new RunnablePayloadProcessor());
+        payload_processor_stack_size, "PayloadProcessor", 6,
+        new RunnablePayloadProcessor());
 
     payload_processor_task->Start();
 }
