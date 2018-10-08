@@ -31,7 +31,7 @@ static const bool kEepromAvailable =
 static const bool kI2cAvailable = true;
 static const bool kSdCardAvailable = true;
 static const bool kHilAvailable = false;
-static const bool kBmsAvailable = false;
+static const bool kBmsAvailable = true;
 static const bool kAntennaAvailable = false;
 static const bool kDitlMode = false;
 
