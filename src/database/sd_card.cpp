@@ -61,11 +61,15 @@ File *SdCard::FileOpen(const char *path, byte mode) {
     open_file = new File;
     FResult result = f_open(open_file, path, mode);
     if (result == FR_NO_FILE || result == FR_NO_PATH) {
+        delete open_file;
+        open_file = NULL;
         Unlock();
         throw etl::exception("Could not find file", __FILE__, __LINE__);
     } else if (result == FR_EXIST) {
         Log_error1("File already exists: %s", (IArg)path);
     } else if (result != FR_OK) {
+        delete open_file;
+        open_file = NULL;
         Unlock();
         throw etl::exception("Error opening file", __FILE__, __LINE__);
     }
