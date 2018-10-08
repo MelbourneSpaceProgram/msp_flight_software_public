@@ -64,7 +64,7 @@ class I2cMeasurableManager {
             uint64_t cache_time_ms = i2c_measurable->GetReading().timestamp_ms;
             if (i2c_measurable->first_reading ||
                 (!always_use_cached &&
-                 (cache_time_ms >= earliest_acceptable_ms))) {
+                 (cache_time_ms <= earliest_acceptable_ms))) {
                 // TODO(dingbenjamin): Lock the relevant bus/sensor with a
                 // semaphore
                 i2c_measurable->TakeReading();
