@@ -1,5 +1,6 @@
-#include <src/sensors/measurable_manager.h>
+#include <src/messages/TemperatureReading.pb.h>
 #include <src/sensors/measurable_id.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
 
 BatteryTempStateMachine::BatteryTempStateMachine(StateManager* state_manager)
@@ -17,14 +18,15 @@ void BatteryTempStateMachine::Update() {
     }
 
     BatteryIndex id;
-    MeasurableManager* measurable_manager =
-        MeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     BmsBatteryTemperatureMeasurable* battery_1_sensor =
         dynamic_cast<BmsBatteryTemperatureMeasurable*>(
-            measurable_manager->GetMeasurable<double>(kEpsBmsBatT1));
+            measurable_manager->GetMeasurable<TemperatureReading>(
+                kEpsBmsBatT1));
     BmsBatteryTemperatureMeasurable* battery_2_sensor =
         dynamic_cast<BmsBatteryTemperatureMeasurable*>(
-            measurable_manager->GetMeasurable<double>(kEpsBmsBatT2));
+            measurable_manager->GetMeasurable<TemperatureReading>(
+                kEpsBmsBatT2));
 
     if (sensor_with_reading == battery_1_sensor) {
         id = kBattery1;
