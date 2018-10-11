@@ -85,6 +85,7 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
                                       serial_command.GetSize())) {
         return false;
     }
+
     byte ack_buffer[kLithiumHeaderSize] = {NULL};
     if (!Mailbox_pend(header_mailbox_handle, &ack_buffer,
                       TaskUtils::MilliToCycles(kWaitForAckMilli))) {

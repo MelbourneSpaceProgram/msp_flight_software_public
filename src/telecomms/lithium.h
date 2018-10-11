@@ -15,6 +15,7 @@ class Lithium {
     friend class PayloadProcessor;         // For incrementing command success
     friend class RunnableLithiumListener;  // For incrementing received count
     friend class LithiumEnableCommand;
+    friend class RunnableContinuousTransmitShutoff;  //For calculating transmission rate
 
    public:
     static const uint8_t kLithiumHeaderSize = 8;

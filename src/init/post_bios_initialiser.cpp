@@ -26,6 +26,7 @@
 #include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
@@ -93,6 +94,13 @@ void PostBiosInitialiser::InitRadioListener() {
         new TaskHolder(radio_listener_stack_size, "RadioListener", 12,
                        new RunnableLithiumListener());
     radio_listener->Start();
+}
+
+void PostBiosInitialiser::InitContinuousTransmitShutoff() {
+    TaskHolder* transmit_shutoff =
+        new TaskHolder(transmit_shutoff_stack_size, "Transmit Shutoff", 11,
+                       new RunnableContinuousTransmitShutoff());
+    transmit_shutoff->Start();
 }
 
 void PostBiosInitialiser::RunUnitTests() {
@@ -257,6 +265,8 @@ void PostBiosInitialiser::PostBiosInit() {
         Uart* debug_uart = InitDebugUart();
         InitConsoleUartListener(debug_uart);
         Log_info0("UART listener started");
+
+        InitContinuousTransmitShutoff();
 
         // The satellite now runs either the unit tests or the in-orbit
         // configuration for memory reasons.
