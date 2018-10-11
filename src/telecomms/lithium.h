@@ -55,7 +55,7 @@ class Lithium {
     static Lithium* instance;
     static const uint32_t kUartReadTimeoutMilli = 300;
     static const uint32_t kUartWriteTimeoutMilli = 500;
-    static const uint32_t kWaitForAckMilli = 2000;
+    static const uint32_t kWaitForAckMilli = 3000;
     static const uint32_t kWaitForReplyPayloadMilli = 5000;
 
     static uint8_t tx_count;
