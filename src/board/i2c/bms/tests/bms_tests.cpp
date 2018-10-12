@@ -7,9 +7,6 @@
 #include <src/messages/TemperatureReading.pb.h>
 #include <src/sensors/measurable_manager.h>
 
-// Address value must be changed for each BMS.
-static const byte test_bms_address = 0x68;
-
 TEST_GROUP(Bms) {
     void setup() {
         if (!kBmsAvailable) {
@@ -28,8 +25,6 @@ TEST(Bms, TestBmsChargingInfoRead) {
             kEpsBmsChargingInfoReading2, 1);
 
     // BMS 1 tests
-    CHECK_FALSE(bms_charging_info_reading_1.system_status ==
-                BmsChargingInfoReading_system_status_default);
     CHECK(bms_charging_info_reading_1.system_status ==
               BmsChargingInfoReading_SystemStatus_kChargeDisable ||
           bms_charging_info_reading_1.system_status ==
@@ -79,13 +74,11 @@ TEST(Bms, TestBmsChargingInfoRead) {
 
     CHECK_FALSE(bms_charging_info_reading_1.q_count ==
                 BmsChargingInfoReading_q_count_default);
-    CHECK(bms_charging_info_reading_1.q_count ==
-          ((Bms::kQCountRegisterConfigurationUBValue << 8) |
-           Bms::kQCountRegisterConfigurationLBValue));
+    CHECK(bms_charging_info_reading_1.q_count -
+              bms_charging_info_reading_1.q_count_delta ==
+          Bms::kQCountInitial);
 
     // BMS 2 tests
-    CHECK_FALSE(bms_charging_info_reading_2.system_status ==
-                BmsChargingInfoReading_system_status_default);
     CHECK(bms_charging_info_reading_2.system_status ==
               BmsChargingInfoReading_SystemStatus_kChargeDisable ||
           bms_charging_info_reading_2.system_status ==
@@ -135,12 +128,10 @@ TEST(Bms, TestBmsChargingInfoRead) {
 
     CHECK_FALSE(bms_charging_info_reading_2.q_count ==
                 BmsChargingInfoReading_q_count_default);
-    CHECK(bms_charging_info_reading_2.q_count ==
-          ((Bms::kQCountRegisterConfigurationUBValue << 8) |
-           Bms::kQCountRegisterConfigurationLBValue));
+    CHECK(bms_charging_info_reading_2.q_count -
+              bms_charging_info_reading_2.q_count_delta ==
+          Bms::kQCountInitial);
 
-    // TODO(hugorilla): include 'first_charge_complete' and 'qcount_delta'
-    // measurements (if deemed necessary)
     // TODO(hugorilla): Check timestamps
 }
 

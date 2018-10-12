@@ -18,11 +18,6 @@ class Bms : public I2cDevice {
     // TODO(hugorilla): clean up private-public-private mess by making the Bms
     // TEST a friend class
    private:
-    /* Coulomb counting constants */
-    static const uint16_t kQCountFullCharge = 60000;
-    static const uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
-    static const uint16_t kQCountPrescaleFactor = 28;
-
     /* bit masks */
     static const uint16_t kTelemetryValidBitMask = 0x0001;
     static const uint16_t kConstantVoltageBitMask = 0x0001;
@@ -81,6 +76,11 @@ class Bms : public I2cDevice {
     bool GetFirstChargeComplete();
     int32_t GetQCountDelta();
 
+    /* Coulomb counting constants */
+    static const uint16_t kQCountFullCharge = 60000;
+    static const uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
+    static const uint16_t kQCountPrescaleFactor = 28;
+
     /* initial configuration values */
     static const byte kChargerConfigBitsConfigurationValue =
         0x05;  // assert en_jeita and en_c_over_x_term
@@ -88,10 +88,10 @@ class Bms : public I2cDevice {
     static const byte kCOverXThresholdConfigurationUBValue = 0x00;
     static const byte kJeitaT1ConfigurationLBValue = 0x07;
     static const byte kJeitaT1ConfigurationUBValue = 0x4B;
-    static const byte kVchargeJeita5to6ConfigurationLBValue = 0x02;
-    static const byte kVchargeJeita5to6ConfigurationUBValue = 0x73;
-    static const byte kVchargeJeita2to4ConfigurationLBValue = 0x4E;
-    static const byte kVchargeJeita2to4ConfigurationUBValue = 0x73;
+    static const byte kVchargeJeita5to6ConfigurationLBValue = 0x73;
+    static const byte kVchargeJeita5to6ConfigurationUBValue = 0x02;
+    static const byte kVchargeJeita2to4ConfigurationLBValue = 0x73;
+    static const byte kVchargeJeita2to4ConfigurationUBValue = 0x4E;
     static const byte kIchargeJeita5to6ConfigurationLBValue = 0xFF;
     static const byte kIchargeJeita5to6ConfigurationUBValue = 0x03;
     static const byte kIchargeJeita2to4ConfigurationLBValue = 0xFF;
