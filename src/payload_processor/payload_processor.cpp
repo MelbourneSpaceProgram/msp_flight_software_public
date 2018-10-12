@@ -13,8 +13,8 @@
 #include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
-#include <utility>
 #include <memory>
+#include <utility>
 
 PayloadProcessor::PayloadProcessor() {}
 

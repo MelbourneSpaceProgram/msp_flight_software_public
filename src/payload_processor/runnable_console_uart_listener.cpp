@@ -67,11 +67,13 @@ void RunnableConsoleUartListener::Listen() {
             case kPayloadProcessorInjection:
                 // Create fake AX.25 bytes for the payload processor to throw
                 // away
-                byte fake_ax25_payload[sizeof(payload_buffer) +
-                                       RunnablePayloadProcessor::kUplinkAx25Length];
+                byte fake_ax25_payload
+                    [sizeof(payload_buffer) +
+                     RunnablePayloadProcessor::kUplinkAx25Length];
                 memset(fake_ax25_payload, 0x00,
                        RunnablePayloadProcessor::kUplinkAx25Length);
-                memcpy(fake_ax25_payload + RunnablePayloadProcessor::kUplinkAx25Length,
+                memcpy(fake_ax25_payload +
+                           RunnablePayloadProcessor::kUplinkAx25Length,
                        payload_buffer,
                        Lithium::kMaxReceivedUplinkSize -
                            RunnablePayloadProcessor::kUplinkAx25Length);

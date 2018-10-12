@@ -25,8 +25,8 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/runnable_beacon.h>
-#include <src/telecomms/runnable_lithium_listener.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
+#include <src/telecomms/runnable_lithium_listener.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
@@ -124,9 +124,9 @@ void PostBiosInitialiser::InitBeacon() {
 }
 
 void PostBiosInitialiser::InitPayloadProcessor() {
-    TaskHolder* payload_processor_task = new TaskHolder(
-        payload_processor_stack_size, "PayloadProcessor", 6,
-        new RunnablePayloadProcessor());
+    TaskHolder* payload_processor_task =
+        new TaskHolder(payload_processor_stack_size, "PayloadProcessor", 6,
+                       new RunnablePayloadProcessor());
 
     payload_processor_task->Start();
 }
