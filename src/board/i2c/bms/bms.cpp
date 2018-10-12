@@ -357,6 +357,7 @@ BmsChargingInfoReading_ChargerState Bms::ConvertToChargerState(
     etl::array<byte, 2>& read_buffer) {
     uint16_t charger_state_register_value =
         (read_buffer[1] << 8) | read_buffer[0];
+    // TODO(hugorilla): handle error if cast doesn't work
     return static_cast<BmsChargingInfoReading_ChargerState>(
         charger_state_register_value);
 }

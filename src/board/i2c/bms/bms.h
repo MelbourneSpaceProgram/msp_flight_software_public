@@ -2,6 +2,7 @@
 #define SRC_BOARD_I2C_BMS_BMS_H_
 
 #include <external/etl/array.h>
+#include <src/board/i2c/bms/runnable_bms_charge_tracker.h>
 #include <src/messages/BmsChargingInfoReading.pb.h>
 #include <src/messages/BmsCurrentsReading.pb.h>
 #include <src/messages/BmsOperationValuesReading.pb.h>
@@ -15,14 +16,10 @@
 class I2c;
 
 class Bms : public I2cDevice {
+    friend class RunnableBmsChargeTracker;
     // TODO(hugorilla): clean up private-public-private mess by making the Bms
     // TEST a friend class
    private:
-    /* Coulomb counting constants */
-    static const uint16_t kQCountFullCharge = 60000;
-    static const uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
-    static const uint16_t kQCountPrescaleFactor = 28;
-
     /* bit masks */
     static const uint16_t kTelemetryValidBitMask = 0x0001;
     static const uint16_t kConstantVoltageBitMask = 0x0001;
@@ -38,6 +35,15 @@ class Bms : public I2cDevice {
     static const uint16_t kIchargeTargetBitMask = 0x000F;
     static const uint16_t kUpperByteBitMask = 0xFF00;
     static const uint16_t kLowerByteBitMask = 0x00FF;
+
+    /* Coulomb counting constants */
+    static const uint16_t kQCountFullCharge = 60000;
+    static const byte kQCountRegisterFullChargeLBValue =
+        Bms::kQCountFullCharge & kLowerByteBitMask;
+    static const byte kQCountRegisterFullChargeUBValue =
+        (Bms::kQCountFullCharge & kUpperByteBitMask) >> 8;
+    static const uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
+    static const uint16_t kQCountPrescaleFactor = 28;
 
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
@@ -100,7 +106,7 @@ class Bms : public I2cDevice {
     static const byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
     static const byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
     static const byte kQCountRegisterConfigurationLBValue =
-        (Bms::kQCountInitial & kLowerByteBitMask);
+        Bms::kQCountInitial & kLowerByteBitMask;
     static const byte kQCountRegisterConfigurationUBValue =
         (Bms::kQCountInitial & kUpperByteBitMask) >> 8;
     static const byte kConfigBitsConfigurationLBValue = 0x04;

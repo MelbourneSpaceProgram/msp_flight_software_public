@@ -4,6 +4,7 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/board/i2c/bms/runnable_bms_charge_tracker.h>
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
@@ -124,11 +125,17 @@ void PostBiosInitialiser::InitBeacon() {
 }
 
 void PostBiosInitialiser::InitPayloadProcessor() {
-    TaskHolder* payload_processor_task = new TaskHolder(
-        payload_processor_stack_size, "PayloadProcessor", 6,
-        new RunnablePayloadProcessor());
-
+    TaskHolder* payload_processor_task =
+        new TaskHolder(payload_processor_stack_size, "PayloadProcessor", 6,
+                       new RunnablePayloadProcessor());
     payload_processor_task->Start();
+}
+
+void PostBiosInitialiser::InitBmsChargeTracker() {
+    TaskHolder* bms_charge_tracker_task =
+        new TaskHolder(bms_charge_tracker_stack_size, "BmsChargeTracker", 2,
+                       new RunnableBmsChargeTracker());
+    bms_charge_tracker_task->Start();
 }
 
 void PostBiosInitialiser::InitOrientationControl() {
@@ -320,6 +327,9 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitSystemHealthCheck(debug_uart);
         Log_info0("System healthcheck started");
+
+        InitBmsChargeTracker();
+        Log_info0("BMS charge tracker started");
 
         Log_info0("System start up complete");
 #endif

@@ -31,6 +31,7 @@ class PostBiosInitialiser : public Runnable {
     static void InitMemoryLogger();
     static void InitTimeSource();
     static void InitContinuousTransmitShutoff();
+    static void InitBmsChargeTracker();
 
     static const uint16_t kDebugUartReadTimeout = 1000;
     static const uint16_t kDebugUartWriteTimeout = 1000;
