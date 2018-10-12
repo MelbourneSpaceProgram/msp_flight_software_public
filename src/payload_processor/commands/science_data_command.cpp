@@ -16,7 +16,6 @@
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/messages/VoltageReading.pb.h>
 #include <src/payload_processor/commands/science_data_command.h>
-#include <src/sensors/measurable_manager.h>
 #include <src/sensors/measurable_id.h>
 #include <xdc/runtime/Log.h>
 

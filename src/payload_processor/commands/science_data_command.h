@@ -1,8 +1,10 @@
 #ifndef SRC_PAYLOAD_PROCESSOR_COMMANDS_SCIENCE_DATA_COMMAND_H_
 #define SRC_PAYLOAD_PROCESSOR_COMMANDS_SCIENCE_DATA_COMMAND_H_
 
+#include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/Time.pb.h>
 #include <src/payload_processor/commands/command.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/msp_payloads/science_payload.h>
@@ -10,7 +12,6 @@
 #include <src/util/nanopb_utils.h>
 #include <stdio.h>
 #include <xdc/runtime/Log.h>
-#include <src/database/circular_buffer_nanopb.h>
 
 #define RetrieveAndSendDataMacro(NanopbMessageType)                  \
     RetrieveAndSendData<NanopbMessageType, NanopbMessageType##_size, \
@@ -34,10 +35,19 @@ class ScienceDataCommand : public Command {
         snprintf(filename, sizeof(filename), "%03d", requested_id);
 
         TransmitPayload* payload;
+
         try {
-            NanopbMessageType result =
-                CircularBufferNanopb(NanopbMessageType)::Search(
+            NanopbMessageType result;
+            if (!requested_time.is_valid) {
+                // Retrieve the latest reading
+                result = MeasurableManager::GetInstance()
+                             ->ReadNanopbMeasurable<NanopbMessageType>(
+                                 measurable_id, 0, true);
+            } else {
+                // Retrieve a historical reading in the sd card
+                result = CircularBufferNanopb(NanopbMessageType)::Search(
                     filename, requested_time.timestamp_ms);
+            }
             SciencePayload<NanopbMessageType, NanopbMessageType_size,
                            NanopbMessageType_fields>
                 science_payload(result);
