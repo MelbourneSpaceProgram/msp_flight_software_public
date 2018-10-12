@@ -1,0 +1,4 @@
+ROMS
+{
+	flight_software: origin = 0x00000000, length = 0x00C3500
+}
