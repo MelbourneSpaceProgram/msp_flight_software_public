@@ -222,14 +222,17 @@ const UDMAMSP432E4_Config UDMAMSP432E4_config = {.object = &udmaMSP432Object,
 
 void initGeneral(void) {
     // Configure the system CPU to check for firmware updates
+    // Disabled by default because we don't want this happening on all boards
+    // (without being aware of it at least)
+    if (0) {
+        FLASH_CTRL->FMA = 0x75100000;
+        FLASH_CTRL->FMD = 0xFFFFFFFE &
+                          (~FLASH_BOOTCFG_PORT_M | FLASH_BOOTCFG_PORT_C) &
+                          (~FLASH_BOOTCFG_PIN_M | FLASH_BOOTCFG_PIN_7) &
+                          (~FLASH_BOOTCFG_EN) & (~0x00000200);
 
-    FLASH_CTRL->FMA = 0x75100000;
-    FLASH_CTRL->FMD = 0xFFFFFFFE &
-                      (~FLASH_BOOTCFG_PORT_M | FLASH_BOOTCFG_PORT_C) &
-                      (~FLASH_BOOTCFG_PIN_M | FLASH_BOOTCFG_PIN_7) &
-                      (~FLASH_BOOTCFG_EN) & (~0x00000200);
-
-    FLASH_CTRL->FMC = FLASH_FMC_WRKEY | FLASH_FMC_COMT;
+        FLASH_CTRL->FMC = FLASH_FMC_WRKEY | FLASH_FMC_COMT;
+    }
 
     /* Grant the DMA access to all FLASH memory */
     FLASH_CTRL->PP |= FLASH_PP_DFA;
