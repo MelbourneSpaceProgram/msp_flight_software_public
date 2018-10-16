@@ -21,6 +21,9 @@
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/utils/RingBuf.h>
+#include <ti/sysbios/knl/Task.h>
+#include <ti/sysbios/utils/Load.h>
+#include <xdc/runtime/System.h>
 
 Uart* RunnableSystemHealthCheck::debug_uart = NULL;
 bool RunnableSystemHealthCheck::datalogger_enabled = true;
@@ -73,6 +76,12 @@ void RunnableSystemHealthCheck::EnableDatalogger(bool enable_logger) {
 
 void RunnableSystemHealthCheck::SystemHealthCheck() {
     while (1) {
+        Load_Stat stat;
+        Task_Handle idlTskHandle = Task_getIdleTaskHandle(0);
+        Load_getTaskLoad(idlTskHandle, &stat);
+        uint32_t idle_load = Load_calculateLoad(&stat);
+        uint32_t cpu_load = Load_getCPULoad();
+
         if (datalogger_enabled) {
             if (kTcomBoardAvailable) {
                 LogMeasurableMacro(VoltageReading)(kComInV1);
