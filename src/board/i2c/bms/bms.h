@@ -92,10 +92,6 @@ class Bms : public I2cDevice {
     static const byte kVchargeJeita5to6ConfigurationUBValue = 0x02;
     static const byte kVchargeJeita2to4ConfigurationLBValue = 0x73;
     static const byte kVchargeJeita2to4ConfigurationUBValue = 0x4E;
-    static const byte kIchargeJeita5to6ConfigurationLBValue = 0xFF;
-    static const byte kIchargeJeita5to6ConfigurationUBValue = 0x03;
-    static const byte kIchargeJeita2to4ConfigurationLBValue = 0xFF;
-    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x7F;
     static const byte kMaxCvTimeConfigurationValue = 0x00;
     static const byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
     static const byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
@@ -110,7 +106,13 @@ class Bms : public I2cDevice {
     static const byte kEmptyBufferValue = 0x00;
     static const byte kRechargeThresholdConfigurationLBValue = 0x0C;
     static const byte kRechargeThresholdConfigurationUBValue = 0x43;
-    static const byte kVinUvclSettingConfigurationValue = 0xFF;
+
+    // Direct Energy Transfer mode
+    static const byte kIchargeJeita5to6ConfigurationLBValue = 0x21;
+    static const byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
+    static const byte kIchargeJeita2to4ConfigurationLBValue = 0x21;
+    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x04;
+    static const byte kVinUvclSettingConfigurationValue = 0x00;
 
    private:
     /* conversion methods */
