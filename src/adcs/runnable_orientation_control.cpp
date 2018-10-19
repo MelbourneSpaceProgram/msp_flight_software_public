@@ -5,9 +5,9 @@
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
-#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/init/init.h>
@@ -73,8 +73,7 @@ void RunnableOrientationControl::ControlOrientation() {
         kBDotEstimatorTimeConstantMillis);
 
     StateManager* state_manager = StateManager::GetStateManager();
-    MeasurableManager* measurable_manager =
-        MeasurableManager::GetInstance();
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
     if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
               measurable_manager->GetMeasurable<MagnetometerReading>(
@@ -122,9 +121,9 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run estimator
 
         NewStackMatrixMacro(geomag, 3, 1);
-        geomag.Set(0,0,magnetometer_reading.x);
-        geomag.Set(1,0,magnetometer_reading.y);
-        geomag.Set(2,0,magnetometer_reading.z);
+        geomag.Set(0, 0, magnetometer_reading.x);
+        geomag.Set(1, 0, magnetometer_reading.y);
+        geomag.Set(2, 0, magnetometer_reading.z);
         NewStackMatrixMacro(b_dot_estimate, 3, 1);
         BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
 
@@ -150,6 +149,13 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run controller
         NewStackMatrixMacro(signed_pwm_output, 3, 1);
         BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
+
+        // Scale actuation strength for power budgeting
+        for (uint8_t i = 0; i < 3; i++) {
+            signed_pwm_output.Set(
+                0, i,
+                signed_pwm_output.Get(0, i) * kOrientationControlPowerLevel);
+        }
 
         // Use magnetorquer driver to set magnetorquer power.
         // Driver input power range should be [-1, 1]

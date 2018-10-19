@@ -52,6 +52,9 @@ src/sysbios/sysbios.aem4f
 # Emacs temporary files
 .\#*
 
+# Emacs projectile source map (for jumping to definitions)
+TAGS
+
 # Build files
 WinBuild/
 TIRTOS Build/

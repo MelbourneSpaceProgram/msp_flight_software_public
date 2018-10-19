@@ -26,6 +26,9 @@ static float kMagnetorquerPowerFractionZ = 1.0;
 // The strength of the magnetorquers
 const double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.05};
 
+// Scale the actuation strength for power budgeting
+const double kOrientationControlPowerLevel = 0.2;
+
 // Mapping from magnetometer frames to satellite body frame
 // TODO (rskew) verify these for the final build
 // Mappings for the Helmholtz rig FS board
