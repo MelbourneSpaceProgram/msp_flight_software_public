@@ -48,6 +48,7 @@ src/sysbios/sysbios.aem4f
 
 # Windows temporary files
 ~*
+*.swp
 
 # Emacs temporary files
 .\#*
@@ -87,3 +88,6 @@ DebugClient/logs/*.csv
 
 # Compiled python files
 *.pyc
+
+# CTags
+tags
