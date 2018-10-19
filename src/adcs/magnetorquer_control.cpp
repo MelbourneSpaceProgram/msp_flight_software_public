@@ -165,7 +165,7 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
 }
 
 void MagnetorquerControl::Degauss() {
-    float power = 1;
+    float power = kOrientationControlPowerLevel;
     for (uint8_t i = 0; i < kNDegaussPulses; i++) {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
