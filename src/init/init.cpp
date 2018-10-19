@@ -3,7 +3,10 @@
 #include <src/config/unit_tests.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
+#include <src/payload_processor/runnable_payload_processor.h>
 #include <src/tasks/task_holder.h>
+#include <src/telecomms/runnable_beacon.h>
+#include <src/telecomms/runnable_lithium_listener.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
 #include <ti/drivers/PWM.h>
@@ -11,6 +14,7 @@
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/UART.h>
 #include <ti/drivers/Watchdog.h>
+#include <xdc/runtime/Log.h>
 
 // Initialises the core MSP432 drivers provided by TI and loads the post BIOS
 // init tasks. Should be called once at system startup, and prior to the BIOS
@@ -40,7 +44,46 @@ void PreBiosInit() {
         SDFatFS_init();
     }
 
-    TaskHolder *post_bios_initialiser_task =
+    TaskHolder* post_bios_initialiser_task =
         new TaskHolder(3000, "Initialiser", 10, new PostBiosInitialiser());
     post_bios_initialiser_task->Start();
+}
+
+void EnterLimpMode() {
+    Log_info0("Entered limp mode");
+    initGeneral();
+    GPIO_init();
+    UART_init();
+
+    Log_info0("Started hardware peripherals");
+
+    // TODO(akremor): Use the GPIO to force burn the antenna (not over I2C)
+
+    // We create task holders here so we have greater control over stacks and
+    // priority as we may want to use different parameters for limp mode versus
+    // normal mode.
+    // For example, we give oversized stacks to minimise the probability of
+    // stack corruption.
+    TaskHolder* radio_listener = new TaskHolder(5000, "RadioListener", 11,
+                                                new RunnableLithiumListener());
+    TaskHolder* beacon =
+        new TaskHolder(5000, "Beacon", 11, new RunnableBeacon());
+    TaskHolder* payload_processor = new TaskHolder(
+        5000, "PayloadProcessor", 11, new RunnablePayloadProcessor());
+
+    radio_listener->Start();
+    Log_info0("Started radio listener");
+    payload_processor->Start();
+    Log_info0("Started payload processor");
+    beacon->Start();
+    Log_info0("Started beacon");
+
+    Log_info0("Limp mode start up complete");
+
+    // TODO(akremor): Possible limp mode features include:
+    // - access to sd card to get error logs?
+    // - state manager to manage battery health?
+    // - what about the 30 minute start up timer?
+    // - should the watchdog run?
+    // - lithium over-transmit shut off feature?
 }

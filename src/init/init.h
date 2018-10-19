@@ -2,7 +2,6 @@
 #define SRC_INIT_INIT_H_
 
 void PreBiosInit();
-void PostBiosInit();
-void TestInit();
+void EnterLimpMode();
 
 #endif  // SRC_INIT_INIT_H_
