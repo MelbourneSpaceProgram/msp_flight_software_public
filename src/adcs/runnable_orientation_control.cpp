@@ -153,8 +153,8 @@ void RunnableOrientationControl::ControlOrientation() {
         // Scale actuation strength for power budgeting
         for (uint8_t i = 0; i < 3; i++) {
             signed_pwm_output.Set(
-                0, i,
-                signed_pwm_output.Get(0, i) * kOrientationControlPowerLevel);
+                i, 0,
+                signed_pwm_output.Get(i, 0) * kOrientationControlPowerLevel);
         }
 
         // Use magnetorquer driver to set magnetorquer power.
