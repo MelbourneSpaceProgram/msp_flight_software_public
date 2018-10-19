@@ -53,7 +53,9 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         last_reading.z = last_reading.z + simulation_reading.z;
     }
 
-    magnetometer_calibration.Store(last_reading);
+    if (kSdCardAvailable) {
+        magnetometer_calibration.Store(last_reading);
+    }
 
     magnetometer_calibration.Apply(last_reading);
 
