@@ -5,15 +5,15 @@ import serial
 import sys
 import datetime
 import serial.tools.list_ports
-import MagnetometerReading_pb2
-import PwmOutputReading_pb2
-import SensorReading_pb2
-import StateMachineStateReading_pb2
-import TorqueOutputReading_pb2
-import BDotEstimate_pb2
-import Tle_pb2
-import Time_pb2
-import LocationReading_pb2
+from MagnetometerReading_pb2 import MagnetometerReading
+from PwmOutputReading_pb2 import PwmOutputReading
+from SensorReading_pb2 import SensorReading
+from StateMachineStateReading_pb2 import StateMachineStateReading
+from TorqueOutputReading_pb2 import TorqueOutputReading
+from BDotEstimate_pb2 import BDotEstimate
+from Tle_pb2 import Tle
+from Time_pb2 import Time
+from LocationReading_pb2 import LocationReading
 import time
 import logging
 import struct
@@ -21,6 +21,9 @@ import csv
 import os
 import subprocess
 from messagecodes import message_codes
+
+# Config dict for storing global parameters relating to operation
+config = {}
 
 ### Constants
 sync_byte_1 = bytes(b'\xaf')
@@ -55,6 +58,7 @@ the HIL simulation.
 console_logger = logging.StreamHandler()
 console_logger.setLevel(logging.DEBUG)
 
+
 def send_message(debug_serial_port, messageCode, serialisedMessage):
     debug_serial_port.flushInput()  # flush input buffer, discarding all its contents
     debug_serial_port.flushOutput()  # flush output buffer, aborting current output and discard all that is in buffer
@@ -64,6 +68,7 @@ def send_message(debug_serial_port, messageCode, serialisedMessage):
     logger.debug("Sent {} bytes".format(len(serialisedMessage)))
 
     logger.info("Sent message with ID {}".format(messageCode))
+
 
 def wait_for_message(debug_serial_port):
 
@@ -97,6 +102,7 @@ def wait_for_message(debug_serial_port):
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")
 
+
 def detect_serial_port():
     ports = list(serial.tools.list_ports.comports())
     suggested_port = None
@@ -107,17 +113,19 @@ def detect_serial_port():
             suggested_port = str(p).split(' ')[0]  # Grabs the first COMX instance
     return suggested_port
 
-def measurable_filename(measurable_name, session_timestamp):
+
+def measurable_filename(measurable_name):
     return 'sensors_' + \
-           time.strftime('%Y-%m-%d_%H-%M-%S', session_timestamp) + \
+           time.strftime('%Y-%m-%d_%H-%M-%S', config['session_timestamp']) + \
            '_' + \
            measurable_name + \
            '.csv'
 
 
-def log_to_csv(message, session_timestamp):
+def write_to_csv(message):
     measurable_name = message.DESCRIPTOR.name
-    fpath = message_log_dir() + measurable_filename(measurable_name, session_timestamp)
+    fpath = message_log_dir() + \
+        measurable_filename(measurable_name)
     field_names = [field.name for field in list(message.DESCRIPTOR.fields)]
 
     if not(os.path.isfile(fpath)):
@@ -164,260 +172,194 @@ def main():
     # Run Memcached on another terminal with:
     #     memcached -vv
     if useMemcached:
-        mc = mcClient(('localhost',11211))
-        mc.set('hello',
+        config['mc'] = mcClient(('localhost',11211))
+        config['mc'].set('hello',
                'you should see this on the Memcached stdout when run with -vv')
 
     with serial.Serial(**serial_arguments) as debug_serial_port:
         # flush input buffer, discarding all its contents
         debug_serial_port.flushInput()
         logger.info("Port " + debug_serial_port.portstr + " opened.")
-        testLoop(debug_serial_port, logger, mc)
+        config['debug_serial_port'] = debug_serial_port
+        # Get a timestamp for the CSV files generated
+        config['session_timestamp'] = time.localtime()
+        logger.debug(f"Session timestamp: {config['session_timestamp']}")
+        testLoop(debug_serial_port, logger, config['mc'])
+
 
 def testLoop(debug_serial_port, logger, mc):
     # Persistent var for flight-computer-side unit test
     test_message_value = 0
     test_message_timestamp = 0
 
-    # Get a timestamp for the CSV files generated
-    session_timestamp = time.localtime()
-
     try:
         while True:
             message_code, message_size, payload = wait_for_message(debug_serial_port)
             if message_code == None:
                 continue
-
-            # TODO(akremor): Integrate this with request codes
-            if message_code == \
-                message_codes["magnetometer_reading_request_code"]:
-                magnetometer_reading = \
-                    MagnetometerReading_pb2.MagnetometerReading()
-                if mc.get("Simulation_Magnetometer_X") != None:
-                    magnetometer_reading.x = \
-                        struct.unpack('>d', mc.get("Simulation_Magnetometer_X"))[0]
-                    magnetometer_reading.y = \
-                        struct.unpack('>d', mc.get("Simulation_Magnetometer_Y"))[0]
-                    magnetometer_reading.z = \
-                        struct.unpack('>d', mc.get("Simulation_Magnetometer_Z"))[0]
-                    magnetometer_reading.timestamp_ms = \
-                        round(time.time()*1000)
-                else:
-                    magnetometer_reading.x = 0
-                    magnetometer_reading.y = 0
-                    magnetometer_reading.z = 0
-                    magnetometer_reading.timestamp_ms = \
-                        round(time.time()*1000)
-
-                logger.info("Sending message: " + str(magnetometer_reading))
-                serialised_message = magnetometer_reading.SerializeToString()
-                send_message(debug_serial_port, 0x06, serialised_message)
-
-
-            elif message_code == \
-                message_codes["magnetorquer_x_current_reading_code"]:
-                magnetorquer_x_current_reading = \
-                    SensorReading_pb2.SensorReading()
-                magnetorquer_x_current_reading.ParseFromString(payload)
-                logger.info("Received message data: " + \
-                            str(magnetorquer_x_current_reading.value))
-                mc.set("Magnetorquer_X_Current",
-                    struct.pack('>d',magnetorquer_x_current_reading.value))
-
-
-            elif message_code == \
-                message_codes["adcs_system_state_reading_code"]:
-                adcs_system_state_reading = \
-                    StateMachineStateReading_pb2.StateMachineStateReading()
-                adcs_system_state_reading.ParseFromString(payload)
-                logger.info("Received message data: " + \
-                            str(adcs_system_state_reading.state))
-                mc.set("ADCS_System_State",
-                       struct.pack('>i',adcs_system_state_reading.state))
-
-
-            elif message_code == \
-                message_codes["torque_output_reading_code"]:
-
-                torque_output_reading = TorqueOutputReading_pb2.TorqueOutputReading()
-                torque_output_reading.ParseFromString(payload)
-                logger.info("Received message data: " + str(torque_output_reading))
-                mc.set("Simulation_Torque_X",
-                       struct.pack('>d',torque_output_reading.x))
-                mc.set("Simulation_Torque_Y",
-                       struct.pack('>d',torque_output_reading.y))
-                mc.set("Simulation_Torque_Z",
-                       struct.pack('>d',torque_output_reading.z))
-
-
-            elif message_code == \
-                message_codes["pwm_output_reading_code"]:
-
-                pwm_output_reading = PwmOutputReading_pb2.PwmOutputReading()
-                pwm_output_reading.ParseFromString(payload)
-                logger.info("Received message data: " + str(pwm_output_reading))
-                mc.set("Satellite_PWM_X",
-                       struct.pack('>d',pwm_output_reading.x))
-                mc.set("Satellite_PWM_Y",
-                       struct.pack('>d',pwm_output_reading.y))
-                mc.set("Satellite_PWM_Z",
-                       struct.pack('>d',pwm_output_reading.z))
-
-                logger.info("Logging pwm reading to CSV")
-                log_to_csv(pwm_output_reading, session_timestamp)
-
-
-            elif message_code == \
-                message_codes["magnetometer_reading_code"]:
-                # Magnetometer Reading Echo
-
-                magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
-                magnetometer_reading_echo.ParseFromString(payload)
-                logger.info("Message data: " + str(magnetometer_reading_echo))
-                mc.set("Magnetometer_X",
-                       struct.pack('>d',magnetometer_reading_echo.x))
-
-                logger.info("Logging magnetometer reading to CSV")
-                log_to_csv(magnetometer_reading_echo, session_timestamp)
-
-
-            elif message_code == \
-                message_codes["calibrated_magnetometer_reading_code"]:
-
-                magnetometer_reading_echo = MagnetometerReading_pb2.MagnetometerReading()
-                magnetometer_reading_echo.ParseFromString(payload)
-                logger.info("Message data: " + str(magnetometer_reading_echo))
-                mc.set("Calibrated_Magnetometer_X",
-                       struct.pack('>d',magnetometer_reading_echo.x))
-                mc.set("Calibrated_Magnetometer_Y",
-                       struct.pack('>d',magnetometer_reading_echo.y))
-                mc.set("Calibrated_Magnetometer_Z",
-                       struct.pack('>d',magnetometer_reading_echo.z))
-
-
-            elif message_code == \
-                message_codes["b_dot_estimate_code"]:
-                b_dot_estimate = \
-                    BDotEstimate_pb2.BDotEstimate()
-                b_dot_estimate.ParseFromString(payload)
-                logger.info("Received message data: " + \
-                            str(b_dot_estimate))
-                mc.set("B_Dot_Estimate_X",
-                       struct.pack('>d',b_dot_estimate.x))
-                mc.set("B_Dot_Estimate_Y",
-                       struct.pack('>d',b_dot_estimate.y))
-                mc.set("B_Dot_Estimate_Z",
-                       struct.pack('>d',b_dot_estimate.z))
-
-                logger.info("Logging b-dot estimate to CSV")
-                log_to_csv(b_dot_estimate, session_timestamp)
-
-
-            elif message_code == \
-                message_codes["test_sensor_reading_code"]:
-                # Test Sensor Reading, store it for the test reading request
-
-                test_sensor_reading = SensorReading_pb2.SensorReading()
-                test_sensor_reading.ParseFromString(payload)
-
-                test_message_value = test_sensor_reading.value
-                test_message_timestamp = \
-                    test_sensor_reading.timestamp_ms
-
-
-            elif message_code == \
-                message_codes["test_sensor_reading_linked_request_code"]:
-                # Follow-up test request, send stored data
-
-                test_sensor_reading = SensorReading_pb2.SensorReading()
-                test_sensor_reading.value = test_message_value
-                test_sensor_reading.timestamp_ms = \
-                                            test_message_timestamp
-                send_message(debug_serial_port, 0x0A,
-                             test_sensor_reading.SerializeToString())
-
-
-            elif message_code == \
-                message_codes["test_sensor_reading_request_code"]:
-                # Test request, send known data
-
-                test_sensor_reading = SensorReading_pb2.SensorReading()
-                test_sensor_reading.value = 1234
-                test_sensor_reading.timestamp_ms = 4321
-                send_message(debug_serial_port, 0x0B,
-                             test_sensor_reading.SerializeToString())
-
-
-            elif message_code == \
-                message_codes["tle_request_code"]:
-
-                tle = Tle_pb2.Tle()
-                if mc.get("Simulation_TLE_Mean_Motion") != None:
-                    tle.mean_motion = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Mean_Motion"))[0]
-                    tle.mean_anomaly = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Mean_Anomaly"))[0]
-                    tle.inclination = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Inclination"))[0]
-                    tle.raan = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Raan"))[0]
-                    tle.bstar_drag = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Bstar"))[0]
-                    tle.epoch = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Epoch"))[0]
-                    tle.eccentricity_1e7 = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Eccentricity_1e7"))[0]
-                    tle.argument_of_perigee = \
-                        struct.unpack('>d',
-                                      mc.get("Simulation_TLE_Argument_Perigee"))[0]
-                else:
-                    # same TLE values as used in src/adcs/tests/sgp4_tests.cpp
-                    tle.epoch = 00179.78495062
-                    tle.mean_motion = 10.824191574
-                    tle.eccentricity_1e7 = 1859667
-                    tle.inclination = 34.2682
-                    tle.raan = 348.7242
-                    tle.argument_of_perigee = 331.7664
-                    tle.mean_anomaly = 19.3264
-                    tle.bstar_drag = 0.000028098
-
-                logger.info("Sending message: " + str(tle))
-                serialised_message = tle.SerializeToString()
-                send_message(debug_serial_port, 0x0C, serialised_message)
-
-
-            elif message_code == \
-                message_codes["location_reading_code"]:
-
-                location_reading = LocationReading_pb2.LocationReading()
-                location_reading.ParseFromString(payload)
-                logger.info("Received location reading: " + str(location_reading))
-                mc.set("Location_Lattitude_Geodetic_Degrees",
-                       struct.pack('>d',location_reading.lattitude_geodetic_degrees))
-                mc.set("Location_Longitude_Degrees",
-                       struct.pack('>d',location_reading.longitude_degrees))
-                mc.set("Location_Altitude_Above_Ellipsoid_Km",
-                       struct.pack('>d',
-                                   location_reading.altitude_above_ellipsoid_km))
-                mc.set("Location_Timestamp_Millis_Unix_Epoch",
-                       struct.pack('>Q',location_reading.timestamp_ms))
-
-                logger.info("Logging location reading to CSV")
-                log_to_csv(location_reading, session_timestamp)
-
-
+            if message_code in message_actions:
+                message_actions[message_code](payload)
             else:
-                logger.info("Received unhandled message with ID ".format(message_code))
-
+                logger.debug(f"Received message with unknown code: {message_code} size: {message_size}")
     except KeyboardInterrupt as e:
         logger.info("Exiting debug loop")
 
+
+def message_to_memcached(message, memcached_prefix):
+    for field in message.DESCRIPTOR.fields:
+        if field.name is 'timestamp_ms':
+            binary_spec = '>Q'
+        else:
+            binary_spec = '>d'
+        config['mc'].set(f"{memcached_prefix}_{field.name.upper()}",
+               struct.pack(binary_spec, getattr(message, field.name)))
+
+
+def post_action(nanopb_type,
+                memcached_prefix=None,
+                log_to_csv=False):
+    def action(payload):
+        message = nanopb_type()
+        message.ParseFromString(payload)
+        logger.debug(f"Received message data: {message}")
+
+        if memcached_prefix is not None:
+            message_to_memcached(message, memcached_prefix)
+
+        if log_to_csv:
+            logger.debug(f"Logging {nanopb_type} to CSV")
+            write_to_csv(message)
+    return action
+
+
+def message_from_memcached(message, memcached_prefix, defaults):
+    for field in message.DESCRIPTOR.fields:
+        memcached_key = f"{memcached_prefix}_{field.name.upper()}"
+        if field.name == 'timestamp_ms':
+            setattr(message, field.name, round(time.time()*1000))
+        else:
+            if config['mc'].get(memcached_key) != None:
+                print('sending mc vals')
+                setattr(message, field.name,
+                        struct.unpack('>d', config['mc'].get(memcached_key))[0])
+            else:
+                if defaults is not None:
+                    setattr(message, field.name, defaults[field.name])
+                else:
+                    setattr(message, field.name, 0)
+    return message
+
+
+def request_action(nanopb_type,
+                   response_id,
+                   memcached_prefix=None,
+                   log_to_csv=False,
+                   defaults=None):
+    def action(payload):
+        message = nanopb_type()
+
+        if memcached_prefix is not None:
+            message = message_from_memcached(message, memcached_prefix, defaults)
+
+        if log_to_csv:
+            logger.debug(f"Logging {nanopb_type} to CSV")
+            write_to_csv(message)
+
+        logger.debug(f"Sending message: {message}")
+        serialised_message = message.SerializeToString()
+        send_message(config['debug_serial_port'], response_id, serialised_message)
+    return action
+
+
+def test_action(payload):
+     test_sensor_reading = SensorReading_pb2.SensorReading()
+     test_sensor_reading.ParseFromString(payload)
+
+     config['test_message_value'] = test_sensor_reading.value
+     config['test_message_timestamp'] = \
+         test_sensor_reading.timestamp_ms
+
+
+def test_follow_up_action(payload):
+    test_sensor_reading = SensorReading_pb2.SensorReading()
+    test_sensor_reading.value = config['test_message_value']
+    test_sensor_reading.timestamp_ms = \
+                                config['test_message_timestamp']
+    send_message(debug_serial_port, 0x0A,
+                 test_sensor_reading.SerializeToString())
+
+
+def test_request_action(payload):
+    test_sensor_reading = SensorReading_pb2.SensorReading()
+    test_sensor_reading.value = 1234
+    test_sensor_reading.timestamp_ms = 4321
+    send_message(debug_serial_port, 0x0B,
+                 test_sensor_reading.SerializeToString())
+
+
+message_actions = {
+    message_codes["magnetometer_reading_request_code"]:
+        request_action(MagnetometerReading,
+                       0x06,
+                       memcached_prefix='Simulation_Magnetometer',
+                       defaults={'x': 5, 'y': 5, 'z': 5}),
+
+    message_codes["adcs_system_state_reading_code"]:
+        post_action(StateMachineStateReading,
+                    memcached_prefix='ADCS'),
+
+    message_codes['torque_output_reading_code']:
+        post_action(TorqueOutputReading,
+                    memcached_prefix='Simulation_Torque'),
+
+    message_codes['pwm_output_reading_code']:
+        post_action(PwmOutputReading,
+                    memcached_prefix='Satellite_PWM',
+                    log_to_csv=True),
+
+    message_codes['magnetometer_reading_code']:
+        post_action(MagnetometerReading,
+                    memcached_prefix='Magnetometer',
+                    log_to_csv=True),
+
+    message_codes['calibrated_magnetometer_reading_code']:
+        post_action(MagnetometerReading,
+                    memcached_prefix='Calibrated_Magnetometer'),
+
+    message_codes['b_dot_estimate_code']:
+        post_action(BDotEstimate,
+                    memcached_prefix='B_Dot_Estimate',
+                    log_to_csv=True),
+    message_codes['test_sensor_reading_code']:
+        test_action,
+
+    message_codes['test_sensor_reading_linked_request_code']:
+        test_follow_up_action,
+
+    message_codes['test_sensor_reading_request_code']:
+        test_request_action,
+
+    message_codes["tle_request_code"]:
+        request_action(Tle,
+                       0x0C,
+                       memcached_prefix='Simulation_TLE',
+                       defaults={
+                           'epoch': 00179.78495062,
+                           'mean_motion': 10.824191574,
+                           'eccentricity_1e7': 1859667,
+                           'inclination': 34.2682,
+                           'raan': 348.7242,
+                           'argument_of_perigee': 331.7664,
+                           'mean_anomaly': 19.3264,
+                           'bstar_drag': 0.000028098,
+                       }),
+
+    message_codes['location_reading_code']:
+        post_action(LocationReading,
+                    memcached_prefix='Location',
+                    log_to_csv=True),
+}
+
 if __name__ == "__main__":
     main()
+
