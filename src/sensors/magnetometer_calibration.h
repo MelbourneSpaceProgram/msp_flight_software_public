@@ -29,8 +29,8 @@ class MagnetometerCalibration {
     // TODO (rskew) check this value
     static const uint32_t kMinimumSamplesForValidCalibration = 250;
 
-    static const char *MagnetometerCalibration::kBufferFilenameA;
-    static const char *MagnetometerCalibration::kBufferFilenameB;
+    static const char *kBufferFilenameA;
+    static const char *kBufferFilenameB;
 
    private:
     void GenerateBiases(const Matrix &v, const Matrix &Q);
