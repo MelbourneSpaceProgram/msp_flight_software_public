@@ -17,37 +17,28 @@
 #include <ti/drivers/Watchdog.h>
 #include <xdc/runtime/Log.h>
 
+volatile bool exit_sleep = false;
+extern "C" {
+void DeepSleepTimer(void) {
+    MAP_TimerIntClear(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
+
+    exit_sleep = true;
+}
+}
 // Initialises the core MSP432 drivers provided by TI and loads the post BIOS
 // init tasks. Should be called once at system startup, and prior to the BIOS
 // starting.
 void PreBiosInit() {
-    volatile uint32_t timeout = 120E6;
-    for (; timeout > 0; timeout--)
-        ;
-
-    /* Enable the clock to the Hibernate and wait for it to be ready */
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_HIBERNATE);
-    while (!(MAP_SysCtlPeripheralReady(SYSCTL_PERIPH_HIBERNATE))) {
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER4);
+    while (!(SysCtlPeripheralReady(SYSCTL_PERIPH_TIMER4))) {
     }
 
-    /* Configure Hibernate for VDD3ON Mode with Pin Wakeup if Hibernate
-     * module has not been configured */
+    MAP_TimerConfigure(TIMER4_BASE, TIMER_CFG_ONE_SHOT);
+    MAP_TimerIntEnable(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
+    MAP_TimerPrescaleSet(TIMER4_BASE, TIMER_A, 30);
+    MAP_TimerLoadSet(TIMER4_BASE, TIMER_A, 5000);
+    MAP_IntEnable(INT_TIMER4A);
 
-    HIB->CTL |= HIB_CTL_VDD3ON;
-    HIB->CTL |= HIB_CTL_OSCSEL | HIB_CTL_CLK32EN;
-
-    MAP_HibernateEnableExpClk(20E6);
-    MAP_HibernateWakeSet(HIBERNATE_WAKE_RTC);
-    MAP_HibernateRTCSet(0);
-    MAP_HibernateRTCEnable();
-
-    MAP_HibernateIntEnable(HIBERNATE_INT_RTC_MATCH_0);
-
-    MAP_HibernateRTCMatchSet(0, (MAP_HibernateRTCGet() + 5));
-    MAP_HibernateRequest();
-
-    while (1) {
-    }
     if (kEnterDeepSleepOnStartup) {
         // Spin for a bit in case we need to stop this happening with the
         // debugger etc (conservative approach, this likely isn't needed).
@@ -59,6 +50,9 @@ void PreBiosInit() {
             ;
 
         EnterLowPowerMode();
+    }
+
+    while (!exit_sleep) {
     }
 
     initGeneral();

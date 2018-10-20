@@ -403,11 +403,13 @@ const Watchdog_Config Watchdog_config[Board_WATCHDOGCOUNT] = {
 const uint_least8_t Watchdog_count = Board_WATCHDOGCOUNT;
 
 void EnterLowPowerMode() {
+    SysCtlPeripheralDeepSleepEnable(SYSCTL_PERIPH_TIMER4);
     SysCtlPeripheralClockGating(true);
     SysCtlDeepSleepPowerSet(SYSCTL_SRAM_LOW_POWER | SYSCTL_FLASH_LOW_POWER);
     SysCtlDeepSleepClockConfigSet(
         (SYSCTL_DSLP_OSC_INT30 | SYSCTL_DSLP_PIOSC_PD | SYSCTL_DSLP_MOSC_DPD),
         1);
     SysCtlLDODeepSleepSet(SYSCTL_LDO_0_90V);
+    MAP_TimerEnable(TIMER4_BASE, TIMER_A);
     SysCtlDeepSleep();
 }
