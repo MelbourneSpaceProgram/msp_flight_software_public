@@ -34,6 +34,7 @@
 #include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
+#include <ti/devices/msp432e4/driverlib/driverlib.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
 
@@ -229,6 +230,29 @@ void PostBiosInitialiser::InitConsoleUartListener(Uart* debug_uart) {
     console_uart_listener_task->Start();
 }
 
+void Hibernate() {
+    /* Enable the clock to the Hibernate and wait for it to be ready */
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_HIBERNATE);
+    while (!(MAP_SysCtlPeripheralReady(SYSCTL_PERIPH_HIBERNATE))) {
+    }
+
+    /* Configure Hibernate for VDD3ON Mode with Pin Wakeup if Hibernate
+     * module has not been configured */
+
+    HIB->CTL |= HIB_CTL_OSCSEL | HIB_CTL_CLK32EN;
+    HIB->CTL |= HIB_CTL_VDD3ON;
+
+    MAP_HibernateEnableExpClk(20E6);
+    MAP_HibernateWakeSet(HIBERNATE_WAKE_RTC);
+    MAP_HibernateRTCSet(0);
+    MAP_HibernateRTCEnable();
+
+    MAP_HibernateIntEnable(HIBERNATE_INT_RTC_MATCH_0);
+
+    MAP_HibernateRTCMatchSet(0, (MAP_HibernateRTCGet() + 5));
+    MAP_HibernateRequest();
+}
+
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
@@ -283,6 +307,11 @@ void PostBiosInitialiser::PostBiosInit() {
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitStateManagement();
+
+
+        Log_info0("Doing a hibernate");
+        Hibernate();
+        Log_info0("Just hibernated, feeling fresh?");
 
         if (kRunMagnetorquersAtConstantPower == false) {
             InitPreDeploymentMagnetometerPoller();
