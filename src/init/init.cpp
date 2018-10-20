@@ -7,6 +7,7 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <ti/devices/msp432e4/driverlib/driverlib.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
 #include <ti/drivers/PWM.h>
@@ -20,6 +21,33 @@
 // init tasks. Should be called once at system startup, and prior to the BIOS
 // starting.
 void PreBiosInit() {
+    volatile uint32_t timeout = 120E6;
+    for (; timeout > 0; timeout--)
+        ;
+
+    /* Enable the clock to the Hibernate and wait for it to be ready */
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_HIBERNATE);
+    while (!(MAP_SysCtlPeripheralReady(SYSCTL_PERIPH_HIBERNATE))) {
+    }
+
+    /* Configure Hibernate for VDD3ON Mode with Pin Wakeup if Hibernate
+     * module has not been configured */
+
+    HIB->CTL |= HIB_CTL_VDD3ON;
+    HIB->CTL |= HIB_CTL_OSCSEL | HIB_CTL_CLK32EN;
+
+    MAP_HibernateEnableExpClk(20E6);
+    MAP_HibernateWakeSet(HIBERNATE_WAKE_RTC);
+    MAP_HibernateRTCSet(0);
+    MAP_HibernateRTCEnable();
+
+    MAP_HibernateIntEnable(HIBERNATE_INT_RTC_MATCH_0);
+
+    MAP_HibernateRTCMatchSet(0, (MAP_HibernateRTCGet() + 5));
+    MAP_HibernateRequest();
+
+    while (1) {
+    }
     if (kEnterDeepSleepOnStartup) {
         // Spin for a bit in case we need to stop this happening with the
         // debugger etc (conservative approach, this likely isn't needed).
