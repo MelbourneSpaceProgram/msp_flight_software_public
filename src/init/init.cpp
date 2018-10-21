@@ -17,9 +17,10 @@
 #include <ti/drivers/Watchdog.h>
 #include <xdc/runtime/Log.h>
 
-volatile bool exit_sleep = false;
+
 extern "C" {
-void DeepSleepTimer(void) {
+volatile bool exit_sleep = false;
+void DeepSleepTimer() {
     MAP_TimerIntClear(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
 
     exit_sleep = true;
@@ -33,11 +34,13 @@ void PreBiosInit() {
     while (!(SysCtlPeripheralReady(SYSCTL_PERIPH_TIMER4))) {
     }
 
-    MAP_TimerConfigure(TIMER4_BASE, TIMER_CFG_ONE_SHOT);
-    MAP_TimerIntEnable(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
+    MAP_TimerConfigure(TIMER4_BASE, TIMER_CFG_A_ONE_SHOT);
     MAP_TimerPrescaleSet(TIMER4_BASE, TIMER_A, 30);
-    MAP_TimerLoadSet(TIMER4_BASE, TIMER_A, 5000);
+    MAP_TimerLoadSet(TIMER4_BASE, TIMER_A, 60000);
+    MAP_TimerIntEnable(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
     MAP_IntEnable(INT_TIMER4A);
+
+    EnterLowPowerMode();
 
     if (kEnterDeepSleepOnStartup) {
         // Spin for a bit in case we need to stop this happening with the
