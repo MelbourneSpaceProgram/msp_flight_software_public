@@ -20,14 +20,17 @@ TEST_GROUP(Adc) {
 TEST(Adc, TestADC) {
     I2c test_i2c_bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
     Adc adc(&test_i2c_bus, test_adc_address);
 
     adc.SetOperationalStatus(kAdcConversion);
     adc.SetOperatingMode(kAdcContinuousConversion);
-    double read_voltage = adc.TakeI2cReading();
+    double read_voltage = -9999;
 
-    multiplexer.CloseAllChannels();
+    try {
+        read_voltage = adc.TakeI2cReading();
+    } catch (etl::exception& e) {
+        FAIL("Exception occurred in TakeI2cReading");
+    }
 
     // Check that the reading is within +-full_scale_range
     DOUBLES_EQUAL(0, read_voltage, adc.GetAdcGainAmplifierFullScaleRange());
