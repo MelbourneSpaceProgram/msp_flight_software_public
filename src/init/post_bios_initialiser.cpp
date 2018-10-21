@@ -163,8 +163,7 @@ void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
         SetupKillTaskOnOrientationControlBeginSemaphore();
     // TODO(rskew) review priority
     TaskHolder* pre_deployment_magnetometer_poller_task = new TaskHolder(
-        // works with this little stack?
-        1024, "PreDeploymentMagnetometerPoller", 4,
+        2048, "PreDeploymentMagnetometerPoller", 4,
         new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Start();
 }
