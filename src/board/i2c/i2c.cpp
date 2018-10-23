@@ -108,9 +108,9 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
     // Wait for callback to post the status of the I2C or timeout
     bool transfer_outcome = false;
-    bool timed_out =
-        Mailbox_pend(i2c_mailbox, &transfer_outcome,
-                     TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
+    Mailbox_pend(i2c_mailbox, &transfer_outcome,
+                 TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
+
     Mailbox_delete(&i2c_mailbox);
 
     if (kLogI2c) {
@@ -130,14 +130,14 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
         }
     }
 
-    if (timed_out) {
+    if (transfer_outcome == false) {
         I2C_cancel(handle);
         GateMutexPri_leave(i2c_mutex, key);
         return false;
     }
 
     GateMutexPri_leave(i2c_mutex, key);
-    return transfer_outcome;
+    return true;
 }
 
 bool I2c::PerformWriteTransaction(byte address, byte* write_buffer,
