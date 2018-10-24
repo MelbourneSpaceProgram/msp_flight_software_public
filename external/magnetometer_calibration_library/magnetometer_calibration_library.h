@@ -74,7 +74,7 @@ class MagnetometerCalibrationLibrary {
     static void Identity_Matrix(double *, uint8_t);
     static void Interchange_Columns(double *, uint8_t, uint8_t, uint8_t,
                                     uint8_t);
-    static const double kHm = 60000;
+    static constexpr double kHm = 60000;
 };
 
 #endif /* MAGNETOMETER_CALIBRATION_LIBRARY_H_ */

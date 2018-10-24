@@ -37,12 +37,12 @@ class Sgp4Utils {
                                  double& j2, double& j3, double& j4,
                                  double& j3oj2);
 
-    static const double kJulianDayAtY2000H12 = 2451545.0;
-    static const double kDegreesToRadians =
+    static constexpr double kJulianDayAtY2000H12 = 2451545.0;
+    static constexpr double kDegreesToRadians =
         3.14159265358979323846264338327950288419716939937 / 180.0;
-    static const double xpdotp = 229.1831180523293;
-    static const double kCnesJdOffset = -2433281.5;
-    static const double kEccEarthSquared = 0.006694385000;
+    static constexpr double xpdotp = 229.1831180523293;
+    static constexpr double kCnesJdOffset = -2433281.5;
+    static constexpr double kEccEarthSquared = 0.006694385000;
 };
 
 #endif  // EXTERNAL_SGP4_SGP4_UTILS_H_
