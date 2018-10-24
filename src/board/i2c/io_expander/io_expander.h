@@ -2,6 +2,7 @@
 #define SRC_BOARD_I2C_IO_EXPANDER_IO_EXPANDER_H_
 
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
+#include <src/sensors/i2c_sensors/i2c_device.h>
 
 class I2c;
 
@@ -14,7 +15,7 @@ class I2c;
 // http://www.ti.com/lit/ds/symlink/tca9535.pdf
 //
 
-class I2cIoExpander {
+class IoExpander : public I2cDevice {
    public:
     enum IoPin {
         kIoPin0 = 0x00,
@@ -32,37 +33,57 @@ class I2cIoExpander {
         kIoPin12 = 0x0C,
         kIoPin13 = 0x0D,
         kIoPin14 = 0x0E,
-        kIoPin15 = 0x0F
+        kIoPin15 = 0x0F,
+        kNumIoExpanderPins
+    };
+
+    enum IoExpanderIds {
+        kEpsIoExpander = 0,
+        kCommsIoExpander = 1,
+        kNumIoExpanders
     };
 
     enum IoDirection { kIoInput, kIoOutput };
 
     enum IoPolarity { kIoActiveHigh, kIoActiveLow };
 
-    I2cIoExpander(
+    static void Init(I2c* bus_d);
+    static const IoExpander* GetIoExpander(uint8_t index);
+
+    // TODO(dingbenjamin): Make constructor private after friending unit test
+    IoExpander(
         const I2c* bus, byte address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
 
-    IoDirection GetDirection(IoPin pin);
-    void SetDirection(IoPin pin, IoDirection direction);
-    bool GetPin(IoPin pin);
-    void SetPin(IoPin pin, bool value);
-    IoPolarity GetPolarity(IoPin pin);
-    void SetPolarity(IoPin pin, IoPolarity polarity);
+    IoDirection GetDirection(IoPin pin) const;
+    void SetDirection(IoPin pin, IoDirection direction) const;
+    bool GetPin(IoPin pin) const;
+    void SetPin(IoPin pin, bool value) const;
+    IoPolarity GetPolarity(IoPin pin) const;
+    void SetPolarity(IoPin pin, IoPolarity polarity) const;
+
+    // Useful pin definitions
+    static constexpr byte kBmsIoExpanderAddress = 0x20;
+    static constexpr byte kTelecomsIoExpanderAddress = 0x26;
+    static constexpr IoPin kIoExpanderPinBms1En = kIoPin0;
+    static constexpr IoPin kIoExpanderPinBms2En = kIoPin2;
+    static constexpr IoPin kIoExpanderPinFSEn = kIoPin15;
+    static constexpr IoPin kIoExpanderPinTelecomsEn1 = kIoPin1;
+    static constexpr IoPin kIoExpanderPinTelecomsEn3 = kIoPin1;
+    static constexpr IoPin kIoExpanderPinTelecomsEn4 = kIoPin4;
+    static constexpr IoPin kIoExpanderPinTelecomsEn5 = kIoPin4;
 
    private:
-    const I2c* bus;
-    const byte address;
-    const I2cMultiplexer* multiplexer;
-    const I2cMultiplexer::MuxChannel channel;
-    void SelectMultiplexerLine();
-    void DeselectMultiplexerLine();
-    uint8_t ReadFromRegister(byte register_address);
-    void WriteToRegister(byte register_address, byte value);
-    uint8_t GetRegisterMask(IoPin pin);
-    bool GetBitForPin(IoPin pin, uint8_t low_register, uint8_t high_register);
+    static const IoExpander* io_expanders[kNumIoExpanders];
+    static bool initialised;
+
+    uint8_t ReadFromRegister(byte register_address) const;
+    void WriteToRegister(byte register_address, byte value) const;
+    uint8_t GetRegisterMask(IoPin pin) const;
+    bool GetBitForPin(IoPin pin, uint8_t low_register,
+                      uint8_t high_register) const;
     bool SetBitForPin(IoPin pin, uint8_t low_register, uint8_t high_register,
-                      bool value);
+                      bool value) const;
 
     //
     // Datasheet ref

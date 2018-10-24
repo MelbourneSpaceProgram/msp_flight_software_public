@@ -50,26 +50,27 @@ bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
 bool Antenna::ForceDeploy() const {
     if (!kDeployAntenna) return false;
 
-    I2cIoExpander io_expander(bus, kAntennaOverRideIoExpanderAddress);
+    const IoExpander *io_expander =
+        IoExpander::GetIoExpander(IoExpander::kCommsIoExpander);
 
     // Perform manual override of primary burners
-    io_expander.SetDirection(kPrimaryOverridePin, I2cIoExpander::kIoOutput);
-    io_expander.SetPolarity(kPrimaryOverridePin, I2cIoExpander::kIoActiveHigh);
+    io_expander->SetDirection(kPrimaryOverridePin, IoExpander::kIoOutput);
+    io_expander->SetPolarity(kPrimaryOverridePin, IoExpander::kIoActiveHigh);
 
-    io_expander.SetPin(kPrimaryOverridePin, true);
+    io_expander->SetPin(kPrimaryOverridePin, true);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
-    io_expander.SetPin(kPrimaryOverridePin, false);
+    io_expander->SetPin(kPrimaryOverridePin, false);
     if (IsDoorsOpen()) {
         return true;
     }
 
     // Perform manual override of backup burners
-    io_expander.SetDirection(kBackupOverridePin, I2cIoExpander::kIoOutput);
-    io_expander.SetPolarity(kBackupOverridePin, I2cIoExpander::kIoActiveHigh);
+    io_expander->SetDirection(kBackupOverridePin, IoExpander::kIoOutput);
+    io_expander->SetPolarity(kBackupOverridePin, IoExpander::kIoActiveHigh);
 
-    io_expander.SetPin(kBackupOverridePin, true);
+    io_expander->SetPin(kBackupOverridePin, true);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
-    io_expander.SetPin(kBackupOverridePin, false);
+    io_expander->SetPin(kBackupOverridePin, false);
     if (IsDoorsOpen()) {
         return true;
     }

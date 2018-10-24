@@ -1,22 +1,92 @@
+#include <assert.h>
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/io_expander/io_expander.h>
+#include <src/util/etl_utils.h>
 #include <xdc/runtime/Log.h>
 
-I2cIoExpander::I2cIoExpander(const I2c* bus, byte address,
-                             const I2cMultiplexer* multiplexer,
-                             I2cMultiplexer::MuxChannel channel)
-    : bus(bus), address(address), multiplexer(multiplexer), channel(channel) {}
+const IoExpander* IoExpander::io_expanders[IoExpander::kNumIoExpanders];
+bool IoExpander::initialised = false;
 
-I2cIoExpander::IoDirection I2cIoExpander::GetDirection(
-    I2cIoExpander::IoPin pin) {
-    SelectMultiplexerLine();
+void IoExpander::Init(I2c* bus_d) {
+    io_expanders[kEpsIoExpander] = new IoExpander(bus_d, kBmsIoExpanderAddress);
+    io_expanders[kCommsIoExpander] =
+        new IoExpander(bus_d, kTelecomsIoExpanderAddress);
 
+    const IoExpander* io_expander_bms = io_expanders[kEpsIoExpander];
+    const IoExpander* io_expander_telecoms = io_expanders[kCommsIoExpander];
+
+    try {
+        io_expander_bms->SetDirection(kIoExpanderPinBms1En, kIoOutput);
+        io_expander_bms->SetDirection(kIoExpanderPinBms2En, kIoOutput);
+        io_expander_bms->SetPolarity(kIoExpanderPinBms1En, kIoActiveHigh);
+        io_expander_bms->SetPolarity(kIoExpanderPinBms2En, kIoActiveHigh);
+
+        io_expander_bms->SetDirection(kIoExpanderPinFSEn, kIoOutput);
+        io_expander_bms->SetPolarity(kIoExpanderPinFSEn, kIoActiveHigh);
+
+        io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
+        io_expander_bms->SetPin(kIoExpanderPinBms2En, true);
+        io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
+    } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
+        Log_error0("BMS IO expander failed to initialise properly");
+    }
+
+    try {
+        io_expander_telecoms->SetDirection(kIoExpanderPinTelecomsEn1,
+                                           kIoOutput);
+        io_expander_telecoms->SetDirection(kIoExpanderPinTelecomsEn3,
+                                           kIoOutput);
+        io_expander_telecoms->SetDirection(kIoExpanderPinTelecomsEn4,
+                                           kIoOutput);
+        io_expander_telecoms->SetDirection(kIoExpanderPinTelecomsEn5,
+                                           kIoOutput);
+        io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn1,
+                                          kIoActiveHigh);
+        io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn3,
+                                          kIoActiveHigh);
+        io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn4,
+                                          kIoActiveHigh);
+        io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn5,
+                                          kIoActiveHigh);
+
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, true);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn3, true);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, true);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn5, true);
+    } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
+        Log_error0("Telecomms IO expander failed to initialise properly");
+    }
+
+    initialised = true;
+}
+
+const IoExpander* IoExpander::GetIoExpander(uint8_t index) {
+    assert(initialised);
+    if (!initialised) {
+        throw etl::exception("IO expanders uninitialised", __FILE__, __LINE__);
+    } else if (index >= kNumIoExpanders) {
+        // TODO(dingbenjamin): Include index in exceptions
+        throw etl::exception("IO expander index out of range", __FILE__,
+                             __LINE__);
+    } else if (io_expanders[index] == NULL) {
+        throw etl::exception("IO expander index contains NULL", __FILE__,
+                             __LINE__);
+    }
+    return io_expanders[index];
+}
+
+IoExpander::IoExpander(const I2c* bus, byte address,
+                       const I2cMultiplexer* multiplexer,
+                       I2cMultiplexer::MuxChannel channel)
+    : I2cDevice(bus, address, multiplexer, channel) {}
+
+IoExpander::IoDirection IoExpander::GetDirection(IoExpander::IoPin pin) const {
     // 1 = Input
     // 0 = Output
 
     bool value = GetBitForPin(pin, kConfigurationPort0, kConfigurationPort1);
-
-    DeselectMultiplexerLine();
 
     if (value) {
         return kIoInput;
@@ -25,10 +95,8 @@ I2cIoExpander::IoDirection I2cIoExpander::GetDirection(
     }
 }
 
-void I2cIoExpander::SetDirection(I2cIoExpander::IoPin pin,
-                                 I2cIoExpander::IoDirection direction) {
-    SelectMultiplexerLine();
-
+void IoExpander::SetDirection(IoExpander::IoPin pin,
+                              IoExpander::IoDirection direction) const {
     // 1 = Input
     // 0 = Output
 
@@ -42,44 +110,30 @@ void I2cIoExpander::SetDirection(I2cIoExpander::IoPin pin,
     }
 
     SetBitForPin(pin, kConfigurationPort0, kConfigurationPort1, value);
-
-    DeselectMultiplexerLine();
 }
 
-bool I2cIoExpander::GetPin(I2cIoExpander::IoPin pin) {
-    SelectMultiplexerLine();
-
+bool IoExpander::GetPin(IoExpander::IoPin pin) const {
     // 1 = High
     // 0 = Low
 
     bool value = GetBitForPin(pin, kInputPort0, kInputPort1);
 
-    DeselectMultiplexerLine();
-
     return value;
 }
 
-void I2cIoExpander::SetPin(I2cIoExpander::IoPin pin, bool value) {
-    SelectMultiplexerLine();
-
+void IoExpander::SetPin(IoExpander::IoPin pin, bool value) const {
     // 1 = High
     // 0 = Low
 
     SetBitForPin(pin, kOutputPort0, kOutputPort1, value);
-
-    DeselectMultiplexerLine();
 }
 
-I2cIoExpander::IoPolarity I2cIoExpander::GetPolarity(I2cIoExpander::IoPin pin) {
-    SelectMultiplexerLine();
-
+IoExpander::IoPolarity IoExpander::GetPolarity(IoExpander::IoPin pin) const {
     // 1 = Active Low
     // 0 = Active High
 
     bool value =
         GetBitForPin(pin, kPolarityInversionPort0, kPolarityInversionPort1);
-
-    DeselectMultiplexerLine();
 
     if (value) {
         return kIoActiveLow;
@@ -88,10 +142,8 @@ I2cIoExpander::IoPolarity I2cIoExpander::GetPolarity(I2cIoExpander::IoPin pin) {
     }
 }
 
-void I2cIoExpander::SetPolarity(I2cIoExpander::IoPin pin,
-                                I2cIoExpander::IoPolarity polarity) {
-    SelectMultiplexerLine();
-
+void IoExpander::SetPolarity(IoExpander::IoPin pin,
+                             IoExpander::IoPolarity polarity) const {
     // 1 = Active Low
     // 0 = Active High
 
@@ -105,42 +157,35 @@ void I2cIoExpander::SetPolarity(I2cIoExpander::IoPin pin,
     }
 
     SetBitForPin(pin, kPolarityInversionPort0, kPolarityInversionPort1, value);
-
-    DeselectMultiplexerLine();
 }
 
-void I2cIoExpander::SelectMultiplexerLine() {
-    if (multiplexer != NULL) {
-        multiplexer->OpenChannel(channel);
-    }
-}
-
-void I2cIoExpander::DeselectMultiplexerLine() {
-    if (multiplexer != NULL) {
-        multiplexer->CloseChannel(channel);
-    }
-}
-
-uint8_t I2cIoExpander::ReadFromRegister(byte register_address) {
+uint8_t IoExpander::ReadFromRegister(byte register_address) const {
     uint8_t current_value = 0x00;
-    bus->PerformWriteTransaction(address, &register_address, 1);
-    bus->PerformReadTransaction(address, &current_value, 1);
+    if (!PerformWriteTransaction(address, &register_address, 1))
+        throw etl::exception("Failed to write to address on IO expander",
+                             __FILE__, __LINE__);
+    if (!PerformReadTransaction(address, &current_value, 1))
+        throw etl::exception("Failed to read from address on IO expander",
+                             __FILE__, __LINE__);
     return current_value;
 }
 
-void I2cIoExpander::WriteToRegister(byte register_address, byte value) {
+void IoExpander::WriteToRegister(byte register_address, byte value) const {
     byte bytes[2];
     bytes[0] = register_address;
     bytes[1] = value;
-    bus->PerformWriteTransaction(address, bytes, 2);
+    if (!PerformWriteTransaction(address, bytes, 2)) {
+        throw etl::exception("Failed to write to address on IO expander",
+                             __FILE__, __LINE__);
+    }
 }
 
-uint8_t I2cIoExpander::GetRegisterMask(I2cIoExpander::IoPin pin) {
+uint8_t IoExpander::GetRegisterMask(IoExpander::IoPin pin) const {
     return 0x01 << static_cast<uint8_t>(pin % 8);
 }
 
-bool I2cIoExpander::GetBitForPin(I2cIoExpander::IoPin pin, uint8_t low_register,
-                                 uint8_t high_register) {
+bool IoExpander::GetBitForPin(IoExpander::IoPin pin, uint8_t low_register,
+                              uint8_t high_register) const {
     // The lower register handles the lower 8 pins.
     // The higher register handles the upper 8 pins.
     //
@@ -165,8 +210,8 @@ bool I2cIoExpander::GetBitForPin(I2cIoExpander::IoPin pin, uint8_t low_register,
     }
 }
 
-bool I2cIoExpander::SetBitForPin(I2cIoExpander::IoPin pin, uint8_t low_register,
-                                 uint8_t high_register, bool value) {
+bool IoExpander::SetBitForPin(IoExpander::IoPin pin, uint8_t low_register,
+                              uint8_t high_register, bool value) const {
     // The lower register handles the lower 8 pins.
     // The higher register handles the upper 8 pins.
     //

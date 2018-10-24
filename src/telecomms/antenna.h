@@ -46,10 +46,9 @@ class Antenna {
     static constexpr uint32_t kWaitTimeManualOverride = 30000;
     // TODO(wschuetz): Confirm with EnduroSat how long override should be held
     // high for
-    static constexpr I2cIoExpander::IoPin kPrimaryOverridePin =
-        I2cIoExpander::kIoPin4;
-    static constexpr I2cIoExpander::IoPin kBackupOverridePin =
-        I2cIoExpander::kIoPin5;
+    static constexpr IoExpander::IoPin kPrimaryOverridePin =
+        IoExpander::kIoPin4;
+    static constexpr IoExpander::IoPin kBackupOverridePin = IoExpander::kIoPin5;
     static constexpr uint8_t kMaxNumberOfIterations = 0x03;
     static constexpr byte kAntennaOverRideIoExpanderAddress = 0x22;
 

@@ -4,9 +4,10 @@
 #include <src/board/i2c/io_expander/io_expander.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/config/unit_tests.h>
+#include <src/telecomms/lithium.h>
+#include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/util/data_types.h>
-
-static constexpr byte kIoExpanderAddress = 0x22;
+#include <src/util/task_utils.h>
 
 TEST_GROUP(IoExpander) {
     void setup() {
@@ -16,51 +17,31 @@ TEST_GROUP(IoExpander) {
     };
 };
 
-// Test disabled as CDH no longer has an IO Expander
-// TODO(akremor): Find equivalent chip
-IGNORE_TEST(IoExpander, TestIoExpander) {
-    // DANGER DANGER:
-    //
-    // This test affects actual hardware.
-    // The pin to test should be a safe, non-essential pin that won't destroy
-    // anything expensive.
-    //
-    // Pin 02 is power shutoff for the secondary microcontroller.
-    // It should be fairly safe to read and write this pin for testing.
-    I2cIoExpander::IoPin safe_pin = I2cIoExpander::kIoPin2;
+TEST(IoExpander, TestIoExpander) {
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn1, false);
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn3, false);
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn4, false);
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn5, false);
 
-    // Open the IO Expander on Bus D, address 0x22
-    I2c bus(I2C_BUS_D);
-    I2cIoExpander test_io_expander(&bus, kIoExpanderAddress);
+    TaskUtils::SleepMilli(2000);
 
-    // Perform SetDirection and GetDirection test as Input
-    test_io_expander.SetDirection(safe_pin, I2cIoExpander::kIoInput);
-    I2cIoExpander::IoDirection read_direction =
-        test_io_expander.GetDirection(safe_pin);
+    TestOnesPayload ones;
+    CHECK_FALSE(Lithium::GetInstance()->Transmit(&ones));
 
-    // Check that the read direction is actually input
-    CHECK_TEXT(read_direction == I2cIoExpander::kIoInput,
-               "GetDirection was not input after SetDirection");
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn1, true);
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn3, true);
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn4, true);
+    IoExpander::GetIoExpander(IoExpander::kCommsIoExpander)
+        ->SetPin(IoExpander::kIoExpanderPinTelecomsEn5, true);
 
-    // TODO(crozone): Perform GetValue test as pin Input
+    TaskUtils::SleepMilli(2000);
 
-    // Perform SetDirection and GetDirection test as Output
-    test_io_expander.SetDirection(safe_pin, I2cIoExpander::kIoOutput);
-    read_direction = test_io_expander.GetDirection(safe_pin);
-
-    // Check that the read direction is actually output
-    CHECK_TEXT(read_direction == I2cIoExpander::kIoOutput,
-               "GetDirection was not input after SetDirection");
-
-    // SetPin and GetPin test as Hi
-    test_io_expander.SetPin(safe_pin, true);
-    bool read_value = test_io_expander.GetPin(safe_pin);
-
-    CHECK_TEXT(read_value, "GetPin was not Hi after SetPin");
-
-    // SetPin and GetPin test as Lo
-    test_io_expander.SetPin(safe_pin, false);
-    read_value = test_io_expander.GetPin(safe_pin);
-
-    CHECK_FALSE_TEXT(read_value, "GetPin was not Lo after SetPin");
+    CHECK(Lithium::GetInstance()->Transmit(&ones));
 }

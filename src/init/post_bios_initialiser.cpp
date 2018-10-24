@@ -4,6 +4,7 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/board/i2c/io_expander/io_expander.h>
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
@@ -58,6 +59,13 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
     }
 
     try {
+        IoExpander::Init(bus_d);
+    } catch (etl::exception& e) {
+        // TODO(dingbenjamin): Possible failure mode needs to be handled
+        EtlUtils::LogException(e);
+    }
+
+    try {
         Antenna::GetAntenna()->InitAntenna(bus_d);
     } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
@@ -80,6 +88,7 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
         // be software problems, should get to here.
         throw e;
     }
+
 }
 
 void PostBiosInitialiser::InitRadioListener() {
