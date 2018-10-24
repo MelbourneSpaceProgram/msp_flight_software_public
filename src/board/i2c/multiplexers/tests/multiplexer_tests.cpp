@@ -7,16 +7,22 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/util/data_types.h>
 #include <xdc/runtime/Log.h>
+#include <xdc/runtime/Diags.h>
 
 static constexpr byte kMultiplexerAddress = 0x76;
 static constexpr byte kTempSensorAddress = 0x1A;
 
 TEST_GROUP(Multiplexer) {
     void setup() {
+		Diags_setMask("xdc.runtime.Main-E");
         if (!kI2cAvailable) {
             TEST_EXIT;
         }
     };
+
+	void teardown() {
+		Diags_setMask("xdc.runtime.Main+E");
+	};
 };
 
 TEST(Multiplexer, TestMultiplexer) {
