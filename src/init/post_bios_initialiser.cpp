@@ -92,41 +92,42 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
 
 void PostBiosInitialiser::InitRadioListener() {
     TaskHolder* radio_listener =
-        new TaskHolder(radio_listener_stack_size, "RadioListener", 12,
+        new TaskHolder(kRadioListenerStackSize, "RadioListener", 12,
                        new RunnableLithiumListener());
     radio_listener->Start();
 }
 
 void PostBiosInitialiser::InitContinuousTransmitShutoff() {
     TaskHolder* transmit_shutoff =
-        new TaskHolder(transmit_shutoff_stack_size, "Transmit Shutoff", 11,
+        new TaskHolder(kTransmitShutoffStackSize, "Transmit Shutoff", 11,
                        new RunnableContinuousTransmitShutoff());
     transmit_shutoff->Start();
 }
 
 void PostBiosInitialiser::RunUnitTests() {
-    TaskHolder* test_task = new TaskHolder(unit_tests_stack_size, "Unit Tests",
-                                           3, TestInitialiser::GetInstance());
+    TaskHolder* test_task = new TaskHolder(kUnitTestsStackSize, "Unit Tests", 3,
+                                           TestInitialiser::GetInstance());
     test_task->Start();
 }
 
 void PostBiosInitialiser::InitStateManagement() {
     StateManager::GetStateManager();
 
-    TaskHolder* state_management_task = new TaskHolder(
-        1024, "StateManagement", 9, new RunnableStateManagement());
+    TaskHolder* state_management_task =
+        new TaskHolder(kStateManagementStackSize, "StateManagement", 9,
+                       new RunnableStateManagement());
     state_management_task->Start();
 }
 
 void PostBiosInitialiser::InitBeacon() {
     TaskHolder* beacon_task =
-        new TaskHolder(beacon_stack_size, "Beacon", 8, new RunnableBeacon());
+        new TaskHolder(kBeaconStackSize, "Beacon", 8, new RunnableBeacon());
     beacon_task->Start();
 }
 
 void PostBiosInitialiser::InitPayloadProcessor() {
     TaskHolder* payload_processor_task =
-        new TaskHolder(payload_processor_stack_size, "PayloadProcessor", 6,
+        new TaskHolder(kPayloadProcessorStackSize, "PayloadProcessor", 6,
                        new RunnablePayloadProcessor());
 
     payload_processor_task->Start();
@@ -140,8 +141,9 @@ void PostBiosInitialiser::InitOrientationControl() {
     MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
 
     // TODO(rskew) review priority
-    TaskHolder* orientation_control_task = new TaskHolder(
-        4096, "OrientationControl", 7, new RunnableOrientationControl());
+    TaskHolder* orientation_control_task =
+        new TaskHolder(kOrientationControlStackSize, "OrientationControl", 7,
+                       new RunnableOrientationControl());
     Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
     Mailbox_Handle tle_update_command_mailbox_handle = Mailbox_create(
         sizeof(Tle), 1, &LocationEstimator::tle_update_command_mailbox_params,
@@ -163,15 +165,17 @@ void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
     RunnablePreDeploymentMagnetometerPoller::
         SetupKillTaskOnOrientationControlBeginSemaphore();
     // TODO(rskew) review priority
-    TaskHolder* pre_deployment_magnetometer_poller_task = new TaskHolder(
-        2048, "PreDeploymentMagnetometerPoller", 4,
-        new RunnablePreDeploymentMagnetometerPoller());
+    TaskHolder* pre_deployment_magnetometer_poller_task =
+        new TaskHolder(kPreDeploymentMagnetometerPollerStackSize,
+                       "PreDeploymentMagnetometerPoller", 4,
+                       new RunnablePreDeploymentMagnetometerPoller());
     pre_deployment_magnetometer_poller_task->Start();
 }
 
 void PostBiosInitialiser::InitSystemHealthCheck() {
-    TaskHolder* system_health_check_task = new TaskHolder(
-        4096, "SystemHealthCheck", 5, new RunnableSystemHealthCheck());
+    TaskHolder* system_health_check_task =
+        new TaskHolder(kSystemHealthCheckStackSize, "SystemHealthCheck", 5,
+                       new RunnableSystemHealthCheck());
     system_health_check_task->Start();
 }
 
@@ -210,15 +214,14 @@ void PostBiosInitialiser::InitHardware() {
 }
 
 void PostBiosInitialiser::InitMemoryLogger() {
-    TaskHolder* memory_logger_task =
-        new TaskHolder(memory_logger_stack_size, "MemoryLogger", 11,
-                       new RunnableMemoryLogger());
+    TaskHolder* memory_logger_task = new TaskHolder(
+        kMemoryLoggerStackSize, "MemoryLogger", 11, new RunnableMemoryLogger());
     memory_logger_task->Start();
 }
 
 void PostBiosInitialiser::InitTimeSource() {
     TaskHolder* time_source_task = new TaskHolder(
-        time_source_stack_size, "TimeSource", 10, new RunnableTimeSource());
+        kTimeSourceStackSize, "TimeSource", 10, new RunnableTimeSource());
     time_source_task->Start();
 }
 
@@ -229,12 +232,14 @@ void PostBiosInitialiser::InitConsoleUart() {
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
         ->Open();
 
-    TaskHolder* console_uart_listener_task = new TaskHolder(
-        console_listener_stack_size, "UartListener", 12, new RunnableConsoleListener(debug_uart));
+    TaskHolder* console_uart_listener_task =
+        new TaskHolder(kConsoleListenerStackSize, "UartListener", 12,
+                       new RunnableConsoleListener(debug_uart));
     console_uart_listener_task->Start();
 
-    TaskHolder* console_uart_logger_task = new TaskHolder(
-        console_logger_stack_size, "UartLogger", 7, new RunnableConsoleLogger(debug_uart));
+    TaskHolder* console_uart_logger_task =
+        new TaskHolder(kConsoleLoggerStackSize, "UartLogger", 7,
+                       new RunnableConsoleLogger(debug_uart));
     console_uart_logger_task->Start();
 }
 
