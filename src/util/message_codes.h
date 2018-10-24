@@ -59,6 +59,7 @@ enum Commands {
     kDeployAntennaCommand = 9,
     kEnableDataloggerCommand = 10,
     kFormatSdCommand = 11,
+    kIoExpanderToggleCommand = 12,
     kCommandsLength
 };
 

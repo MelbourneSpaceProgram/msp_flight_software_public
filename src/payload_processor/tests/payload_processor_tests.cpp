@@ -2,13 +2,16 @@
 #include <external/nanopb/pb_encode.h>
 #include <external/sgp4/sgp4.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/board/i2c/io_expander/io_expander.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/database/sd_card.h>
 #include <src/messages/CurrentReading.pb.h>
+#include <src/messages/IoExpanderToggleCommandPayload.pb.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
+#include <src/payload_processor/commands/io_expander_toggle_command.h>
 #include <src/payload_processor/commands/lithium_beacon_period_command.h>
 #include <src/payload_processor/commands/science_data_command.h>
 #include <src/payload_processor/commands/test_command.h>
@@ -18,11 +21,13 @@
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/etl_utils.h>
 #include <src/util/message_codes.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_time_source.h>
+#include <src/util/task_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
 
@@ -224,6 +229,116 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
         EtlUtils::LogException(e);
         FAIL("Uncaught exception in test");
     }
+}
+
+// TODO(dingbenjamin): Figure out how to teardown for just this test
+TEST(PayloadProcessor, TestIoExpanderToggleCommand) {
+    byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
+
+    // Set nanopb message
+    // Toggle comms regulators expander
+    IoExpanderToggleCommandPayload en_1_off = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn1),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
+    IoExpanderToggleCommandPayload en_3_off = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn3),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
+    IoExpanderToggleCommandPayload en_4_off = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn4),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
+    IoExpanderToggleCommandPayload en_5_off = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
+
+    // Set command code - 12 indicates an IO toggle command
+    buffer[0] = 12;
+    buffer[1] = 0;
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + PayloadProcessor::GetCommandCodeLength(), en_1_off);
+
+    buffer[PayloadProcessor::GetCommandCodeLength() +
+           IoExpanderToggleCommandPayload_size] = 12;
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + 2 * PayloadProcessor::GetCommandCodeLength() +
+            IoExpanderToggleCommandPayload_size,
+        en_3_off);
+
+    buffer[(IoExpanderToggleCommandPayload_size +
+            PayloadProcessor::GetCommandCodeLength()) *
+           2] = 12;
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + 3 * PayloadProcessor::GetCommandCodeLength() +
+            2 * IoExpanderToggleCommandPayload_size,
+        en_4_off);
+
+    buffer[(IoExpanderToggleCommandPayload_size +
+            PayloadProcessor::GetCommandCodeLength()) *
+           3] = 12;
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + 4 * PayloadProcessor::GetCommandCodeLength() +
+            3 * IoExpanderToggleCommandPayload_size,
+        en_5_off);
+
+    // Set end terminators
+    buffer[(PayloadProcessor::GetCommandCodeLength() +
+            IoExpanderToggleCommandPayload_size) *
+           4] = PayloadProcessor::GetEndTerminator();
+    buffer[(PayloadProcessor::GetCommandCodeLength() +
+            IoExpanderToggleCommandPayload_size) *
+               4 +
+           1] = PayloadProcessor::GetEndTerminator();
+
+    PayloadProcessor payload_processor;
+    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+
+    // Check Lithium is now unable to transmit
+    TaskUtils::SleepMilli(2000);
+    TestOnesPayload ones;
+    CHECK_FALSE(Lithium::GetInstance()->Transmit(&ones));
+
+    // Turn back on
+    IoExpanderToggleCommandPayload en_1_on = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn1),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
+    IoExpanderToggleCommandPayload en_3_on = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn3),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
+    IoExpanderToggleCommandPayload en_4_on = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn4),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
+    IoExpanderToggleCommandPayload en_5_on = {
+        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
+        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
+        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
+
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + PayloadProcessor::GetCommandCodeLength(), en_1_on);
+
+    buffer[PayloadProcessor::GetCommandCodeLength() +
+           IoExpanderToggleCommandPayload_size] = 12;
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + 2 * PayloadProcessor::GetCommandCodeLength() +
+            IoExpanderToggleCommandPayload_size,
+        en_3_on);
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + 3 * PayloadProcessor::GetCommandCodeLength() +
+            2 * IoExpanderToggleCommandPayload_size,
+        en_4_on);
+    NanopbEncode(IoExpanderToggleCommandPayload)(
+        buffer + 4 * PayloadProcessor::GetCommandCodeLength() +
+            3 * IoExpanderToggleCommandPayload_size,
+        en_5_on);
+
+    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    TaskUtils::SleepMilli(2000);
+    CHECK(Lithium::GetInstance()->Transmit(&ones));
 }
 
 TEST(PayloadProcessor, TestSequence) {
