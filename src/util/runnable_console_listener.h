@@ -1,14 +1,14 @@
-#ifndef SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_UART_LISTENER_H_
-#define SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_UART_LISTENER_H_
+#ifndef SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_LISTENER_H_
+#define SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_LISTENER_H_
 
 #include <src/tasks/runnable.h>
 #include <src/util/data_types.h>
 
 class Uart;
 
-class RunnableConsoleUartListener : public Runnable {
+class RunnableConsoleListener : public Runnable {
    public:
-    RunnableConsoleUartListener(Uart* debug_uart);
+    RunnableConsoleListener(Uart* debug_uart);
     fnptr GetRunnablePointer();
 
    private:
@@ -19,4 +19,4 @@ class RunnableConsoleUartListener : public Runnable {
     static const uint8_t kConsoleUartHeaderSize = 5;
 };
 
-#endif  // SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_UART_LISTENER_H_
+#endif  // SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_LISTENER_H_

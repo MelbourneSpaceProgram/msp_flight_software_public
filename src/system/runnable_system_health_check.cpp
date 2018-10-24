@@ -29,44 +29,10 @@
 Uart* RunnableSystemHealthCheck::debug_uart = NULL;
 bool RunnableSystemHealthCheck::datalogger_enabled = true;
 
-// These are created outside of the class to make getting C linkage easier
-extern "C" {
-RingBuf_Object ring_buffer;
-byte buffer[5000];
-}
-
-void RunnableSystemHealthCheck::Init() {
-    RingBuf_construct(&ring_buffer, buffer, sizeof(buffer));
-}
-
-RunnableSystemHealthCheck::RunnableSystemHealthCheck(Uart* debug_uart) {
-    if (RunnableSystemHealthCheck::debug_uart == NULL) {
-        // WARNING: This task should only ever WRITE to the debug UART
-        RunnableSystemHealthCheck::debug_uart = debug_uart;
-    } else {
-        throw etl::exception(
-            "Only one instance of RunnableSystemHealthCheck should ever be "
-            "instantiated",
-            __FILE__, __LINE__);
-    }
-}
+RunnableSystemHealthCheck::RunnableSystemHealthCheck() {}
 
 fnptr RunnableSystemHealthCheck::GetRunnablePointer() {
     return &RunnableSystemHealthCheck::SystemHealthCheck;
-}
-
-void RunnableSystemHealthCheck::WriteToDataLogger(uint8_t measurable_id,
-                                                  byte encoded_message[],
-                                                  uint8_t message_size) {
-    byte packet[5] = {NULL};
-    packet[0] = kMeasurableLoggerSyncChar1;
-    packet[1] = kMeasurableLoggerSyncChar2;
-    packet[2] = message_size;  // Length of packet except header
-    packet[3] = measurable_id;
-    packet[4] = 0x00;  // TODO(dingbenjamin): Implement checksum
-
-    debug_uart->PerformWriteTransaction(packet, 5);
-    debug_uart->PerformWriteTransaction(encoded_message, message_size);
 }
 
 bool RunnableSystemHealthCheck::IsEnabled() { return datalogger_enabled; }
@@ -221,32 +187,8 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 LogMeasurableMacro(VoltageReading)(kUtilHeatV);
             }
         }
-        UartFlush();
         SystemWatchdog::ResetTimer();
         GPIO_toggle(SYS_LED);
         TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
-    }
-}
-
-void UartPutch(Char ch) { RingBuf_put(&ring_buffer, ch); }
-
-void UartFlush() {
-    // Send 100 bytes at a time, or less
-    byte encoded_message[100];
-
-    while (RingBuf_getCount(&ring_buffer)) {
-        int bytes_available = RingBuf_getCount(&ring_buffer);
-        if (bytes_available == -1) {
-            continue;
-        }
-
-        uint32_t byte_counter = 0;
-        while (byte_counter < 100 && byte_counter < bytes_available) {
-            RingBuf_get(&ring_buffer, encoded_message + byte_counter);
-            byte_counter++;
-        }
-
-        RunnableSystemHealthCheck::WriteToDataLogger(
-            kConsoleMessage, encoded_message, byte_counter);
     }
 }

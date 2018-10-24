@@ -10,6 +10,7 @@
 #include <src/tasks/runnable.h>
 #include <src/util/etl_utils.h>
 #include <src/util/nanopb_utils.h>
+#include <src/util/runnable_console_logger.h>
 #include <stdio.h>
 #include <xdc/runtime/Log.h>
 
@@ -25,15 +26,10 @@ class RunnableSystemHealthCheck : public Runnable {
 
    public:
     fnptr GetRunnablePointer();
-    RunnableSystemHealthCheck(Uart* debug_uart);
-    static void WriteToDataLogger(uint8_t measurable_id, byte encoded_message[],
-                                  uint8_t message_size);
+    RunnableSystemHealthCheck();
     static bool IsEnabled();
     static void EnableDatalogger(bool enable_logger);
-    static void Init();
 
-    static const uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
-    static const uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
     static const uint32_t kHealthCheckPeriodMillis = 1000;
 
    private:
@@ -77,14 +73,9 @@ class RunnableSystemHealthCheck : public Runnable {
                 EtlUtils::LogException(e);
                 Log_error1("Nanopb encode failed for measurable id %d", id);
             }
-            WriteToDataLogger(id, buffer, size);
+            RunnableConsoleLogger::WriteToDataLogger(id, buffer, size);
         }
     }
 };
-
-extern "C" {
-void UartPutch(Char);
-void UartFlush();
-}
 
 #endif  //  SRC_SYSTEM_RUNNABLE_SYSTEM_HEALTH_CHECK_H_

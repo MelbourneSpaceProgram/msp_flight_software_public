@@ -21,8 +21,8 @@ class PostBiosInitialiser : public Runnable {
     static void InitPayloadProcessor();
     static void InitStateManagement();
     static void InitOrientationControl();
-    static void InitSystemHealthCheck(Uart* debug_uart);
-    static void InitConsoleUartListener(Uart* debug_uart);
+    static void InitSystemHealthCheck();
+    static void InitConsoleUart();
     static void InitPreDeploymentMagnetometerPoller();
     static void InitBeacon();
     static void RunUnitTests();

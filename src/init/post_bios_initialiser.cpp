@@ -14,7 +14,6 @@
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
-#include <src/payload_processor/runnable_console_uart_listener.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/system/runnable_state_management.h>
@@ -27,6 +26,8 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/runnable_console_listener.h>
+#include <src/util/runnable_console_logger.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
@@ -168,10 +169,9 @@ void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
     pre_deployment_magnetometer_poller_task->Start();
 }
 
-void PostBiosInitialiser::InitSystemHealthCheck(Uart* debug_uart) {
-    TaskHolder* system_health_check_task =
-        new TaskHolder(4096, "SystemHealthCheck", 5,
-                       new RunnableSystemHealthCheck(debug_uart));
+void PostBiosInitialiser::InitSystemHealthCheck() {
+    TaskHolder* system_health_check_task = new TaskHolder(
+        4096, "SystemHealthCheck", 5, new RunnableSystemHealthCheck());
     system_health_check_task->Start();
 }
 
@@ -222,22 +222,33 @@ void PostBiosInitialiser::InitTimeSource() {
     time_source_task->Start();
 }
 
-void PostBiosInitialiser::InitConsoleUartListener(Uart* debug_uart) {
+void PostBiosInitialiser::InitConsoleUart() {
+    Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
+    debug_uart->SetBaudRate(Uart::kBaud115200)
+        ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
+        ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
+        ->Open();
+
     TaskHolder* console_uart_listener_task = new TaskHolder(
-        1536, "UartListener", 12, new RunnableConsoleUartListener(debug_uart));
+        console_listener_stack_size, "UartListener", 12, new RunnableConsoleListener(debug_uart));
     console_uart_listener_task->Start();
+
+    TaskHolder* console_uart_logger_task = new TaskHolder(
+        console_logger_stack_size, "UartLogger", 7, new RunnableConsoleLogger(debug_uart));
+    console_uart_logger_task->Start();
 }
 
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
-
-    RunnableSystemHealthCheck::Init();
 
     if (kDitlMode) {
         InitMemoryLogger();
     }
 
     try {
+        InitConsoleUart();
+        Log_info0("UART logger/listener started");
+
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();
@@ -260,10 +271,6 @@ void PostBiosInitialiser::PostBiosInit() {
 
         InitPayloadProcessor();
         Log_info0("Payload processor started");
-
-        Uart* debug_uart = InitDebugUart();
-        InitConsoleUartListener(debug_uart);
-        Log_info0("UART listener started");
 
         InitContinuousTransmitShutoff();
 
@@ -317,7 +324,7 @@ void PostBiosInitialiser::PostBiosInit() {
             Log_info0("Orientation control started");
         }
 
-        InitSystemHealthCheck(debug_uart);
+        InitSystemHealthCheck();
         Log_info0("System healthcheck started");
 
         Log_info0("System start up complete");
