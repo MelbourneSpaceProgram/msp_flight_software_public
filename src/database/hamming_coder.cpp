@@ -1,6 +1,22 @@
 #include <external/etl/exception.h>
 #include <src/database/hamming_coder.h>
 
+const uint32_t HammingCoder::kGenerator2dArray[4][8] = {
+    {1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 1, 0, 0, 1},
+    {0, 1, 0, 1, 0, 1, 0, 1},
+    {1, 1, 0, 1, 0, 0, 1, 0}};
+
+const uint32_t HammingCoder::kParityCheck2dArray[4][8] = {
+    {1, 0, 1, 0, 1, 0, 1, 0},
+    {0, 1, 1, 0, 0, 1, 1, 0},
+    {0, 0, 0, 1, 1, 1, 1, 0},
+    {1, 1, 1, 1, 1, 1, 1, 1}};
+const Matrix<4, 8> HammingCoder::kGeneratorMatrix(kGenerator2dArray,
+                                                  generator_data);
+const Matrix<4, 8> HammingCoder::kParityCheckMatrix(kParityCheck2dArray,
+                                                    parity_check_data);
+
 HammingEncodedByte HammingCoder::Encode(byte data) {
     HammingEncodedByte hamming_encoded_byte;
     byte nibble0, nibble1;
