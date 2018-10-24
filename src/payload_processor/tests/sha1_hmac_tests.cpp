@@ -31,7 +31,8 @@ TEST(Sha1Hmac, TestSha1HmacValid1) {
 
     // Length of the MSP packet, including the signature.
     int16_t msp_packet_length = RunnablePayloadProcessor::GetMspPacketLength(msp_packet, 13);
-    CHECK(msp_packet_length < 0);
+    CHECK(msp_packet_length >= 0);
+    CHECK(msp_packet_length == 13);
 
     // Ensure HMAC matches.
     CHECK(RunnablePayloadProcessor::CheckHmac(msp_packet, msp_packet_length));
