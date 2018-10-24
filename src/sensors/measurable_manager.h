@@ -104,7 +104,7 @@ class MeasurableManager {
     void AddBmsCurrentsMeasurable(MeasurableId id, Bms *bms);
     void AddImuGyrometerMeasurable(MeasurableId id,
                                    MPU9250MotionTracker *imu_sensor);
-    void AddImuAcceleromterMeasurable(MeasurableId id,
+    void AddImuAccelerometerMeasurable(MeasurableId id,
                                       MPU9250MotionTracker *imu_sensor);
     void AddImuTemperatureMeasurable(MeasurableId id,
                                      MPU9250MotionTracker *imu_sensor);

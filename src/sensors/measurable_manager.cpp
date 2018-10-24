@@ -175,7 +175,7 @@ void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         bus_a, 0x68, mux_a, I2cMultiplexer::kMuxChannel1);
 
     AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_1);
-    AddImuAcceleromterMeasurable(kFsImuAccel1, fs_imu_1);
+    AddImuAccelerometerMeasurable(kFsImuAccel1, fs_imu_1);
     AddImuTemperatureMeasurable(kFsImuT1, fs_imu_1);
     double initial_biases_bus_a_data[3][1];
     const Matrix initial_biases_bus_a(
@@ -193,7 +193,7 @@ void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
 
     AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
-    AddImuAcceleromterMeasurable(kFsImuAccel2, fs_imu_2);
+    AddImuAccelerometerMeasurable(kFsImuAccel2, fs_imu_2);
     AddImuTemperatureMeasurable(kFsImuT2, fs_imu_2);
     double initial_biases_bus_b_data[3][1];
     const Matrix initial_biases_bus_b(
@@ -395,7 +395,7 @@ void MeasurableManager::AddImuGyrometerMeasurable(
     measurables[id] = gyro;
 }
 
-void MeasurableManager::AddImuAcceleromterMeasurable(
+void MeasurableManager::AddImuAccelerometerMeasurable(
     MeasurableId id, MPU9250MotionTracker *imu_sensor) {
     CheckValidId(id);
     ImuAccelerometerMeasurable *accelerometer =
