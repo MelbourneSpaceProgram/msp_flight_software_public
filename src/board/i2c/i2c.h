@@ -92,6 +92,7 @@ class I2c {
 
     static GateMutexPri_Handle i2c_mutex;
     static GateMutexPri_Params mutex_params;
+    const uint8_t index;
 
    private:
     /**
@@ -130,8 +131,8 @@ class I2c {
     static void ManageI2cTimeout(I2C_Handle handle,
                                  I2C_Transaction* i2c_transaction,
                                  bool success);
+
     I2C_Params i2c_params;
-    const uint8_t index;
     I2C_Handle handle;
     static I2C_Handle I2c_busses[Board_I2CCOUNT];
     static I2C_Params I2c_params[Board_I2CCOUNT];

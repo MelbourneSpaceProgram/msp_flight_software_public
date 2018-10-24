@@ -16,16 +16,21 @@ void I2cMultiplexer::OpenChannel(MuxChannel channel) const {
         byte write_buffer = GetChannelStates();
         write_buffer |= (1 << static_cast<uint8_t>(channel));
 
-        bool success = GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
+        bool success =
+            GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1);
 
-        if (!success){
-            Log_error1("Mux failed to open channel for channel %d", channel);
+        if (!success) {
+            Log_error2("Mux failed to open channel %d on bus %d", channel,
+                       GetBus()->index);
         }
 
         byte channel_states = GetChannelStates();
 
-        if (write_buffer != channel_states){
-            Log_error3("Mux responded but channel not open (race condition?): got %d, expected %d", channel, channel_states, write_buffer);
+        if (write_buffer != channel_states) {
+            Log_error3(
+                "Mux responded but channel not open (race condition?): got %d, "
+                "expected %d on bus %d",
+                channel, channel_states, GetBus()->index);
         }
     }
 }
@@ -73,7 +78,8 @@ void I2cMultiplexer::OpenChannel(uint8_t channel_index) const {
 
 void I2cMultiplexer::CloseChannel(MuxChannel channel) const {
     if (channel == kMuxNoChannel) {
-        Log_error0("Attempted to close invalid mux channel");
+        Log_error1("Attempted to close invalid mux channel on bus %d",
+                   GetBus()->index);
     } else {
         byte write_buffer = GetChannelStates();
         write_buffer &= ~(1 << static_cast<uint8_t>(channel));
@@ -93,10 +99,12 @@ void I2cMultiplexer::CloseAllChannels() const {
 
 byte I2cMultiplexer::GetChannelStates() const {
     byte read_buffer = 0;
-    bool success = GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1);
+    bool success =
+        GetBus()->PerformReadTransaction(GetAddress(), &read_buffer, 1);
 
-    if(!success){
-        Log_error0("Unable to get channel states for mux");
+    if (!success) {
+        Log_error1("Unable to get channel states for mux on bus %d",
+                   GetBus()->index);
     }
     return read_buffer;
 }
