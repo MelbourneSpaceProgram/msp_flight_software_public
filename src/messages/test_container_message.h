@@ -11,7 +11,7 @@ class TestContainerMessage : public Message {
     uint16_t GetSerialisedSize() const;
 
    private:
-    static const uint16_t kBaseSerialisedSize = 3;
+    static constexpr uint16_t kBaseSerialisedSize = 3;
     byte base_data;
     Message *contained_message;
 };

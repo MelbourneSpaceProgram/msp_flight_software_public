@@ -13,14 +13,14 @@ typedef SDFatFS_Handle SdHandle;
 // Designed to have at most one file open at a given time, in at most one thread
 class SdCard {
    public:
-    static const byte kFileReadMode = 0x01;
-    static const byte kFileOpenExistingMode = 0x00;
-    static const byte kFileWriteMode = 0x02;
-    static const byte kFileCreateNewMode = 0x04;
-    static const byte kFileCreateAlwaysMode = 0x08;
-    static const byte kFileOpenAlwaysMode = 0x10;
-    static const byte kFileWrittenMode = 0x20;
-    static const byte kFileDirtyMode = 0x40;
+    static constexpr byte kFileReadMode = 0x01;
+    static constexpr byte kFileOpenExistingMode = 0x00;
+    static constexpr byte kFileWriteMode = 0x02;
+    static constexpr byte kFileCreateNewMode = 0x04;
+    static constexpr byte kFileCreateAlwaysMode = 0x08;
+    static constexpr byte kFileOpenAlwaysMode = 0x10;
+    static constexpr byte kFileWrittenMode = 0x20;
+    static constexpr byte kFileDirtyMode = 0x40;
 
     static SdCard *GetInstance();
     SdHandle SdOpen();
@@ -39,7 +39,7 @@ class SdCard {
    private:
     SdCard();
     static SdCard *instance;
-    static const uint8_t kDriveNum = 0;
+    static constexpr uint8_t kDriveNum = 0;
     SdHandle handle;
     // TODO(dingbenjamin): Timeout the mutex access so a task can't hog the SD
     // card

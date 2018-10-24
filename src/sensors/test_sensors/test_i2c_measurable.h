@@ -16,7 +16,7 @@ class TestI2cMeasurable : public I2cMeasurable<TestI2cReading> {
 
    private:
     TestI2cReading data;
-    static const uint8_t kTestI2cAddress = 0x00;
+    static constexpr uint8_t kTestI2cAddress = 0x00;
 };
 
 #endif  //  SRC_SENSORS_TEST_SENSORS_TEST_I2C_SENSOR_H_

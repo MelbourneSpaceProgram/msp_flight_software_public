@@ -92,18 +92,18 @@ class BeaconPayload : public TransmitPayload {
     uint16_t sw_mcu_reset_count1;
     char* comms_outreach;  // TODO(dingbenjamin): Convert to etl::string
 
-    static const uint8_t kFsHealthFlagByteCount = 20;
-    static const uint8_t kFsFsAttitudeFlagByteCount = 2;
-    static const uint8_t kSwFsLocationFloatCount = 2;
-    static const uint8_t kOutreachMessageSize = 27;
+    static constexpr uint8_t kFsHealthFlagByteCount = 20;
+    static constexpr uint8_t kFsFsAttitudeFlagByteCount = 2;
+    static constexpr uint8_t kSwFsLocationFloatCount = 2;
+    static constexpr uint8_t kOutreachMessageSize = 27;
 
-    static const uint8_t kVoltageUpperBound =
+    static constexpr uint8_t kVoltageUpperBound =
         20;  // assumed [-20, 20] value range
-    static const uint8_t kCurrentUpperBound =
+    static constexpr uint8_t kCurrentUpperBound =
         20;  // assumed [-20, 20] value range
-    static const uint8_t kTempUpperBound =
+    static constexpr uint8_t kTempUpperBound =
         128;  // assumed [-128, 128] value range
-    static const int16_t kInvalidScaled16BitValue = INT16_MIN;
+    static constexpr int16_t kInvalidScaled16BitValue = INT16_MIN;
 
     // TODO(dingbenjamin): Make these private
     static int16_t ScaleArbitraryInt16(float data, uint16_t abs_max,

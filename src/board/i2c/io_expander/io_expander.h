@@ -68,14 +68,14 @@ class I2cIoExpander {
     // Datasheet ref
     // Table 3. Command Byte
     //
-    static const uint8_t kInputPort0 = 0x00;
-    static const uint8_t kInputPort1 = 0x01;
-    static const uint8_t kOutputPort0 = 0x02;
-    static const uint8_t kOutputPort1 = 0x03;
-    static const uint8_t kPolarityInversionPort0 = 0x04;
-    static const uint8_t kPolarityInversionPort1 = 0x05;
-    static const uint8_t kConfigurationPort0 = 0x06;
-    static const uint8_t kConfigurationPort1 = 0x07;
+    static constexpr uint8_t kInputPort0 = 0x00;
+    static constexpr uint8_t kInputPort1 = 0x01;
+    static constexpr uint8_t kOutputPort0 = 0x02;
+    static constexpr uint8_t kOutputPort1 = 0x03;
+    static constexpr uint8_t kPolarityInversionPort0 = 0x04;
+    static constexpr uint8_t kPolarityInversionPort1 = 0x05;
+    static constexpr uint8_t kConfigurationPort0 = 0x06;
+    static constexpr uint8_t kConfigurationPort1 = 0x07;
 };
 
 #endif  // SRC_BOARD_I2C_IO_EXPANDER_IO_EXPANDER_H_

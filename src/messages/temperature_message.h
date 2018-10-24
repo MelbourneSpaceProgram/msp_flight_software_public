@@ -17,7 +17,7 @@ class TemperatureMessage : public RebuildableMessage {
 
    private:
     void SerialiseFrom(byte *serial_buffer);
-    static const uint16_t kSerialisedSize = 8;
+    static constexpr uint16_t kSerialisedSize = 8;
 };
 
 #endif  // SRC_MESSAGES_TEMPERATURE_MESSAGE_H_

@@ -15,7 +15,7 @@ class RunnablePreDeploymentMagnetometerPoller : public Runnable {
    private:
     static void PollMagnetometer();
 
-    static const uint16_t kSleepPeriodMillis = 1000;
+    static constexpr uint16_t kSleepPeriodMillis = 1000;
 };
 
 #endif  // SRC_ADCS_RUNNABLE_PRE_DEPLOYMENT_MAGNETOMETER_POLLER_H_

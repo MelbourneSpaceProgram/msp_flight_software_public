@@ -3,35 +3,35 @@
 
 // Console configuration (text output to CCS or Data Dashboard)
 // Please look in console_config.txt
-static const bool kVerboseUnitTests = false;
+static constexpr bool kVerboseUnitTests = false;
 
-static const bool kEpsBoardAvailable = true;
-static const bool kCdhBoardAvailable = true;
-static const bool kFsBoardAvailable = true;
-static const bool kTcomBoardAvailable = true;
-static const bool kUtilitiesBoardAvailable = true;
+static constexpr bool kEpsBoardAvailable = true;
+static constexpr bool kCdhBoardAvailable = true;
+static constexpr bool kFsBoardAvailable = true;
+static constexpr bool kTcomBoardAvailable = true;
+static constexpr bool kUtilitiesBoardAvailable = true;
 
-static const bool kXPosAvailable = true;
-static const bool kXNegAvailable = true;
-static const bool kYPosAvailable = true;
-static const bool kYNegAvailable = true;
-static const bool kZPosAvailable = true;
-static const bool kZNegAvailable = true;
+static constexpr bool kXPosAvailable = true;
+static constexpr bool kXNegAvailable = true;
+static constexpr bool kYPosAvailable = true;
+static constexpr bool kYNegAvailable = true;
+static constexpr bool kZPosAvailable = true;
+static constexpr bool kZNegAvailable = true;
 
-static const bool kLithiumFlashTestEnabled = false;
-static const bool kForceResetCommandEnabled =
+static constexpr bool kLithiumFlashTestEnabled = false;
+static constexpr bool kForceResetCommandEnabled =
     false;  // It will reset the satellite
 
 // Hardware available
-static const bool kEepromAvailable =
+static constexpr bool kEepromAvailable =
     false;  // It is actually available but there is a resource conflict with
             // the SD cards as they share the same bus
-static const bool kI2cAvailable = true;
-static const bool kSdCardAvailable = true;
-static const bool kHilAvailable = false;
-static const bool kBmsAvailable = true;
-static const bool kAntennaAvailable = false;
-static const bool kDitlMode = false;
+static constexpr bool kI2cAvailable = true;
+static constexpr bool kSdCardAvailable = true;
+static constexpr bool kHilAvailable = false;
+static constexpr bool kBmsAvailable = true;
+static constexpr bool kAntennaAvailable = false;
+static constexpr bool kDitlMode = false;
 
 // See CppUTest Guide.md in top folder for how-to. The below examples can be
 // chained together to run all but some tests, or to only run a certain set

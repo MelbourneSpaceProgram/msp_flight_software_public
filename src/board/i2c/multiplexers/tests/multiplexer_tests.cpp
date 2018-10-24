@@ -8,8 +8,8 @@
 #include <src/util/data_types.h>
 #include <xdc/runtime/Log.h>
 
-static const byte kMultiplexerAddress = 0x76;
-static const byte kTempSensorAddress = 0x1A;
+static constexpr byte kMultiplexerAddress = 0x76;
+static constexpr byte kTempSensorAddress = 0x1A;
 
 TEST_GROUP(Multiplexer) {
     void setup() {

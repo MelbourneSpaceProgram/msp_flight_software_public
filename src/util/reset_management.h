@@ -6,8 +6,8 @@
 
 class ResetManagement {
    public:
-    static const uint32_t kResetDataLength = 2;
-    static const uint32_t kResetHasOccurred = 77;  // arbitrary value
+    static constexpr uint32_t kResetDataLength = 2;
+    static constexpr uint32_t kResetHasOccurred = 77;  // arbitrary value
 
     static void ReadResetDataFromFlash(
         etl::array<uint32_t, kResetDataLength>& buffer);
@@ -17,16 +17,16 @@ class ResetManagement {
     static void SetResetFlag(uint32_t reset_flag);
 
     // reset 'messages'
-    static const uint32_t kUnitTestsComplete = 1;
-    static const uint32_t kOrbitComplete = 2;
-    static const uint32_t kForceResetCommand = 3;
+    static constexpr uint32_t kUnitTestsComplete = 1;
+    static constexpr uint32_t kOrbitComplete = 2;
+    static constexpr uint32_t kForceResetCommand = 3;
 
     // reset data array indexes
-    static const uint32_t kResetHasOccurredIndex = 0;
-    static const uint32_t kResetFlagIndex = 1;
+    static constexpr uint32_t kResetHasOccurredIndex = 0;
+    static constexpr uint32_t kResetFlagIndex = 1;
 
    private:
-    static const uint32_t kResetDataAddress =
+    static constexpr uint32_t kResetDataAddress =
         0xf0000;  // specified by memory section partitioning in linker.cmd
 };
 

@@ -4,7 +4,7 @@
 // Prepend 0x to each contiguous pair of chars (representing a single hex
 // value), to return a hex formatted string.
 std::string StringHex::StringToHex(const std::string& input) {
-    static const char* const lut = "0123456789abcdef";
+    static constexpr char* const lut = "0123456789abcdef";
     size_t len = input.length();
 
     if (len & 1) {

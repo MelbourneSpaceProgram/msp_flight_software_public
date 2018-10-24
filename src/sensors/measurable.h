@@ -17,7 +17,7 @@ class Measurable {
     void NotifyObservers();
 
    private:
-    static const uint8_t kMaxObservers = 3;
+    static constexpr uint8_t kMaxObservers = 3;
     etl::vector<Observer*, kMaxObservers> observers;
     bool new_reading;
 };

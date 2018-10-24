@@ -116,7 +116,7 @@ class MeasurableManager {
     void CheckValidId(MeasurableId id);
 
     static MeasurableManager *instance;
-    static const uint16_t kMaxMeasurables = 400;
+    static constexpr uint16_t kMaxMeasurables = 400;
 
     const I2c *bus_a;
     const I2c *bus_b;

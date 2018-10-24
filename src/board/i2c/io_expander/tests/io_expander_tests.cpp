@@ -6,7 +6,7 @@
 #include <src/config/unit_tests.h>
 #include <src/util/data_types.h>
 
-static const byte kIoExpanderAddress = 0x22;
+static constexpr byte kIoExpanderAddress = 0x22;
 
 TEST_GROUP(IoExpander) {
     void setup() {

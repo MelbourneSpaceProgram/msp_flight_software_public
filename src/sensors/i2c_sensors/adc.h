@@ -94,52 +94,52 @@ class Adc : public I2cDevice {
     bool SetAdcGainAmplifierFullScaleRange();
 
    private:
-    static const uint8_t kAdcNumInputs = 4;
-    static const uint8_t kAdcRegisterNumBits = 16;
+    static constexpr uint8_t kAdcNumInputs = 4;
+    static constexpr uint8_t kAdcRegisterNumBits = 16;
 
     // Default values for initialisation on startup
-    static const AdcOperationalStatus kAdcDefaultOperationalStatus =
+    static constexpr AdcOperationalStatus kAdcDefaultOperationalStatus =
         kAdcNoConversion;
-    static const AdcMuxMode kAdcDefaultMuxMode = kAdcP0NGnd;
-    static const AdcGainAmplifierLevel kAdcDefaultGainAmplifierLevel =
+    static constexpr AdcMuxMode kAdcDefaultMuxMode = kAdcP0NGnd;
+    static constexpr AdcGainAmplifierLevel kAdcDefaultGainAmplifierLevel =
         kAdc2v048;
-    static const AdcOperatingMode kAdcDefaultOperatingMode = kAdcSingleShot;
-    static const AdcDataRate kAdcDefaultDataRate = kAdc860Sps;
-    static const AdcComparatorMode kAdcDefaultComparatorMode =
+    static constexpr AdcOperatingMode kAdcDefaultOperatingMode = kAdcSingleShot;
+    static constexpr AdcDataRate kAdcDefaultDataRate = kAdc860Sps;
+    static constexpr AdcComparatorMode kAdcDefaultComparatorMode =
         kAdcTraditionalComparator;
-    static const AdcComparatorPolarity kAdcDefaultComparatorPolarity =
+    static constexpr AdcComparatorPolarity kAdcDefaultComparatorPolarity =
         kAdcActiveLow;
-    static const AdcLatchingComparatorMode kAdcDefaultLatchingComparator =
+    static constexpr AdcLatchingComparatorMode kAdcDefaultLatchingComparator =
         kAdcNonLatching;
-    static const AdcComparatorQueueMode kAdcDefaultComparatorQueue =
+    static constexpr AdcComparatorQueueMode kAdcDefaultComparatorQueue =
         kAdcDisableComparatorAlertHiZ;
 
     // Amounts to shift bits to store states in the configuration register.
-    static const uint8_t kAdcOperationalStatusBitShift = 7;
-    static const uint8_t kAdcInputStateBitShift = 4;
-    static const uint8_t kAdcGainAmplifierBitShift = 1;
-    static const uint8_t kAdcOperatingModeBitShift = 0;
-    static const uint8_t kAdcDataRateBitShift = 7;
-    static const uint8_t kAdcComparatorModeBitShift = 4;
-    static const uint8_t kAdcComparatorPolarityBitShift = 3;
-    static const uint8_t kAdcLatchingComparatorBitShift = 2;
-    static const uint8_t kAdcComparatorQueueBitShift = 0;
+    static constexpr uint8_t kAdcOperationalStatusBitShift = 7;
+    static constexpr uint8_t kAdcInputStateBitShift = 4;
+    static constexpr uint8_t kAdcGainAmplifierBitShift = 1;
+    static constexpr uint8_t kAdcOperatingModeBitShift = 0;
+    static constexpr uint8_t kAdcDataRateBitShift = 7;
+    static constexpr uint8_t kAdcComparatorModeBitShift = 4;
+    static constexpr uint8_t kAdcComparatorPolarityBitShift = 3;
+    static constexpr uint8_t kAdcLatchingComparatorBitShift = 2;
+    static constexpr uint8_t kAdcComparatorQueueBitShift = 0;
 
     // Full scale voltage ranges of the gain amplifier
-    static const double kAdcVoltage6v144 = 6.144;
-    static const double kAdcVoltage4v096 = 4.096;
-    static const double kAdcVoltage2v048 = 2.048;
-    static const double kAdcVoltage1v024 = 1.024;
-    static const double kAdcVoltage0v512 = 0.512;
-    static const double kAdcVoltage0v256 = 0.256;
+    static constexpr double kAdcVoltage6v144 = 6.144;
+    static constexpr double kAdcVoltage4v096 = 4.096;
+    static constexpr double kAdcVoltage2v048 = 2.048;
+    static constexpr double kAdcVoltage1v024 = 1.024;
+    static constexpr double kAdcVoltage0v512 = 0.512;
+    static constexpr double kAdcVoltage0v256 = 0.256;
 
     static const double AdcGainAmplifierFullScaleRangeVoltages[6];
 
     // Locations of internal ADC registers
-    static const byte kAdcConversionRegisterLocation = 0x00;
-    static const byte kAdcConfigurationRegisterLocation = 0x01;
-    static const byte kAdcLoThreshRegisterLocation = 0x02;
-    static const byte kAdcHiThreshRegisterLocation = 0x03;
+    static constexpr byte kAdcConversionRegisterLocation = 0x00;
+    static constexpr byte kAdcConfigurationRegisterLocation = 0x01;
+    static constexpr byte kAdcLoThreshRegisterLocation = 0x02;
+    static constexpr byte kAdcHiThreshRegisterLocation = 0x03;
 
     // States of the configuration variables on the ADC
     AdcOperationalStatus operational_status;

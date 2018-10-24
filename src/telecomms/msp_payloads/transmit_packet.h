@@ -12,7 +12,7 @@ class TransmitPacket : public Message {
     uint16_t GetSerialisedSize() const;
 
    private:
-    static const uint8_t kMspHeaderSize = 4;
+    static constexpr uint8_t kMspHeaderSize = 4;
     TransmitPayload *transmit_payload;
     uint8_t tx_count;
     uint8_t rx_count;

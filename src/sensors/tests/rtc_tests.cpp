@@ -6,8 +6,8 @@
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <time.h>
 
-static const byte kMultiplexerAddress = 0x76;
-static const byte kTestRtcAddr = 0x69;
+static constexpr byte kMultiplexerAddress = 0x76;
+static constexpr byte kTestRtcAddr = 0x69;
 
 TEST_GROUP(Rtc) {
     void setup() {

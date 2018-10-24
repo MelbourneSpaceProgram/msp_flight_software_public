@@ -20,8 +20,8 @@ class Spi {
                                  uint32_t write_buffer_length) const;
 
    private:
-    static const uint32_t kTimeoutMilliSeconds = 500;
-    static const uint32_t kSpiIndex = NVM;
+    static constexpr uint32_t kTimeoutMilliSeconds = 500;
+    static constexpr uint32_t kSpiIndex = NVM;
 
     Spi();
     Spi(const Spi &);

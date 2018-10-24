@@ -17,7 +17,7 @@ class TelemetryQueryCommand : public LithiumResponseCommand<LithiumTelemetry> {
     static bool CheckValidTelemetry(LithiumTelemetry telemetry);
 
    private:
-    static const uint16_t kSerialisedTelemetrySize = 16;
+    static constexpr uint16_t kSerialisedTelemetrySize = 16;
     uint16_t TwoBytesToUint16(byte input[2]);
 };
 

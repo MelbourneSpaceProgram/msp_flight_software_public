@@ -10,7 +10,7 @@ class Ina212 : public CurrentSensor {
 
    private:
     double ConvertVoltageToCurrent(double voltage_reading);
-    static const double kIna212Gain = 1000;
+    static constexpr double kIna212Gain = 1000;
     double rs_resistance;
     double v_ref;
 };

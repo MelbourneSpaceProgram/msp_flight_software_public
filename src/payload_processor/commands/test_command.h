@@ -8,11 +8,11 @@ class TestCommand : public Command {
    public:
     TestCommand(byte* payload);
     bool ExecuteCommand();
-    static const byte kTestValue1 = 0xFF;
-    static const byte kTestValue2 = 0xA5;
+    static constexpr byte kTestValue1 = 0xFF;
+    static constexpr byte kTestValue2 = 0xA5;
 
    private:
-    static const uint8_t kEchoCommandArgumentLength = 2;
+    static constexpr uint8_t kEchoCommandArgumentLength = 2;
     etl::array<byte, kEchoCommandArgumentLength> command_arguments;
 };
 

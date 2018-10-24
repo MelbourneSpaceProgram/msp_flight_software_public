@@ -23,7 +23,7 @@ class AntennaMessage : public Message {
     bool IsHeatersOn() const;
 
    private:
-    static const uint16_t kSerialisedSize = 8;
+    static constexpr uint16_t kSerialisedSize = 8;
 
     bool door_one_open;
     bool door_two_open;

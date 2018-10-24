@@ -19,20 +19,20 @@ class Bms : public I2cDevice {
     // TEST a friend class
    private:
     /* bit masks */
-    static const uint16_t kTelemetryValidBitMask = 0x0001;
-    static const uint16_t kConstantVoltageBitMask = 0x0001;
-    static const uint16_t kConstantCurrentBitMask = 0x0002;
-    static const uint16_t kIinLimitActiveBitMask = 0x0004;
-    static const uint16_t kVinLimitActiveBitMask = 0x0008;
-    static const uint16_t kChargeStatusBitMask = 0x000F;
-    static const uint16_t kChargeStatusNotCharging = 0x0000;
-    static const uint16_t kChargeEnableBitMask = 0x2000;
-    static const uint16_t kJeitaRegionBitMask = 0x0007;
-    static const uint16_t kChargerConfigBitMask = 0x0007;
-    static const uint16_t kVchargeSettingBitMask = 0x001F;
-    static const uint16_t kIchargeTargetBitMask = 0x000F;
-    static const uint16_t kUpperByteBitMask = 0xFF00;
-    static const uint16_t kLowerByteBitMask = 0x00FF;
+    static constexpr uint16_t kTelemetryValidBitMask = 0x0001;
+    static constexpr uint16_t kConstantVoltageBitMask = 0x0001;
+    static constexpr uint16_t kConstantCurrentBitMask = 0x0002;
+    static constexpr uint16_t kIinLimitActiveBitMask = 0x0004;
+    static constexpr uint16_t kVinLimitActiveBitMask = 0x0008;
+    static constexpr uint16_t kChargeStatusBitMask = 0x000F;
+    static constexpr uint16_t kChargeStatusNotCharging = 0x0000;
+    static constexpr uint16_t kChargeEnableBitMask = 0x2000;
+    static constexpr uint16_t kJeitaRegionBitMask = 0x0007;
+    static constexpr uint16_t kChargerConfigBitMask = 0x0007;
+    static constexpr uint16_t kVchargeSettingBitMask = 0x001F;
+    static constexpr uint16_t kIchargeTargetBitMask = 0x000F;
+    static constexpr uint16_t kUpperByteBitMask = 0xFF00;
+    static constexpr uint16_t kLowerByteBitMask = 0x00FF;
 
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
@@ -77,42 +77,42 @@ class Bms : public I2cDevice {
     int32_t GetQCountDelta();
 
     /* Coulomb counting constants */
-    static const uint16_t kQCountFullCharge = 60000;
-    static const uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
-    static const uint16_t kQCountPrescaleFactor = 28;
+    static constexpr uint16_t kQCountFullCharge = 60000;
+    static constexpr uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
+    static constexpr uint16_t kQCountPrescaleFactor = 28;
 
     /* initial configuration values */
-    static const byte kChargerConfigBitsConfigurationValue =
+    static constexpr byte kChargerConfigBitsConfigurationValue =
         0x05;  // assert en_jeita and en_c_over_x_term
-    static const byte kCOverXThresholdConfigurationLBValue = 0x88;
-    static const byte kCOverXThresholdConfigurationUBValue = 0x00;
-    static const byte kJeitaT1ConfigurationLBValue = 0x07;
-    static const byte kJeitaT1ConfigurationUBValue = 0x4B;
-    static const byte kVchargeJeita5to6ConfigurationLBValue = 0x73;
-    static const byte kVchargeJeita5to6ConfigurationUBValue = 0x02;
-    static const byte kVchargeJeita2to4ConfigurationLBValue = 0x73;
-    static const byte kVchargeJeita2to4ConfigurationUBValue = 0x4E;
-    static const byte kMaxCvTimeConfigurationValue = 0x00;
-    static const byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
-    static const byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
-    static const byte kQCountRegisterConfigurationLBValue =
+    static constexpr byte kCOverXThresholdConfigurationLBValue = 0x88;
+    static constexpr byte kCOverXThresholdConfigurationUBValue = 0x00;
+    static constexpr byte kJeitaT1ConfigurationLBValue = 0x07;
+    static constexpr byte kJeitaT1ConfigurationUBValue = 0x4B;
+    static constexpr byte kVchargeJeita5to6ConfigurationLBValue = 0x73;
+    static constexpr byte kVchargeJeita5to6ConfigurationUBValue = 0x02;
+    static constexpr byte kVchargeJeita2to4ConfigurationLBValue = 0x73;
+    static constexpr byte kVchargeJeita2to4ConfigurationUBValue = 0x4E;
+    static constexpr byte kMaxCvTimeConfigurationValue = 0x00;
+    static constexpr byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
+    static constexpr byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
+    static constexpr byte kQCountRegisterConfigurationLBValue =
         (Bms::kQCountInitial & kLowerByteBitMask);
-    static const byte kQCountRegisterConfigurationUBValue =
+    static constexpr byte kQCountRegisterConfigurationUBValue =
         (Bms::kQCountInitial & kUpperByteBitMask) >> 8;
-    static const byte kConfigBitsConfigurationLBValue = 0x04;
-    static const byte kConfigBitsConfigurationUBValue = 0x00;
-    static const byte kVchargeSettingConfigurationValue = 0x13;
-    static const byte kIChargeTargetConfigurationValue = 0x07;
-    static const byte kEmptyBufferValue = 0x00;
-    static const byte kRechargeThresholdConfigurationLBValue = 0x0C;
-    static const byte kRechargeThresholdConfigurationUBValue = 0x43;
+    static constexpr byte kConfigBitsConfigurationLBValue = 0x04;
+    static constexpr byte kConfigBitsConfigurationUBValue = 0x00;
+    static constexpr byte kVchargeSettingConfigurationValue = 0x13;
+    static constexpr byte kIChargeTargetConfigurationValue = 0x07;
+    static constexpr byte kEmptyBufferValue = 0x00;
+    static constexpr byte kRechargeThresholdConfigurationLBValue = 0x0C;
+    static constexpr byte kRechargeThresholdConfigurationUBValue = 0x43;
 
     // Direct Energy Transfer mode
-    static const byte kIchargeJeita5to6ConfigurationLBValue = 0x21;
-    static const byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
-    static const byte kIchargeJeita2to4ConfigurationLBValue = 0x21;
-    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x04;
-    static const byte kVinUvclSettingConfigurationValue = 0x00;
+    static constexpr byte kIchargeJeita5to6ConfigurationLBValue = 0x21;
+    static constexpr byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
+    static constexpr byte kIchargeJeita2to4ConfigurationLBValue = 0x21;
+    static constexpr byte kIchargeJeita2to4ConfigurationUBValue = 0x04;
+    static constexpr byte kVinUvclSettingConfigurationValue = 0x00;
 
    private:
     /* conversion methods */
@@ -157,63 +157,63 @@ class Bms : public I2cDevice {
     bool first_charge_complete;
 
     /* register locations */
-    static const byte kQCountPrescaleFactorRegisterLocation = 0x12;
-    static const byte kQCountRegisterLocation = 0x13;
-    static const byte kConfigBitsRegisterLocation = 0x14;
-    static const byte kVinUvclSettingRegisterLocation = 0x16;
-    static const byte kIchargeTargetRegisterLocation = 0x1A;
-    static const byte kVchargeSettingRegisterLocation = 0x1B;
-    static const byte kCOverXThresholdRegisterLocation = 0x1C;
-    static const byte kMaxCvTimeRegisterLocation = 0x1D;
-    static const byte kJeitaT1RegisterLocation = 0x1F;
-    static const byte kVchargeJeita5to6RegisterLocation = 0x25;
-    static const byte kVchargeJeita2to4RegisterLocation = 0x26;
-    static const byte kIchargeJeita5to6RegisterLocation = 0x27;
-    static const byte kIchargeJeita2to4RegisterLocation = 0x28;
-    static const byte kChargerConfigBitsRegisterLocation = 0x29;
-    static const byte kRechargeThresholdRegisterLocation = 0x2E;
-    static const byte kChargeStatusRegisterLocation = 0x35;
-    static const byte kSystemStatusRegisterLocation = 0x39;
-    static const byte kVbatRegisterLocation = 0x3A;
-    static const byte kVinRegisterLocation = 0x3B;
-    static const byte kVsysRegisterLocation = 0x3C;
-    static const byte kIbatRegisterLocation = 0x3D;
-    static const byte kIinRegisterLocation = 0x3E;
-    static const byte kDieTempRegisterLocation = 0x3F;
-    static const byte kNtcRatioRegisterLocation = 0x40;
-    static const byte kJeitaRegionRegisterLocation = 0x42;
-    static const byte kChemCellsRegisterLocation = 0x43;
-    static const byte kMeasSysValidRegisterLocation = 0x4A;
+    static constexpr byte kQCountPrescaleFactorRegisterLocation = 0x12;
+    static constexpr byte kQCountRegisterLocation = 0x13;
+    static constexpr byte kConfigBitsRegisterLocation = 0x14;
+    static constexpr byte kVinUvclSettingRegisterLocation = 0x16;
+    static constexpr byte kIchargeTargetRegisterLocation = 0x1A;
+    static constexpr byte kVchargeSettingRegisterLocation = 0x1B;
+    static constexpr byte kCOverXThresholdRegisterLocation = 0x1C;
+    static constexpr byte kMaxCvTimeRegisterLocation = 0x1D;
+    static constexpr byte kJeitaT1RegisterLocation = 0x1F;
+    static constexpr byte kVchargeJeita5to6RegisterLocation = 0x25;
+    static constexpr byte kVchargeJeita2to4RegisterLocation = 0x26;
+    static constexpr byte kIchargeJeita5to6RegisterLocation = 0x27;
+    static constexpr byte kIchargeJeita2to4RegisterLocation = 0x28;
+    static constexpr byte kChargerConfigBitsRegisterLocation = 0x29;
+    static constexpr byte kRechargeThresholdRegisterLocation = 0x2E;
+    static constexpr byte kChargeStatusRegisterLocation = 0x35;
+    static constexpr byte kSystemStatusRegisterLocation = 0x39;
+    static constexpr byte kVbatRegisterLocation = 0x3A;
+    static constexpr byte kVinRegisterLocation = 0x3B;
+    static constexpr byte kVsysRegisterLocation = 0x3C;
+    static constexpr byte kIbatRegisterLocation = 0x3D;
+    static constexpr byte kIinRegisterLocation = 0x3E;
+    static constexpr byte kDieTempRegisterLocation = 0x3F;
+    static constexpr byte kNtcRatioRegisterLocation = 0x40;
+    static constexpr byte kJeitaRegionRegisterLocation = 0x42;
+    static constexpr byte kChemCellsRegisterLocation = 0x43;
+    static constexpr byte kMeasSysValidRegisterLocation = 0x4A;
 
     /* conversion constants */
-    static const double kVchargeDivisionFactor = 80.0;
-    static const double kVchargeAdditionFactor = 3.4125;
-    static const double kIchargeAdditionFactor = 1.0;
-    static const double kIchargeMultiplicationFactor = 0.125;
-    static const uint16_t kDieTempOffset = 12010;
-    static const double kDieTempConversionFactor = 45.6;
-    static const double kNtcBiasResistance = 10000.0;
-    static const double kNtcBitWeight = 21845.0;
-    static const double kConversionCoefficientA = 0.00084220;
-    static const double kConversionCoefficientB = 0.00026265;
-    static const double kConversionCoefficientC = 0.00000011875;
-    static const double kKelvinToCelciusOffset = 273.15;
+    static constexpr double kVchargeDivisionFactor = 80.0;
+    static constexpr double kVchargeAdditionFactor = 3.4125;
+    static constexpr double kIchargeAdditionFactor = 1.0;
+    static constexpr double kIchargeMultiplicationFactor = 0.125;
+    static constexpr uint16_t kDieTempOffset = 12010;
+    static constexpr double kDieTempConversionFactor = 45.6;
+    static constexpr double kNtcBiasResistance = 10000.0;
+    static constexpr double kNtcBitWeight = 21845.0;
+    static constexpr double kConversionCoefficientA = 0.00084220;
+    static constexpr double kConversionCoefficientB = 0.00026265;
+    static constexpr double kConversionCoefficientC = 0.00000011875;
+    static constexpr double kKelvinToCelciusOffset = 273.15;
 
     // miscellaneous constants
-    static const byte kChargerStateRegisterLocation = 0x34;
-    static const byte kChargerConfigRegisterLocation = 0x29;
-    static const byte kConfigurationBitsRegisterLocation = 0x14;
+    static constexpr byte kChargerStateRegisterLocation = 0x34;
+    static constexpr byte kChargerConfigRegisterLocation = 0x29;
+    static constexpr byte kConfigurationBitsRegisterLocation = 0x14;
 
     static constexpr double kRSnsbResistance = 0.033;
-    static const double kRSnsiResistance = 0.002;
-    static const double kLithiumBatteryVoltageConversionFactor = 0.000192264;
-    static const double kBatteryCurrentConversionFactor =
+    static constexpr double kRSnsiResistance = 0.002;
+    static constexpr double kLithiumBatteryVoltageConversionFactor = 0.000192264;
+    static constexpr double kBatteryCurrentConversionFactor =
         0.00000146487 / kRSnsbResistance;
-    static const double kSystemVoltageConversionFactor = 0.001648;
-    static const double kInputVoltageConversionFactor = 0.001648;
-    static const double kInputCurrentConversionFactor =
+    static constexpr double kSystemVoltageConversionFactor = 0.001648;
+    static constexpr double kInputVoltageConversionFactor = 0.001648;
+    static constexpr double kInputCurrentConversionFactor =
         0.00000146487 / kRSnsbResistance;
-    static const double kRechargeThresholdConversionFactor = 0.000192264;
+    static constexpr double kRechargeThresholdConversionFactor = 0.000192264;
 };
 
 #endif  // SRC_BOARD_I2C_BMS_BMS_H_

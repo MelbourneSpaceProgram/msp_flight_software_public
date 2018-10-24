@@ -7,7 +7,7 @@
 
 class LithiumMd5 : public Message {
    public:
-    static const uint8_t kNumMd5Bytes = 16;
+    static constexpr uint8_t kNumMd5Bytes = 16;
 
     LithiumMd5(etl::array<byte, kNumMd5Bytes>* md5_bytes);
     SerialisedMessage SerialiseTo(byte* serial_buffer) const;

@@ -16,7 +16,7 @@ class RunnableConsoleListener : public Runnable {
     static bool ReadUart(byte* read_buffer, uint8_t size);
     static Uart* debug_uart;
 
-    static const uint8_t kConsoleUartHeaderSize = 5;
+    static constexpr uint8_t kConsoleUartHeaderSize = 5;
 };
 
 #endif  // SRC_PAYLOAD_PROCESSOR_RUNNABLE_CONSOLE_LISTENER_H_

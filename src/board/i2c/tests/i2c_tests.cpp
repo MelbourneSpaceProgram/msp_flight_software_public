@@ -3,7 +3,7 @@
 #include <src/board/i2c/i2c.h>
 #include <src/config/unit_tests.h>
 
-static const byte kTestHardwareAddr = 0x76;
+static constexpr byte kTestHardwareAddr = 0x76;
 
 // These tests require the CDH I2C multiplexer to be powered on. It is usually
 // powered on in the I2c::InitBusses call.

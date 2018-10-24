@@ -19,25 +19,25 @@ class Lithium {
                                                      // transmission rate
 
    public:
-    static const uint8_t kLithiumHeaderSize = 8;
-    static const uint8_t kLithiumTailSize = 2;
-    static const uint8_t kLithiumSyncSize = 2;
+    static constexpr uint8_t kLithiumHeaderSize = 8;
+    static constexpr uint8_t kLithiumTailSize = 2;
+    static constexpr uint8_t kLithiumSyncSize = 2;
 
     // TODO(dingbenjamin): Reduce and tighten bounds on max received size
-    static const uint16_t kMaxOutgoingCommandSize = 300;
-    static const uint16_t kMaxReceivedUartSize = 310;
-    static const uint16_t kMaxReceivedUplinkSize =
+    static constexpr uint16_t kMaxOutgoingCommandSize = 300;
+    static constexpr uint16_t kMaxReceivedUartSize = 310;
+    static constexpr uint16_t kMaxReceivedUplinkSize =
         kMaxReceivedUartSize - kLithiumHeaderSize - kLithiumTailSize;
-    static const uint16_t kMaxReceivedLithiumResponseSize = 50;
-    static const uint16_t kReceivedPacketSize = 265;
-    static const uint16_t kMaxDownlinkSize = 255;
+    static constexpr uint16_t kMaxReceivedLithiumResponseSize = 50;
+    static constexpr uint16_t kReceivedPacketSize = 265;
+    static constexpr uint16_t kMaxDownlinkSize = 255;
 
-    static const byte kSyncCharOne = 0x48;
-    static const byte kSyncCharTwo = 0x65;
-    static const byte kDirectionIntoLithium = 0x10;
-    static const byte kDirectionOutOfLithium = 0x20;
+    static constexpr byte kSyncCharOne = 0x48;
+    static constexpr byte kSyncCharTwo = 0x65;
+    static constexpr byte kDirectionIntoLithium = 0x10;
+    static constexpr byte kDirectionOutOfLithium = 0x20;
 
-    static const uint16_t kInterCommandTimeMilli = 250;
+    static constexpr uint16_t kInterCommandTimeMilli = 250;
 
     static Lithium* GetInstance();  // Initial call is not thread safe
     static uint8_t GetTxCounter();
@@ -54,10 +54,10 @@ class Lithium {
 
    private:
     static Lithium* instance;
-    static const uint32_t kUartReadTimeoutMilli = 300;
-    static const uint32_t kUartWriteTimeoutMilli = 500;
-    static const uint32_t kWaitForAckMilli = 3000;
-    static const uint32_t kWaitForReplyPayloadMilli = 5000;
+    static constexpr uint32_t kUartReadTimeoutMilli = 300;
+    static constexpr uint32_t kUartWriteTimeoutMilli = 500;
+    static constexpr uint32_t kWaitForAckMilli = 3000;
+    static constexpr uint32_t kWaitForReplyPayloadMilli = 5000;
 
     static uint8_t tx_count;
     static uint8_t rx_count;
@@ -72,7 +72,7 @@ class Lithium {
     Mailbox_Handle command_response_mailbox_handle;
     // TODO(wschuetz): Review the number of the payloads that can be stored in
     // the mailbox at any one time.
-    static const uint8_t kMaxNumberOfPayloads = 2;
+    static constexpr uint8_t kMaxNumberOfPayloads = 2;
 
     Uart uart;
 

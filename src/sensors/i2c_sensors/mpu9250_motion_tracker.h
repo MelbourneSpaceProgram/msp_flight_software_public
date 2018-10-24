@@ -95,9 +95,9 @@ class MPU9250MotionTracker : public I2cDevice {
     byte magno_y_adjust;
     byte magno_z_adjust;
     int16_t magnetometer_measurement_range;
-    static const int16_t k14BitOutputMeasurementRange = 8190;
-    static const int16_t k16BitOutputMeasurementRange = 32760;
-    static const int16_t kMaxMeasurableFluxDensity = 4912;
+    static constexpr int16_t k14BitOutputMeasurementRange = 8190;
+    static constexpr int16_t k16BitOutputMeasurementRange = 32760;
+    static constexpr int16_t kMaxMeasurableFluxDensity = 4912;
 
     // methods for converting byte readings to values in SI units
     double DecodeGyroReadingToSI(etl::array<byte, 2> two_byte_gyro_reading);
@@ -114,55 +114,55 @@ class MPU9250MotionTracker : public I2cDevice {
                                          byte magno_adjust_value);
 
     // temperature sensor constants from data sheet
-    static const int16_t kMaxOperatingTemp = 85;
-    static const int16_t kMinOperatingTemp = -40;
-    static const double kTempSensitivity = 333.87;  // LSBs per degree Celsius
-    static const byte kRoomTempOffset = 21;
+    static constexpr int16_t kMaxOperatingTemp = 85;
+    static constexpr int16_t kMinOperatingTemp = -40;
+    static constexpr double kTempSensitivity = 333.87;  // LSBs per degree Celsius
+    static constexpr byte kRoomTempOffset = 21;
 
     // magnetometer constants
-    static const byte kInternalMagnetometerAddress = 12;
-    static const byte kMagnetometerOverflowBitMask = 0x08;
+    static constexpr byte kInternalMagnetometerAddress = 12;
+    static constexpr byte kMagnetometerOverflowBitMask = 0x08;
 
     // register locations of the gyroscope and accelerometer configuration
-    static const byte kGyroConfigRegister = 0x1b;
-    static const byte kAccelConfigRegister1 = 0x1c;
-    static const byte kAccelConfigRegister2 = 0x1d;
+    static constexpr byte kGyroConfigRegister = 0x1b;
+    static constexpr byte kAccelConfigRegister1 = 0x1c;
+    static constexpr byte kAccelConfigRegister2 = 0x1d;
 
     // register location of the bypass enable register
-    static const uint8_t kBypassEnable = 0x37;
+    static constexpr uint8_t kBypassEnable = 0x37;
 
     // register locations of accelerometer x, y, z readings
-    static const uint8_t kAccelXOutHigh = 0x3b;
-    static const uint8_t kAccelXOutLow = 0x3c;
-    static const uint8_t kAccelYOutHigh = 0x3d;
-    static const uint8_t kAccelYOutLow = 0x3e;
-    static const uint8_t kAccelZOutHigh = 0x3f;
-    static const uint8_t kAccelZOutLow = 0x40;
+    static constexpr uint8_t kAccelXOutHigh = 0x3b;
+    static constexpr uint8_t kAccelXOutLow = 0x3c;
+    static constexpr uint8_t kAccelYOutHigh = 0x3d;
+    static constexpr uint8_t kAccelYOutLow = 0x3e;
+    static constexpr uint8_t kAccelZOutHigh = 0x3f;
+    static constexpr uint8_t kAccelZOutLow = 0x40;
 
     // register locations of temperature readings
-    static const uint8_t kTempOutHigh = 0x41;
-    static const uint8_t kTempOutLow = 0x42;
+    static constexpr uint8_t kTempOutHigh = 0x41;
+    static constexpr uint8_t kTempOutLow = 0x42;
 
     // register locations of gyroscope x, y, z readings
-    static const uint8_t kGyroXOutHigh = 0x43;
-    static const uint8_t kGyroXOutLow = 0x44;
-    static const uint8_t kGyroYOutHigh = 0x45;
-    static const uint8_t kGyroYOutLow = 0x46;
-    static const uint8_t kGyroZOutHigh = 0x47;
-    static const uint8_t kGyroZOutLow = 0x48;
+    static constexpr uint8_t kGyroXOutHigh = 0x43;
+    static constexpr uint8_t kGyroXOutLow = 0x44;
+    static constexpr uint8_t kGyroYOutHigh = 0x45;
+    static constexpr uint8_t kGyroYOutLow = 0x46;
+    static constexpr uint8_t kGyroZOutHigh = 0x47;
+    static constexpr uint8_t kGyroZOutLow = 0x48;
 
     // magnetometer register locations of magnetometer readings
-    static const uint8_t kExtMagnoXOutHigh = 0x03;
-    static const uint8_t kExtMagnoXOutLow = 0x04;
-    static const uint8_t kExtMagnoYOutHigh = 0x05;
-    static const uint8_t kExtMagnoYOutLow = 0x06;
-    static const uint8_t kExtMagnoZOutHigh = 0x07;
-    static const uint8_t kExtMagnoZOutLow = 0x08;
+    static constexpr uint8_t kExtMagnoXOutHigh = 0x03;
+    static constexpr uint8_t kExtMagnoXOutLow = 0x04;
+    static constexpr uint8_t kExtMagnoYOutHigh = 0x05;
+    static constexpr uint8_t kExtMagnoYOutLow = 0x06;
+    static constexpr uint8_t kExtMagnoZOutHigh = 0x07;
+    static constexpr uint8_t kExtMagnoZOutLow = 0x08;
 
     // magnetometer register locations of the sensitivity adjustment values
-    static const uint8_t kMagnoAdjustX = 0x10;
-    static const uint8_t kMagnoAdjustY = 0x11;
-    static const uint8_t kMagnoAdjustZ = 0x12;
+    static constexpr uint8_t kMagnoAdjustX = 0x10;
+    static constexpr uint8_t kMagnoAdjustY = 0x11;
+    static constexpr uint8_t kMagnoAdjustZ = 0x12;
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_MPU9250_MOTION_TRACKER_H

@@ -6,8 +6,8 @@
 #include <src/sensors/i2c_sensors/adc.h>
 
 // Address value must be changed for each ADC.
-static const byte test_adc_address = 0x48;
-static const byte kMultiplexerAddress = 0x76;
+static constexpr byte test_adc_address = 0x48;
+static constexpr byte kMultiplexerAddress = 0x76;
 
 TEST_GROUP(Adc) {
     void setup() {

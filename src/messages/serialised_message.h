@@ -6,7 +6,7 @@
 
 class SerialisedMessage {
    public:
-    static const uint16_t kMaxSerialisedSize = 300;
+    static constexpr uint16_t kMaxSerialisedSize = 300;
     SerialisedMessage(uint16_t size, byte* message);
     byte* GetBuffer() const;
     uint16_t GetSize() const;

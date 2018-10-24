@@ -364,7 +364,7 @@ class CircularBufferNanopb {
                (byte_array[2] << (8 * 1)) + (byte_array[3]);
     }
 
-    static const uint8_t kEncodedHeaderSize = 2 * 4 * sizeof(uint32_t);
+    static constexpr uint8_t kEncodedHeaderSize = 2 * 4 * sizeof(uint32_t);
 };
 
 #endif  // SRC_DATABASE_CIRCULAR_BUFFER_NANOPB_H_

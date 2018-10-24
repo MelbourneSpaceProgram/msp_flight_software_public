@@ -12,7 +12,7 @@ class SetConfigurationMessage : public Message {
 
    private:
     LithiumConfiguration lithium_config;
-    static const uint16_t kLithiumConfigStructSize = 34;
+    static constexpr uint16_t kLithiumConfigStructSize = 34;
 };
 
 

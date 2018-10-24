@@ -16,8 +16,8 @@ class PayloadProcessor {
    private:
     bool ParseNextCommandAndExecute(byte& index, byte* payload);
     static Command* CreateCommand(uint16_t command_code, byte* payload);
-    static const byte kCommandCodeLength = 2;
-    static const uint8_t kEndTerminator = 0;
+    static constexpr byte kCommandCodeLength = 2;
+    static constexpr uint8_t kEndTerminator = 0;
 };
 
 #endif  //  SRC_PAYLOAD_PROCESSOR_PAYLOAD_PROCESSOR_H_

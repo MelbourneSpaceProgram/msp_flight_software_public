@@ -19,7 +19,7 @@ class LithiumCommand : public Message {
     SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
-    static const uint16_t kNoPayload = 0;
+    static constexpr uint16_t kNoPayload = 0;
 
    protected:
     LithiumCommand(byte command_code, Message *lithium_payload);

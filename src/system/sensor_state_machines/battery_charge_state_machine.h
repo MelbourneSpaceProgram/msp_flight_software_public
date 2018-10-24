@@ -16,9 +16,9 @@ class BatteryChargeStateMachine : public SensorStateMachine<TestI2cMeasurable> {
    private:
     void UpdateState(double soc);
 
-    static const float kTwoEclipseCapacity = 0.2;
-    static const float kThreePassCapacity = 0.4;
-    static const float kHysteresis = 0.02;
+    static constexpr float kTwoEclipseCapacity = 0.2;
+    static constexpr float kThreePassCapacity = 0.4;
+    static constexpr float kHysteresis = 0.02;
 };
 
 #endif  //  SRC_SYSTEM_SENSOR_STATE_MACHINES_BATTERY_CHARGE_STATE_MACHINE_H_

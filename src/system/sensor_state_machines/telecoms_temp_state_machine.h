@@ -16,8 +16,8 @@ class TelecomsTempStateMachine : public SensorStateMachine<TestI2cMeasurable> {
    private:
     void UpdateState(float temp);
 
-    static const uint8_t kTempTelecomsOperationalMax = 80;
-    static const uint8_t kHysteresis = 1;
+    static constexpr uint8_t kTempTelecomsOperationalMax = 80;
+    static constexpr uint8_t kHysteresis = 1;
 };
 
 #endif  //  SRC_SYSTEM_SENSOR_STATE_MACHINES_TELECOMS_TEMP_STATE_MACHINE_H_

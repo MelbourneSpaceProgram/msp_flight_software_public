@@ -27,7 +27,7 @@ class StateManager {
     ~StateManager();
     void NotifySystems();
     static StateManager* instance;
-    static const uint8_t TotalSystemStateMachines = 3;
+    static constexpr uint8_t TotalSystemStateMachines = 3;
     Semaphore_Handle state_update_semaphore_handle;
     etl::array<StateMachine*, kNumStateMachines> state_machines;
     etl::vector<SystemStateMachine*, TotalSystemStateMachines>

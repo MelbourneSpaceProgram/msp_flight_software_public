@@ -19,8 +19,8 @@ class BatteryTempStateMachine
     double battery_1_temp;
     double battery_2_temp;
 
-    static const uint8_t kTempBatteryOperationalHigh = 60;
-    static const uint8_t kHysteresis = 5;
+    static constexpr uint8_t kTempBatteryOperationalHigh = 60;
+    static constexpr uint8_t kHysteresis = 5;
 };
 
 #endif  //  SRC_SYSTEM_SENSOR_STATE_MACHINES_BATTERY_TEMP_STATE_MACHINE_H_

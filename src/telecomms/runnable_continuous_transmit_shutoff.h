@@ -11,7 +11,7 @@ class RunnableContinuousTransmitShutoff : public Runnable {
     RunnableContinuousTransmitShutoff();
     static constexpr uint16_t kTotalSeconds = 600;
     static constexpr uint8_t kBucketSeconds = 10;
-    static const uint16_t kMillisecondsInSecond = 1000;
+    static constexpr uint16_t kMillisecondsInSecond = 1000;
     static constexpr uint16_t kMaxNumberTransmissions = 300;
     static constexpr uint16_t kNumBuckets = kTotalSeconds / kBucketSeconds;
     static void IncrementBucketCount();

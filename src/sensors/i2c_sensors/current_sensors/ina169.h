@@ -10,7 +10,7 @@ class Ina169 : public CurrentSensor {
 
    private:
     double ConvertVoltageToCurrent(double voltage_reading);
-    static const double kOutputVoltageCurrentScaleFactor = 1000.0;
+    static constexpr double kOutputVoltageCurrentScaleFactor = 1000.0;
     double rs_resistance;
     double rl_resistance;
 };

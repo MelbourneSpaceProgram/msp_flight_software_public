@@ -13,7 +13,7 @@ class TestMessage : public Message {
     uint16_t GetSerialisedSize() const;
 
    private:
-    static const uint16_t kSerialisedSize = 3;
+    static constexpr uint16_t kSerialisedSize = 3;
     byte message_content;
 };
 

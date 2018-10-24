@@ -5,14 +5,14 @@
 #include <src/util/matrix.h>
 
 constexpr bool kEnterDeepSleepOnStartup = false;
-static const bool kInstantDeploymentWaits = true;
-static const bool kLogI2c = false;
-static const bool kLithiumTransmitOnlyWhenGroundCommanded = false;
-static const bool kLogToUart = true;
-static const bool kLogToSd = true;
-static const bool kFormatSdOnStartup = false;
-static const uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
-static const uint8_t kNominalLithiumPowerLevel = 150;  // Scaled between 0-255
+static constexpr bool kInstantDeploymentWaits = true;
+static constexpr bool kLogI2c = false;
+static constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
+static constexpr bool kLogToUart = true;
+static constexpr bool kLogToSd = true;
+static constexpr bool kFormatSdOnStartup = false;
+static constexpr uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
+static constexpr uint8_t kNominalLithiumPowerLevel = 150;  // Scaled between 0-255
 
 // DO NOT TURN ON UNTIL LAUNCH
 static bool kDeployAntenna = false;

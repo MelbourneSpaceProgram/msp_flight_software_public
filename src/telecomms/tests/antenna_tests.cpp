@@ -8,7 +8,7 @@
 // Tests defined in Arduino code at:
 // https://github.com/MelbourneSpaceProgram/hardware_unit_test_software
 
-static const byte kTestHardwareAddr = 0x33;
+static constexpr byte kTestHardwareAddr = 0x33;
 
 TEST_GROUP(Antenna) {
     void setup() {

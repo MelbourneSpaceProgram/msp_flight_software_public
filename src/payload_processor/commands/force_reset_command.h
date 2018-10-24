@@ -11,8 +11,8 @@ public:
     bool ExecuteCommand();
 private:
     SystemResetCommand reset_enable;
-    static const uint8_t kForceResetCommandLength = SystemResetCommand_size;
-    static const uint32_t kResetCommandCodeKey = 0xfee1dead;
+    static constexpr uint8_t kForceResetCommandLength = SystemResetCommand_size;
+    static constexpr uint32_t kResetCommandCodeKey = 0xfee1dead;
 };
 
 #endif  // SRC_PAYLOAD_PROCESSOR_COMMANDS_FORCE_RESET_COMMAND_H_

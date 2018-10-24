@@ -11,7 +11,7 @@ class DeployAntennaCommmand : public Command {
 
    private:
     DeployAntennaCommandPayload deploy_antenna;
-    static const uint32_t kDeployCommandCode = 0x01234567;
+    static constexpr uint32_t kDeployCommandCode = 0x01234567;
 };
 
 #endif  // SRC_PAYLOAD_PROCESSOR_COMMANDS_ANTENNA_DEPLOY_COMMAND_H_

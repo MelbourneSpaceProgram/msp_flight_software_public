@@ -12,7 +12,7 @@ class LithiumEnableCommand : public Command {
 
    private:
     LithiumEnableCommandPayload lithium_state;
-    static const byte kLithiumEnable = 0x01;
-    static const byte kLithiumDisable = 0x00;
+    static constexpr byte kLithiumEnable = 0x01;
+    static constexpr byte kLithiumDisable = 0x00;
 };
 #endif  // SRC_PAYLOAD_PROCESSOR_COMMANDS_LITHIUM_ENABLE_COMMAND_H_

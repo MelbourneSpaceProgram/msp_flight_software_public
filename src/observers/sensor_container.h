@@ -29,7 +29,7 @@ class SensorContainer {
         }
         return NULL;
     }
-    static const uint8_t kMaxSensors = 3;
+    static constexpr uint8_t kMaxSensors = 3;
     etl::vector<T1*, kMaxSensors> sensors;
 };
 

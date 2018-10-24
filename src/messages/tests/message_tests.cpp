@@ -7,7 +7,7 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
-static const DebugMessageVersion kCurrentVersion = kV1;
+static constexpr DebugMessageVersion kCurrentVersion = kV1;
 
 TEST_GROUP(Message){};
 

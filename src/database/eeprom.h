@@ -26,7 +26,7 @@ class Eeprom {
                           uint16_t write_buffer_length);
 
    private:
-    static const uint32_t slave_select_index = SYS_nCS4;
+    static constexpr uint32_t slave_select_index = SYS_nCS4;
     static Semaphore_Handle eeprom_in_use;
 
     static bool WriteEnable();

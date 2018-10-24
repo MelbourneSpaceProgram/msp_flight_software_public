@@ -15,8 +15,8 @@ class SatelliteTimeSource {
    private:
     static Time satellite_time;
     static Time initial_time;
-    static const uint16_t kDelayCheckInterval = 1000;
-    static const uint16_t kMillisecondsInSecond = 1000;
+    static constexpr uint16_t kDelayCheckInterval = 1000;
+    static constexpr uint16_t kMillisecondsInSecond = 1000;
 };
 
 #endif  // SRC_UTIL_SATELLITE_TIME_SOURCE_H_

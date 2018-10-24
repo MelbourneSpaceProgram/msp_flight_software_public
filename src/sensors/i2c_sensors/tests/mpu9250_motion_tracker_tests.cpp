@@ -6,11 +6,11 @@
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 
-static const uint8_t mpu9250_address = 0x68;
-static const byte kMultiplexerAddress = 0x76;
+static constexpr uint8_t mpu9250_address = 0x68;
+static constexpr byte kMultiplexerAddress = 0x76;
 
-static const double avg_room_temperature = 25.00;
-static const double temp_tolerance = 15.00;
+static constexpr double avg_room_temperature = 25.00;
+static constexpr double temp_tolerance = 15.00;
 
 TEST_GROUP(MotionTracker) {
     void setup() {

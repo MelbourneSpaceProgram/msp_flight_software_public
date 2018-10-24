@@ -16,7 +16,7 @@ class TestPayload : public TransmitPayload {
     // Padding is not implemented for the test message so that results can be
     // directly replicated using the Lithium Configuration Tool GUI and checksum
     // easily unit tested. All standard MSP packets are 251 bytes in length
-    static const uint8_t kTestMessageSize = 56;
+    static constexpr uint8_t kTestMessageSize = 56;
 };
 
 #endif  // SRC_TELECOMMS_MSP_PAYLOADS_TEST_PAYLOAD_H_

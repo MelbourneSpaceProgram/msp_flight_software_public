@@ -22,27 +22,27 @@ class Rtc : public I2cDevice {
     static time_t RTimeToEpoch(RTime time);
 
    private:
-    static const byte kTimeRegisterSec = 0x01;
-    static const byte kTimeRegisterMin = 0x02;
-    static const byte kTimeRegisterHour = 0x03;
-    static const byte kTimeRegisterDate = 0x04;
-    static const byte kTimeRegisterMonth = 0x05;
-    static const byte kTimeRegisterYear = 0x06;
-    static const byte kControl1Register = 0x10;
+    static constexpr byte kTimeRegisterSec = 0x01;
+    static constexpr byte kTimeRegisterMin = 0x02;
+    static constexpr byte kTimeRegisterHour = 0x03;
+    static constexpr byte kTimeRegisterDate = 0x04;
+    static constexpr byte kTimeRegisterMonth = 0x05;
+    static constexpr byte kTimeRegisterYear = 0x06;
+    static constexpr byte kControl1Register = 0x10;
 
     // bit_mask used to clear bits used by register for general purpose use
-    static const byte kLowest8BitMask = ~(0);
-    static const byte kLowest7BitMask = static_cast<byte>(~(0x01u << 7));
-    static const byte kLowest6BitMask = static_cast<byte>(~(0x03u << 6));
-    static const byte kLowest5BitMask = static_cast<byte>(~(0x07u << 5));
-    static const byte kHighest4BitMask = ~(15);
-    static const byte kLowest4BitMask = (15);
+    static constexpr byte kLowest8BitMask = ~(0);
+    static constexpr byte kLowest7BitMask = static_cast<byte>(~(0x01u << 7));
+    static constexpr byte kLowest6BitMask = static_cast<byte>(~(0x03u << 6));
+    static constexpr byte kLowest5BitMask = static_cast<byte>(~(0x07u << 5));
+    static constexpr byte kHighest4BitMask = ~(15);
+    static constexpr byte kLowest4BitMask = (15);
 
     RTCMaskMap bit_mask_map;
 
-    static const uint8_t kReadBufLen = 1;
-    static const uint16_t kCurrCentury = 2000;
-    static const uint16_t kSatelliteEpochYear = 1970;
+    static constexpr uint8_t kReadBufLen = 1;
+    static constexpr uint16_t kCurrCentury = 2000;
+    static constexpr uint16_t kSatelliteEpochYear = 1970;
 
     enum Months {
         Jan = 0x01,

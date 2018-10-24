@@ -24,10 +24,10 @@ class MagnetometerCalibration {
 
     static MagnetometerReading GetReadingFromBuffer(const char *file_name);
 
-    static const uint8_t kBatchSizeInReadings = 40;
+    static constexpr uint8_t kBatchSizeInReadings = 40;
 
     // TODO (rskew) check this value
-    static const uint32_t kMinimumSamplesForValidCalibration = 250;
+    static constexpr uint32_t kMinimumSamplesForValidCalibration = 250;
 
     static const char *kBufferFilenameA;
     static const char *kBufferFilenameB;
@@ -53,11 +53,11 @@ class MagnetometerCalibration {
 
     // Reading at 1Hz for 2 hours requires a buffer size of
     // 60 * 60 * 2 = 7200 readings
-    static const uint32_t kCalibrationReadingsBufferSizeInReadings = 7200;
+    static constexpr uint32_t kCalibrationReadingsBufferSizeInReadings = 7200;
 
     // The number of sequential reads that have to fail before
     // we give up on calibration
-    static const uint32_t kBufferReadAttempts = 10;
+    static constexpr uint32_t kBufferReadAttempts = 10;
 };
 
 #endif /* SRC_SENSORS_MAGNETOMETER_CALIBRATION_H_ */

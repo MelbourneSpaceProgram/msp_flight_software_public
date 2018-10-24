@@ -29,29 +29,29 @@ class Antenna {
 
    private:
     // I2C Address
-    static const byte kAddress = 0x33;
+    static constexpr byte kAddress = 0x33;
     // Door 1 bit mask in status packet
-    static const byte kDoorOneMask = 0b10000000;
+    static constexpr byte kDoorOneMask = 0b10000000;
     // Door 2 bit mask in status packet
-    static const byte kDoorTwoMask = 0b01000000;
+    static constexpr byte kDoorTwoMask = 0b01000000;
     // Door 3 bit mask in status packet
-    static const byte kDoorThreeMask = 0b00100000;
+    static constexpr byte kDoorThreeMask = 0b00100000;
     // Door 4 bit mask in status packet
-    static const byte kDoorFourMask = 0b00010000;
+    static constexpr byte kDoorFourMask = 0b00010000;
     // State bit mask in status packet
-    static const byte kStateMask = 0b00000011;
+    static constexpr byte kStateMask = 0b00000011;
     // Time to wait (in milliseconds) after trying deployment algorithms
-    static const uint32_t kWaitTime = 20000;
+    static constexpr uint32_t kWaitTime = 20000;
     // Time to wait (in milliseconds) when manually overriding deployment
-    static const uint32_t kWaitTimeManualOverride = 30000;
+    static constexpr uint32_t kWaitTimeManualOverride = 30000;
     // TODO(wschuetz): Confirm with EnduroSat how long override should be held
     // high for
-    static const I2cIoExpander::IoPin kPrimaryOverridePin =
+    static constexpr I2cIoExpander::IoPin kPrimaryOverridePin =
         I2cIoExpander::kIoPin4;
-    static const I2cIoExpander::IoPin kBackupOverridePin =
+    static constexpr I2cIoExpander::IoPin kBackupOverridePin =
         I2cIoExpander::kIoPin5;
-    static const uint8_t kMaxNumberOfIterations = 0x03;
-    static const byte kAntennaOverRideIoExpanderAddress = 0x22;
+    static constexpr uint8_t kMaxNumberOfIterations = 0x03;
+    static constexpr byte kAntennaOverRideIoExpanderAddress = 0x22;
 
     bool WriteCommand(AntennaCommand command) const;
     Antenna();

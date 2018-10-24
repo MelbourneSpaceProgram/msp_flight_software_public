@@ -10,7 +10,7 @@ class TransmitPayload : public Message {
     virtual uint8_t GetPayloadCode() const = 0;
 
    protected:
-    static const uint8_t kPayloadSize = 251;
+    static constexpr uint8_t kPayloadSize = 251;
 };
 
 #endif  // SRC_TELECOMMS_MSP_PAYLOADS_TRANSMIT_PAYLOAD_H_
