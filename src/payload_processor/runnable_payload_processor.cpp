@@ -1,4 +1,5 @@
 #include <external/hmac/sha1.h>
+#include <src/config/satellite.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/tasks/runnable.h>
@@ -14,6 +15,9 @@
 // TODO(daniel632): A proper key needs to be decided on.
 static const std::string kHmacKey = "SuperSecretKey";
 uint16_t RunnablePayloadProcessor::sequence = 0;
+bool RunnablePayloadProcessor::use_fec = kUseFecDefault;
+bool RunnablePayloadProcessor::check_hmac = kCheckHmacDefault;
+bool RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;
 
 RunnablePayloadProcessor::RunnablePayloadProcessor() {}
 
@@ -52,17 +56,27 @@ bool RunnablePayloadProcessor::ProcessPayload(byte command[],
     memcpy(&decode_block[kDecodeDataIndex], &uplink_payload[kUplinkDataIndex],
            (kDataLength + kParityLength) * sizeof(byte));
 
-    if (!DecodeFec(decode_block)) return false;
-
-    byte *msp_packet = &decode_block[kDecodeDataIndex];
+    int16_t msp_packet_length;
+    byte* msp_packet;
+    if (use_fec) {
+        if (!DecodeFec(decode_block)) return false;
+        msp_packet = &decode_block[kDecodeDataIndex];
+    } else {
+        // TODO(dingbenjamin): Find a better way to do this with the memcpy
+        // removed and without constness removal
+        byte msp_packet_buffer[kDataLength];
+        msp_packet = msp_packet_buffer;
+        memcpy(msp_packet, &uplink_payload[kUplinkDataIndex],
+               kDataLength * sizeof(byte));
+    }
 
     // Length of the MSP packet, including the signature.
-    int16_t msp_packet_length = GetMspPacketLength(msp_packet, kDataLength);
+    msp_packet_length = GetMspPacketLength(msp_packet, kDataLength);
     if (msp_packet_length < 0) return false;
 
-    if (!CheckHmac(msp_packet, msp_packet_length)) return false;
+    if (check_hmac && !CheckHmac(msp_packet, msp_packet_length)) return false;
 
-    if (!CheckSequence(msp_packet)) return false;
+    if (check_sequence && !CheckSequence(msp_packet)) return false;
 
     // Copy the command to the command buffer
     memcpy(command, &msp_packet[kMspCommandIndex],
@@ -114,8 +128,7 @@ bool RunnablePayloadProcessor::CheckHmac(const byte msp_packet[],
     unsigned char calculated_hash[SHA1::HashBytes];
     hmac<SHA1>(calculated_hash, &msp_packet[kMspLengthIndex],
                msp_packet_length - kMspSignatureLength,
-               reinterpret_cast<const byte *>(hash_key.data()),
-               hash_key.size());
+               reinterpret_cast<const byte*>(hash_key.data()), hash_key.size());
 
     // Verify that the hash matches the signature
     if (memcmp(msp_packet, calculated_hash, kMspSignatureLength) == 0) {

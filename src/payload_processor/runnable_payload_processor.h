@@ -5,6 +5,8 @@
 #include <src/util/data_types.h>
 
 class RunnablePayloadProcessor : public Runnable {
+    friend class TEST_PayloadProcessor_TestSequence_Test;
+
    public:
     fnptr GetRunnablePointer();
     RunnablePayloadProcessor();
@@ -68,6 +70,10 @@ class RunnablePayloadProcessor : public Runnable {
    private:
     static uint16_t sequence;
     static void ExecuteCommandsInLithiumPayload();
+
+    static bool use_fec;
+    static bool check_hmac;
+    static bool check_sequence;
 };
 
 #endif  //  SRC_PAYLOAD_PROCESSOR_RUNNABLE_PAYLOAD_PROCESSOR_H_
