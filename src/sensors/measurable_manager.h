@@ -87,7 +87,12 @@ class MeasurableManager {
     void InitFlightSystems(const I2cMultiplexer *mux_a);
     void InitUtilities(const I2cMultiplexer *mux_c);
     void InitCdh(const I2cMultiplexer *mux_a);
-    void InitSolarPanels(const I2cMultiplexer *mux_c);
+	void InitXPosPanel(const I2cMultiplexer *mux_c);
+	void InitXNegPanel(const I2cMultiplexer *mux_c);
+	void InitYPosPanel(const I2cMultiplexer *mux_c);
+	void InitYNegPanel(const I2cMultiplexer *mux_c);
+	void InitZPosPanel(const I2cMultiplexer *mux_c);
+	void InitZNegPanel(const I2cMultiplexer *mux_c);
 
     void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line,
                     float scaling_factor);
@@ -115,6 +120,7 @@ class MeasurableManager {
         const Matrix &frame_mapping, const Matrix &initial_biases,
         const Matrix &initial_scale_factors,
         const char *calibration_readings_buffer_filename);
+	void DeleteMeasurable(MeasurableId id);
     void CheckValidId(MeasurableId id);
 
     static MeasurableManager *instance;
@@ -124,6 +130,18 @@ class MeasurableManager {
     const I2c *bus_b;
     const I2c *bus_c;
     const I2c *bus_d;
+
+	bool telecomms_initialised;
+	bool power_initialised;
+	bool flight_systems_initialised;
+	bool utilities_initialised;
+	bool cdh_initialised;
+	bool x_pos_initialised;
+	bool y_pos_initialised;
+	bool z_pos_initialised;
+	bool x_neg_initialised;
+	bool y_neg_initialised;
+	bool z_neg_initialised;
 
     etl::array<Measurable *, kMaxMeasurables> measurables;
 };
