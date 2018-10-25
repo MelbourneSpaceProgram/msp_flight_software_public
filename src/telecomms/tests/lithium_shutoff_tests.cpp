@@ -7,8 +7,7 @@
 
 TEST_GROUP(LithiumTransmit) {
     void setup() { RunnableContinuousTransmitShutoff::ClearBuckets(); };
-
-    void teardown(){};
+    void teardown() { Lithium::GetInstance()->SetTransmitEnabled(true); };
 };
 
 TEST(LithiumTransmit, TestLithiumShutoff) {

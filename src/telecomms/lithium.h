@@ -51,6 +51,9 @@ class Lithium {
     LithiumConfiguration ReadLithiumConfiguration() const;
     bool IsTransmitEnabled();
     bool DoCommand(LithiumCommand* command) const;
+    // TODO(dingbenjamin): Make this function private if possible, friend unit
+    // tests
+    void SetTransmitEnabled(bool lithium_enabled);
 
    private:
     static Lithium* instance;
@@ -78,7 +81,6 @@ class Lithium {
 
     Lithium();
     Uart* GetUart();
-    void SetTransmitEnabled(bool lithium_enabled);
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_H_

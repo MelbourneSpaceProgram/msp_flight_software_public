@@ -25,9 +25,10 @@ void RunnableContinuousTransmitShutoff::StartCounter() {
 
         transmission_buckets[rolling_index] = bucket_count;
 
-        if (!TransmissionRateUnderThreshold()) {
+        if (!TransmissionRateUnderThreshold() &&
+            Lithium::GetInstance()->IsTransmitEnabled()) {
             Lithium::GetInstance()->SetTransmitEnabled(false);
-            Log_info0(
+            Log_warning0(
                 "Continuous Transmission Detected: Shutting off Lithium "
                 "Transmission");
         }
