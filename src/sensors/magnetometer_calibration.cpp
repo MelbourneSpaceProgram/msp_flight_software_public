@@ -8,7 +8,7 @@
 #include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/sensors/magnetometer_calibration.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <xdc/runtime/Log.h>
 
 const char *MagnetometerCalibration::kBufferFilenameA = "magcalA.pb";
@@ -28,7 +28,7 @@ MagnetometerCalibration::MagnetometerCalibration(
                 calibration_readings_buffer_filename,
                 kCalibrationReadingsBufferSizeInReadings);
         } catch (etl::exception &e) {
-            EtlUtils::LogException(e);
+            MspException::LogException(e);
             Log_error0("Circular Buffer/SD error");
         }
     }

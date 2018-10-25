@@ -63,7 +63,7 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
         IoExpander::Init(bus_d);
     } catch (etl::exception& e) {
         // TODO(dingbenjamin): Possible failure mode needs to be handled
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
     }
 
     try {
@@ -175,21 +175,21 @@ void PostBiosInitialiser::InitHardware() {
     try {
         I2c::InitBusses();
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         Eeprom::Init();
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
         MagnetorquerControl::Initialize();
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
@@ -200,7 +200,7 @@ void PostBiosInitialiser::InitHardware() {
             sd->Format();
         }
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         // TODO(akremor): Possible failure mode needs to be handled
     }
 }
@@ -326,7 +326,7 @@ void PostBiosInitialiser::PostBiosInit() {
         Log_info0("System start up complete");
 #endif
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         System_flush();
     }
 }

@@ -1,7 +1,7 @@
 #include <src/database/sd_card.h>
 #include <src/payload_processor/uplinks/format_sd_uplink.h>
 #include <src/sensors/runnable_system_health_check.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/task_utils.h>
 
@@ -25,7 +25,7 @@ bool FormatSdUplink::ExecuteUplink() {
     } catch (etl::exception& e) {
         Log_info0("Re-enabling data logger");
         RunnableSystemHealthCheck::EnableDatalogger(true);
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         Log_error0("Format SD failed");
         return false;
     }

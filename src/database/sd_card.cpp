@@ -5,7 +5,7 @@
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <src/sensors/measurable_id.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <src/util/runnable_console_logger.h>
 #include <stdio.h>
 #include <string.h>
@@ -209,7 +209,7 @@ void SdCard::Dump() {
                 FileDump(src, fpath);
                 FileClose(src);
             } catch (etl::exception &e) {
-                EtlUtils::LogException(e);
+                MspException::LogException(e);
                 return;
             }
         }

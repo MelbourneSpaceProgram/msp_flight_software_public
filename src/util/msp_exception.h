@@ -4,7 +4,7 @@
 #include <external/etl/exception.h>
 #include <xdc/runtime/Log.h>
 
-class EtlUtils {
+class MspException {
    public:
     static void LogException(etl::exception& e);
 

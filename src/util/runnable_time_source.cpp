@@ -2,7 +2,7 @@
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/sensors/i2c_sensors/rtc.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
@@ -21,7 +21,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         try {
             time = rtc.GetTime();
         } catch (etl::exception e) {
-            EtlUtils::LogException(e);
+            MspException::LogException(e);
             Log_error0("Unable to retrieve time from RTC");
             TaskUtils::SleepMilli(kTimeUpdatePeriod);
             continue;

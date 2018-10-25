@@ -8,7 +8,7 @@
 #include <src/messages/Time.pb.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/tasks/runnable.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/runnable_console_logger.h>
 #include <stdio.h>
@@ -59,7 +59,7 @@ class RunnableSystemHealthCheck : public Runnable {
                     NanopbMessageType_fields>::WriteMessage(file_name,
                                                             pb_reading);
             } catch (etl::exception& e) {
-                EtlUtils::LogException(e);
+                MspException::LogException(e);
                 Log_error1("CircularBuffer failure for measurable id %d", id);
             }
         };
@@ -70,7 +70,7 @@ class RunnableSystemHealthCheck : public Runnable {
             try {
                 NanopbEncode(NanopbMessageType)(buffer, pb_reading);
             } catch (etl::exception& e) {
-                EtlUtils::LogException(e);
+                MspException::LogException(e);
                 Log_error1("Nanopb encode failed for measurable id %d", id);
             }
             RunnableConsoleLogger::WriteToDataLogger(id, buffer, size);

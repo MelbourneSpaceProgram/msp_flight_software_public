@@ -27,7 +27,7 @@
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/telecomms/runnable_beacon.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <src/util/message_codes.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_time_source.h>
@@ -196,10 +196,10 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
         CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
         SdCard::GetInstance()->FileDelete(filename);
-    } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
-        FAIL("Uncaught exception in test");
-    }
+        } catch (etl::exception& e) {
+            MspException::LogException(e);
+            FAIL("Uncaught exception in test");
+        }
 }
 
 // TODO(dingbenjamin): Figure out how to teardown for just this test

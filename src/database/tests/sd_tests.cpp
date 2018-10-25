@@ -2,7 +2,7 @@
 #include <external/etl/exception.h>
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <string.h>
 #include <xdc/runtime/Log.h>
 
@@ -103,7 +103,7 @@ TEST(SdCard, FatFsReadWrite) {
         sd->FileDelete(input_file);
         sd->FileDelete(output_file);
     } catch (etl::exception &e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         FAIL("Uncaught exception in test");
     }
 }

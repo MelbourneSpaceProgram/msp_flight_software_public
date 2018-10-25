@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/io_expander/io_expander.h>
-#include <src/util/etl_utils.h>
+#include <src/util/msp_exception.h>
 #include <xdc/runtime/Log.h>
 
 const IoExpander* IoExpander::io_expanders[IoExpander::kNumIoExpanders];
@@ -28,7 +28,7 @@ void IoExpander::Init(I2c* bus_d) {
         io_expander_bms->SetPin(kIoExpanderPinBms2En, true);
         io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         Log_error0("BMS IO expander failed to initialise properly");
     }
 
@@ -55,7 +55,7 @@ void IoExpander::Init(I2c* bus_d) {
         io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, true);
         io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn5, true);
     } catch (etl::exception& e) {
-        EtlUtils::LogException(e);
+        MspException::LogException(e);
         Log_error0("Telecomms IO expander failed to initialise properly");
     }
 
