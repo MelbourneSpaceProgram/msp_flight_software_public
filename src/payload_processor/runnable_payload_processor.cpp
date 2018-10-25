@@ -6,12 +6,14 @@
 #include <src/telecomms/lithium.h>
 #include <src/util/hmac.h>
 #include <src/util/string_hex.h>
+#include <stdint.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 #include <xdc/runtime/Log.h>
 
 // TODO(daniel632): A proper key needs to be decided on.
 static const std::string kHmacKey = "SuperSecretKey";
+uint16_t RunnablePayloadProcessor::sequence = 0;
 
 RunnablePayloadProcessor::RunnablePayloadProcessor() {}
 
@@ -59,6 +61,8 @@ bool RunnablePayloadProcessor::ProcessPayload(byte command[],
     if (msp_packet_length < 0) return false;
 
     if (!CheckHmac(msp_packet, msp_packet_length)) return false;
+
+    if (!CheckSequence(msp_packet)) return false;
 
     // Copy the command to the command buffer
     memcpy(command, &msp_packet[kMspCommandIndex],
@@ -124,3 +128,18 @@ bool RunnablePayloadProcessor::CheckHmac(const byte msp_packet[],
         return false;
     }
 }
+
+bool RunnablePayloadProcessor::CheckSequence(const byte msp_packet[]) {
+    uint16_t received_sequence =
+        (static_cast<uint16_t>(msp_packet[kMspSequenceNumberIndex]) << 8) +
+        static_cast<uint16_t>(msp_packet[kMspSequenceNumberIndex + 1]);
+    if (received_sequence != sequence) {
+        Log_error2("Received sequence %d does not match current sequence %d",
+                   received_sequence, sequence);
+        return false;
+    }
+    sequence = sequence == UINT16_MAX ? 0 : sequence + 1;
+    return true;
+}
+
+uint16_t RunnablePayloadProcessor::GetSequence() { return sequence; }

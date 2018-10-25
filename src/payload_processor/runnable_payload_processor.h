@@ -20,7 +20,8 @@ class RunnablePayloadProcessor : public Runnable {
     static constexpr uint8_t kUplinkAx25Length = 16;
     static constexpr uint8_t kUplinkDataIndex =
         kUplinkAx25Index + kUplinkAx25Length;
-    static constexpr uint8_t kUplinkParityIndex = kUplinkDataIndex + kDataLength;
+    static constexpr uint8_t kUplinkParityIndex =
+        kUplinkDataIndex + kDataLength;
     static constexpr uint8_t kUplinkLength =
         kUplinkAx25Length + kDataLength + kParityLength;
 
@@ -31,7 +32,8 @@ class RunnablePayloadProcessor : public Runnable {
     static constexpr uint8_t kDecodePaddingLength = 127;
     static constexpr uint8_t kDecodeDataIndex =
         kDecodePaddingIndex + kDecodePaddingLength;
-    static constexpr uint8_t kDecodeParityIndex = kDecodeDataIndex + kDataLength;
+    static constexpr uint8_t kDecodeParityIndex =
+        kDecodeDataIndex + kDataLength;
     static constexpr uint8_t kDecodeBlockLength =
         kDecodePaddingLength + kDataLength + kParityLength;
 
@@ -50,16 +52,21 @@ class RunnablePayloadProcessor : public Runnable {
     static constexpr uint8_t kMspHeaderIndex = kMspSignatureIndex;
     static constexpr uint8_t kMspHeaderLength =
         kMspSignatureLength + kMspLengthLength + kMspSequenceNumberLength;
-    static constexpr uint8_t kMspCommandIndex = kMspHeaderIndex + kMspHeaderLength;
-    static constexpr uint8_t kMspCommandMaxLength = kDataLength - kMspHeaderLength;
+    static constexpr uint8_t kMspCommandIndex =
+        kMspHeaderIndex + kMspHeaderLength;
+    static constexpr uint8_t kMspCommandMaxLength =
+        kDataLength - kMspHeaderLength;
 
     static bool ProcessPayload(byte command[], const byte uplink_payload[]);
     static bool DecodeFec(byte decode_block[]);
     static int16_t GetMspPacketLength(const byte msp_packet[],
                                       int16_t max_length);
     static bool CheckHmac(const byte msp_packet[], int16_t msp_packet_length);
+    static bool CheckSequence(const byte msp_packet[]);
+    static uint16_t GetSequence();
 
    private:
+    static uint16_t sequence;
     static void ExecuteCommandsInLithiumPayload();
 };
 

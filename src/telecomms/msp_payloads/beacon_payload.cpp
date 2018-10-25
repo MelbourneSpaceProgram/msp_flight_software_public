@@ -4,6 +4,7 @@
 #include <src/messages/VoltageReading.pb.h>
 #include <src/messages/serialised_message.h>
 #include <src/messages/serialised_message_builder.h>
+#include <src/payload_processor/runnable_payload_processor.h>
 #include <src/telecomms/msp_payloads/beacon_payload.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
@@ -84,7 +85,8 @@ BeaconPayload::BeaconPayload()
       sw_cdh_memory_available(kInvalidPositiveInteger),
       sw_cdh_mcu1(kInvalidPositiveInteger),
       sw_mcu_reset_count1(kInvalidPositiveInteger),
-      comms_outreach("Hello from Melbourne       ") {
+      sw_sequence(RunnablePayloadProcessor::GetSequence()),
+      comms_outreach("Hello from Melbourne     ") {
     // TODO(dingbenjamin): Replace the invalid initializers
 }
 
@@ -164,7 +166,8 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<uint16_t>(sw_cdh_memory)
         .AddData<uint16_t>(sw_cdh_memory_available)
         .AddData<uint16_t>(sw_cdh_mcu1)
-        .AddData<uint16_t>(sw_mcu_reset_count1);
+        .AddData<uint16_t>(sw_mcu_reset_count1)
+        .AddData<uint16_t>(sw_sequence);
 
     for (uint8_t i = 0; i < kOutreachMessageSize; i++) {
         builder.AddData<char>(comms_outreach[i]);
