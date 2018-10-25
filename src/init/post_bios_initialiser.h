@@ -38,6 +38,8 @@ class PostBiosInitialiser : public Runnable {
     static constexpr uint16_t kBeaconDelaySeconds = kBeaconDelayMins * kSecsInMin;
     static constexpr uint16_t kAntennaDelayMins = 90;
     static constexpr uint16_t kAntennaDelaySeconds = kAntennaDelayMins * kSecsInMin;
+    static constexpr uint8_t kInitialisationAttempts = 3;
+    static constexpr uint16_t kInitialisationWait = 1000;
 };
 
 #endif  // SRC_INIT_POST_BIOS_INITIALISER_H_

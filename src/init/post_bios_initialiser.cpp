@@ -51,34 +51,86 @@ Uart* PostBiosInitialiser::InitDebugUart() {
 
 void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
                                          I2c* bus_d) {
-    try {
-        DebugStream::GetInstance();
-    } catch (etl::exception& e) {
-        // TODO(akremor): Possible failure mode needs to be handled
+    for (uint8_t i = 0; i < kInitialisationAttempts; i++) {
+        try {
+            DebugStream::GetInstance();
+            // If no exception, will simply exit the loop here
+            break;
+        } catch (etl::exception& e) {
+            EtlUtils::LogException(e);
+            Log_error0("DebugStream failed to initialise, trying again");
+            if (i == kInitialisationAttempts - 1) {
+                Log_error1(
+                    "Fatal error: All %d attempts at DebugStream "
+                    "initialization "
+                    "failed, continuing anyway",
+                    kInitialisationAttempts);
+                break;
+            }
+            TaskUtils::SleepMilli(kInitialisationWait);
+        }
     }
 
-    try {
-        Antenna::GetAntenna()->InitAntenna(bus_d);
-    } catch (etl::exception& e) {
-        // TODO(akremor): Possible failure mode needs to be handled
+    for (uint8_t i = 0; i < kInitialisationAttempts; i++) {
+        try {
+            Antenna::GetAntenna()->InitAntenna(bus_d);
+            // If no exception, will simply exit the loop here
+            break;
+        } catch (etl::exception& e) {
+            EtlUtils::LogException(e);
+            Log_error0("Antenna failed to initialise, trying again");
+            if (i == kInitialisationAttempts - 1) {
+                Log_error1(
+                    "Fatal error: All %d attempts at antenna initialization "
+                    "failed, continuing anyway",
+                    kInitialisationAttempts);
+                break;
+            }
+            TaskUtils::SleepMilli(kInitialisationWait);
+        }
     }
 
-    try {
-        Lithium::GetInstance();
-    } catch (etl::exception& e) {
-        // TODO(akremor): Possible failure mode needs to be handled
+    for (uint8_t i = 0; i < kInitialisationAttempts; i++) {
+        try {
+            Lithium::GetInstance();
+            // If no exception, will simply exit the loop here
+            break;
+        } catch (etl::exception& e) {
+            EtlUtils::LogException(e);
+            Log_error0("Lithium failed to initialise, trying again");
+            if (i == kInitialisationAttempts - 1) {
+                Log_error1(
+                    "Fatal error: All %d attempts at Lithium initialization "
+                    "failed, continuing anyway",
+                    kInitialisationAttempts);
+                break;
+            }
+            TaskUtils::SleepMilli(kInitialisationWait);
+        }
     }
 
-    try {
-        MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
-    } catch (etl::exception& e) {
-        // TODO(akremor): Possible failure mode needs to be handled
-        // Pass exceptions up so that an incompletely initialised
-        // measurable manager isn't used.
-        // If a hardware sensor fails to be initialised, it should be
-        // caught by the driver. Only exceptions from measurables, which should
-        // be software problems, should get to here.
-        throw e;
+    for (uint8_t i = 0; i < kInitialisationAttempts; i++) {
+        try {
+            MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c,
+                                                      bus_d);
+            // If no exception, will simply exit the loop here
+            break;
+        } catch (etl::exception& e) {
+            // If a hardware sensor fails to be initialised, it should be
+            // caught by the driver. Only exceptions from measurables, which
+            // should be software problems, should get to here.
+            EtlUtils::LogException(e);
+            Log_error0("Measurable Manager failed to initialise, trying again");
+            if (i == kInitialisationAttempts - 1) {
+                Log_error1(
+                    "Fatal error: All %d attempts at Measurable Manager "
+                    "initialization "
+                    "failed, continuing anyway",
+                    kInitialisationAttempts);
+                break;
+            }
+            TaskUtils::SleepMilli(kInitialisationWait);
+        }
     }
 }
 
