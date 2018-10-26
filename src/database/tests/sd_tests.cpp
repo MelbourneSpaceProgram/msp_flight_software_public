@@ -8,6 +8,8 @@
 
 const char input_file[] = "0:test_in.txt";
 const char output_file[] = "0:test_out.txt";
+const char dump_file_1[] = "999";
+const char dump_file_2[] = "998";
 
 const char text_array[] =
     "**********************************************************************"
@@ -36,7 +38,7 @@ TEST_GROUP(SdCard) {
 TEST(SdCard, FatFsReadWrite) {
     try {
         File *src, *dst;
-        SdCard* sd = SdCard::GetInstance();
+        SdCard *sd = SdCard::GetInstance();
         src = sd->FileOpen(input_file, SdCard::kFileWriteMode |
                                            SdCard::kFileReadMode |
                                            SdCard::kFileCreateAlwaysMode);
@@ -100,8 +102,36 @@ TEST(SdCard, FatFsReadWrite) {
         sd->FileClose(dst);
         sd->FileDelete(input_file);
         sd->FileDelete(output_file);
-    } catch (etl::exception& e) {
+    } catch (etl::exception &e) {
         EtlUtils::LogException(e);
         FAIL("Uncaught exception in test");
+    }
+}
+
+TEST(SdCard, SdDump) {
+    SdCard *sd_card = SdCard::GetInstance();
+    File *test_1;
+    File *test_2;
+
+    try {
+        test_1 =
+            sd_card->FileOpen(dump_file_1, SdCard::kFileWriteMode |
+                                               SdCard::kFileCreateAlwaysMode);
+        sd_card->FileWrite(test_1, text_array, strlen(text_array));
+        sd_card->FileFlush(test_1);
+        sd_card->FileClose(test_1);
+
+        test_2 =
+            sd_card->FileOpen(dump_file_2, SdCard::kFileWriteMode |
+                                               SdCard::kFileCreateAlwaysMode);
+        sd_card->FileWrite(test_2, text_array, strlen(text_array));
+        sd_card->FileFlush(test_2);
+        sd_card->FileClose(test_2);
+
+        sd_card->Dump();
+    } catch (etl::exception &e) {
+        // Likely SD card missing
+        std::string error(e.what());
+        FAIL(("Exception in SdDump " + error).c_str());
     }
 }

@@ -1,6 +1,7 @@
 #ifndef SRC_DATABASE_SDCARD_H_
 #define SRC_DATABASE_SDCARD_H_
 
+#include <src/board/uart/uart.h>
 #include <src/util/data_types.h>
 #include <ti/drivers/SD.h>
 #include <ti/drivers/SDFatFS.h>
@@ -21,6 +22,7 @@ class SdCard {
     static constexpr byte kFileOpenAlwaysMode = 0x10;
     static constexpr byte kFileWrittenMode = 0x20;
     static constexpr byte kFileDirtyMode = 0x40;
+    static constexpr uint8_t kFileNameLength = 3;
 
     static SdCard *GetInstance();
     SdHandle SdOpen();
@@ -35,11 +37,14 @@ class SdCard {
     void FileDelete(const char *path) const;
     uint32_t FileSize(File *f) const;
     void Format();
+    void Dump();
 
    private:
     SdCard();
     static SdCard *instance;
     static constexpr uint8_t kDriveNum = 0;
+    static constexpr uint16_t kMaxNumFiles = 1000;
+    static constexpr uint8_t kMessageSize = 255;
     SdHandle handle;
     // TODO(dingbenjamin): Timeout the mutex access so a task can't hog the SD
     // card
@@ -50,5 +55,6 @@ class SdCard {
     File *open_file;
     void Lock();
     void Unlock();
+    void FileDump(File *src, char *fpath);
 };
 #endif  // SRC_DATABASE_SDCARD_H_

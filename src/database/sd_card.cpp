@@ -1,8 +1,13 @@
 #include <assert.h>
 #include <external/etl/exception.h>
 #include <src/board/board.h>
+#include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
+#include <src/sensors/measurable_id.h>
+#include <src/util/etl_utils.h>
+#include <src/util/runnable_console_logger.h>
+#include <stdio.h>
 #include <string.h>
 #include <third_party/fatfs/ff.h>
 #include <ti/drivers/SDFatFS.h>
@@ -177,4 +182,60 @@ void SdCard::Unlock() {
     is_locked = false;
     GateMutexPri_leave(sd_mutex, key);
     key = NULL;
+}
+
+void SdCard::Dump() {
+    for (uint16_t i = 0; i < kMaxNumFiles; i++) {
+        // TOOD(dingbenjamin): const fpath after changing WriteToDataLogger
+        char fpath[kFileNameLength + 1];
+        sprintf(fpath, "%03hu", i);
+        const char *file_path = fpath;
+
+        File *src;
+        if (kVerboseUnitTests)
+            Log_info1("Dump: Opening file %s", (IArg)file_path);
+        try {
+            src = SdCard::GetInstance()->FileOpen(file_path,
+                                                  SdCard::kFileReadMode);
+        } catch (etl::exception &e) {
+            // File not found
+            // TODO(dingbenjamin): Handle cases differently where sd card is
+            // broken and where file is missing
+            continue;
+        }
+
+        if (src != NULL) {
+            try {
+                FileDump(src, fpath);
+                FileClose(src);
+            } catch (etl::exception &e) {
+                EtlUtils::LogException(e);
+                return;
+            }
+        }
+    }
+}
+
+void SdCard::FileDump(File *src, char *fpath) {
+    SdCard *sd_card = SdCard::GetInstance();
+    uint32_t file_size = sd_card->FileSize(src);
+    uint32_t index = 0;
+    byte copy_buffer[kMessageSize];
+
+    RunnableConsoleLogger::WriteToDataLogger(MeasurableId::kSdCardDumpMessage,
+                                             reinterpret_cast<byte *>(fpath),
+                                             kFileNameLength);
+    while (index < file_size) {
+        uint32_t bytes_read = sd_card->FileRead(src, copy_buffer, kMessageSize);
+
+        index += bytes_read;
+        if (bytes_read > 0) {
+            RunnableConsoleLogger::WriteToDataLogger(
+                MeasurableId::kSdCardDumpMessage, copy_buffer, bytes_read);
+        } else {
+            Log_warning3("File %s: %u bytes read out of %u", (IArg)fpath, index,
+                         file_size);
+            break;
+        }
+    }
 }

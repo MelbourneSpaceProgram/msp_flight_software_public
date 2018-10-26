@@ -181,7 +181,7 @@ enum MeasurableId {
     kSwCdhMcu2 = 174,
     kSwMcuReCount = 175,
     kConsoleMessage = 176,
-    kTestCurrent = 177,
+    kSdCardDumpMessage = 177,
     // Add new measurables below this line only
     kEpsBmsChargingInfoReading1 = 178,
     kEpsBmsCurrentsReading1 = 179,
@@ -195,6 +195,7 @@ enum MeasurableId {
     kEpsBmsSettingsReading2 = 187,
     kEpsBmsTemperatureReading2 = 188,
     kEpsBmsVoltagesReading2 = 189,
+    kTestCurrent = 190,
     kMeasurableIdEnd
 };
 
