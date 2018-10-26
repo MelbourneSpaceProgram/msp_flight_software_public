@@ -21,6 +21,7 @@
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/system/sensor_state_machines/battery_temp_state_machine.h>
+#include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
 #include <src/system/state_manager.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
@@ -70,13 +71,20 @@ void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
     AddCurrent(kComInI2, comms_adc_2, kAdcP0NGnd, 1, 0);
     AddCurrent(kComOutI2, comms_adc_2, kAdcP1NGnd, 1, 0);
 
+    StateManager *state_manager = StateManager::GetStateManager();
+    TelecomsTempStateMachine *telecoms_temp_state_machine =
+        static_cast<TelecomsTempStateMachine *>(
+            state_manager->GetStateMachine(kTelecomsTempStateMachine));
+
     Mcp9808 *comms_temp_1 =
         new Mcp9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
     Mcp9808 *comms_temp_2 =
         new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel3);
 
-    AddTemperature(kComT1, comms_temp_1);
-    AddTemperature(kComT2, comms_temp_2);
+    telecoms_temp_state_machine->RegisterWithSensor(
+        AddTemperature(kComT1, comms_temp_1));
+    telecoms_temp_state_machine->RegisterWithSensor(
+        AddTemperature(kComT2, comms_temp_2));
 }
 
 void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
@@ -335,10 +343,12 @@ void MeasurableManager::AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line,
     measurables[id] = current;
 }
 
-void MeasurableManager::AddTemperature(MeasurableId id, Mcp9808 *temp_sensor) {
+TemperatureMeasurable *MeasurableManager::AddTemperature(MeasurableId id,
+                                                         Mcp9808 *temp_sensor) {
     CheckValidId(id);
     TemperatureMeasurable *temp = new TemperatureMeasurable(temp_sensor);
     measurables[id] = temp;
+    return temp;
 }
 
 void MeasurableManager::AddBmsDieTempMeasurable(MeasurableId id, Bms *bms) {

@@ -16,6 +16,7 @@ class Mcp9808;
 class Bms;
 class MPU9250MotionTracker;
 class BmsBatteryTemperatureMeasurable;
+class TemperatureMeasurable;
 
 class MeasurableManager {
    public:
@@ -92,7 +93,8 @@ class MeasurableManager {
                     float scaling_factor);
     void AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line,
                     float scaling_factor, float zero_bias_point);
-    void AddTemperature(MeasurableId id, Mcp9808 *temp_sensor);
+    TemperatureMeasurable *AddTemperature(MeasurableId id,
+                                          Mcp9808 *temp_sensor);
     void AddBmsDieTempMeasurable(MeasurableId id, Bms *temp_sensor);
     BmsBatteryTemperatureMeasurable *AddBmsBatteryTempMeasurable(
         MeasurableId id, Bms *temp_sensor);
@@ -105,7 +107,7 @@ class MeasurableManager {
     void AddImuGyrometerMeasurable(MeasurableId id,
                                    MPU9250MotionTracker *imu_sensor);
     void AddImuAccelerometerMeasurable(MeasurableId id,
-                                      MPU9250MotionTracker *imu_sensor);
+                                       MPU9250MotionTracker *imu_sensor);
     void AddImuTemperatureMeasurable(MeasurableId id,
                                      MPU9250MotionTracker *imu_sensor);
     void AddImuMagnetometerMeasurable(

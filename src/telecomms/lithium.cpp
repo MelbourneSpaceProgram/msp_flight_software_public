@@ -25,7 +25,8 @@ uint8_t Lithium::command_success_count = 0;
 
 Lithium::Lithium()
     : uart(TELECOMS),
-      lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded) {
+      lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded),
+      state(0x00) {
     // Ensure Lithium is not in reset
     GPIO_write(nCOMMS_RST, 1);
 
@@ -72,7 +73,6 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
         Log_info0("Attempted to transmit, but transmit disabled");
         return false;
     }
-
     uint16_t serialised_size = command->GetSerialisedSize();
     if (serialised_size >= kMaxOutgoingCommandSize) {
         return false;
@@ -171,6 +171,25 @@ LithiumConfiguration Lithium::ReadLithiumConfiguration() const {
     if (!DoCommand(&config_command)) return invalid_configuration;
 
     return config_command.GetParsedResponse();
+}
+
+void Lithium::UnlockState(LithiumShutoffCondition condition) {
+    state = state & ~static_cast<uint8_t>(condition);
+
+    if (state == kLithiumOnCondition) {
+        lithium_transmit_enabled = true;
+    }
+}
+void Lithium::LockState(LithiumShutoffCondition condition) {
+    state = state | static_cast<uint8_t>(condition);
+
+    if (state != kLithiumOnCondition) {
+        lithium_transmit_enabled = false;
+    }
+}
+
+bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
+    return (state & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
 }
 
 Uart* Lithium::GetUart() { return &uart; }

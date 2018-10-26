@@ -17,6 +17,7 @@ class Lithium {
     friend class LithiumEnableCommand;
     friend class RunnableContinuousTransmitShutoff;  // For calculating
                                                      // transmission rate
+    friend class TelecomsTempStateMachine;
 
    public:
     static constexpr uint8_t kLithiumHeaderSize = 8;
@@ -39,6 +40,12 @@ class Lithium {
 
     static constexpr uint16_t kInterCommandTimeMilli = 250;
 
+    enum LithiumShutoffCondition {
+        kLithiumOnCondition = 0x0,
+        kCriticalTempCondition = 0x1,
+        kContinuousTransmitCondition = (0x1 << 1),
+    };
+
     static Lithium* GetInstance();  // Initial call is not thread safe
     static uint8_t GetTxCounter();
     static uint8_t GetRxCounter();
@@ -55,6 +62,10 @@ class Lithium {
     // tests
     void SetTransmitEnabled(bool lithium_enabled);
 
+    void LockState(LithiumShutoffCondition condition);
+    void UnlockState(LithiumShutoffCondition condition);
+    bool IsStateLocked(LithiumShutoffCondition condition);
+
    private:
     static Lithium* instance;
     static constexpr uint32_t kUartReadTimeoutMilli = 300;
@@ -66,6 +77,7 @@ class Lithium {
     static uint8_t rx_count;
     static uint8_t command_success_count;
     bool lithium_transmit_enabled;
+    uint8_t state;
 
     Mailbox_Params uplink_mailbox_params;
     Mailbox_Handle uplink_mailbox_handle;

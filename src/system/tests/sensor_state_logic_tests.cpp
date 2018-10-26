@@ -90,37 +90,3 @@ TEST(SensorStateLogic, TestBatteryChargeStateFlow) {
         dummy_soc_reading -= 0.01;
     }
 }
-
-TEST(SensorStateLogic, TestTelecomsTempStateFlow) {
-    StateManager* state_manager = StateManager::GetStateManager();
-    TelecomsTempStateMachine telecoms_temp_state_machine(state_manager);
-
-    TestI2cMeasurable telecoms_temp_sensor;
-    telecoms_temp_state_machine.RegisterWithSensor(&telecoms_temp_sensor);
-
-    double kMaxTemp = kTempTelecomsOperationalMax + 10;
-    double kMinTemp = 78;
-    double dummy_temp_reading = kMinTemp;
-    StateId state_before_reading;
-    while (dummy_temp_reading < kMaxTemp) {
-        state_before_reading = telecoms_temp_state_machine.GetCurrentState();
-        telecoms_temp_sensor.SetDummySensorData(dummy_temp_reading);
-        telecoms_temp_sensor.TakeReading();
-
-        CHECK_EQUAL(
-            TelecomsTempStateCheck(dummy_temp_reading, state_before_reading),
-            telecoms_temp_state_machine.GetCurrentState());
-        dummy_temp_reading += 1;
-    }
-
-    while (dummy_temp_reading > kMinTemp) {
-        state_before_reading = telecoms_temp_state_machine.GetCurrentState();
-        telecoms_temp_sensor.SetDummySensorData(dummy_temp_reading);
-        telecoms_temp_sensor.TakeReading();
-
-        CHECK_EQUAL(
-            TelecomsTempStateCheck(dummy_temp_reading, state_before_reading),
-            telecoms_temp_state_machine.GetCurrentState());
-        dummy_temp_reading -= 1;
-    }
-}

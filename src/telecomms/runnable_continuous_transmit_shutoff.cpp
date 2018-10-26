@@ -24,11 +24,13 @@ void RunnableContinuousTransmitShutoff::StartCounter() {
         TaskUtils::SleepMilli(kBucketSeconds * kMillisecondsInSecond);
 
         transmission_buckets[rolling_index] = bucket_count;
+        Lithium *lithium = Lithium::GetInstance();
 
         if (!TransmissionRateUnderThreshold() &&
-            Lithium::GetInstance()->IsTransmitEnabled()) {
-            Lithium::GetInstance()->SetTransmitEnabled(false);
-            Log_warning0(
+            !lithium->IsStateLocked(Lithium::kContinuousTransmitCondition)) {
+            // TODO(dingbenjamin): Unlock after timer
+            lithium->LockState(Lithium::kContinuousTransmitCondition);
+            Log_info0(
                 "Continuous Transmission Detected: Shutting off Lithium "
                 "Transmission");
         }

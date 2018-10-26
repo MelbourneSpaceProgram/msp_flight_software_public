@@ -16,6 +16,7 @@ enum StateId {
     kTelecoms1,
     kTelecoms2,
     kTelecomsNoState,
+    kTelecomsTempCriticalLow,
     kTelecomsTempNominal,
     kTelecomsTempCriticalHigh,
     kMcuRedundancy0,
