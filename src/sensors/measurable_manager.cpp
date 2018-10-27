@@ -18,11 +18,7 @@
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/magnetometer_calibration.h>
-#include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
-#include <src/system/sensor_state_machines/battery_temp_state_machine.h>
-#include <src/system/sensor_state_machines/telecoms_temp_state_machine.h>
-#include <src/system/state_manager.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
 
@@ -71,20 +67,10 @@ void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
     AddCurrent(kComInI2, comms_adc_2, kAdcP0NGnd, 1, 0);
     AddCurrent(kComOutI2, comms_adc_2, kAdcP1NGnd, 1, 0);
 
-    StateManager *state_manager = StateManager::GetStateManager();
-    TelecomsTempStateMachine *telecoms_temp_state_machine =
-        static_cast<TelecomsTempStateMachine *>(
-            state_manager->GetStateMachine(kTelecomsTempStateMachine));
-
     Mcp9808 *comms_temp_1 =
         new Mcp9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
     Mcp9808 *comms_temp_2 =
         new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel3);
-
-    telecoms_temp_state_machine->RegisterWithSensor(
-        AddTemperature(kComT1, comms_temp_1));
-    telecoms_temp_state_machine->RegisterWithSensor(
-        AddTemperature(kComT2, comms_temp_2));
 }
 
 void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
@@ -118,16 +104,6 @@ void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
 
     Bms *bms_bus_d = new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
     Bms *bms_bus_c = new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
-
-    StateManager *state_manager = StateManager::GetStateManager();
-    BatteryTempStateMachine *battery_temp_state_machine =
-        static_cast<BatteryTempStateMachine *>(
-            state_manager->GetStateMachine(kBatteryTempStateMachine));
-
-    battery_temp_state_machine->RegisterWithSensor(
-        AddBmsBatteryTempMeasurable(kEpsBmsBatT1, bms_bus_d));
-    battery_temp_state_machine->RegisterWithSensor(
-        AddBmsBatteryTempMeasurable(kEpsBmsBatT2, bms_bus_c));
 
     // TODO(hugorilla): Remove redundant BMS measurables here
     AddTemperature(kEpsT1, power_temp_1);

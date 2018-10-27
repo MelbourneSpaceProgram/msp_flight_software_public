@@ -17,9 +17,18 @@ class Lithium {
     friend class LithiumEnableCommand;
     friend class RunnableContinuousTransmitShutoff;  // For calculating
                                                      // transmission rate
-    friend class TelecomsTempStateMachine;
-
    public:
+    enum kLithiumState {
+        kLithiumTempCriticalLow = 0,
+        kLithiumTempNominal = 1,
+        kLithiumTempCriticalHigh = 2
+    };
+
+    static constexpr int8_t kLithiumTempOperationalMax = 60;
+    static constexpr int8_t kLithiumTempOperationalMin = -20;
+    static constexpr int8_t kHysteresis = 5;
+    static constexpr int8_t kLithiumTempOperationalNominal = 20;
+
     static constexpr uint8_t kLithiumHeaderSize = 8;
     static constexpr uint8_t kLithiumTailSize = 2;
     static constexpr uint8_t kLithiumSyncSize = 2;
@@ -62,6 +71,7 @@ class Lithium {
     // tests
     void SetTransmitEnabled(bool lithium_enabled);
 
+    void UpdateState();
     void LockState(LithiumShutoffCondition condition);
     void UnlockState(LithiumShutoffCondition condition);
     bool IsStateLocked(LithiumShutoffCondition condition);
@@ -76,6 +86,8 @@ class Lithium {
     static uint8_t tx_count;
     static uint8_t rx_count;
     static uint8_t command_success_count;
+
+    Uart uart;
     bool lithium_transmit_enabled;
     uint8_t state;
 
@@ -88,8 +100,6 @@ class Lithium {
     // TODO(wschuetz): Review the number of the payloads that can be stored in
     // the mailbox at any one time.
     static constexpr uint8_t kMaxNumberOfPayloads = 2;
-
-    Uart uart;
 
     Lithium();
     Uart* GetUart();

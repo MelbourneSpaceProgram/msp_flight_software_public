@@ -18,9 +18,6 @@
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
-#include <src/system/state_definitions.h>
-#include <src/system/state_manager.h>
-#include <src/system/system_state_machines/power_state_machine.h>
 #include <src/util/matrix.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
@@ -72,7 +69,6 @@ void RunnableOrientationControl::ControlOrientation() {
         RunnableOrientationControl::kControlLoopPeriodMicros * 1e-3,
         kBDotEstimatorTimeConstantMillis);
 
-    StateManager* state_manager = StateManager::GetStateManager();
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
     if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
@@ -91,15 +87,7 @@ void RunnableOrientationControl::ControlOrientation() {
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
-        StateId adcs_state =
-            state_manager->GetCurrentStateOfStateMachine(kAdcsStateMachine);
-
-        if (adcs_state == kAdcsOff) {
-            Log_warning0("Orientation Control Disabled.");
-            // Execution goes back to the semaphore pend and waits for next
-            // enable from the timer
-            continue;
-        }
+        // TODO(dingbenjamin): Check if we should turn orientation control off
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 

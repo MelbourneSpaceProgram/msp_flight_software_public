@@ -1,7 +1,9 @@
 #include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/config/satellite.h>
+#include <src/messages/TemperatureReading.pb.h>
 #include <src/messages/serialised_message.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/lithium_command.h>
@@ -26,7 +28,7 @@ uint8_t Lithium::command_success_count = 0;
 Lithium::Lithium()
     : uart(TELECOMS),
       lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded),
-      state(0x00) {
+      state(kLithiumTempNominal) {
     // Ensure Lithium is not in reset
     GPIO_write(nCOMMS_RST, 1);
 
@@ -68,11 +70,15 @@ Lithium::Lithium()
 }
 
 bool Lithium::DoCommand(LithiumCommand* command) const {
-    if (command->GetCommandCode() == kTransmitCommandCode &&
-        !lithium_transmit_enabled) {
-        Log_info0("Attempted to transmit, but transmit disabled");
-        return false;
+    if (command->GetCommandCode() == kTransmitCommandCode) {
+        // Check for permission to transmit
+        UpdateState();
+        if (!lithium_transmit_enabled) {
+            Log_info0("Attempted to transmit, but transmit disabled");
+            return false;
+        }
     }
+
     uint16_t serialised_size = command->GetSerialisedSize();
     if (serialised_size >= kMaxOutgoingCommandSize) {
         return false;
@@ -148,8 +154,8 @@ LithiumTelemetry Lithium::ReadLithiumTelemetry() const {
 
     if (!DoCommand(&query)) return invalid_telemetry;
 
-    // Sometimes the Lithium returns a telemetry packet filled with zeroes, if
-    // this is the case we should query again
+    // Sometimes the Lithium returns a telemetry packet filled with
+    // zeroes, if this is the case we should query again
     if (!TelemetryQueryCommand::CheckValidTelemetry(
             query.GetParsedResponse())) {
         // Try again if we get an invalid telemetry
@@ -190,6 +196,68 @@ void Lithium::LockState(LithiumShutoffCondition condition) {
 
 bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
     return (state & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
+}
+
+void Lithium::UpdateState() {
+    // TODO(dingbenjamin): Use the Lithium internal temperature sensor
+    float telecomms_1_temp =
+        MeasurableManager::GetInstance()
+            ->ReadNanopbMeasurable<TemperatureReading>(kComT1, 10000)
+            .temp;
+    float telecomms_2_temp =
+        MeasurableManager::GetInstance()
+            ->ReadNanopbMeasurable<TemperatureReading>(kComT2, 10000)
+            .temp;
+    void UpdateState();
+
+    // Disregard invalid sensor readings
+    if (telecomms_1_temp == kInvalidDouble)
+        telecomms_1_temp = kLithiumTempOperationalNominal;
+    if (telecomms_2_temp == kInvalidDouble)
+        telecomms_2_temp = kLithiumTempOperationalNominal;
+
+    switch (state) {
+        case kLithiumTempCriticalLow:
+            if ((telecomms_1_temp > kLithiumTempOperationalMin) &&
+                (telecomms_2_temp > kLithiumTempOperationalMin)) {
+                Log_info0(
+                    "Telecomms temperature nominal: turning on "
+                    "Lithium");
+                Lithium::GetInstance()->UnlockState(
+                    Lithium::kCriticalTempCondition);
+            }
+            break;
+        case kLithiumTempNominal:
+            if ((telecomms_1_temp > kLithiumTempOperationalMax + kHysteresis) ||
+                (telecomms_2_temp > kLithiumTempOperationalMax + kHysteresis)) {
+                Log_info0(
+                    "Telecomms temperature critical high: Shutting off "
+                    "Lithium");
+                Lithium::GetInstance()->LockState(
+                    Lithium::kCriticalTempCondition);
+
+            } else if ((telecomms_1_temp <
+                        kLithiumTempOperationalMin - kHysteresis) ||
+                       (telecomms_1_temp <
+                        kLithiumTempOperationalMin - kHysteresis)) {
+                Log_info0(
+                    "Telecomms temperature critical low: Shutting off "
+                    "Lithium");
+                Lithium::GetInstance()->LockState(
+                    Lithium::kCriticalTempCondition);
+            }
+            break;
+        case kLithiumTempCriticalHigh:
+            if ((telecomms_1_temp < kLithiumTempOperationalMax) &&
+                (telecomms_2_temp < kLithiumTempOperationalMax)) {
+                Log_info0(
+                    "Telecomms temperature nominal: turning on "
+                    "Lithium");
+                Lithium::GetInstance()->UnlockState(
+                    Lithium::kCriticalTempCondition);
+            }
+            break;
+    }
 }
 
 Uart* Lithium::GetUart() { return &uart; }
