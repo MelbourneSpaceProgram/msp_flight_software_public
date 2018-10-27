@@ -78,6 +78,9 @@ TEST(Bms, TestBmsChargingInfoRead) {
               bms_charging_info_reading_1.q_count_delta ==
           Bms::kQCountInitial);
 
+    CHECK_FALSE(bms_charging_info_reading_1.timestamp_ms ==
+                BmsChargingInfoReading_timestamp_ms_default);
+
     // BMS 2 tests
     CHECK(bms_charging_info_reading_2.system_status ==
               BmsChargingInfoReading_SystemStatus_kChargeDisable ||
@@ -132,7 +135,8 @@ TEST(Bms, TestBmsChargingInfoRead) {
               bms_charging_info_reading_2.q_count_delta ==
           Bms::kQCountInitial);
 
-    // TODO(hugorilla): Check timestamps
+    CHECK_FALSE(bms_charging_info_reading_2.timestamp_ms ==
+                BmsChargingInfoReading_timestamp_ms_default);
 }
 
 TEST(Bms, TestBmsCurrentsReading) {
@@ -153,6 +157,9 @@ TEST(Bms, TestBmsCurrentsReading) {
                 BmsCurrentsReading_input_current_default);
     DOUBLES_EQUAL(0, bms_currents_reading_1.input_current, 1.0);
 
+    CHECK_FALSE(bms_currents_reading_1.timestamp_ms ==
+                BmsCurrentsReading_timestamp_ms_default);
+
     // BMS 2 tests
     CHECK_FALSE(bms_currents_reading_2.battery_current ==
                 BmsCurrentsReading_battery_current_default);
@@ -162,7 +169,8 @@ TEST(Bms, TestBmsCurrentsReading) {
                 BmsCurrentsReading_input_current_default);
     DOUBLES_EQUAL(0, bms_currents_reading_2.input_current, 1.0);
 
-    // TODO(hugorilla): Check timestamps
+    CHECK_FALSE(bms_currents_reading_2.timestamp_ms ==
+                BmsCurrentsReading_timestamp_ms_default);
 }
 
 TEST(Bms, TestBmsOperationValuesReading) {
@@ -191,6 +199,9 @@ TEST(Bms, TestBmsOperationValuesReading) {
           ((Bms::kQCountPrescaleFactorConfigurationUBValue << 8) |
            Bms::kQCountPrescaleFactorConfigurationLBValue));
 
+    CHECK_FALSE(bms_operation_values_reading_1.timestamp_ms ==
+                BmsOperationValuesReading_timestamp_ms_default);
+
     // BMS 2 tests
     CHECK_FALSE(bms_operation_values_reading_2.recharge_threshold ==
                 BmsOperationValuesReading_recharge_threshold_default);
@@ -208,7 +219,8 @@ TEST(Bms, TestBmsOperationValuesReading) {
           ((Bms::kQCountPrescaleFactorConfigurationUBValue << 8) |
            Bms::kQCountPrescaleFactorConfigurationLBValue));
 
-    // TODO(hugorilla): Check timestamps
+    CHECK_FALSE(bms_operation_values_reading_2.timestamp_ms ==
+                BmsOperationValuesReading_timestamp_ms_default);
 }
 
 TEST(Bms, TestBmsSettingsRead) {
@@ -224,12 +236,12 @@ TEST(Bms, TestBmsSettingsRead) {
     CHECK_FALSE(bms_settings_reading_1.v_charge_setting ==
                 BmsSettingsReading_v_charge_setting_default);
     CHECK(bms_settings_reading_1.v_charge_setting ==
-          Bms::kVchargeSettingConfigurationValue);
+          Bms::kVchargeSettingAllJeitaRegionsValue);
 
     CHECK_FALSE(bms_settings_reading_1.i_charge_target ==
                 BmsSettingsReading_i_charge_target_default);
     CHECK(bms_settings_reading_1.i_charge_target ==
-          Bms::kIChargeTargetConfigurationValue);
+          Bms::kIChargeTargetAllJeitaRegionsValue);
 
     CHECK_FALSE(bms_settings_reading_1.v_in_uvcl_setting ==
                 BmsSettingsReading_v_in_uvcl_setting_default);
@@ -248,16 +260,24 @@ TEST(Bms, TestBmsSettingsRead) {
 
     CHECK(bms_settings_reading_1.telemetry_valid);
 
+    CHECK_FALSE(bms_settings_reading_1.timestamp_ms ==
+                BmsSettingsReading_timestamp_ms_default);
+
     // BMS 2 tests
     CHECK_FALSE(bms_settings_reading_2.v_charge_setting ==
                 BmsSettingsReading_v_charge_setting_default);
     CHECK(bms_settings_reading_2.v_charge_setting ==
-          Bms::kVchargeSettingConfigurationValue);
+          Bms::kVchargeSettingAllJeitaRegionsValue);
 
     CHECK_FALSE(bms_settings_reading_2.i_charge_target ==
                 BmsSettingsReading_i_charge_target_default);
+    // TODO(hugorilla): Work out why this is failing
+    /* i_charge_target has a value of 1 both before and after
+     * the configuration write to this register, despite the fact
+     * that the I2C transaction is successful (by returning 'true'
+     */
     CHECK(bms_settings_reading_2.i_charge_target ==
-          Bms::kIChargeTargetConfigurationValue);
+          Bms::kIChargeTargetAllJeitaRegionsValue);
 
     CHECK_FALSE(bms_settings_reading_2.v_in_uvcl_setting ==
                 BmsSettingsReading_v_in_uvcl_setting_default);
@@ -276,7 +296,8 @@ TEST(Bms, TestBmsSettingsRead) {
 
     CHECK(bms_settings_reading_2.telemetry_valid);
 
-    // TODO(hugorilla): Check timestamps
+    CHECK_FALSE(bms_settings_reading_2.timestamp_ms ==
+                BmsSettingsReading_timestamp_ms_default);
 }
 
 TEST(Bms, TestBmsTemperatureReading) {
@@ -303,6 +324,9 @@ TEST(Bms, TestBmsTemperatureReading) {
     CHECK(bms_temperature_reading_1.jeita_region >= 1 &&
           bms_temperature_reading_1.jeita_region <= 7);
 
+    CHECK_FALSE(bms_temperature_reading_1.timestamp_ms ==
+                BmsTemperatureReading_timestamp_ms_default);
+
     // BMS 2 tests
     CHECK_FALSE(bms_temperature_reading_2.die_temperature ==
                 BmsTemperatureReading_die_temperature_default);
@@ -317,7 +341,8 @@ TEST(Bms, TestBmsTemperatureReading) {
     CHECK(bms_temperature_reading_2.jeita_region >= 1 &&
           bms_temperature_reading_2.jeita_region <= 7);
 
-    // TODO(hugorilla): Check timestamps
+    CHECK_FALSE(bms_temperature_reading_2.timestamp_ms ==
+                BmsTemperatureReading_timestamp_ms_default);
 }
 
 TEST(Bms, TestBmsVoltagesReading) {
@@ -343,6 +368,9 @@ TEST(Bms, TestBmsVoltagesReading) {
                 BmsVoltagesReading_input_voltage_default);
     DOUBLES_EQUAL(0, bms_voltages_reading_1.input_voltage, 6.0);
 
+    CHECK_FALSE(bms_voltages_reading_1.timestamp_ms ==
+                BmsVoltagesReading_timestamp_ms_default);
+
     // BMS 2 tests
     CHECK_FALSE(bms_voltages_reading_2.battery_voltage ==
                 BmsVoltagesReading_battery_voltage_default);
@@ -356,5 +384,6 @@ TEST(Bms, TestBmsVoltagesReading) {
                 BmsVoltagesReading_input_voltage_default);
     DOUBLES_EQUAL(0, bms_voltages_reading_2.input_voltage, 6.0);
 
-    // TODO(hugorilla): Check timestamps
+    CHECK_FALSE(bms_voltages_reading_2.timestamp_ms ==
+                BmsVoltagesReading_timestamp_ms_default);
 }

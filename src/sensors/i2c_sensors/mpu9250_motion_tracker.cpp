@@ -343,7 +343,7 @@ void MPU9250MotionTracker::SetMagnetometerOutputBitSetting(
 
 void MPU9250MotionTracker::ConfigureMagnetometer() {
     byte package[2];
-    package[0] = 0x0A;  // TODO(hugorilla) Chnage this!
+    package[0] = kInternalMagnetometerAddress;
     package[1] =
         (magnetometer_output_bit_setting << 4) | magnetometer_operation_mode;
     PerformWriteTransaction(kInternalMagnetometerAddress, package, 2);

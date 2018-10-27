@@ -10,11 +10,12 @@ Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
 }
 
 void Bms::SetConfiguration() {
-    WriteToRegister(kVchargeSettingRegisterLocation,
-                    kVchargeSettingConfigurationValue, kEmptyBufferValue);
+    WriteToRegister(kChargerConfigBitsRegisterLocation,
+                    kChargerConfigBitsConfigurationValue, kEmptyBufferValue);
 
-    WriteToRegister(kIchargeTargetRegisterLocation,
-                    kIChargeTargetConfigurationValue, kEmptyBufferValue);
+    WriteToRegister(kConfigBitsRegisterLocation,
+                    kConfigBitsConfigurationLBValue,
+                    kConfigBitsConfigurationUBValue);
 
     WriteToRegister(kRechargeThresholdRegisterLocation,
                     kRechargeThresholdConfigurationLBValue,
@@ -22,9 +23,6 @@ void Bms::SetConfiguration() {
 
     WriteToRegister(kMaxCvTimeRegisterLocation, kMaxCvTimeConfigurationValue,
                     kEmptyBufferValue);
-
-    WriteToRegister(kChargerConfigBitsRegisterLocation,
-                    kChargerConfigBitsConfigurationValue, kEmptyBufferValue);
 
     WriteToRegister(kCOverXThresholdRegisterLocation,
                     kCOverXThresholdConfigurationLBValue,
@@ -48,10 +46,6 @@ void Bms::SetConfiguration() {
     WriteToRegister(kIchargeJeita2to4RegisterLocation,
                     kIchargeJeita2to4ConfigurationLBValue,
                     kIchargeJeita2to4ConfigurationUBValue);
-
-    WriteToRegister(kConfigBitsRegisterLocation,
-                    kConfigBitsConfigurationLBValue,
-                    kConfigBitsConfigurationUBValue);
 
     WriteToRegister(kQCountRegisterLocation,
                     kQCountRegisterConfigurationLBValue,

@@ -15,24 +15,12 @@
 class I2c;
 
 class Bms : public I2cDevice {
-    // TODO(hugorilla): clean up private-public-private mess by making the Bms
-    // TEST a friend class
-   private:
-    /* bit masks */
-    static constexpr uint16_t kTelemetryValidBitMask = 0x0001;
-    static constexpr uint16_t kConstantVoltageBitMask = 0x0001;
-    static constexpr uint16_t kConstantCurrentBitMask = 0x0002;
-    static constexpr uint16_t kIinLimitActiveBitMask = 0x0004;
-    static constexpr uint16_t kVinLimitActiveBitMask = 0x0008;
-    static constexpr uint16_t kChargeStatusBitMask = 0x000F;
-    static constexpr uint16_t kChargeStatusNotCharging = 0x0000;
-    static constexpr uint16_t kChargeEnableBitMask = 0x2000;
-    static constexpr uint16_t kJeitaRegionBitMask = 0x0007;
-    static constexpr uint16_t kChargerConfigBitMask = 0x0007;
-    static constexpr uint16_t kVchargeSettingBitMask = 0x001F;
-    static constexpr uint16_t kIchargeTargetBitMask = 0x000F;
-    static constexpr uint16_t kUpperByteBitMask = 0xFF00;
-    static constexpr uint16_t kLowerByteBitMask = 0x00FF;
+    friend class TEST_Bms_TestBmsChargingInfoRead_Test;
+    friend class TEST_Bms_TestBmsCurrentsReading_Test;
+    friend class TEST_Bms_TestBmsOperationValuesReading_Test;
+    friend class TEST_Bms_TestBmsSettingsRead_Test;
+    friend class TEST_Bms_TestBmsTemperatureReading_Test;
+    friend class TEST_Bms_TestBmsVoltagesReading_Test;
 
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
@@ -78,41 +66,9 @@ class Bms : public I2cDevice {
 
     /* Coulomb counting constants */
     static constexpr uint16_t kQCountFullCharge = 60000;
-    static constexpr uint16_t kQCountInitial = 12000;  // 20% of kQCountFullCharge
+    static constexpr uint16_t kQCountInitial =
+        12000;  // 20% of kQCountFullCharge
     static constexpr uint16_t kQCountPrescaleFactor = 28;
-
-    /* initial configuration values */
-    static constexpr byte kChargerConfigBitsConfigurationValue =
-        0x05;  // assert en_jeita and en_c_over_x_term
-    static constexpr byte kCOverXThresholdConfigurationLBValue = 0x88;
-    static constexpr byte kCOverXThresholdConfigurationUBValue = 0x00;
-    static constexpr byte kJeitaT1ConfigurationLBValue = 0x07;
-    static constexpr byte kJeitaT1ConfigurationUBValue = 0x4B;
-    static constexpr byte kVchargeJeita5to6ConfigurationLBValue = 0x73;
-    static constexpr byte kVchargeJeita5to6ConfigurationUBValue = 0x02;
-    static constexpr byte kVchargeJeita2to4ConfigurationLBValue = 0x73;
-    static constexpr byte kVchargeJeita2to4ConfigurationUBValue = 0x4E;
-    static constexpr byte kMaxCvTimeConfigurationValue = 0x00;
-    static constexpr byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
-    static constexpr byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
-    static constexpr byte kQCountRegisterConfigurationLBValue =
-        (Bms::kQCountInitial & kLowerByteBitMask);
-    static constexpr byte kQCountRegisterConfigurationUBValue =
-        (Bms::kQCountInitial & kUpperByteBitMask) >> 8;
-    static constexpr byte kConfigBitsConfigurationLBValue = 0x04;
-    static constexpr byte kConfigBitsConfigurationUBValue = 0x00;
-    static constexpr byte kVchargeSettingConfigurationValue = 0x13;
-    static constexpr byte kIChargeTargetConfigurationValue = 0x07;
-    static constexpr byte kEmptyBufferValue = 0x00;
-    static constexpr byte kRechargeThresholdConfigurationLBValue = 0x0C;
-    static constexpr byte kRechargeThresholdConfigurationUBValue = 0x43;
-
-    // Direct Energy Transfer mode
-    static constexpr byte kIchargeJeita5to6ConfigurationLBValue = 0x21;
-    static constexpr byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
-    static constexpr byte kIchargeJeita2to4ConfigurationLBValue = 0x21;
-    static constexpr byte kIchargeJeita2to4ConfigurationUBValue = 0x04;
-    static constexpr byte kVinUvclSettingConfigurationValue = 0x00;
 
    private:
     /* conversion methods */
@@ -185,6 +141,66 @@ class Bms : public I2cDevice {
     static constexpr byte kChemCellsRegisterLocation = 0x43;
     static constexpr byte kMeasSysValidRegisterLocation = 0x4A;
 
+    /* bit masks */
+    static const uint16_t kTelemetryValidBitMask = 0x0001;
+    static const uint16_t kConstantVoltageBitMask = 0x0001;
+    static const uint16_t kConstantCurrentBitMask = 0x0002;
+    static const uint16_t kIinLimitActiveBitMask = 0x0004;
+    static const uint16_t kVinLimitActiveBitMask = 0x0008;
+    static const uint16_t kChargeStatusBitMask = 0x000F;
+    static const uint16_t kChargeStatusNotCharging = 0x0000;
+    static const uint16_t kChargeEnableBitMask = 0x2000;
+    static const uint16_t kJeitaRegionBitMask = 0x0007;
+    static const uint16_t kChargerConfigBitMask = 0x0007;
+    static const uint16_t kVchargeSettingBitMask = 0x001F;
+    static const uint16_t kIchargeTargetBitMask = 0x001F;
+    static const uint16_t kUpperByteBitMask = 0xFF00;
+    static const uint16_t kLowerByteBitMask = 0x00FF;
+
+    /* initial configuration values */
+    static const byte kChargerConfigBitsConfigurationValue =
+        0x05;  // assert en_jeita and en_c_over_x_term
+    static const byte kCOverXThresholdConfigurationLBValue = 0x88;
+    static const byte kCOverXThresholdConfigurationUBValue = 0x00;
+    static const byte kJeitaT1ConfigurationLBValue = 0x07;
+    static const byte kJeitaT1ConfigurationUBValue = 0x4B;
+    static const byte kVchargeJeita5to6ConfigurationLBValue = 0x73;
+    static const byte kVchargeJeita5to6ConfigurationUBValue = 0x02;
+    static const byte kVchargeJeita2to4ConfigurationLBValue = 0x73;
+    static const byte kVchargeJeita2to4ConfigurationUBValue = 0x4E;
+    static const byte kMaxCvTimeConfigurationValue = 0x00;
+    static const byte kQCountPrescaleFactorConfigurationLBValue = 0x03;
+    static const byte kQCountPrescaleFactorConfigurationUBValue = 0x00;
+    static const byte kQCountRegisterConfigurationLBValue =
+        (Bms::kQCountInitial & kLowerByteBitMask);
+    static const byte kQCountRegisterConfigurationUBValue =
+        (Bms::kQCountInitial & kUpperByteBitMask) >> 8;
+    static const byte kConfigBitsConfigurationLBValue =
+        0x04;  // enable coloumb counter
+    static const byte kConfigBitsConfigurationUBValue = 0x00;
+    static const byte kEmptyBufferValue = 0x00;
+    static const byte kRechargeThresholdConfigurationLBValue = 0x0C;
+    static const byte kRechargeThresholdConfigurationUBValue = 0x43;
+
+    // Direct Energy Transfer mode
+    static const byte kIchargeJeita5to6ConfigurationLBValue = 0x21;
+    static const byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
+    static const byte kIchargeJeita2to4ConfigurationLBValue = 0x21;
+    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x04;
+    static const byte kVinUvclSettingConfigurationValue = 0x00;
+
+    // Value for registers with values determined by JEITA region
+    static const byte kVchargeSettingAllJeitaRegionsValue =
+        0x13;  // 0x13 = 0b10011 is repeated in a 5-bit unit to produce the
+               // kVchargeJeita2to4Configuration and
+               // kVchargeJeita5to6Configuration values, which set the
+               // v_charge_setting register to 0x13 in every JEITA region
+    static const byte kIChargeTargetAllJeitaRegionsValue =
+        0x01;  // 0x01 = 0b00001 us repeated in a 5-bit unit to produce the
+               // kIchargeJeita2to4Configuration and
+               // kIchargeJeita5to6Configuration values, which set the
+               // i_charge_setting register to 0x13 in every JEITA region
+
     /* conversion constants */
     static constexpr double kVchargeDivisionFactor = 80.0;
     static constexpr double kVchargeAdditionFactor = 3.4125;
@@ -206,7 +222,8 @@ class Bms : public I2cDevice {
 
     static constexpr double kRSnsbResistance = 0.033;
     static constexpr double kRSnsiResistance = 0.002;
-    static constexpr double kLithiumBatteryVoltageConversionFactor = 0.000192264;
+    static constexpr double kLithiumBatteryVoltageConversionFactor =
+        0.000192264;
     static constexpr double kBatteryCurrentConversionFactor =
         0.00000146487 / kRSnsbResistance;
     static constexpr double kSystemVoltageConversionFactor = 0.001648;

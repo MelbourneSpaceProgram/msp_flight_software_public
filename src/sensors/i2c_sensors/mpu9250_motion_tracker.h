@@ -120,7 +120,7 @@ class MPU9250MotionTracker : public I2cDevice {
     static constexpr byte kRoomTempOffset = 21;
 
     // magnetometer constants
-    static constexpr byte kInternalMagnetometerAddress = 12;
+    static constexpr byte kInternalMagnetometerAddress = 0x0C;
     static constexpr byte kMagnetometerOverflowBitMask = 0x08;
 
     // register locations of the gyroscope and accelerometer configuration
