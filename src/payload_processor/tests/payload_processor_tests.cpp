@@ -14,8 +14,9 @@
 #include <src/payload_processor/commands/test_command.h>
 #include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
-#include <src/sensors/measurable_manager.h>
+#include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/measurable_id.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/etl_utils.h>
@@ -27,20 +28,25 @@
 
 TEST_GROUP(PayloadProcessor){};
 
+void BuildTwoTestCommands(byte payload_buffer[]) {
+    // Build two test commands
+    payload_buffer[0] = 1;
+    payload_buffer[1] = 0;
+    payload_buffer[2] = TestCommand::kTestValue1;
+    payload_buffer[3] = TestCommand::kTestValue2;
+    payload_buffer[4] = 1;
+    payload_buffer[5] = 0;
+    payload_buffer[6] = TestCommand::kTestValue1;
+    payload_buffer[7] = TestCommand::kTestValue2;
+    payload_buffer[8] = PayloadProcessor::GetEndTerminator();
+    payload_buffer[9] = PayloadProcessor::GetEndTerminator();
+}
+
 TEST(PayloadProcessor, TestPayloadProcessor) {
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
 
     // Set the bytes necessary for 2 x test command
-    payload[0] = 1;
-    payload[1] = 0;
-    payload[2] = TestCommand::kTestValue1;
-    payload[3] = TestCommand::kTestValue2;
-    payload[4] = 1;
-    payload[5] = 0;
-    payload[6] = TestCommand::kTestValue1;
-    payload[7] = TestCommand::kTestValue2;
-    payload[8] = PayloadProcessor::GetEndTerminator();
-    payload[9] = PayloadProcessor::GetEndTerminator();
+    BuildTwoTestCommands(payload);
 
     PayloadProcessor payload_processor;
     CHECK(payload_processor.ParseAndExecuteCommands(payload));
@@ -195,9 +201,9 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
 
         // Put requested timestamp in the buffer
         Time requested_time = SatelliteTimeSource::GetTime();
-        NanopbEncode(Time)(
-            buffer + PayloadProcessor::GetCommandCodeLength() + sizeof(uint16_t),
-            requested_time);
+        NanopbEncode(Time)(buffer + PayloadProcessor::GetCommandCodeLength() +
+                               sizeof(uint16_t),
+                           requested_time);
 
         // Create a CircularBuffer and put a value in it
         char filename[4];
@@ -205,16 +211,83 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
         CircularBufferNanopb(CurrentReading)::Create(filename, 10);
 
         CurrentReading test_current =
-            MeasurableManager::GetInstance()->ReadNanopbMeasurable<CurrentReading>(
-                kComInI2, 0);
-        CircularBufferNanopb(CurrentReading)::WriteMessage(filename, test_current);
+            MeasurableManager::GetInstance()
+                ->ReadNanopbMeasurable<CurrentReading>(kComInI2, 0);
+        CircularBufferNanopb(CurrentReading)::WriteMessage(filename,
+                                                           test_current);
 
         PayloadProcessor payload_processor;
         CHECK(payload_processor.ParseAndExecuteCommands(buffer));
 
         SdCard::GetInstance()->FileDelete(filename);
-        } catch (etl::exception& e) {
-            EtlUtils::LogException(e);
-            FAIL("Uncaught exception in test");
-        }
+    } catch (etl::exception& e) {
+        EtlUtils::LogException(e);
+        FAIL("Uncaught exception in test");
+    }
+}
+
+TEST(PayloadProcessor, TestSequence) {
+    PayloadProcessor payload_processor;
+    RunnablePayloadProcessor::check_sequence = true;
+    RunnablePayloadProcessor::check_hmac = false;
+    RunnablePayloadProcessor::use_fec = false;
+    RunnablePayloadProcessor::sequence = 0;
+
+    // Build a command that is reused in the test
+    // Don't need to set HMAC or FEC as these are turned off for now
+    byte rpp_payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    BuildTwoTestCommands(
+        &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]);
+
+    // Check start
+    for (uint16_t i = 0; i <= 50; i++) {
+        rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex] =
+            static_cast<uint8_t>(i >> 8);
+        rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] =
+            static_cast<uint8_t>(i % 256);
+        CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
+        CHECK(payload_processor.ParseAndExecuteCommands(
+            &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+
+        // Check invalid
+        CHECK_FALSE(RunnablePayloadProcessor::CheckSequence(rpp_payload));
+    }
+
+    // Check end (skip the middle)
+    RunnablePayloadProcessor::sequence = 65530;
+
+    for (uint16_t i = RunnablePayloadProcessor::sequence; i < UINT16_MAX; i++) {
+        rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex] =
+            static_cast<uint8_t>(i >> 8);
+        rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] =
+            static_cast<uint8_t>(i % 256);
+        CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
+        CHECK(payload_processor.ParseAndExecuteCommands(
+            &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+
+        // Check invalid
+        CHECK_FALSE(RunnablePayloadProcessor::CheckSequence(rpp_payload));
+    }
+
+    // Check last value and wraparound
+
+    rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex] =
+        static_cast<uint8_t>(UINT16_MAX >> 8);
+    rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] =
+        static_cast<uint8_t>(UINT16_MAX % 256);
+    CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
+    CHECK(payload_processor.ParseAndExecuteCommands(
+        &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+
+    rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex] = 0;
+    rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] = 0;
+    CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
+    CHECK(payload_processor.ParseAndExecuteCommands(
+        &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+
+    // TODO(dingbenjamin): Move this to teardown
+    RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;
+    RunnablePayloadProcessor::check_hmac = kCheckHmacDefault;
+    RunnablePayloadProcessor::use_fec = kUseFecDefault;
+    RunnablePayloadProcessor::sequence = 0;
 }

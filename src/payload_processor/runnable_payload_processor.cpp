@@ -147,8 +147,11 @@ bool RunnablePayloadProcessor::CheckSequence(const byte msp_packet[]) {
         (static_cast<uint16_t>(msp_packet[kMspSequenceNumberIndex]) << 8) +
         static_cast<uint16_t>(msp_packet[kMspSequenceNumberIndex + 1]);
     if (received_sequence != sequence) {
+        // TODO(dingbenjamin): Mute logs in unit test
+#if not defined TEST_CONFIGURATION
         Log_error2("Received sequence %d does not match current sequence %d",
                    received_sequence, sequence);
+#endif
         return false;
     }
     sequence = sequence == UINT16_MAX ? 0 : sequence + 1;
