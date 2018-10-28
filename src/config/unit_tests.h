@@ -57,6 +57,6 @@ static constexpr bool kDitlMode = false;
 // Run everything but this test
 // static const char* test_args[] = {"exe", "-xn", "NameOfTest"};
 
-static const char* test_args[] = {"exe", "-sg", "Bms"};
+static const char* test_args[] = {"exe"};
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
