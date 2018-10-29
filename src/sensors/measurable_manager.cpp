@@ -18,6 +18,7 @@
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/magnetometer_calibration.h>
+#include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
@@ -71,6 +72,9 @@ void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
         new Mcp9808(bus_a, 0x18, mux_a, I2cMultiplexer::kMuxChannel3);
     Mcp9808 *comms_temp_2 =
         new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel3);
+
+    AddTemperature(kComT1, comms_temp_1);
+    AddTemperature(kComT2, comms_temp_2);
 }
 
 void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
@@ -108,6 +112,8 @@ void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     // TODO(hugorilla): Remove redundant BMS measurables here
     AddTemperature(kEpsT1, power_temp_1);
     AddTemperature(kEpsT2, power_temp_2);
+    AddBmsBatteryTempMeasurable(kEpsBmsBatT1, bms_bus_d);
+    AddBmsBatteryTempMeasurable(kEpsBmsBatT2, bms_bus_c);
     AddBmsDieTempMeasurable(kEpsBmsDieT1, bms_bus_d);
     AddBmsDieTempMeasurable(kEpsBmsDieT2, bms_bus_c);
     AddBmsSettingsMeasurable(kEpsBmsSettingsReading1, bms_bus_d);
