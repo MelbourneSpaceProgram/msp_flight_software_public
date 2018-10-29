@@ -77,7 +77,7 @@ bool PayloadProcessor::ParseNextCommandAndExecute(uint8_t& index,
                                                   byte* payload) {
     uint16_t command_code = static_cast<uint16_t>(payload[index]) |
                             (static_cast<uint16_t>(payload[index + 1]) << 8);
-    payload += kCommandCodeLength;
+    payload += kCommandCodeLength + index;
     bool command_execution_successful = false;
 
     try {
