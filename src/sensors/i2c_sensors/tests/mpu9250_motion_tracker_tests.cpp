@@ -5,6 +5,7 @@
 #include <src/config/unit_tests.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
+#include <xdc/runtime/Log.h>
 
 static constexpr uint8_t mpu9250_address = 0x68;
 static constexpr byte kMultiplexerAddress = 0x76;
@@ -21,74 +22,112 @@ TEST_GROUP(MotionTracker) {
 };
 
 TEST(MotionTracker, TestGyroRead) {
-    I2c test_i2c_bus(I2C_BUS_A);
-    I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
+    try {
+        I2c test_i2c_bus(I2C_BUS_A);
+        I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
-                                  I2cMultiplexer::kMuxChannel1);
+        MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address,
+                                      &multiplexer,
+                                      I2cMultiplexer::kMuxChannel1);
 
-    GyroscopeReading gyroscope_reading;
+        GyroscopeReading gyroscope_reading;
+        gyroscope_reading = test_imu.TakeGyroscopeReading();
 
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
-    gyroscope_reading = test_imu.TakeGyroscopeReading();
-    multiplexer.CloseAllChannels();
+        int16_t full_scale = 250;  // Default full scale range
+        CHECK_COMPARE(gyroscope_reading.x, <, full_scale);
+        CHECK_COMPARE(gyroscope_reading.y, <, full_scale);
+        CHECK_COMPARE(gyroscope_reading.z, <, full_scale);
 
-    CHECK(gyroscope_reading.x != 0.0);
-    CHECK(gyroscope_reading.y != 0.0);
-    CHECK(gyroscope_reading.z != 0.0);
+        CHECK_COMPARE(gyroscope_reading.x, >, -full_scale);
+        CHECK_COMPARE(gyroscope_reading.y, >, -full_scale);
+        CHECK_COMPARE(gyroscope_reading.z, >, -full_scale);
+
+        if (kVerboseUnitTests)
+            Log_info3("Gyro: x: %f | y: %f | z: %f", gyroscope_reading.x,
+                      gyroscope_reading.y, gyroscope_reading.z);
+    } catch (etl::exception& e) {
+        FAIL("Uncaught exception in test");
+    }
 }
 
 TEST(MotionTracker, TestMagnoRead) {
-    I2c test_i2c_bus(I2C_BUS_A);
+    try {
+        I2c test_i2c_bus(I2C_BUS_A);
 
-    I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
+        I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
-                                  I2cMultiplexer::kMuxChannel1);
+        MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address,
+                                      &multiplexer,
+                                      I2cMultiplexer::kMuxChannel1);
 
-    MagnetometerReading magnetometer_reading;
+        MagnetometerReading magnetometer_reading;
 
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
-    magnetometer_reading = test_imu.TakeMagnetometerReading();
-    multiplexer.CloseAllChannels();
+        magnetometer_reading = test_imu.TakeMagnetometerReading();
 
-    CHECK(magnetometer_reading.x != 0.0);
-    CHECK(magnetometer_reading.y != 0.0);
-    CHECK(magnetometer_reading.z != 0.0);
+        int16_t full_scale = 4800;  // Datasheet
+        CHECK_COMPARE(magnetometer_reading.x, <, full_scale);
+        CHECK_COMPARE(magnetometer_reading.y, <, full_scale);
+        CHECK_COMPARE(magnetometer_reading.z, <, full_scale);
+
+        CHECK_COMPARE(magnetometer_reading.x, >, -full_scale);
+        CHECK_COMPARE(magnetometer_reading.y, >, -full_scale);
+        CHECK_COMPARE(magnetometer_reading.z, >, -full_scale);
+
+        if (kVerboseUnitTests)
+            Log_info3("Magno: x: %f | y: %f | z: %f", magnetometer_reading.x,
+                      magnetometer_reading.y, magnetometer_reading.z);
+    } catch (etl::exception& e) {
+        FAIL("Uncaught exception in test");
+    }
 }
 
 TEST(MotionTracker, TestTempRead) {
-    I2c test_i2c_bus(I2C_BUS_A);
+    try {
+        I2c test_i2c_bus(I2C_BUS_A);
 
-    I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
+        I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
-                                  I2cMultiplexer::kMuxChannel1);
+        MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address,
+                                      &multiplexer,
+                                      I2cMultiplexer::kMuxChannel1);
 
-    double temperature_reading;
+        double temperature_reading;
 
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
-    temperature_reading = test_imu.TakeTemperatureReading();
-    multiplexer.CloseAllChannels();
-
-    DOUBLES_EQUAL(avg_room_temperature, temperature_reading, temp_tolerance);
+        temperature_reading = test_imu.TakeTemperatureReading();
+        DOUBLES_EQUAL(avg_room_temperature, temperature_reading,
+                      temp_tolerance);
+    } catch (etl::exception& e) {
+        FAIL("Uncaught exception in test");
+    }
 }
 
 TEST(MotionTracker, TestAccelRead) {
-    I2c test_i2c_bus(I2C_BUS_A);
+    try {
+        I2c test_i2c_bus(I2C_BUS_A);
 
-    I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
+        I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
 
-    MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address, &multiplexer,
-                                  I2cMultiplexer::kMuxChannel1);
+        MPU9250MotionTracker test_imu(&test_i2c_bus, mpu9250_address,
+                                      &multiplexer,
+                                      I2cMultiplexer::kMuxChannel1);
 
-    AccelerometerReading accelerometer_reading;
+        AccelerometerReading accelerometer_reading;
 
-    multiplexer.OpenChannel(I2cMultiplexer::kMuxChannel1);
-    accelerometer_reading = test_imu.TakeAccelerometerReading();
-    multiplexer.CloseAllChannels();
+        accelerometer_reading = test_imu.TakeAccelerometerReading();
 
-    CHECK(accelerometer_reading.x != 0.0);
-    CHECK(accelerometer_reading.y != 0.0);
-    CHECK(accelerometer_reading.z != 0.0);
+        int16_t full_scale = 2;  // Default full scale range
+        CHECK_COMPARE(accelerometer_reading.x, <, full_scale);
+        CHECK_COMPARE(accelerometer_reading.y, <, full_scale);
+        CHECK_COMPARE(accelerometer_reading.z, <, full_scale);
+
+        CHECK_COMPARE(accelerometer_reading.x, >, -full_scale);
+        CHECK_COMPARE(accelerometer_reading.y, >, -full_scale);
+        CHECK_COMPARE(accelerometer_reading.z, >, -full_scale);
+
+        if (kVerboseUnitTests)
+            Log_info3("Magno: x: %f | y: %f | z: %f", accelerometer_reading.x,
+                      accelerometer_reading.y, accelerometer_reading.z);
+    } catch (etl::exception& e) {
+        FAIL("Uncaught exception in test");
+    }
 }

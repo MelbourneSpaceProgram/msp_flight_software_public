@@ -20,7 +20,7 @@ TEST_GROUP(Adc) {
 TEST(Adc, TestADC) {
     I2c test_i2c_bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    Adc adc(&test_i2c_bus, test_adc_address);
+    Adc adc(&test_i2c_bus, test_adc_address, &multiplexer, I2cMultiplexer::kMuxChannel2);
 
     adc.SetOperationalStatus(kAdcConversion);
     adc.SetOperatingMode(kAdcContinuousConversion);

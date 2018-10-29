@@ -5,12 +5,23 @@
 #include <src/telecomms/msp_payloads/test_payload.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 
-TEST_GROUP(LithiumTransmit) {
-    void setup() { RunnableContinuousTransmitShutoff::ClearBuckets(); };
-    void teardown() { Lithium::GetInstance()->SetTransmitEnabled(true); };
+TEST_GROUP(LithiumShutoff) {
+    void setup() {
+        Lithium::GetInstance()->SetTransmitEnabled(true);
+        Lithium::GetInstance()->UnlockState(Lithium::kCriticalTempCondition);
+        Lithium::GetInstance()->UnlockState(
+            Lithium::kContinuousTransmitCondition);
+        RunnableContinuousTransmitShutoff::ClearBuckets();
+    };
+    void teardown() {
+        Lithium::GetInstance()->SetTransmitEnabled(true);
+        Lithium::GetInstance()->UnlockState(Lithium::kCriticalTempCondition);
+        Lithium::GetInstance()->UnlockState(
+            Lithium::kContinuousTransmitCondition);
+    };
 };
 
-TEST(LithiumTransmit, TestLithiumShutoff) {
+TEST(LithiumShutoff, TestLithiumShutoff) {
     uint16_t num_transmits = 400;
 
     CHECK_EQUAL(RunnableContinuousTransmitShutoff::GetBucketCount(), 0);
@@ -31,7 +42,7 @@ TEST(LithiumTransmit, TestLithiumShutoff) {
     CHECK(!Lithium::GetInstance()->IsTransmitEnabled());
 }
 
-TEST(LithiumTransmit, TestLithiumMultipleBuckets) {
+TEST(LithiumShutoff, TestLithiumMultipleBuckets) {
     uint16_t num_transmits = 300;
     uint16_t num_buckets = 3;
 
@@ -54,7 +65,7 @@ TEST(LithiumTransmit, TestLithiumMultipleBuckets) {
     CHECK(!Lithium::GetInstance()->IsTransmitEnabled());
 }
 
-TEST(LithiumTransmit, TestLithiumUnderThreshold) {
+TEST(LithiumShutoff, TestLithiumUnderThreshold) {
     uint16_t num_transmits = 100;
 
     CHECK_EQUAL(RunnableContinuousTransmitShutoff::GetBucketCount(), 0);
