@@ -1,7 +1,7 @@
 #include <src/payload_processor/commands/enable_datalogger_command.h>
 #include <src/util/nanopb_utils.h>
 #include <xdc/runtime/Log.h>
-#include <src/system/runnable_system_health_check.h>
+#include <src/sensors/runnable_system_health_check.h>
 
 EnableDataloggerCommand::EnableDataloggerCommand(byte* payload)
     : Command(EnableDataloggerCommandPayload_size),

@@ -153,7 +153,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/payload_processor"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/sensors"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/sysbios"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/system"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/tasks"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
@@ -311,24 +310,6 @@
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1769838360" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.652470160"/>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/system" name="system" resourcePath="src/system">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.2089666583" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1987370616" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.17766528" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1178028610" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1559195802">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.1458527583" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1787506297" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.7414565" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.981434829" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.145188805" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.2013473947" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.2025291041" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.20042093"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.6935412" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.435498716"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1626819772" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1023686581"/>
-						</toolChain>
-					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.src/util" name="util" resourcePath="src/util">
 						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.1507843223" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.971908086" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
@@ -469,7 +450,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/payload_processor"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/sensors"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/sysbios"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/system"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/tasks"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>
@@ -632,24 +612,6 @@
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1677993880" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.2099916266"/>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.330578287.src/system" name="system" resourcePath="src/system">
-						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.1106288579" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.1987370616.1724595984" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404.17766528.926507912" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.467652404"/>
-							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug.1637903701" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.targetPlatformDebug"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.1577762938" name="ARM Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.compilerDebug.251039226">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.112341177" name="Optimization level (--opt_level, -O)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_LEVEL.off" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.1819002470" name="Speed vs. size trade-offs (--opt_for_speed, -mf)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compilerID.OPT_FOR_SPEED.0" valueType="enumerated"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS.979416444" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__C_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS.278594709" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__CPP_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS.504252073" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS.481271751" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.compiler.inputType__ASM2_SRCS"/>
-							</tool>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.15019982" name="ARM Linker" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.linkerDebug.1711136372"/>
-							<tool id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.1682064046" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.339213904"/>
-							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.1760049150" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.148128672"/>
-						</toolChain>
-					</folderInfo>
 					<folderInfo id="com.ti.ccstudio.buildDefinitions.MSP432.Debug.1556489008.1402757388.412774910.330578287.src/util" name="util" resourcePath="src/util">
 						<toolChain id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain.2083892388" name="TI Build Tools" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.exe.DebugToolchain" unusedChildren="">
 							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448.971908086.2091118377" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.933448"/>
@@ -790,7 +752,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/payload_processor"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/sensors"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/sysbios"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/system"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/tasks"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/telecomms"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/util"/>

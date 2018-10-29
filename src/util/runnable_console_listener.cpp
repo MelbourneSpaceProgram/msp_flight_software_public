@@ -1,6 +1,6 @@
 #include <external/etl/exception.h>
 #include <src/payload_processor/runnable_payload_processor.h>
-#include <src/system/runnable_system_health_check.h>
+#include <src/sensors/runnable_system_health_check.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/message_codes.h>
 #include <src/util/runnable_console_logger.h>

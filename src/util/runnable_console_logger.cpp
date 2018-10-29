@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <src/board/uart/uart.h>
 #include <src/sensors/measurable_id.h>
-#include <src/system/runnable_system_health_check.h>
+#include <src/sensors/runnable_system_health_check.h>
 #include <src/util/runnable_console_logger.h>
 #include <src/util/task_utils.h>
 #include <stdio.h>

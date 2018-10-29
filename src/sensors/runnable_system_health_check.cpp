@@ -15,7 +15,7 @@
 #include <src/messages/VoltageReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
-#include <src/system/runnable_system_health_check.h>
+#include <src/sensors/runnable_system_health_check.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
