@@ -4,6 +4,8 @@
 #include <src/board/uart/uart.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
+class TransmitPayload;
+
 typedef struct LithiumTelemetry LithiumTelemetry;
 class LithiumCommand;
 class LithiumEnableCommand;
@@ -66,6 +68,7 @@ class Lithium {
     LithiumTelemetry ReadLithiumTelemetry() const;
     LithiumConfiguration ReadLithiumConfiguration() const;
     bool IsTransmitEnabled();
+    bool Transmit(TransmitPayload* transmit_payload);
     bool DoCommand(LithiumCommand* command) const;
     // TODO(dingbenjamin): Make this function private if possible, friend unit
     // tests

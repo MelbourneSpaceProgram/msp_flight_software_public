@@ -16,14 +16,12 @@ void RunnableBeacon::Beacon() {
     Lithium *lithium = Lithium::GetInstance();
 
     while (1) {
-        BeaconPayload beacon;
-
         // TODO(dingbenjamin): Implement remaining beacon fields
 
         // Avoid building the packet if transmit is disabled
         if (lithium->IsTransmitEnabled()) {
-            TransmitCommand transmit_command(&beacon);
-            if (lithium->DoCommand(&transmit_command)) {
+            BeaconPayload beacon;
+            if (lithium->Transmit(&beacon)) {
                 Log_info0("Beacon transmission succeeded");
             } else {
                 Log_error0("Beacon transmission failed");

@@ -63,7 +63,8 @@ TEST(Lithium, TestGetSetConfigHardware) {
 
     GetConfigurationCommand config_command;
     CHECK(Lithium::GetInstance()->DoCommand(&config_command));
-    LithiumConfiguration received_configuration = config_command.GetParsedResponse();
+    LithiumConfiguration received_configuration =
+        config_command.GetParsedResponse();
 
     CHECK(lithium_config.interface_baud_rate ==
           received_configuration.interface_baud_rate);
@@ -107,8 +108,7 @@ TEST(Lithium, TestGetSetConfigHardware) {
 
 TEST(Lithium, TestTransmitAckHardware) {
     TestPayload test_payload;
-    TransmitCommand transmit_command(&test_payload);
-    CHECK(Lithium::GetInstance()->DoCommand(&transmit_command));
+    CHECK(Lithium::GetInstance()->Transmit(&test_payload));
 }
 
 TEST(Lithium, TestWriteFlashHardware) {

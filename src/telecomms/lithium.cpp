@@ -69,16 +69,22 @@ Lithium::Lithium()
     }
 }
 
-bool Lithium::DoCommand(LithiumCommand* command) const {
-    if (command->GetCommandCode() == kTransmitCommandCode) {
-        // Check for permission to transmit
-        UpdateState();
-        if (!lithium_transmit_enabled) {
-            Log_info0("Attempted to transmit, but transmit disabled");
-            return false;
-        }
+bool Lithium::Transmit(TransmitPayload* transmit_payload) {
+    UpdateState();
+    if (!lithium_transmit_enabled) {
+        Log_info0("Attempted to transmit, but transmit disabled");
+        return false;
     }
 
+    TransmitCommand transmit_command(transmit_payload);
+    if (Lithium::GetInstance()->DoCommand(&transmit_command)) {
+        tx_count = tx_count == 255 ? 0 : tx_count + 1;
+        return true;
+    }
+    return false;
+}
+
+bool Lithium::DoCommand(LithiumCommand* command) const {
     uint16_t serialised_size = command->GetSerialisedSize();
     if (serialised_size >= kMaxOutgoingCommandSize) {
         return false;
@@ -109,9 +115,6 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
     if (command->GetReplyPayloadSize() == 0) {
         // No response payload is expected
         if (LithiumUtils::IsAck(ack_buffer)) {
-            if (command->GetCommandCode() == kTransmitCommandCode) {
-                tx_count = tx_count == 255 ? 0 : tx_count + 1;
-            }
             return true;
         } else if (LithiumUtils::IsNack(ack_buffer)) {
             // TODO(dingbenjamin): Received nack - back off and try again

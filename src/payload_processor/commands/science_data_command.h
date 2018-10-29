@@ -58,8 +58,7 @@ class ScienceDataCommand : public Command {
             return false;
         }
 
-        TransmitCommand transmit_command(payload);
-        if (!Lithium::GetInstance()->DoCommand(&transmit_command)) {
+        if (!Lithium::GetInstance()->Transmit(payload)) {
             Log_error0("Failed to transmit science payload");
             return false;
         }

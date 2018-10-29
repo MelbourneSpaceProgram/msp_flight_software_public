@@ -11,10 +11,9 @@ LithiumTestCommand::LithiumTestCommand()
 bool LithiumTestCommand::ExecuteCommand() {
     Lithium* lithium = Lithium::GetInstance();
     TestOnesPayload ones;
-    TransmitCommand lithium_test_command(&ones);
     bool success = true;
     for (uint8_t i = 0; i < kNumTestTransmits; i++) {
-        if (!lithium->DoCommand(&lithium_test_command)) {
+        if (!lithium->Transmit(&ones)) {
             success = false;
         }
     }
