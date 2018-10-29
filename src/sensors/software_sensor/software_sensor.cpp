@@ -10,7 +10,6 @@ void SoftwareSensor::LoadReading(double reading) {
 double SoftwareSensor::GetReading() {
     if (initialised) {
         initialised = false;
-        NotifyObservers();
         return last_reading;
     } else {
         return 0;

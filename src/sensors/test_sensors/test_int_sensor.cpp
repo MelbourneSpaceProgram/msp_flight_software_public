@@ -4,7 +4,6 @@ TestIntSensor::TestIntSensor() {}
 
 bool TestIntSensor::TakeReading() {
     last_reading = dummy_data;
-    NotifyObservers();
     return true;
 }
 

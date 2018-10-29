@@ -29,7 +29,6 @@ class NanopbMeasurable : public GenericMeasurable<TimestampedNanopbType> {
                 this->last_reading.timestamp_ms = 0;
             }
 
-            this->NotifyObservers();
             return true;
         } catch (etl::exception e) {
             this->last_reading = failure_reading;
