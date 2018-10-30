@@ -78,6 +78,7 @@ class Lithium {
     void LockState(LithiumShutoffCondition condition);
     void UnlockState(LithiumShutoffCondition condition);
     bool IsStateLocked(LithiumShutoffCondition condition);
+    void ForceUnlock();
 
    private:
     static Lithium* instance;

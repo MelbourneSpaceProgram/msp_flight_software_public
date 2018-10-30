@@ -201,6 +201,11 @@ bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
     return (state & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
 }
 
+void Lithium::ForceUnlock(){
+    state = kLithiumOnCondition;
+}
+
+
 void Lithium::UpdateState() {
     // TODO(dingbenjamin): Use the Lithium internal temperature sensor
     float telecomms_1_temp =

@@ -33,6 +33,8 @@ void RunnableContinuousTransmitShutoff::StartCounter() {
             Log_info0(
                 "Continuous Transmission Detected: Shutting off Lithium "
                 "Transmission");
+            TaskUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
+            lithium->UnlockState(Lithium::kContinuousTransmitCondition);
         }
 
         bucket_count = 0;
