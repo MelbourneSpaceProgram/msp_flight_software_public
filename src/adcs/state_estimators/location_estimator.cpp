@@ -11,8 +11,8 @@
 #include <src/util/physical_constants.h>
 #include <ti/sysbios/BIOS.h>
 
-Mailbox_Handle LocationEstimator::tle_update_command_mailbox_handle;
-Mailbox_Params LocationEstimator::tle_update_command_mailbox_params;
+Mailbox_Handle LocationEstimator::tle_update_uplink_mailbox_handle;
+Mailbox_Params LocationEstimator::tle_update_uplink_mailbox_params;
 
 LocationEstimator::LocationEstimator()
     : satrec(),
@@ -20,16 +20,16 @@ LocationEstimator::LocationEstimator()
       longitude_degrees(0),
       altitude_above_ellipsoid_km(0) {}
 
-void LocationEstimator::SetTleUpdateCommandMailboxHandle(
-    Mailbox_Handle tle_update_command_mailbox_handle) {
-    LocationEstimator::tle_update_command_mailbox_handle =
-        tle_update_command_mailbox_handle;
+void LocationEstimator::SetTleUpdateUplinkMailboxHandle(
+    Mailbox_Handle tle_update_uplink_mailbox_handle) {
+    LocationEstimator::tle_update_uplink_mailbox_handle =
+        tle_update_uplink_mailbox_handle;
 }
 
 bool LocationEstimator::CheckForUpdatedTle() {
     Tle tle;
     bool new_tle_received =
-        Mailbox_pend(tle_update_command_mailbox_handle, &tle, BIOS_NO_WAIT);
+        Mailbox_pend(tle_update_uplink_mailbox_handle, &tle, BIOS_NO_WAIT);
     if (new_tle_received) {
         StoreTle(tle);
     }

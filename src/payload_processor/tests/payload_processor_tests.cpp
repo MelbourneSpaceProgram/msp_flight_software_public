@@ -8,16 +8,16 @@
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/database/sd_card.h>
 #include <src/messages/CurrentReading.pb.h>
-#include <src/messages/IoExpanderToggleCommandPayload.pb.h>
+#include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
-#include <src/payload_processor/commands/io_expander_toggle_command.h>
-#include <src/payload_processor/commands/lithium_beacon_period_command.h>
-#include <src/payload_processor/commands/science_data_command.h>
-#include <src/payload_processor/commands/test_command.h>
-#include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
+#include <src/payload_processor/uplinks/io_expander_toggle_uplink.h>
+#include <src/payload_processor/uplinks/lithium_beacon_period_uplink.h>
+#include <src/payload_processor/uplinks/science_data_uplink.h>
+#include <src/payload_processor/uplinks/test_uplink.h>
+#include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
@@ -33,16 +33,16 @@
 
 TEST_GROUP(PayloadProcessor){};
 
-void BuildTwoTestCommands(byte payload_buffer[]) {
+void BuildTwoTestUplinks(byte payload_buffer[]) {
     // Build two test commands
     payload_buffer[0] = 1;
     payload_buffer[1] = 0;
-    payload_buffer[2] = TestCommand::kTestValue1;
-    payload_buffer[3] = TestCommand::kTestValue2;
+    payload_buffer[2] = TestUplink::kTestValue1;
+    payload_buffer[3] = TestUplink::kTestValue2;
     payload_buffer[4] = 1;
     payload_buffer[5] = 0;
-    payload_buffer[6] = TestCommand::kTestValue1;
-    payload_buffer[7] = TestCommand::kTestValue2;
+    payload_buffer[6] = TestUplink::kTestValue1;
+    payload_buffer[7] = TestUplink::kTestValue2;
     payload_buffer[8] = PayloadProcessor::GetEndTerminator();
     payload_buffer[9] = PayloadProcessor::GetEndTerminator();
 }
@@ -51,13 +51,13 @@ TEST(PayloadProcessor, TestPayloadProcessor) {
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
 
     // Set the bytes necessary for 2 x test command
-    BuildTwoTestCommands(payload);
+    BuildTwoTestUplinks(payload);
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteCommands(payload));
+    CHECK(payload_processor.ParseAndExecuteUplinks(payload));
 }
 
-TEST(PayloadProcessor, TestForceResetCommand) {
+TEST(PayloadProcessor, TestForceResetUplink) {
     if (!kForceResetCommandEnabled) {
         TEST_EXIT
     }
@@ -70,12 +70,12 @@ TEST(PayloadProcessor, TestForceResetCommand) {
     payload[3] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteCommands(payload));
+    CHECK(payload_processor.ParseAndExecuteUplinks(payload));
     FAIL("Software reset failed.");  // reset has failed if program
                                      // reaches this line
 }
 
-TEST(PayloadProcessor, TestTleUpdateCommand) {
+TEST(PayloadProcessor, TestTleUpdateUplink) {
     Tle test_tle;
     // TLE test data (from sgp4_tests.cpp)
     test_tle.epoch = 00179.78495062;
@@ -90,32 +90,32 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     uint8_t buffer[Lithium::kMaxReceivedUplinkSize] = {0};
     buffer[0] = 3;  // 3 indicates tle update command
     buffer[1] = 0;
-    buffer[PayloadProcessor::GetCommandCodeLength() + Tle_size] =
+    buffer[PayloadProcessor::GetUplinkCodeLength() + Tle_size] =
         PayloadProcessor::GetEndTerminator();
-    buffer[PayloadProcessor::GetCommandCodeLength() + Tle_size + 1] =
+    buffer[PayloadProcessor::GetUplinkCodeLength() + Tle_size + 1] =
         PayloadProcessor::GetEndTerminator();
-    NanopbEncode(Tle)(buffer + PayloadProcessor::GetCommandCodeLength(),
+    NanopbEncode(Tle)(buffer + PayloadProcessor::GetUplinkCodeLength(),
                       test_tle);
 
     // Create test mailbox
-    Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
-    Mailbox_Handle tle_update_command_mailbox_handle = Mailbox_create(
-        sizeof(Tle), 1, &LocationEstimator::tle_update_command_mailbox_params,
+    Mailbox_Params_init(&LocationEstimator::tle_update_uplink_mailbox_params);
+    Mailbox_Handle tle_update_uplink_mailbox_handle = Mailbox_create(
+        sizeof(Tle), 1, &LocationEstimator::tle_update_uplink_mailbox_params,
         NULL);
-    if (tle_update_command_mailbox_handle == NULL) {
+    if (tle_update_uplink_mailbox_handle == NULL) {
         etl::exception e("Unable to create TLE update command mailbox",
                          __FILE__, __LINE__);
         throw e;
     }
-    TleUpdateCommand::SetTleUpdateCommandMailboxHandle(
-        tle_update_command_mailbox_handle);
-    LocationEstimator::SetTleUpdateCommandMailboxHandle(
-        tle_update_command_mailbox_handle);
+    TleUpdateUplink::SetTleUpdateUplinkMailboxHandle(
+        tle_update_uplink_mailbox_handle);
+    LocationEstimator::SetTleUpdateUplinkMailboxHandle(
+        tle_update_uplink_mailbox_handle);
 
     // Send the encoded TLE to a payload processor (which decodes it and posts
     // it to the TLE update mailbox)
     PayloadProcessor test_payload_processor;
-    CHECK(test_payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK(test_payload_processor.ParseAndExecuteUplinks(buffer));
 
     // Have a location estimator retrieve the decoded TLE from the mailbox and
     // update its internal satrec values
@@ -136,24 +136,24 @@ TEST(PayloadProcessor, TestTleUpdateCommand) {
     CHECK(generated_satrec.bstar == test_tle.bstar_drag);
 }
 
-TEST(PayloadProcessor, TestLithiumTestCommand) {
+TEST(PayloadProcessor, TestLithiumTestUplink) {
     if (!kTcomBoardAvailable) {
         TEST_EXIT
     }
 
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
 
-    payload[0] = static_cast<uint8_t>(kLithiumTestCommand);
+    payload[0] = static_cast<uint8_t>(kLithiumTestUplink);
     payload[1] = 0;  // 0x08 indicates a Lithium Test command
     payload[2] = PayloadProcessor::GetEndTerminator();
     payload[3] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteCommands(payload));
+    CHECK(payload_processor.ParseAndExecuteUplinks(payload));
     // Should also verify on the ground that 10 packets have been received
 }
 
-TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
+TEST(PayloadProcessor, TestLithiumBeaconPeriodUplink) {
     // Generate a fake lithium beacon period command
     byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
 
@@ -162,33 +162,33 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodCommand) {
     buffer[1] = 0;
 
     // Set nanopb message
-    LithiumBeaconPeriodCommandPayload injected_beacon_period = {5000};
-    NanopbEncode(LithiumBeaconPeriodCommandPayload)(
-        buffer + PayloadProcessor::GetCommandCodeLength(),
+    LithiumBeaconPeriodUplinkPayload injected_beacon_period = {5000};
+    NanopbEncode(LithiumBeaconPeriodUplinkPayload)(
+        buffer + PayloadProcessor::GetUplinkCodeLength(),
         injected_beacon_period);
 
     // Set end terminators
-    buffer[PayloadProcessor::GetCommandCodeLength() +
-           LithiumBeaconPeriodCommandPayload_size] =
+    buffer[PayloadProcessor::GetUplinkCodeLength() +
+           LithiumBeaconPeriodUplinkPayload_size] =
         PayloadProcessor::GetEndTerminator();
-    buffer[PayloadProcessor::GetCommandCodeLength() +
-           LithiumBeaconPeriodCommandPayload_size + 1] =
+    buffer[PayloadProcessor::GetUplinkCodeLength() +
+           LithiumBeaconPeriodUplinkPayload_size + 1] =
         PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
     CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), 5000);
 
     // Reset to nominal
     injected_beacon_period = {kNominalBeaconPeriodMs};
-    NanopbEncode(LithiumBeaconPeriodCommandPayload)(
-        buffer + PayloadProcessor::GetCommandCodeLength(),
+    NanopbEncode(LithiumBeaconPeriodUplinkPayload)(
+        buffer + PayloadProcessor::GetUplinkCodeLength(),
         injected_beacon_period);
-    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
     CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), kNominalBeaconPeriodMs);
 }
 
-TEST(PayloadProcessor, TestScienceDataCommand) {
+TEST(PayloadProcessor, TestScienceDataUplink) {
     try {
         if (!kSdCardAvailable) {
             TEST_EXIT
@@ -197,7 +197,7 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
         byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
 
         // Set command code - indicates a science data command
-        buffer[0] = kScienceDataCommand;
+        buffer[0] = kScienceDataUplink;
         buffer[1] = 0;
 
         // Put requested ID in the buffer
@@ -206,9 +206,9 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
 
         // Put requested timestamp in the buffer
         Time requested_time = SatelliteTimeSource::GetTime();
-        NanopbEncode(Time)(buffer + PayloadProcessor::GetCommandCodeLength() +
-                               sizeof(uint16_t),
-                           requested_time);
+        NanopbEncode(Time)(
+            buffer + PayloadProcessor::GetUplinkCodeLength() + sizeof(uint16_t),
+            requested_time);
 
         // Create a CircularBuffer and put a value in it
         char filename[4];
@@ -222,7 +222,7 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
                                                            test_current);
 
         PayloadProcessor payload_processor;
-        CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+        CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
 
         SdCard::GetInstance()->FileDelete(filename);
     } catch (etl::exception& e) {
@@ -232,68 +232,68 @@ TEST(PayloadProcessor, TestScienceDataCommand) {
 }
 
 // TODO(dingbenjamin): Figure out how to teardown for just this test
-TEST(PayloadProcessor, TestIoExpanderToggleCommand) {
+TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
     byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
 
     // Set nanopb message
     // Toggle comms regulators expander
-    IoExpanderToggleCommandPayload en_1_off = {
+    IoExpanderToggleUplinkPayload en_1_off = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn1),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
-    IoExpanderToggleCommandPayload en_3_off = {
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
+    IoExpanderToggleUplinkPayload en_3_off = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn3),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
-    IoExpanderToggleCommandPayload en_4_off = {
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
+    IoExpanderToggleUplinkPayload en_4_off = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn4),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
-    IoExpanderToggleCommandPayload en_5_off = {
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
+    IoExpanderToggleUplinkPayload en_5_off = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOff), 1000};
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
 
     // Set command code - 12 indicates an IO toggle command
     buffer[0] = 12;
     buffer[1] = 0;
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + PayloadProcessor::GetCommandCodeLength(), en_1_off);
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + PayloadProcessor::GetUplinkCodeLength(), en_1_off);
 
-    buffer[PayloadProcessor::GetCommandCodeLength() +
-           IoExpanderToggleCommandPayload_size] = 12;
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + 2 * PayloadProcessor::GetCommandCodeLength() +
-            IoExpanderToggleCommandPayload_size,
+    buffer[PayloadProcessor::GetUplinkCodeLength() +
+           IoExpanderToggleUplinkPayload_size] = 12;
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + 2 * PayloadProcessor::GetUplinkCodeLength() +
+            IoExpanderToggleUplinkPayload_size,
         en_3_off);
 
-    buffer[(IoExpanderToggleCommandPayload_size +
-            PayloadProcessor::GetCommandCodeLength()) *
+    buffer[(IoExpanderToggleUplinkPayload_size +
+            PayloadProcessor::GetUplinkCodeLength()) *
            2] = 12;
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + 3 * PayloadProcessor::GetCommandCodeLength() +
-            2 * IoExpanderToggleCommandPayload_size,
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + 3 * PayloadProcessor::GetUplinkCodeLength() +
+            2 * IoExpanderToggleUplinkPayload_size,
         en_4_off);
 
-    buffer[(IoExpanderToggleCommandPayload_size +
-            PayloadProcessor::GetCommandCodeLength()) *
+    buffer[(IoExpanderToggleUplinkPayload_size +
+            PayloadProcessor::GetUplinkCodeLength()) *
            3] = 12;
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + 4 * PayloadProcessor::GetCommandCodeLength() +
-            3 * IoExpanderToggleCommandPayload_size,
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + 4 * PayloadProcessor::GetUplinkCodeLength() +
+            3 * IoExpanderToggleUplinkPayload_size,
         en_5_off);
 
     // Set end terminators
-    buffer[(PayloadProcessor::GetCommandCodeLength() +
-            IoExpanderToggleCommandPayload_size) *
+    buffer[(PayloadProcessor::GetUplinkCodeLength() +
+            IoExpanderToggleUplinkPayload_size) *
            4] = PayloadProcessor::GetEndTerminator();
-    buffer[(PayloadProcessor::GetCommandCodeLength() +
-            IoExpanderToggleCommandPayload_size) *
+    buffer[(PayloadProcessor::GetUplinkCodeLength() +
+            IoExpanderToggleUplinkPayload_size) *
                4 +
            1] = PayloadProcessor::GetEndTerminator();
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
 
     // Check Lithium is now unable to transmit
     TaskUtils::SleepMilli(2000);
@@ -301,42 +301,42 @@ TEST(PayloadProcessor, TestIoExpanderToggleCommand) {
     CHECK_FALSE(Lithium::GetInstance()->Transmit(&ones));
 
     // Turn back on
-    IoExpanderToggleCommandPayload en_1_on = {
+    IoExpanderToggleUplinkPayload en_1_on = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn1),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
-    IoExpanderToggleCommandPayload en_3_on = {
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
+    IoExpanderToggleUplinkPayload en_3_on = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn3),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
-    IoExpanderToggleCommandPayload en_4_on = {
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
+    IoExpanderToggleUplinkPayload en_4_on = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn4),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
-    IoExpanderToggleCommandPayload en_5_on = {
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
+    IoExpanderToggleUplinkPayload en_5_on = {
         static_cast<uint32_t>(IoExpander::kCommsIoExpander),
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
-        static_cast<uint32_t>(IoExpanderToggleCommand::kToggleOn), 1000};
+        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
 
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + PayloadProcessor::GetCommandCodeLength(), en_1_on);
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + PayloadProcessor::GetUplinkCodeLength(), en_1_on);
 
-    buffer[PayloadProcessor::GetCommandCodeLength() +
-           IoExpanderToggleCommandPayload_size] = 12;
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + 2 * PayloadProcessor::GetCommandCodeLength() +
-            IoExpanderToggleCommandPayload_size,
+    buffer[PayloadProcessor::GetUplinkCodeLength() +
+           IoExpanderToggleUplinkPayload_size] = 12;
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + 2 * PayloadProcessor::GetUplinkCodeLength() +
+            IoExpanderToggleUplinkPayload_size,
         en_3_on);
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + 3 * PayloadProcessor::GetCommandCodeLength() +
-            2 * IoExpanderToggleCommandPayload_size,
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + 3 * PayloadProcessor::GetUplinkCodeLength() +
+            2 * IoExpanderToggleUplinkPayload_size,
         en_4_on);
-    NanopbEncode(IoExpanderToggleCommandPayload)(
-        buffer + 4 * PayloadProcessor::GetCommandCodeLength() +
-            3 * IoExpanderToggleCommandPayload_size,
+    NanopbEncode(IoExpanderToggleUplinkPayload)(
+        buffer + 4 * PayloadProcessor::GetUplinkCodeLength() +
+            3 * IoExpanderToggleUplinkPayload_size,
         en_5_on);
 
-    CHECK(payload_processor.ParseAndExecuteCommands(buffer));
+    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
     TaskUtils::SleepMilli(2000);
     CHECK(Lithium::GetInstance()->Transmit(&ones));
 }
@@ -351,8 +351,8 @@ TEST(PayloadProcessor, TestSequence) {
     // Build a command that is reused in the test
     // Don't need to set HMAC or FEC as these are turned off for now
     byte rpp_payload[Lithium::kMaxReceivedUplinkSize] = {0};
-    BuildTwoTestCommands(
-        &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]);
+    BuildTwoTestUplinks(
+        &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]);
 
     // Check start
     for (uint16_t i = 0; i <= 50; i++) {
@@ -361,8 +361,8 @@ TEST(PayloadProcessor, TestSequence) {
         rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] =
             static_cast<uint8_t>(i % 256);
         CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
-        CHECK(payload_processor.ParseAndExecuteCommands(
-            &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+        CHECK(payload_processor.ParseAndExecuteUplinks(
+            &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
 
         // Check invalid
         CHECK_FALSE(RunnablePayloadProcessor::CheckSequence(rpp_payload));
@@ -377,8 +377,8 @@ TEST(PayloadProcessor, TestSequence) {
         rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] =
             static_cast<uint8_t>(i % 256);
         CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
-        CHECK(payload_processor.ParseAndExecuteCommands(
-            &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+        CHECK(payload_processor.ParseAndExecuteUplinks(
+            &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
 
         // Check invalid
         CHECK_FALSE(RunnablePayloadProcessor::CheckSequence(rpp_payload));
@@ -391,14 +391,14 @@ TEST(PayloadProcessor, TestSequence) {
     rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] =
         static_cast<uint8_t>(UINT16_MAX % 256);
     CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
-    CHECK(payload_processor.ParseAndExecuteCommands(
-        &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+    CHECK(payload_processor.ParseAndExecuteUplinks(
+        &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
 
     rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex] = 0;
     rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] = 0;
     CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
-    CHECK(payload_processor.ParseAndExecuteCommands(
-        &rpp_payload[RunnablePayloadProcessor::kMspCommandIndex]));
+    CHECK(payload_processor.ParseAndExecuteUplinks(
+        &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
 
     // TODO(dingbenjamin): Move this to teardown
     RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;

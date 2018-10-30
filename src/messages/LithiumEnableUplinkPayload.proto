@@ -1,0 +1,3 @@
+message LithiumEnableUplinkPayload {
+  required bool should_transmit = 1 [default = true];
+}

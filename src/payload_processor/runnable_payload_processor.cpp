@@ -22,10 +22,10 @@ bool RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;
 RunnablePayloadProcessor::RunnablePayloadProcessor() {}
 
 fnptr RunnablePayloadProcessor::GetRunnablePointer() {
-    return &RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload;
+    return &RunnablePayloadProcessor::ExecuteUplinksInLithiumPayload;
 }
 
-void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
+void RunnablePayloadProcessor::ExecuteUplinksInLithiumPayload() {
     PayloadProcessor payload_processor;
     byte lithium_payload[Lithium::kMaxReceivedUplinkSize];
 
@@ -36,9 +36,9 @@ void RunnablePayloadProcessor::ExecuteCommandsInLithiumPayload() {
         Mailbox_pend(payload_mailbox_handle, &lithium_payload,
                      BIOS_WAIT_FOREVER);
 
-        byte command[kMspCommandMaxLength] = {0};
+        byte command[kMspUplinkMaxLength] = {0};
         if (ProcessPayload(command, lithium_payload)) {
-            payload_processor.ParseAndExecuteCommands(command);
+            payload_processor.ParseAndExecuteUplinks(command);
         } else {
             // Payload failed on FEC or HMAC
             continue;
@@ -79,7 +79,7 @@ bool RunnablePayloadProcessor::ProcessPayload(byte command[],
     if (check_sequence && !CheckSequence(msp_packet)) return false;
 
     // Copy the command to the command buffer
-    memcpy(command, &msp_packet[kMspCommandIndex],
+    memcpy(command, &msp_packet[kMspUplinkIndex],
            (msp_packet_length - kMspHeaderLength) * sizeof(byte));
 
     return true;

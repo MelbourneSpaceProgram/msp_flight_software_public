@@ -1,3 +1,0 @@
-message LithiumFastPaCommandPayload {
-  required uint32 pa_level = 1 [default = 0];
-}

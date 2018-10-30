@@ -46,21 +46,21 @@ enum PayloadType {
     kSciencePayloadCode = 7
 };
 
-enum Commands {
-    kNoCommand = 0,
-    kTestCommand = 1,
-    kLithiumEnableCommand = 2,
-    kTleUpdateCommand = 3,
-    kForceResetCommand = 4,
-    kLithiumBeaconPeriodCommand = 5,
-    kScienceDataCommand = 6,
-    kLithiumFastPaCommand = 7,
-    kLithiumTestCommand = 8,
-    kDeployAntennaCommand = 9,
-    kEnableDataloggerCommand = 10,
-    kFormatSdCommand = 11,
-    kIoExpanderToggleCommand = 12,
-    kCommandsLength
+enum Uplinks {
+    kNoUplink = 0,
+    kTestUplink = 1,
+    kLithiumEnableUplink = 2,
+    kTleUpdateUplink = 3,
+    kForceResetUplink = 4,
+    kLithiumBeaconPeriodUplink = 5,
+    kScienceDataUplink = 6,
+    kLithiumFastPaUplink = 7,
+    kLithiumTestUplink = 8,
+    kDeployAntennaUplink = 9,
+    kEnableDataloggerUplink = 10,
+    kFormatSdUplink = 11,
+    kIoExpanderToggleUplink = 12,
+    kUplinksLength
 };
 
 #endif  // SRC_UTIL_MESSAGE_CODES_H_

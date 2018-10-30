@@ -4,19 +4,19 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
-class Command;
+class Uplink;
 
 class PayloadProcessor {
    public:
     PayloadProcessor();
-    bool ParseAndExecuteCommands(byte* payload);
-    static byte GetCommandCodeLength();
+    bool ParseAndExecuteUplinks(byte* payload);
+    static byte GetUplinkCodeLength();
     static byte GetEndTerminator();
 
    private:
-    bool ParseNextCommandAndExecute(byte& index, byte* payload);
-    static Command* CreateCommand(uint16_t command_code, byte* payload);
-    static constexpr byte kCommandCodeLength = 2;
+    bool ParseNextUplinkAndExecute(byte& index, byte* payload);
+    static Uplink* CreateUplink(uint16_t command_code, byte* payload);
+    static constexpr byte kUplinkCodeLength = 2;
     static constexpr uint8_t kEndTerminator = 0;
 };
 

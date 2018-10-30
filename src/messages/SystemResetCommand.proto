@@ -1,3 +1,0 @@
-message SystemResetCommand {
-  required fixed32 reset_enable = 1 [default=0];
-}

@@ -1,0 +1,3 @@
+message DeployAntennaUplinkPayload {
+  required fixed32 deploy_antenna = 1 [default = 0];
+}

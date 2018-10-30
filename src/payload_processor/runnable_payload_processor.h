@@ -16,7 +16,7 @@ class RunnablePayloadProcessor : public Runnable {
     static constexpr uint8_t kParityLength = 32;
 
     // Constants relating to the uplink payload
-    //   UplinkPayload
+    //   Command
     // = Ax25[16] + Data[96] + Parity[32]
     static constexpr uint8_t kUplinkAx25Index = 0;
     static constexpr uint8_t kUplinkAx25Length = 16;
@@ -41,8 +41,8 @@ class RunnablePayloadProcessor : public Runnable {
 
     // Constants relating to the MSP packet
     //   MspPacket[7-96]
-    // = Header[7] + Command[0-89]
-    // = MspSignature[4] + Length[1] + SequenceNumber[2] + Command[0-89]
+    // = Header[7] + Uplink[0-89]
+    // = MspSignature[4] + Length[1] + SequenceNumber[2] + Uplink[0-89]
     static constexpr uint8_t kMspSignatureIndex = 0;
     static constexpr uint8_t kMspSignatureLength = 4;
     static constexpr uint8_t kMspLengthIndex =
@@ -54,9 +54,9 @@ class RunnablePayloadProcessor : public Runnable {
     static constexpr uint8_t kMspHeaderIndex = kMspSignatureIndex;
     static constexpr uint8_t kMspHeaderLength =
         kMspSignatureLength + kMspLengthLength + kMspSequenceNumberLength;
-    static constexpr uint8_t kMspCommandIndex =
+    static constexpr uint8_t kMspUplinkIndex =
         kMspHeaderIndex + kMspHeaderLength;
-    static constexpr uint8_t kMspCommandMaxLength =
+    static constexpr uint8_t kMspUplinkMaxLength =
         kDataLength - kMspHeaderLength;
 
     static bool ProcessPayload(byte command[], const byte uplink_payload[]);
@@ -69,7 +69,7 @@ class RunnablePayloadProcessor : public Runnable {
 
    private:
     static uint16_t sequence;
-    static void ExecuteCommandsInLithiumPayload();
+    static void ExecuteUplinksInLithiumPayload();
 
     static bool use_fec;
     static bool check_hmac;

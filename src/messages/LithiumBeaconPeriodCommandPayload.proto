@@ -1,3 +1,0 @@
-message LithiumBeaconPeriodCommandPayload {
-  required uint32 beacon_period_ms = 1 [default = 0];
-}

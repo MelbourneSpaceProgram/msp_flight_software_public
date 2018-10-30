@@ -13,9 +13,9 @@
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>
 #include <src/messages/Tle.pb.h>
-#include <src/payload_processor/commands/tle_update_command.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
+#include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/sensors/runnable_system_health_check.h>
 #include <src/tasks/task_holder.h>
@@ -136,19 +136,19 @@ void PostBiosInitialiser::InitOrientationControl() {
     TaskHolder* orientation_control_task =
         new TaskHolder(kOrientationControlStackSize, "OrientationControl", 7,
                        new RunnableOrientationControl());
-    Mailbox_Params_init(&LocationEstimator::tle_update_command_mailbox_params);
-    Mailbox_Handle tle_update_command_mailbox_handle = Mailbox_create(
-        sizeof(Tle), 1, &LocationEstimator::tle_update_command_mailbox_params,
+    Mailbox_Params_init(&LocationEstimator::tle_update_uplink_mailbox_params);
+    Mailbox_Handle tle_update_uplink_mailbox_handle = Mailbox_create(
+        sizeof(Tle), 1, &LocationEstimator::tle_update_uplink_mailbox_params,
         NULL);
-    if (tle_update_command_mailbox_handle == NULL) {
+    if (tle_update_uplink_mailbox_handle == NULL) {
         etl::exception e("Unable to create TLE update command mailbox",
                          __FILE__, __LINE__);
         throw e;
     }
-    LocationEstimator::SetTleUpdateCommandMailboxHandle(
-        tle_update_command_mailbox_handle);
-    TleUpdateCommand::SetTleUpdateCommandMailboxHandle(
-        tle_update_command_mailbox_handle);
+    LocationEstimator::SetTleUpdateUplinkMailboxHandle(
+        tle_update_uplink_mailbox_handle);
+    TleUpdateUplink::SetTleUpdateUplinkMailboxHandle(
+        tle_update_uplink_mailbox_handle);
 
     orientation_control_task->Start();
 }

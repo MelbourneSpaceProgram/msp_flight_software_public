@@ -1,0 +1,3 @@
+message EnableDataloggerUplinkPayload {
+  required bool datalogger_enabled = 1 [default = true];
+}

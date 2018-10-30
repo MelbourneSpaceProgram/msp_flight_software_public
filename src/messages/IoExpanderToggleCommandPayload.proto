@@ -1,6 +1,0 @@
-message IoExpanderToggleCommandPayload {
-	required uint32 io_expander_id = 1 [default = 0];
-	required uint32 pin = 2 [default = 0];
-	required uint32 toggle_type = 3 [default = 0];
-	required uint32 toggle_duration = 4 [default = 0];
-} 

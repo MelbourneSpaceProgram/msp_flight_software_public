@@ -6,7 +6,7 @@
 class LithiumBeaconPeriodCommand;
 
 class RunnableBeacon : public Runnable {
-    friend class LithiumBeaconPeriodCommand;
+    friend class LithiumBeaconPeriodUplink;
 
    public:
     RunnableBeacon();
