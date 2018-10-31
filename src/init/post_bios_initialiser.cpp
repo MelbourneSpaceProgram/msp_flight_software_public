@@ -279,12 +279,7 @@ void PostBiosInitialiser::PostBiosInit() {
         // - Choose Orbit or TIRTOS Build
 
 #if defined TEST_CONFIGURATION
-        try {
-            RunUnitTests();
-        } catch (etl::exception& e) {
-            EtlUtils::LogException(e);
-            Log_error0("Exception in unit tests, aborting");
-        }
+        RunUnitTests();
 #endif
 
 #if defined ORBIT_CONFIGURATION
