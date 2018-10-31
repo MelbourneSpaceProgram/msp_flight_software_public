@@ -1,0 +1,3 @@
+message LithiumMd5Payload {
+   required bytes checksum = 1;
+}

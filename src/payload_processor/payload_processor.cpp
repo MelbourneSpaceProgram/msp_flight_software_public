@@ -10,6 +10,7 @@
 #include <src/payload_processor/uplinks/lithium_set_configuration_uplink.h>
 #include <src/payload_processor/uplinks/lithium_set_pa_uplink.h>
 #include <src/payload_processor/uplinks/lithium_test_uplink.h>
+#include <src/payload_processor/uplinks/lithium_write_flash_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
@@ -74,6 +75,8 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new LithiumSetConfigurationUplink(payload);
         case kLithiumGetConfigurationUplink:
             return new LithiumGetConfigurationUplink;
+        case kLithiumWriteFlashUplink:
+            return new LithiumWriteFlashUplink(payload);
         default:
             // TODO(dingbenjamin): Put erroneous command ID in exception
             etl::exception e("Could not parse command code", __FILE__,

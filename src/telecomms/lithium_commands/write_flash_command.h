@@ -7,7 +7,7 @@ class LithiumMd5;
 
 class WriteFlashCommand : public LithiumCommand {
    public:
-    WriteFlashCommand(LithiumMd5 *md5_message);
+    explicit WriteFlashCommand(LithiumMd5 *md5_message);
     uint16_t GetLithiumPayloadSize() const;
     const byte &GetCommandCode() const;
     uint16_t GetReplyPayloadSize() const;

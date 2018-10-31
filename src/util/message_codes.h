@@ -63,6 +63,7 @@ enum Uplinks {
     kIoExpanderToggleUplink = 12,
     kLithiumGetConfigurationUplink = 13,
     kLithiumSetConfigurationUplink = 14,
+    kLithiumWriteFlashUplink = 15,
     kUplinksLength
 };
 
