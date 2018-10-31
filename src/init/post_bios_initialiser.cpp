@@ -33,7 +33,6 @@
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>
-#include <xdc/runtime/Diags.h>
 #include <xdc/runtime/Log.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
@@ -245,14 +244,6 @@ void PostBiosInitialiser::PostBiosInit() {
     try {
         InitConsoleUart();
         Log_info0("UART logger/listener started");
-
-        Diags_setMask("xdc.runtime.Main-F");
-        Diags_setMask("xdc.runtime.Main-E");
-        Log_error0("I don't want to see this");
-        Log_warning0("Or this");
-        Log_info0("Or this either");
-        Diags_setMask("xdc.runtime.Main+F");
-        Diags_setMask("xdc.runtime.Main+E");
 
         // TODO(dingbenjamin): Init var length array pool
 
