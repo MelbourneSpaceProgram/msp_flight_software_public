@@ -13,6 +13,7 @@
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
+#include <src/payload_processor/tests/mock_uplink_builder.h>
 #include <src/payload_processor/uplinks/io_expander_toggle_uplink.h>
 #include <src/payload_processor/uplinks/lithium_beacon_period_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
@@ -33,28 +34,20 @@
 
 TEST_GROUP(PayloadProcessor){};
 
-void BuildTwoTestUplinks(byte payload_buffer[]) {
-    // Build two test commands
-    payload_buffer[0] = 1;
-    payload_buffer[1] = 0;
-    payload_buffer[2] = TestUplink::kTestValue1;
-    payload_buffer[3] = TestUplink::kTestValue2;
-    payload_buffer[4] = 1;
-    payload_buffer[5] = 0;
-    payload_buffer[6] = TestUplink::kTestValue1;
-    payload_buffer[7] = TestUplink::kTestValue2;
-    payload_buffer[8] = PayloadProcessor::GetEndTerminator();
-    payload_buffer[9] = PayloadProcessor::GetEndTerminator();
-}
-
 TEST(PayloadProcessor, TestPayloadProcessor) {
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
 
     // Set the bytes necessary for 2 x test command
-    BuildTwoTestUplinks(payload);
+    builder.AddUplinkCode(kTestUplink)
+        .AddData<byte>(TestUplink::kTestValue1)
+        .AddData<byte>(TestUplink::kTestValue2)
+        .AddUplinkCode(kTestUplink)
+        .AddData<byte>(TestUplink::kTestValue1)
+        .AddData<byte>(TestUplink::kTestValue2);
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteUplinks(payload));
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 }
 
 TEST(PayloadProcessor, TestForceResetUplink) {
@@ -63,14 +56,11 @@ TEST(PayloadProcessor, TestForceResetUplink) {
     }
 
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
-
-    payload[0] = 4;
-    payload[1] = 0;  // 0x04 indicates a force reset command
-    payload[2] = PayloadProcessor::GetEndTerminator();
-    payload[3] = PayloadProcessor::GetEndTerminator();
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+    builder.AddUplinkCode(kForceResetUplink);
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteUplinks(payload));
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
     FAIL("Software reset failed.");  // reset has failed if program
                                      // reaches this line
 }
@@ -87,15 +77,9 @@ TEST(PayloadProcessor, TestTleUpdateUplink) {
     test_tle.mean_anomaly = 19.3264;
     test_tle.bstar_drag = 0.000028098;
 
-    uint8_t buffer[Lithium::kMaxReceivedUplinkSize] = {0};
-    buffer[0] = 3;  // 3 indicates tle update command
-    buffer[1] = 0;
-    buffer[PayloadProcessor::GetUplinkCodeLength() + Tle_size] =
-        PayloadProcessor::GetEndTerminator();
-    buffer[PayloadProcessor::GetUplinkCodeLength() + Tle_size + 1] =
-        PayloadProcessor::GetEndTerminator();
-    NanopbEncode(Tle)(buffer + PayloadProcessor::GetUplinkCodeLength(),
-                      test_tle);
+    uint8_t payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+    builder.AddUplinkCode(kTleUpdateUplink).AddNanopbMacro(Tle)(test_tle);
 
     // Create test mailbox
     Mailbox_Params_init(&LocationEstimator::tle_update_uplink_mailbox_params);
@@ -115,7 +99,7 @@ TEST(PayloadProcessor, TestTleUpdateUplink) {
     // Send the encoded TLE to a payload processor (which decodes it and posts
     // it to the TLE update mailbox)
     PayloadProcessor test_payload_processor;
-    CHECK(test_payload_processor.ParseAndExecuteUplinks(buffer));
+    CHECK(test_payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
     // Have a location estimator retrieve the decoded TLE from the mailbox and
     // update its internal satrec values
@@ -142,49 +126,39 @@ TEST(PayloadProcessor, TestLithiumTestUplink) {
     }
 
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
-
-    payload[0] = static_cast<uint8_t>(kLithiumTestUplink);
-    payload[1] = 0;  // 0x08 indicates a Lithium Test command
-    payload[2] = PayloadProcessor::GetEndTerminator();
-    payload[3] = PayloadProcessor::GetEndTerminator();
-
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+    builder.AddUplinkCode(kLithiumTestUplink);
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteUplinks(payload));
+
     // Should also verify on the ground that 10 packets have been received
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 }
 
 TEST(PayloadProcessor, TestLithiumBeaconPeriodUplink) {
-    // Generate a fake lithium beacon period command
-    byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
 
-    // Set command code - 5 indicates a beacon period command
-    buffer[0] = 5;
-    buffer[1] = 0;
-
-    // Set nanopb message
     LithiumBeaconPeriodUplinkPayload injected_beacon_period = {5000};
-    NanopbEncode(LithiumBeaconPeriodUplinkPayload)(
-        buffer + PayloadProcessor::GetUplinkCodeLength(),
-        injected_beacon_period);
-
-    // Set end terminators
-    buffer[PayloadProcessor::GetUplinkCodeLength() +
-           LithiumBeaconPeriodUplinkPayload_size] =
-        PayloadProcessor::GetEndTerminator();
-    buffer[PayloadProcessor::GetUplinkCodeLength() +
-           LithiumBeaconPeriodUplinkPayload_size + 1] =
-        PayloadProcessor::GetEndTerminator();
-
+    builder.AddUplinkCode(kLithiumBeaconPeriodUplink)
+        .AddNanopbMacro(LithiumBeaconPeriodUplinkPayload)(
+            injected_beacon_period);
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
+
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
     CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), 5000);
 
     // Reset to nominal
+
     injected_beacon_period = {kNominalBeaconPeriodMs};
-    NanopbEncode(LithiumBeaconPeriodUplinkPayload)(
-        buffer + PayloadProcessor::GetUplinkCodeLength(),
-        injected_beacon_period);
-    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
+
+    byte reset_payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder reset_builder(reset_payload,
+                                    Lithium::kMaxReceivedUplinkSize);
+    reset_builder.AddUplinkCode(kLithiumBeaconPeriodUplink)
+        .AddNanopbMacro(LithiumBeaconPeriodUplinkPayload)(
+            injected_beacon_period);
+
+    CHECK(payload_processor.ParseAndExecuteUplinks(reset_builder.Build()));
     CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), kNominalBeaconPeriodMs);
 }
 
@@ -193,22 +167,17 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
         if (!kSdCardAvailable) {
             TEST_EXIT
         }
-        // Generate a fake science data command
-        byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
 
-        // Set command code - indicates a science data command
-        buffer[0] = kScienceDataUplink;
-        buffer[1] = 0;
-
-        // Put requested ID in the buffer
-        buffer[3] = kTestCurrent;
-        buffer[4] = 0;
-
-        // Put requested timestamp in the buffer
         Time requested_time = SatelliteTimeSource::GetTime();
-        NanopbEncode(Time)(
-            buffer + PayloadProcessor::GetUplinkCodeLength() + sizeof(uint16_t),
-            requested_time);
+
+        PayloadProcessor payload_processor;
+        byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+        MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+        builder.AddUplinkCode(kScienceDataUplink)
+            .AddData<uint8_t>(
+                static_cast<uint8_t>(kTestCurrent))  // Requested measurable ID
+            .AddData<uint8_t>(0)
+            .AddNanopbMacro(Time)(requested_time);
 
         // Create a CircularBuffer and put a value in it
         char filename[4];
@@ -221,8 +190,7 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
         CircularBufferNanopb(CurrentReading)::WriteMessage(filename,
                                                            test_current);
 
-        PayloadProcessor payload_processor;
-        CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
+        CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
         SdCard::GetInstance()->FileDelete(filename);
     } catch (etl::exception& e) {
@@ -233,8 +201,9 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
 
 // TODO(dingbenjamin): Figure out how to teardown for just this test
 TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
-    byte buffer[Lithium::kMaxReceivedUplinkSize] = {0};
+    byte buffer_off[Lithium::kMaxReceivedUplinkSize] = {0};
 
+    MockUplinkBuilder builder_off(buffer_off, Lithium::kMaxReceivedUplinkSize);
     // Set nanopb message
     // Toggle comms regulators expander
     IoExpanderToggleUplinkPayload en_1_off = {
@@ -254,46 +223,17 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
         static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
 
-    // Set command code - 12 indicates an IO toggle command
-    buffer[0] = 12;
-    buffer[1] = 0;
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + PayloadProcessor::GetUplinkCodeLength(), en_1_off);
-
-    buffer[PayloadProcessor::GetUplinkCodeLength() +
-           IoExpanderToggleUplinkPayload_size] = 12;
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + 2 * PayloadProcessor::GetUplinkCodeLength() +
-            IoExpanderToggleUplinkPayload_size,
-        en_3_off);
-
-    buffer[(IoExpanderToggleUplinkPayload_size +
-            PayloadProcessor::GetUplinkCodeLength()) *
-           2] = 12;
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + 3 * PayloadProcessor::GetUplinkCodeLength() +
-            2 * IoExpanderToggleUplinkPayload_size,
-        en_4_off);
-
-    buffer[(IoExpanderToggleUplinkPayload_size +
-            PayloadProcessor::GetUplinkCodeLength()) *
-           3] = 12;
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + 4 * PayloadProcessor::GetUplinkCodeLength() +
-            3 * IoExpanderToggleUplinkPayload_size,
-        en_5_off);
-
-    // Set end terminators
-    buffer[(PayloadProcessor::GetUplinkCodeLength() +
-            IoExpanderToggleUplinkPayload_size) *
-           4] = PayloadProcessor::GetEndTerminator();
-    buffer[(PayloadProcessor::GetUplinkCodeLength() +
-            IoExpanderToggleUplinkPayload_size) *
-               4 +
-           1] = PayloadProcessor::GetEndTerminator();
+    builder_off.AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_1_off)
+        .AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_3_off)
+        .AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_4_off)
+        .AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_5_off);
 
     PayloadProcessor payload_processor;
-    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder_off.Build()));
 
     // Check Lithium is now unable to transmit
     TaskUtils::SleepMilli(2000);
@@ -318,25 +258,19 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
         static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
         static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
 
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + PayloadProcessor::GetUplinkCodeLength(), en_1_on);
+    byte buffer_on[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder_on(buffer_on, Lithium::kMaxReceivedUplinkSize);
 
-    buffer[PayloadProcessor::GetUplinkCodeLength() +
-           IoExpanderToggleUplinkPayload_size] = 12;
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + 2 * PayloadProcessor::GetUplinkCodeLength() +
-            IoExpanderToggleUplinkPayload_size,
-        en_3_on);
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + 3 * PayloadProcessor::GetUplinkCodeLength() +
-            2 * IoExpanderToggleUplinkPayload_size,
-        en_4_on);
-    NanopbEncode(IoExpanderToggleUplinkPayload)(
-        buffer + 4 * PayloadProcessor::GetUplinkCodeLength() +
-            3 * IoExpanderToggleUplinkPayload_size,
-        en_5_on);
+    builder_on.AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_1_on)
+        .AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_3_on)
+        .AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_4_on)
+        .AddUplinkCode(kIoExpanderToggleUplink)
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_5_on);
 
-    CHECK(payload_processor.ParseAndExecuteUplinks(buffer));
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder_on.Build()));
     TaskUtils::SleepMilli(2000);
     CHECK(Lithium::GetInstance()->Transmit(&ones));
 }
@@ -351,8 +285,18 @@ TEST(PayloadProcessor, TestSequence) {
     // Build a command that is reused in the test
     // Don't need to set HMAC or FEC as these are turned off for now
     byte rpp_payload[Lithium::kMaxReceivedUplinkSize] = {0};
-    BuildTwoTestUplinks(
-        &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]);
+    MockUplinkBuilder builder(
+        rpp_payload + RunnablePayloadProcessor::kMspUplinkIndex,
+        Lithium::kMaxReceivedUplinkSize -
+            RunnablePayloadProcessor::kMspUplinkIndex);
+
+    builder.AddUplinkCode(kTestUplink)
+        .AddData<byte>(TestUplink::kTestValue1)
+        .AddData<byte>(TestUplink::kTestValue2)
+        .AddUplinkCode(kTestUplink)
+        .AddData<byte>(TestUplink::kTestValue1)
+        .AddData<byte>(TestUplink::kTestValue2)
+        .Build();
 
     // Check start
     for (uint16_t i = 0; i <= 50; i++) {
@@ -362,7 +306,7 @@ TEST(PayloadProcessor, TestSequence) {
             static_cast<uint8_t>(i % 256);
         CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
         CHECK(payload_processor.ParseAndExecuteUplinks(
-            &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
+            builder.GetMockUplinkBuffer()));
 
         // Check invalid
         CHECK_FALSE(RunnablePayloadProcessor::CheckSequence(rpp_payload));
@@ -378,7 +322,7 @@ TEST(PayloadProcessor, TestSequence) {
             static_cast<uint8_t>(i % 256);
         CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
         CHECK(payload_processor.ParseAndExecuteUplinks(
-            &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
+            builder.GetMockUplinkBuffer()));
 
         // Check invalid
         CHECK_FALSE(RunnablePayloadProcessor::CheckSequence(rpp_payload));
@@ -392,13 +336,13 @@ TEST(PayloadProcessor, TestSequence) {
         static_cast<uint8_t>(UINT16_MAX % 256);
     CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
     CHECK(payload_processor.ParseAndExecuteUplinks(
-        &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
+        builder.GetMockUplinkBuffer()));
 
     rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex] = 0;
     rpp_payload[RunnablePayloadProcessor::kMspSequenceNumberIndex + 1] = 0;
     CHECK(RunnablePayloadProcessor::CheckSequence(rpp_payload));
     CHECK(payload_processor.ParseAndExecuteUplinks(
-        &rpp_payload[RunnablePayloadProcessor::kMspUplinkIndex]));
+        builder.GetMockUplinkBuffer()));
 
     // TODO(dingbenjamin): Move this to teardown
     RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;

@@ -21,9 +21,8 @@
 
 ScienceDataUplink::ScienceDataUplink(byte* payload)
     : Uplink(kScienceUplinkArgumentLength),
-      requested_id((payload[kMeasurableIdIndex]
-                    << 8) |  // TODO(dingbenjamin): Check endianness
-                   payload[kMeasurableIdIndex + 1]),
+      requested_id(payload[kMeasurableIdIndex] | payload[kMeasurableIdIndex + 1]
+                                                     << 8),
       requested_time(NanopbDecode(Time)(payload + kRequestedTimeIndex)) {}
 
 bool ScienceDataUplink::ExecuteUplink() {
