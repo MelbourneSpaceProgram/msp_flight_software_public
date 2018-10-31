@@ -1,3 +1,4 @@
+#include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/uplinks/deploy_antenna_uplink.h>
 #include <src/payload_processor/uplinks/enable_datalogger_uplink.h>
 #include <src/payload_processor/uplinks/force_reset_uplink.h>
@@ -5,13 +6,14 @@
 #include <src/payload_processor/uplinks/io_expander_toggle_uplink.h>
 #include <src/payload_processor/uplinks/lithium_beacon_period_uplink.h>
 #include <src/payload_processor/uplinks/lithium_enable_uplink.h>
+#include <src/payload_processor/uplinks/lithium_get_configuration_uplink.h>
+#include <src/payload_processor/uplinks/lithium_set_configuration_uplink.h>
 #include <src/payload_processor/uplinks/lithium_set_pa_uplink.h>
 #include <src/payload_processor/uplinks/lithium_test_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/payload_processor/uplinks/uplink.h>
-#include <src/payload_processor/payload_processor.h>
 #include <src/telecomms/lithium.h>
 #include <xdc/runtime/Log.h>
 #include <memory>
@@ -68,6 +70,10 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new ScienceDataUplink(payload);
         case kIoExpanderToggleUplink:
             return new IoExpanderToggleUplink(payload);
+        case kLithiumSetConfigurationUplink:
+            return new LithiumSetConfigurationUplink(payload);
+        case kLithiumGetConfigurationUplink:
+            return new LithiumGetConfigurationUplink;
         default:
             // TODO(dingbenjamin): Put erroneous command ID in exception
             etl::exception e("Could not parse command code", __FILE__,
@@ -77,7 +83,7 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
 }
 
 bool PayloadProcessor::ParseNextUplinkAndExecute(uint8_t& index,
-                                                  byte* payload) {
+                                                 byte* payload) {
     uint16_t command_code = static_cast<uint16_t>(payload[index]) |
                             (static_cast<uint16_t>(payload[index + 1]) << 8);
     payload += kUplinkCodeLength + index;

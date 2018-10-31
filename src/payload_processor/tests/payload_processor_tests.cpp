@@ -9,6 +9,7 @@
 #include <src/database/sd_card.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
+#include <src/messages/LithiumConfigurationPayload.pb.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/payload_processor.h>
@@ -22,6 +23,8 @@
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/get_configuration_command.h>
+#include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/etl_utils.h>
@@ -273,6 +276,52 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
     CHECK(payload_processor.ParseAndExecuteUplinks(builder_on.Build()));
     TaskUtils::SleepMilli(2000);
     CHECK(Lithium::GetInstance()->Transmit(&ones));
+}
+
+TEST(PayloadProcessor, TestLithumGetSetConfigUplink) {
+    PayloadProcessor payload_processor;
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+
+    // Default hardware configuration for the Lithium
+    LithiumConfigurationPayload default_config =
+        LithiumConfigurationPayload_init_default;
+    default_config.destination[0] = 'T';
+    default_config.destination[1] = 'E';
+    default_config.destination[2] = 'S';
+    default_config.destination[3] = 'T';
+    default_config.destination[4] = 0x20;
+    default_config.destination[5] = 0x20;
+
+    builder.AddUplinkCode(kLithiumSetConfigurationUplink)
+        .AddNanopbMacro(LithiumConfigurationPayload)(default_config)
+        .AddUplinkCode(
+            kLithiumGetConfigurationUplink);  // No arguments for this one
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
+
+    // Check the configuration has been set correctly
+    GetConfigurationCommand hardware_get_config;
+    CHECK(Lithium::GetInstance()->DoCommand(&hardware_get_config));
+    LithiumConfiguration received_configuration =
+        hardware_get_config.GetParsedResponse();
+
+    CHECK_EQUAL('T', received_configuration.destination[0]);
+    CHECK_EQUAL('E', received_configuration.destination[1]);
+    CHECK_EQUAL('S', received_configuration.destination[2]);
+    CHECK_EQUAL('T', received_configuration.destination[3]);
+    CHECK_EQUAL(0x20, received_configuration.destination[4]);
+    CHECK_EQUAL(0x20, received_configuration.destination[5]);
+
+    // Reset the configuration again
+    // TODO(dingbenjamin): Do this in teardown instead
+    byte reset_payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder reset_builder(reset_payload,
+                                    Lithium::kMaxReceivedUplinkSize);
+
+    default_config = LithiumConfigurationPayload_init_default;
+    reset_builder.AddUplinkCode(kLithiumSetConfigurationUplink)
+        .AddNanopbMacro(LithiumConfigurationPayload)(default_config);
+    CHECK(payload_processor.ParseAndExecuteUplinks(reset_builder.Build()));
 }
 
 TEST(PayloadProcessor, TestSequence) {

@@ -1,0 +1,4 @@
+LithiumConfigurationPayload.source          max_size:6
+LithiumConfigurationPayload.source          fixed_length:true
+LithiumConfigurationPayload.destination          max_size:6
+LithiumConfigurationPayload.destination          fixed_length:true
