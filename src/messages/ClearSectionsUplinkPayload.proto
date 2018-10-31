@@ -1,0 +1,3 @@
+message ClearSectionsUplinkPayload {
+  required bool clear_buffer = 1 [default = true];
+}

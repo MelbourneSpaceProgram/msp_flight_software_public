@@ -44,7 +44,8 @@ enum PayloadType {
     kBeaconPayloadCode = 5,
     kTestOnesPayloadCode = 6,
     kSciencePayloadCode = 7,
-    kLithiumGetConfigurationUplinkPayloadCode = 8
+    kLithiumGetConfigurationUplinkPayloadCode = 8,
+    kQuerySectionsPayloadCode = 9
 };
 
 enum Uplinks {
@@ -64,6 +65,10 @@ enum Uplinks {
     kLithiumGetConfigurationUplink = 13,
     kLithiumSetConfigurationUplink = 14,
     kLithiumWriteFlashUplink = 15,
+    kSectionUplink = 16,
+    kClearSectionsUplink = 17,
+    kExecuteSectionsUplink = 18,
+    kQuerySectionsUplink = 19,
     kUplinksLength
 };
 

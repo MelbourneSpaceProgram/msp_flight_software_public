@@ -1,6 +1,8 @@
 #include <src/payload_processor/payload_processor.h>
+#include <src/payload_processor/uplinks/clear_sections_uplink.h>
 #include <src/payload_processor/uplinks/deploy_antenna_uplink.h>
 #include <src/payload_processor/uplinks/enable_datalogger_uplink.h>
+#include <src/payload_processor/uplinks/execute_sections_uplink.h>
 #include <src/payload_processor/uplinks/force_reset_uplink.h>
 #include <src/payload_processor/uplinks/format_sd_uplink.h>
 #include <src/payload_processor/uplinks/io_expander_toggle_uplink.h>
@@ -11,7 +13,9 @@
 #include <src/payload_processor/uplinks/lithium_set_pa_uplink.h>
 #include <src/payload_processor/uplinks/lithium_test_uplink.h>
 #include <src/payload_processor/uplinks/lithium_write_flash_uplink.h>
+#include <src/payload_processor/uplinks/query_sections_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
+#include <src/payload_processor/uplinks/section_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/payload_processor/uplinks/uplink.h>
@@ -20,7 +24,7 @@
 #include <memory>
 #include <utility>
 
-PayloadProcessor::PayloadProcessor() {}
+PayloadProcessor::PayloadProcessor() : payload_section_manager() {}
 
 bool PayloadProcessor::ParseAndExecuteUplinks(byte* payload) {
     byte current_index = 0;
@@ -77,6 +81,14 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new LithiumGetConfigurationUplink;
         case kLithiumWriteFlashUplink:
             return new LithiumWriteFlashUplink(payload);
+        case kSectionUplink:
+            return new SectionUplink(payload, this);
+        case kClearSectionsUplink:
+            return new ClearSectionsUplink(payload, this);
+        case kExecuteSectionsUplink:
+            return new ExecuteSectionsUplink(payload, this);
+        case kQuerySectionsUplink:
+            return new QuerySectionsUplink(payload, this);
         default:
             // TODO(dingbenjamin): Put erroneous command ID in exception
             etl::exception e("Could not parse command code", __FILE__,
@@ -106,3 +118,7 @@ bool PayloadProcessor::ParseNextUplinkAndExecute(uint8_t& index,
 byte PayloadProcessor::GetUplinkCodeLength() { return kUplinkCodeLength; }
 
 byte PayloadProcessor::GetEndTerminator() { return kEndTerminator; }
+
+PayloadSectionManager* PayloadProcessor::GetPayloadSectionManager() {
+    return &payload_section_manager;
+}

@@ -1,3 +1,4 @@
+#include <src/messages/SectionUplinkPayload.pb.h>
 #include <src/payload_processor/tests/mock_uplink_builder.h>
 #include <stdint.h>
 
@@ -16,8 +17,28 @@ MockUplinkBuilder& MockUplinkBuilder::AddUplinkCode(Uplinks code) {
     return *this;
 }
 
-byte* MockUplinkBuilder::GetMockUplinkBuffer() const {
-    return uplink_buffer;
+byte* MockUplinkBuilder::GetMockUplinkBuffer() const { return uplink_buffer; }
+
+// Assumes only one command in the builder argument, which is complete and has a
+// code in the first two bytes
+MockUplinkBuilder& MockUplinkBuilder::AddUplinkSection(
+    MockUplinkBuilder* builder, uint16_t start_index, uint16_t end_index) {
+    // TODO(dingbenjamin): Limit checking
+    SectionUplinkPayload section;
+    section.command_code =
+        *reinterpret_cast<uint16_t*>(builder->GetMockUplinkBuffer());
+    section.start_index = start_index;
+    section.end_index = end_index;
+    uint16_t section_size = end_index - start_index + 1;
+    section.section.size = section_size;
+
+    for (uint16_t i = 0; i < section_size; ++i) {
+        section.section.bytes[i] =
+            builder->GetMockUplinkBuffer()[i + start_index];
+    }
+    AddNanopbMacro(SectionUplinkPayload)(section);
+
+    return *this;
 }
 
 byte* MockUplinkBuilder::Build() {

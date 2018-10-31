@@ -1,0 +1,3 @@
+message QuerySectionsUplinkPayload {
+  required bool queried = 1 [default = true];
+}

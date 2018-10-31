@@ -32,6 +32,7 @@
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
+#include <string.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
 

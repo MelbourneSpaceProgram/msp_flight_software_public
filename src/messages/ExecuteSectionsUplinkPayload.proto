@@ -1,0 +1,3 @@
+message ExecuteSectionsUplinkPayload {
+  required bool post_buffer = 1 [default = false];
+}

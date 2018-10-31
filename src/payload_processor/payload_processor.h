@@ -1,12 +1,18 @@
 #ifndef SRC_PAYLOAD_PROCESSOR_PAYLOAD_PROCESSOR_H_
 #define SRC_PAYLOAD_PROCESSOR_PAYLOAD_PROCESSOR_H_
 
+#include <src/payload_processor/payload_section_manager.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
 class Uplink;
 
 class PayloadProcessor {
+    friend class SectionUplink;
+    friend class ClearSectionsUplink;
+    friend class ExecuteSectionsUplink;
+    friend class QuerySectionsUplink;
+
    public:
     PayloadProcessor();
     bool ParseAndExecuteUplinks(byte* payload);
@@ -15,7 +21,10 @@ class PayloadProcessor {
 
    private:
     bool ParseNextUplinkAndExecute(byte& index, byte* payload);
-    static Uplink* CreateUplink(uint16_t command_code, byte* payload);
+    PayloadSectionManager* GetPayloadSectionManager();
+    PayloadSectionManager payload_section_manager;
+    Uplink* CreateUplink(uint16_t command_code, byte* payload);
+
     static constexpr byte kUplinkCodeLength = 2;
     static constexpr uint8_t kEndTerminator = 0;
 };

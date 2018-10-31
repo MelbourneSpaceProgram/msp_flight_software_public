@@ -8,7 +8,7 @@
 #include <src/util/nanopb_utils.h>
 #include <string.h>
 
-#define AddNanopbMacro(NanopbMessageType)                   \
+#define AddNanopbMacro(NanopbMessageType)                  \
     AddNanopb<NanopbMessageType, NanopbMessageType##_size, \
               NanopbMessageType##_fields>
 
@@ -19,6 +19,9 @@ class MockUplinkBuilder {
     byte* GetMockUplinkBuffer() const;
     byte* Build();  // Lifetime of result is tied to this object
     MockUplinkBuilder& AddUplinkCode(Uplinks code);
+    MockUplinkBuilder& AddUplinkSection(MockUplinkBuilder* builder,
+                                        uint16_t start_index,
+                                        uint16_t end_index);
 
     template <class T>
     MockUplinkBuilder& AddData(const T data) {
