@@ -40,7 +40,13 @@ void PreBiosInit() {
     UART_init();
     PWM_init();
 
+    GPIO_write(SYS_nCS1, 1);
+    GPIO_write(SYS_nCS2, 1);
+    GPIO_write(SYS_nCS3, 1);
+
     if (kSdCardAvailable) {
+        /*        add_device(fatfsPrefix, _MSA, ffcio_open, ffcio_close,
+           ffcio_read, ffcio_write, ffcio_lseek, ffcio_unlink, ffcio_rename);*/
         SDFatFS_init();
     }
 

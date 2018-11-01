@@ -33,6 +33,7 @@
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <string.h>
+#include <ti/drivers/GPIO.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
 
@@ -237,6 +238,49 @@ void PostBiosInitialiser::InitConsoleUart() {
 
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
+
+    byte* work = new byte[FF_MAX_SS];
+
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    while (1) {
+        // SD_FatFS_open still works even if the GPIO line is not correct or SD
+        // card is not inserted
+        SDFatFS_Handle handle0 = SDFatFS_open(0, 0);
+        //        GPIO_write(SYS_nCS1, 0);
+        FRESULT result0 = f_mkfs("0", FM_ANY, 0, work, FF_MAX_SS);
+        //        GPIO_write(SYS_nCS1, 1);
+        SDFatFS_close(handle0);
+        if (result0 != FR_OK) {
+            Log_error0("SD 0 NOT OK");
+        } else {
+            Log_error0("SD 0 OK");
+        }
+
+        SDFatFS_Handle handle1 = SDFatFS_open(1, 0);
+        //        GPIO_write(SYS_nCS2, 0);
+        FRESULT result1 = f_mkfs("1", FM_ANY, 0, work, FF_MAX_SS);
+        //        GPIO_write(SYS_nCS2, 1);
+        SDFatFS_close(handle1);
+        if (result1 != FR_OK) {
+            Log_error0("SD 1 NOT OK");
+        } else {
+            Log_error0("SD 1 OK");
+        }
+
+        SDFatFS_Handle handle2 = SDFatFS_open(2, 0);
+        //        GPIO_write(SYS_nCS3, 0);
+        FRESULT result2 = f_mkfs("2", FM_ANY, 0, work, FF_MAX_SS);
+        //        GPIO_write(SYS_nCS3, 1);
+        SDFatFS_close(handle2);
+        if (result2 != FR_OK) {
+            Log_error0("SD 2 NOT OK");
+        } else {
+            Log_error0("SD 2 OK");
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     if (kDitlMode) {
         InitMemoryLogger();
