@@ -28,7 +28,8 @@ uint8_t Lithium::command_success_count = 0;
 Lithium::Lithium()
     : uart(TELECOMS),
       lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded),
-      state(kLithiumTempNominal) {
+      state(kLithiumTempNominal),
+      lock(kLithiumOnCondition) {
     // Ensure Lithium is not in reset
     GPIO_write(nCOMMS_RST, 1);
 
@@ -183,26 +184,26 @@ LithiumConfiguration Lithium::ReadLithiumConfiguration() const {
 }
 
 void Lithium::UnlockState(LithiumShutoffCondition condition) {
-    state = state & ~static_cast<uint8_t>(condition);
+    lock = lock & ~static_cast<uint8_t>(condition);
 
-    if (state == kLithiumOnCondition) {
+    if (lock == kLithiumOnCondition) {
         lithium_transmit_enabled = true;
     }
 }
 void Lithium::LockState(LithiumShutoffCondition condition) {
-    state = state | static_cast<uint8_t>(condition);
+    lock = lock | static_cast<uint8_t>(condition);
 
-    if (state != kLithiumOnCondition) {
+    if (lock != kLithiumOnCondition) {
         lithium_transmit_enabled = false;
     }
 }
 
 bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
-    return (state & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
+    return (lock & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
 }
 
-void Lithium::ForceUnlock(){
-    state = kLithiumOnCondition;
+void Lithium::ForceUnlock() {
+    lock = kLithiumOnCondition;
 }
 
 
@@ -216,7 +217,6 @@ void Lithium::UpdateState() {
         MeasurableManager::GetInstance()
             ->ReadNanopbMeasurable<TemperatureReading>(kComT2, 10000)
             .temp;
-    void UpdateState();
 
     // Disregard invalid sensor readings
     if (telecomms_1_temp == kInvalidDouble)

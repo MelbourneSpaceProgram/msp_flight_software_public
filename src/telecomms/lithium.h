@@ -93,7 +93,8 @@ class Lithium {
 
     Uart uart;
     bool lithium_transmit_enabled;
-    uint8_t state;
+    uint8_t lock;
+    kLithiumState state;
 
     Mailbox_Params uplink_mailbox_params;
     Mailbox_Handle uplink_mailbox_handle;
