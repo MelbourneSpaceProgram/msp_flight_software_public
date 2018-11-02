@@ -1,5 +1,6 @@
 #include <CppUTest/TestHarness.h>
 #include <external/etl/exception.h>
+#include <src/board/MSP432E.h>
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <src/util/msp_exception.h>
@@ -36,41 +37,42 @@ TEST_GROUP(SdCard) {
 };
 
 TEST(SdCard, FatFsReadWrite) {
+    SdCard sd = SdCard(0, SYS_nCS1);
+    SdHandle handle;
     try {
         File *src, *dst;
-        SdCard *sd = SdCard::GetInstance();
-        src = sd->FileOpen(input_file, SdCard::kFileWriteMode |
-                                           SdCard::kFileReadMode |
-                                           SdCard::kFileCreateAlwaysMode);
+        handle = sd.SdOpen();
+        src = sd.FileOpen(input_file, SdCard::kFileWriteMode |
+                                          SdCard::kFileReadMode |
+                                          SdCard::kFileCreateAlwaysMode);
 
         CHECK_EQUAL(strlen(text_array),
-                    sd->FileWrite(src, text_array, strlen(text_array)));
-        sd->FileFlush(src);
-        sd->FileSeek(src, 0);
-        sd->FileClose(src);
+                    sd.FileWrite(src, text_array, strlen(text_array)));
+        sd.FileFlush(src);
+        sd.FileSeek(src, 0);
+        sd.FileClose(src);
 
         char copy_buffer[copy_buffer_size + 1];
 
         // Copy the contents from the src to the dst
         uint64_t total_bytes_copied = 0;
         while (true) {
-            src = sd->FileOpen(input_file, SdCard::kFileReadMode);
-            sd->FileSeek(src, total_bytes_copied);
+            src = sd.FileOpen(input_file, SdCard::kFileReadMode);
+            sd.FileSeek(src, total_bytes_copied);
             uint32_t bytes_read =
-                sd->FileRead(src, copy_buffer, copy_buffer_size);
-            sd->FileClose(src);
+                sd.FileRead(src, copy_buffer, copy_buffer_size);
+            sd.FileClose(src);
 
             if (bytes_read == 0) {
                 break;
             }
 
-            dst = sd->FileOpen(output_file, SdCard::kFileCreateAlwaysMode |
-                                                SdCard::kFileWriteMode);
-            sd->FileSeek(dst, total_bytes_copied);
-            uint32_t bytes_written =
-                sd->FileWrite(dst, copy_buffer, bytes_read);
-            sd->FileFlush(dst);
-            sd->FileClose(dst);
+            dst = sd.FileOpen(output_file, SdCard::kFileCreateAlwaysMode |
+                                               SdCard::kFileWriteMode);
+            sd.FileSeek(dst, total_bytes_copied);
+            uint32_t bytes_written = sd.FileWrite(dst, copy_buffer, bytes_read);
+            sd.FileFlush(dst);
+            sd.FileClose(dst);
 
             if (bytes_written < bytes_read) {
                 Log_error0("SD Card full");
@@ -81,16 +83,16 @@ TEST(SdCard, FatFsReadWrite) {
 
         // -1 required to account for the NULL terminator that is in the char
         // array but not written to file
-        src = sd->FileOpen(input_file, SdCard::kFileReadMode);
-        CHECK_EQUAL(sizeof(text_array) / sizeof(char) - 1, sd->FileSize(src));
-        sd->FileClose(src);
+        src = sd.FileOpen(input_file, SdCard::kFileReadMode);
+        CHECK_EQUAL(sizeof(text_array) / sizeof(char) - 1, sd.FileSize(src));
+        sd.FileClose(src);
 
-        dst = sd->FileOpen(output_file, SdCard::kFileReadMode);
+        dst = sd.FileOpen(output_file, SdCard::kFileReadMode);
 
         uint16_t index = 0;
         while (true) {
             uint32_t bytes_read =
-                sd->FileRead(dst, copy_buffer, copy_buffer_size);
+                sd.FileRead(dst, copy_buffer, copy_buffer_size);
             if (bytes_read == 0) {
                 break;  // EOF
             }
@@ -99,39 +101,55 @@ TEST(SdCard, FatFsReadWrite) {
             index += copy_buffer_size;
         }
 
-        sd->FileClose(dst);
-        sd->FileDelete(input_file);
-        sd->FileDelete(output_file);
+        sd.FileClose(dst);
+        sd.FileDelete(input_file);
+        sd.FileDelete(output_file);
+        sd.SdClose(handle);
     } catch (etl::exception &e) {
         MspException::LogException(e);
         FAIL("Uncaught exception in test");
+        sd.SdClose(handle);
     }
 }
 
 TEST(SdCard, SdDump) {
-    SdCard *sd_card = SdCard::GetInstance();
+    SdCard sd_card = SdCard(0, SYS_nCS1);
+    SdHandle handle = sd_card.SdOpen();
     File *test_1;
     File *test_2;
 
     try {
+        test_1 = NULL;
         test_1 =
-            sd_card->FileOpen(dump_file_1, SdCard::kFileWriteMode |
-                                               SdCard::kFileCreateAlwaysMode);
-        sd_card->FileWrite(test_1, text_array, strlen(text_array));
-        sd_card->FileFlush(test_1);
-        sd_card->FileClose(test_1);
+            sd_card.FileOpen(dump_file_1, SdCard::kFileWriteMode |
+                                              SdCard::kFileCreateAlwaysMode);
+        sd_card.FileWrite(test_1, text_array, strlen(text_array));
+        sd_card.FileFlush(test_1);
+        sd_card.FileClose(test_1);
 
+        test_2 = NULL;
         test_2 =
-            sd_card->FileOpen(dump_file_2, SdCard::kFileWriteMode |
-                                               SdCard::kFileCreateAlwaysMode);
-        sd_card->FileWrite(test_2, text_array, strlen(text_array));
-        sd_card->FileFlush(test_2);
-        sd_card->FileClose(test_2);
+            sd_card.FileOpen(dump_file_2, SdCard::kFileWriteMode |
+                                              SdCard::kFileCreateAlwaysMode);
+        sd_card.FileWrite(test_2, text_array, strlen(text_array));
+        sd_card.FileFlush(test_2);
+        sd_card.FileClose(test_2);
 
-        sd_card->Dump();
+        sd_card.Dump();
     } catch (etl::exception &e) {
+        if (test_1 != NULL) {
+            sd_card.FileClose(test_1);
+        }
+
+        if (test_2 != NULL) {
+            sd_card.FileClose(test_2);
+        }
+
+        sd_card.SdClose(handle);
         // Likely SD card missing
         std::string error(e.what());
         FAIL(("Exception in SdDump " + error).c_str());
     }
+
+    sd_card.SdClose(handle);
 }

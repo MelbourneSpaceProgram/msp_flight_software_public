@@ -10,7 +10,7 @@ static constexpr bool kLogI2c = false;
 static constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 static constexpr bool kLogToUart = true;
 static constexpr bool kLogToSd = true;
-static constexpr bool kFormatSdOnStartup = false;
+static constexpr bool kFormatSdOnStartup = true;
 static constexpr uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
 static constexpr uint8_t kNominalLithiumPowerLevel =
     150;  // Scaled between 0-255

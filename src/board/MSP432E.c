@@ -155,7 +155,9 @@ const uint_least8_t PWM_count = Board_PWMCOUNT;
 SDFatFS_Object sdfatfsObjects[MSP_EXP432P401R_SDFatFSCOUNT];
 
 const SDFatFS_Config SDFatFS_config[MSP_EXP432P401R_SDFatFSCOUNT] = {
-    {.object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS0]}};
+    {.object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS0]},
+    {.object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS1]},
+    {.object = &sdfatfsObjects[MSP_EXP432P401R_SDFatFS2]}};
 
 const uint_least8_t SDFatFS_count = MSP_EXP432P401R_SDFatFSCOUNT;
 
@@ -168,13 +170,20 @@ const uint_least8_t SDFatFS_count = MSP_EXP432P401R_SDFatFSCOUNT;
 SDSPI_Object sdspiObjects[MSP_EXP432P401R_SDCOUNT];
 
 const SDSPI_HWAttrs sdspiHWAttrs[MSP_EXP432P401R_SDCOUNT] = {
-    {.spiIndex = 0, .spiCsGpioIndex = SYS_nCS1}};
+    {.spiIndex = 0, .spiCsGpioIndex = SYS_nCS1},
+    {.spiIndex = 0, .spiCsGpioIndex = SYS_nCS2},
+    {.spiIndex = 0, .spiCsGpioIndex = SYS_nCS3}};
 
 const SD_Config SD_config[MSP_EXP432P401R_SDCOUNT] = {
     {.fxnTablePtr = &SDSPI_fxnTable,
      .object = &sdspiObjects[MSP_EXP432P401R_SDSPI0],
      .hwAttrs = &sdspiHWAttrs[MSP_EXP432P401R_SDSPI0]},
-};
+    {.fxnTablePtr = &SDSPI_fxnTable,
+     .object = &sdspiObjects[MSP_EXP432P401R_SDSPI1],
+     .hwAttrs = &sdspiHWAttrs[MSP_EXP432P401R_SDSPI1]},
+    {.fxnTablePtr = &SDSPI_fxnTable,
+     .object = &sdspiObjects[MSP_EXP432P401R_SDSPI2],
+     .hwAttrs = &sdspiHWAttrs[MSP_EXP432P401R_SDSPI2]}};
 
 const uint_least8_t SD_count = MSP_EXP432P401R_SDCOUNT;
 

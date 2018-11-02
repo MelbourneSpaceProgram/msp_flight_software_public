@@ -41,6 +41,10 @@ void PreBiosInit() {
     UART_init();
     PWM_init();
 
+    GPIO_write(SYS_nCS1, 1);
+    GPIO_write(SYS_nCS2, 1);
+    GPIO_write(SYS_nCS3, 1);
+
     if (kSdCardAvailable) {
         SDFatFS_init();
     }

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <external/etl/exception.h>
+#include <src/board/MSP432E.h>
 #include <src/board/board.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
@@ -9,45 +10,33 @@
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
 #include <src/util/runnable_console_logger.h>
+#include <src/util/task_utils.h>
 #include <stdio.h>
 #include <string.h>
 #include <third_party/fatfs/ff.h>
+#include <ti/drivers/GPIO.h>
 #include <ti/drivers/SDFatFS.h>
 #include <time.h>
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
 
-SdCard *SdCard::instance = NULL;
-
-SdCard *SdCard::GetInstance() {
-    if (instance == NULL) {
-        instance = new SdCard();
-    }
-    return instance;
-}
-
-SdCard::SdCard()
+SdCard::SdCard(uint8_t sd_index, uint8_t gpio_index)
     : handle(NULL),
-      mutex_params({NULL}),
-      sd_mutex(NULL),
       key(NULL),
       is_locked(NULL),
-      open_file(NULL) {
-    GateMutexPri_Params_init(&mutex_params);
-    sd_mutex = GateMutexPri_create(&mutex_params, NULL);
-    if (sd_mutex == NULL) {
-        throw SdException("Failed to create SD card mutex", 0,
-                          kSdMutexCreateFail, __FILE__, __LINE__);
-    }
-}
+      open_file(NULL),
+      sd_index(sd_index),
+      gpio_index(gpio_index) {}
 
-// TODO(dingbenjamin): Parameterize
 SdHandle SdCard::SdOpen() {
     if (!kSdCardAvailable) {
         Log_info0("SdCard not available");
     }
 
-    handle = SDFatFS_open(0, kDriveNum);
+    assert(sd_index < MSP_EXP432P401R_SDCOUNT);
+    GPIO_write(gpio_index, 0);
+    TaskUtils::SleepMilli(5);
+    handle = SDFatFS_open(sd_index, kDriveNum);
     if (handle == NULL) {
         throw SdException("Error starting the SD card.", 0, kSdOpenFail,
                           __FILE__, __LINE__);
@@ -61,7 +50,8 @@ void SdCard::SdClose(SdHandle handle) {
                           kFileCloseLockFail, __FILE__, __LINE__);
     }
     SDFatFS_close(handle);
-    GateMutexPri_leave(sd_mutex, key);
+    TaskUtils::SleepMilli(5);
+    GPIO_write(gpio_index, 1);
 }
 
 // TODO(dingbenjamin): Print file name in exceptions
@@ -77,6 +67,9 @@ File *SdCard::FileOpen(const char *path, byte mode) {
                           __FILE__, __LINE__, result);
     } else if (result == FR_EXIST) {
         // TODO(dingbenjamin): Add filename
+        delete open_file;
+        open_file = NULL;
+        Unlock();
         throw SdException("File already exists", 0, kFileOpenExistsFail,
                           __FILE__, __LINE__, result);
     } else if (result != FR_OK) {
@@ -169,7 +162,12 @@ void SdCard::Format() {
     Lock();
     byte work[FF_MAX_SS];
     Log_info0("Formatting SD Card");
-    FResult result = f_mkfs("0", FM_ANY, 0, work, sizeof(work));
+
+    // Extra character for the null terminator
+    char fvol[2 * sizeof(char)];
+    sprintf(fvol, "%1d", sd_index);
+
+    FResult result = f_mkfs(fvol, FM_ANY, 0, work, sizeof(work));
     Unlock();
     if (result != FR_OK) {
         throw SdException("Could not format SdCard", 0, kFileFormatFail,
@@ -179,7 +177,6 @@ void SdCard::Format() {
 }
 
 void SdCard::Lock() {
-    key = GateMutexPri_enter(sd_mutex);
     assert(!is_locked);
     if (is_locked) {
         throw SdException(
@@ -196,7 +193,6 @@ void SdCard::Unlock() {
         return;
     }
     is_locked = false;
-    GateMutexPri_leave(sd_mutex, key);
     key = NULL;
 }
 
@@ -211,8 +207,7 @@ void SdCard::Dump() {
         if (kVerboseUnitTests)
             Log_info1("Dump: Opening file %s", (IArg)file_path);
         try {
-            src = SdCard::GetInstance()->FileOpen(file_path,
-                                                  SdCard::kFileReadMode);
+            src = FileOpen(file_path, SdCard::kFileReadMode);
         } catch (SdException &e) {
             if (e.f_result == FR_NO_FILE) {
                 // File not found
@@ -234,8 +229,7 @@ void SdCard::Dump() {
 }
 
 void SdCard::FileDump(File *src, char *fpath) {
-    SdCard *sd_card = SdCard::GetInstance();
-    uint32_t file_size = sd_card->FileSize(src);
+    uint32_t file_size = FileSize(src);
     uint32_t index = 0;
     byte copy_buffer[kMessageSize];
 
@@ -243,7 +237,7 @@ void SdCard::FileDump(File *src, char *fpath) {
                                              reinterpret_cast<byte *>(fpath),
                                              kFileNameLength);
     while (index < file_size) {
-        uint32_t bytes_read = sd_card->FileRead(src, copy_buffer, kMessageSize);
+        uint32_t bytes_read = FileRead(src, copy_buffer, kMessageSize);
 
         index += bytes_read;
         if (bytes_read > 0) {

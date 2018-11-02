@@ -6,7 +6,8 @@
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
-#include <src/database/sd_card.h>
+#include <src/database/sd_exception.h>
+#include <src/database/sd_raid.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
 #include <src/messages/LithiumConfigurationPayload.pb.h>
@@ -27,8 +28,8 @@
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/telecomms/runnable_beacon.h>
-#include <src/util/msp_exception.h>
 #include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
@@ -195,11 +196,15 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
 
         CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
-        SdCard::GetInstance()->FileDelete(filename);
-        } catch (etl::exception& e) {
-            MspException::LogException(e);
-            FAIL("Uncaught exception in test");
-        }
+        SdRaid::GetInstance()->FileDelete(filename);
+    } catch (SdException& e) {
+        MspException::LogException(e);
+        Log_error1("SD Failure with code %d", e.f_result);
+        FAIL("Uncaught SD exception in test");
+    } catch (etl::exception& e) {
+        MspException::LogException(e);
+        FAIL("Uncaught exception in test");
+    }
 }
 
 // TODO(dingbenjamin): Figure out how to teardown for just this test

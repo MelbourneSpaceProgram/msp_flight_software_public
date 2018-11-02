@@ -15,21 +15,20 @@ bool FormatSdUplink::ExecuteUplink() {
 
     // TODO(dingbenjamin): Choose which SD card to format, and error handling if
     // the SD card is currently open
+    bool success = false;
     try {
         Log_info0("Disabling data logger temporarily");
         RunnableSystemHealthCheck::EnableDatalogger(false);
         // Wait for the datalogger to finish an iteration
         TaskUtils::SleepMilli(
             RunnableSystemHealthCheck::kHealthCheckPeriodMillis * 10);
-        SdCard::GetInstance()->Format();
+        success = SdRaid::GetInstance()->Format(sd_index);
     } catch (etl::exception& e) {
-        Log_info0("Re-enabling data logger");
-        RunnableSystemHealthCheck::EnableDatalogger(true);
-        MspException::LogException(e);
         Log_error0("Format SD failed");
-        return false;
+        success = false;
+        MspException::LogException(e);
     }
     Log_info0("Re-enabling data logger");
     RunnableSystemHealthCheck::EnableDatalogger(true);
-    return true;
+    return success;
 }

@@ -194,10 +194,9 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        SdCard* sd = SdCard::GetInstance();
-        sd->SdOpen();
+        SdRaid* raid = SdRaid::GetInstance();
         if (kFormatSdOnStartup) {
-            sd->Format();
+            raid->FormatAll();
         }
     } catch (etl::exception& e) {
         MspException::LogException(e);

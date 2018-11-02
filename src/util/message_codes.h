@@ -90,6 +90,8 @@ enum SdErrorId {
     kFileDeleteFail,
     kFileFormatFail,
     kFileThreadFail,
+	kFileIncorrectReadFail,
+	kFileIncorrectWriteFail,
 };
 
 enum ExceptionSubsystemId {
