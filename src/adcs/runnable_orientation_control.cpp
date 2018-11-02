@@ -35,7 +35,7 @@
 #include <src/adcs/kalman_filter.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/messages/GyroscopeReading.pb.h>
-#include <extern/wmm/worldMagneticModel.h>
+#include <external/wmm/worldMagneticModel.h>
 #include <src/sensors/earth_sensor.h>
 #include <src/adcs/state_estimators/nadir_error_generator.h>
 
@@ -186,7 +186,7 @@ void RunnableOrientationControl::ControlOrientation() {
         geomag.Set(1, 0, magnetometer_reading.y);
         geomag.Set(2, 0, magnetometer_reading.z);
 
-        BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
+        b_dot_estimate_pb = BDotEstimate_init_zero;
 
         gyro.Set(0, 0, gyro_reading.x);
         gyro.Set(1, 0, gyro_reading.y);
@@ -226,40 +226,81 @@ void RunnableOrientationControl::ControlOrientation() {
            longitude = location_est.GetLongitudeDegrees();
            lat = location_est.GetLattitudeGeodeticDegrees();
            /* Obtain estimate of magnetic field*/
-           mag_field = MagModel(YEARFRACTION, alt,lat,longitude);
+           mag_field = MagModel(2018, alt,lat,longitude);
            /*Write to the r1 and r2 vectors*/
            /*r1 and r2 are in the north east vertical frame */
-           r1.Set(0,0,mag_field.x);
-           r1.Set(1,0,mag_field.y);
-           r1.Set(2,0,mag_field.z);
+           r1.Set(0,0,magnetometer_reading.x);
+           r1.Set(1,0,magnetometer_reading.y);
+           r1.Set(2,0,magnetometer_reading.z);
            r2.Set(0,0,0.0);
            r2.Set(0,0,0.0);
            r2.Set(0,0,-1.0); // earth vector is always (0,0,-1) in this frame
 
-           /*This wont work - needs a fix*/
            KalmanFilter kf(kControlLoopPeriodMicros,r1,r2,Q0,R0,P0,q0);
-           // todo figure out how to update r1 dynamically!
 
+           while(gyro_filter.ProcessSample(gyro_norm) <=
+           RunnableOrientationControl::gyro_rate_threshold
+            && check_tle == true){
 
-           kf.predict(gyro_reading);
+              location_est.UpdateLocation(tsince_millis);
 
-           /* Earth Sensor */
-           earth_sensor.CalculateNadirVector();
-           nadir = earth_sensor.GetNadirVector();
-           y.Set(0,0,mag_field.Get(0,0));
-           y.Set(1,0,mag_field.Get(1,0));
-           y.Set(2,0,mag_field.Get(2,0));
-           y.Set(3,0,nadir.Get(0,0));
-           y.Set(4,0,nadir.Get(1,0));
-           y.Set(5,0,nadir.Get(2,0));
+              alt = location_est.GetAltitudeAboveEllipsoidKm();
+              longitude = location_est.GetLongitudeDegrees();
+              lat = location_est.GetLattitudeGeodeticDegrees();
+              mag_field = MagModel(2018, alt,lat,longitude);
 
-           kf.update(y);
+              /* Read from sensors*/
+              MagnetometerReading magnetometer_reading =
+                  measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+                      kFsImuMagno2, 0);
+              GyroscopeReading gyro_reading =
+                measurable_manager->ReadNanopbMeasurable<GyroscopeReading>(
+                  kFsImuGyro1,0);
+              geomag.Set(0, 0, magnetometer_reading.x);
+              geomag.Set(1, 0, magnetometer_reading.y);
+              geomag.Set(2, 0, magnetometer_reading.z);
 
-           /*Implement controllers*/
-           /*This will need fixing as well!*/
-           ErrorQuaternionCalculatorMarkely(&r2,kf.q0,error_q);
+              b_dot_estimate_pb = BDotEstimate_init_zero;
 
+              gyro.Set(0, 0, gyro_reading.x);
+              gyro.Set(1, 0, gyro_reading.y);
+              gyro.Set(2, 0, gyro_reading.z);
+              gyro_norm = Matrix::VectorNorm(gyro);
 
+              if (geomag.Get(0, 0) !=
+                  measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
+                      ->GetFailureReading()
+                      .x) {
+                  b_dot_estimator.Estimate(geomag, b_dot_estimate);
+                  b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
+                  b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
+                  b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
+              }
+
+              earth_sensor.CalculateNadirVector();
+              nadir = earth_sensor.GetNadirVector();
+
+              /* Update reference vector*/
+              kf.ref1.Set(0,0,mag_field.x);
+              kf.ref1.Set(1,0,mag_field.y);
+              kf.ref1.Set(2,0,mag_field.z);
+
+              kf.Predict(gyro);
+              y.Set(0,0,geomag.Get(0,0));
+              y.Set(1,0,geomag.Get(1,0));
+              y.Set(2,0,geomag.Get(2,0));
+              y.Set(3,0,nadir.Get(0,0));
+              y.Set(4,0,nadir.Get(1,0));
+              y.Set(5,0,nadir.Get(2,0));
+
+              kf.Update(y);
+
+              tsince_millis += kControlLoopPeriodMicros; //TODO: {jmcrobbie} make this use rtc instead.
+
+              /* Use Controllers*/
+              ErrorQuaternionCalculatorMarkely(r2,kf.q_estimate,error_q);
+
+            }
         }
         else{ // run bdot
             BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
