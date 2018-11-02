@@ -17,6 +17,9 @@ class RunnableOrientationControl : public Runnable {
     static void ControlOrientation();
 
     static Semaphore_Handle control_loop_timer_semaphore;
+    static constexpr uint16_t kOperationDisableWaitTime = 500;
+    static constexpr uint32_t kControlLoopPeriodMicros = 1000000;
+    static const double gyro_rate_threshold = 0.01;  
 };
 
 #endif  // SRC_ADCS_RUNNABLE_ORIENTATION_CONTROL_H_
