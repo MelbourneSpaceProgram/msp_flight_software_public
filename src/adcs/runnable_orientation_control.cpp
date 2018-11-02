@@ -237,7 +237,7 @@ void RunnableOrientationControl::ControlOrientation() {
            r2.Set(0,0,-1.0); // earth vector is always (0,0,-1) in this frame
 
            /*This wont work - needs a fix*/
-           KalmanFilter kf(50,r1,r2,Q0,R0,P0,q0);
+           KalmanFilter kf(kControlLoopPeriodMicros,r1,r2,Q0,R0,P0,q0);
            // todo figure out how to update r1 dynamically!
 
 
