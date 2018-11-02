@@ -236,7 +236,11 @@ void RunnableOrientationControl::ControlOrientation() {
            r2.Set(0,0,0.0);
            r2.Set(0,0,-1.0); // earth vector is always (0,0,-1) in this frame
 
+           /*This wont work - needs a fix*/
            KalmanFilter kf(50,r1,r2,Q0,R0,P0,q0);
+           // todo figure out how to update r1 dynamically!
+
+
            kf.predict(gyro_reading);
 
            /* Earth Sensor */
@@ -249,10 +253,11 @@ void RunnableOrientationControl::ControlOrientation() {
            y.Set(4,0,nadir.Get(1,0));
            y.Set(5,0,nadir.Get(2,0));
 
-
-
            kf.update(y);
 
+           /*Implement controllers*/
+           /*This will need fixing as well!*/
+           ErrorQuaternionCalculatorMarkely(&r2,kf.q0,error_q);
 
 
         }
