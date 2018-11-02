@@ -45,6 +45,7 @@ void PreBiosInit() {
         SDFatFS_init();
     }
 
+    InitSdCs();
     InitRtcInterrupt();
 
     TaskHolder* post_bios_initialiser_task =
@@ -56,6 +57,14 @@ void PreBiosInit() {
 void InitRtcInterrupt() {
     GPIO_setCallback(RTC_INT, SatelliteTimeSource::RtcInterrupt);
     GPIO_enableInt(RTC_INT);
+}
+
+void InitSdCs() {
+    // Disable second and third SD cards until RAID
+    // is written
+    GPIO_write(SYS_nCS1, 0);
+    GPIO_write(SYS_nCS2, 1);
+    GPIO_write(SYS_nCS3, 1);
 }
 
 void EnterLimpMode() {

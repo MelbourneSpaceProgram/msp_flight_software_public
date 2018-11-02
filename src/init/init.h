@@ -4,5 +4,6 @@
 void PreBiosInit();
 void EnterLimpMode();
 void InitRtcInterrupt();
+void InitSdCs();
 
 #endif  // SRC_INIT_INIT_H_
