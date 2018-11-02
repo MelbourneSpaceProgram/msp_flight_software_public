@@ -4,7 +4,7 @@
 
 void ErrorQuaternionCalculatorMarkely(Matrix &ref_quaternion,
                                       Matrix &nadir_vector,
-                                      Matrix error_quaternion) {
+                                      Matrix &error_quaternion) {
     ref_quaternion.QuaternionConjugate();
     double scale_ref_quaternion =
         Matrix::VectorNorm(ref_quaternion) * Matrix::VectorNorm(ref_quaternion);
