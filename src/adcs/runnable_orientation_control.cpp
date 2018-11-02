@@ -28,6 +28,10 @@
 #include <src/adcs/kalman_filter.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/messages/GyroscopeReading.pb.h>
+#include <extern/wmm/worldMagneticModel.h>
+#include <src/sensors/earth_sensor.h>
+#include <src/adcs/state_estimators/nadir_error_generator.h>
+
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
 RunnableOrientationControl::RunnableOrientationControl() {}
@@ -69,12 +73,16 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     /* Location estimator object*/
-    LocationEstimator location_est;
+
     /* Kalman Filter*/
 
     BDotEstimator b_dot_estimator(
         RunnableOrientationControl::kControlLoopPeriodMicros * 1e-3,
         kBDotEstimatorTimeConstantMillis);
+
+    FirstOrderIirLowpass gyro_filter(
+      RunnableOrientationControl::kControlLoopPeriodMicros*1e-3,
+      kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
@@ -97,9 +105,42 @@ void RunnableOrientationControl::ControlOrientation() {
     NewStackMatrixMacro(gyro, 3, 1);
     NewStackMatrixMacro(gyro_smooth,3,1);
     double gyro_norm;
-    FirstOrderIirLowpass gyro_filter(
-      RunnableOrientationControl::kControlLoopPeriodMicros*1e-3,
-      kBDotEstimatorTimeConstantMillis);
+
+    /* Matrices for the kalman filter:*/
+    NewStackMatrixMacro(r1,3,1);
+    NewStackMatrixMacro(r2,3,1);
+
+    double q0_data[4][1] = {{0}, {0}, {0}, {1}};
+    Matrix q0(q0_data);
+
+    NewStackMatrixMacro(P0, 3, 3);
+    P0.Fill(0);
+    NewStackMatrixMacro(Q0, 3, 3);
+    Q0.Identity();
+    Q0.MultiplyScalar(Q0, 0.1);
+    double R0_data[6][6];
+
+    Matrix R0(R0_data);
+    R0.Identity();
+    R0.MultiplyScalar(R0, 0.1);
+
+    NewStackMatrixMacro(y,6,1);
+
+    NewStackMatrixMacro(nadir,3,1);
+
+    /* Initialise location estimation variables*/
+    LocationEstimator location_est;
+    double alt, longitude, lat;
+
+    /* Initialise wmm output variables*/
+    r_vector mag_field;
+
+   /* Earth Sensor Class*/
+   EarthSensor earth_sensor;
+
+   /*Controller matrices*/
+   NewStackMatrixMacro(error_q,4,1);
+   NewStackMatrixMacro(ideal_torque,3,1);
     while (1) {
         /* If TLE hasnt been received yet*/
         if (check_tle || location_est.CheckForUpdatedTle()){
@@ -138,9 +179,10 @@ void RunnableOrientationControl::ControlOrientation() {
         BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
 
         gyro.Set(0, 0, gyro_reading.x);
-        gyro.Set(0, 1, gyro_reading.y);
-        gyro.Set(0, 2, gyro_reading.z);
+        gyro.Set(1, 0, gyro_reading.y);
+        gyro.Set(2, 0, gyro_reading.z);
         gyro_norm = Matrix::VectorNorm(gyro);
+
 
         // Failed readings return a value of (-9999.0,-9999.0,-9999.0) which
         // winds up the BDotEstimator.
@@ -162,14 +204,49 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run controller
         NewStackMatrixMacro(signed_pwm_output, 3, 1);
 
-        /*Run aadvanced pointing if angular rate is below threshold and tle exists*/
+        /*Run advanced pointing if angular rate is below threshold and tle exists*/
 
         if (gyro_filter.ProcessSample(gyro_norm) <=
         RunnableOrientationControl::gyro_rate_threshold
          && check_tle == true){
 
+           /*Obtain position estimate from sgp4 routine*/
+           location_est.UpdateLocation(tsince_millis);
+           alt = location_est.GetAltitudeAboveEllipsoidKm();
+           longitude = location_est.GetLongitudeDegrees();
+           lat = location_est.GetLattitudeGeodeticDegrees();
+           /* Obtain estimate of magnetic field*/
+           mag_field = MagModel(YEARFRACTION, alt,lat,longitude);
+           /*Write to the r1 and r2 vectors*/
+           /*r1 and r2 are in the north east vertical frame */
+           r1.Set(0,0,mag_field.x);
+           r1.Set(1,0,mag_field.y);
+           r1.Set(2,0,mag_field.z);
+           r2.Set(0,0,0.0);
+           r2.Set(0,0,0.0);
+           r2.Set(0,0,-1.0); // earth vector is always (0,0,-1) in this frame
+
+           KalmanFilter kf(50,r1,r2,Q0,R0,P0,q0);
+           kf.predict(gyro_reading);
+
+           /* Earth Sensor */
+           earth_sensor.CalculateNadirVector();
+           nadir = earth_sensor.GetNadirVector();
+           y.Set(0,0,mag_field.Get(0,0));
+           y.Set(1,0,mag_field.Get(1,0));
+           y.Set(2,0,mag_field.Get(2,0));
+           y.Set(3,0,nadir.Get(0,0));
+           y.Set(4,0,nadir.Get(1,0));
+           y.Set(5,0,nadir.Get(2,0));
+
+
+
+           kf.update(y);
+
+
+
         }
-        else if(1){ // run bdot
+        else{ // run bdot
             BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
             // Scale actuation strength for power budgeting
             for (uint8_t i = 0; i < 3; i++) {
@@ -184,9 +261,6 @@ void RunnableOrientationControl::ControlOrientation() {
             MagnetorquerControl::SetMagnetorquersPowerFraction(
                 signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
                 signed_pwm_output.Get(2, 0));
-        }
-        else{
-          // if in unknown config, do nothing!
         }
     }
 
