@@ -4,6 +4,12 @@
 Rtc::Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {
+    // Set pulsing SquareWave at 100Hz (and enable via the control config)
+    byte write_buffer_sqw[2] = {kSQWRegister, kSQWValue};
+    PerformWriteTransaction(address, write_buffer_sqw, 2);
+    byte write_buffer_config[2] = {kControl2Register, kControl2ConfigValue};
+    PerformWriteTransaction(address, write_buffer_config, 2);
+
     Rtc::bit_mask_map[kTimeRegisterSec] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterMin] = kLowest7BitMask;
     Rtc::bit_mask_map[kTimeRegisterHour] = kLowest6BitMask;

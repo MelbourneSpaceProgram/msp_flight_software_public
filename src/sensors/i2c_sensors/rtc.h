@@ -29,6 +29,8 @@ class Rtc : public I2cDevice {
     static constexpr byte kTimeRegisterMonth = 0x05;
     static constexpr byte kTimeRegisterYear = 0x06;
     static constexpr byte kControl1Register = 0x10;
+    static constexpr byte kControl2Register = 0x11;
+    static constexpr byte kSQWRegister = 0x13;
 
     // bit_mask used to clear bits used by register for general purpose use
     static constexpr byte kLowest8BitMask = ~(0);
@@ -37,6 +39,10 @@ class Rtc : public I2cDevice {
     static constexpr byte kLowest5BitMask = static_cast<byte>(~(0x07u << 5));
     static constexpr byte kHighest4BitMask = ~(15);
     static constexpr byte kLowest4BitMask = (15);
+
+    // Pin pulsing frequency (100Hz) & the enable configuration
+    static constexpr byte kSQWValue = 0x97;
+    static constexpr byte kControl2ConfigValue = 0x3d;
 
     RTCMaskMap bit_mask_map;
 

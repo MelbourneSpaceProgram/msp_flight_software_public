@@ -7,6 +7,7 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/satellite_time_source.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
 #include <ti/drivers/PWM.h>
@@ -44,9 +45,17 @@ void PreBiosInit() {
         SDFatFS_init();
     }
 
+    InitRtcInterrupt();
+
     TaskHolder* post_bios_initialiser_task =
         new TaskHolder(3000, "Initialiser", 10, new PostBiosInitialiser());
     post_bios_initialiser_task->Start();
+}
+
+/* Setup rtc pin pulsing interrupt and then enable */
+void InitRtcInterrupt() {
+    GPIO_setCallback(RTC_INT, SatelliteTimeSource::RtcInterrupt);
+    GPIO_enableInt(RTC_INT);
 }
 
 void EnterLimpMode() {

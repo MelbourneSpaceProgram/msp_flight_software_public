@@ -8,16 +8,25 @@
 
 Time SatelliteTimeSource::satellite_time = {0, false};
 Time SatelliteTimeSource::initial_time = {0, false};
+uint64_t SatelliteTimeSource::delta_time = 0;
+
+/**
+ * Interrupt called with a frequency of 100hz (i.e. every 10ms)
+ */
+void SatelliteTimeSource::RtcInterrupt(uint_least8_t index) {
+    delta_time += 10;
+}
 
 void SatelliteTimeSource::SetTime(RTime time) {
     time_t epoch_seconds = Rtc::RTimeToEpoch(time);
 
     if (epoch_seconds != (time_t)-1) {
-        satellite_time.timestamp_ms =
-            (uint64_t)epoch_seconds * 1000;
+        satellite_time.timestamp_ms = (uint64_t)epoch_seconds * 1000;
+
+        // Resetting delta to 0, since time has just been updated
+        delta_time = 0;
+
         satellite_time.is_valid = true;
-        // TODO(akremor): Pull this from the RTC clock interrupt (once
-        // configured)
         if (!initial_time.is_valid) {
             initial_time = {epoch_seconds, true};
         }
@@ -37,7 +46,8 @@ Time SatelliteTimeSource::GetTime() {
         satellite_time.is_valid = false;
     }
 
-    return satellite_time;
+    // Create a new time object, which uses delta_time (more granular)
+    return {satellite_time.timestamp_ms + delta_time, satellite_time.is_valid};
 }
 
 Time SatelliteTimeSource::GetInitialTime() { return initial_time; }
@@ -64,8 +74,7 @@ void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
 
     if (init_time.is_valid) {
         rtc_time_reliable = true;
-        while ((cur_time.timestamp_ms -
-                init_time.timestamp_ms) < delay_ms) {
+        while ((cur_time.timestamp_ms - init_time.timestamp_ms) < delay_ms) {
             cur_time = SatelliteTimeSource::GetTime();
 
             if (!cur_time.is_valid) {
