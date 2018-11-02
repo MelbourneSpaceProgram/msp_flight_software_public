@@ -57,7 +57,7 @@ void LocationEstimator::UpdateLocation(double tsince_millis) {
     double julian_day_fraction =
         satrec.jdsatepochF + (tsince_minutes / kMinutesPerDay);
 
-    // TODO (rskew) add comment with reason for adding half a day
+    // The julian date counts from midday not midnight so +0.5 days
     double julian_day =
         julian_day_whole + julian_day_fraction + ((0.5) / (60.0 * 60.0 * 24));
 
