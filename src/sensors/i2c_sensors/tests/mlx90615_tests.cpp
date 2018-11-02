@@ -24,11 +24,15 @@ TEST(IrSensor, TestIrRead) {
 
     Mlx90615 mlx90615(&test_i2c_bus, test_mlx_address);
 
-    multiplexer.OpenChannel(x_pos_mux_channel);
-    float read_ir = mlx90615.ReadInfrared();
-    float read_dev_temp = mlx90615.ReadDeviceTemperature();
-    multiplexer.CloseAllChannels();
+    try {
+        multiplexer.OpenChannel(x_pos_mux_channel);
+        float read_ir = mlx90615.ReadInfrared();
+        float read_dev_temp = mlx90615.ReadDeviceTemperature();
+        multiplexer.CloseAllChannels();
 
-    CHECK(read_ir > 0.0);
-    CHECK(read_dev_temp > 0.0);
+        CHECK(-50 < read_ir && read_ir < 150.0);
+        CHECK(-50 < read_dev_temp && read_dev_temp < 150.0);
+    } catch (etl::exception &e) {
+        FAIL("Uncaught exception in test");
+    }
 }
