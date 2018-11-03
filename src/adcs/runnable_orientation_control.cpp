@@ -217,14 +217,14 @@ void RunnableOrientationControl::ControlOrientation() {
             /* Obtain estimate of magnetic field*/
             mag_field = MagModel(2019, alt, lat, longitude);
             /*Write to the r1 and r2 vectors*/
-            /*r1 and r2 are in the north east vertical frame */
+            /*r1 and r2 are in the north east down frame */
             r1.Set(0, 0, magnetometer_reading.x);
             r1.Set(1, 0, magnetometer_reading.y);
             r1.Set(2, 0, magnetometer_reading.z);
             r2.Set(0, 0, 0.0);
             r2.Set(0, 0, 0.0);
             r2.Set(0, 0,
-                   -1.0);  // earth vector is always (0,0,-1) in this frame
+                   1.0);  // earth vector is always (0,0,1) in this frame
 
             KalmanFilter kf(kControlLoopPeriodMicros, r1, r2, Q0, R0, P0, q0);
             while (gyro_filter.ProcessSample(gyro_norm) <=
