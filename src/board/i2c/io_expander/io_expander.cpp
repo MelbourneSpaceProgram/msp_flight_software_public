@@ -26,7 +26,7 @@ void IoExpander::Init(I2c* bus_d) {
 
         io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
         io_expander_bms->SetPin(kIoExpanderPinBms2En, true);
-        io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
+        io_expander_bms->SetPin(kIoExpanderPinFSEn, false);
     } catch (etl::exception& e) {
         MspException::LogException(e);
         Log_error0("BMS IO expander failed to initialise properly");
@@ -50,10 +50,10 @@ void IoExpander::Init(I2c* bus_d) {
         io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn5,
                                           kIoActiveHigh);
 
-        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, true);
-        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn3, true);
-        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, true);
-        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn5, true);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, false);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn3, false);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, false);
+        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn5, false);
     } catch (etl::exception& e) {
         MspException::LogException(e);
         Log_error0("Telecomms IO expander failed to initialise properly");

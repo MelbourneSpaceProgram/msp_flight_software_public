@@ -26,6 +26,7 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/drop_baseload.h>
 #include <src/util/runnable_console_listener.h>
 #include <src/util/runnable_console_logger.h>
 #include <src/util/runnable_memory_logger.h>
@@ -35,6 +36,7 @@
 #include <src/util/task_utils.h>
 #include <string.h>
 #include <ti/sysbios/knl/Semaphore.h>
+#include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 
 PostBiosInitialiser::PostBiosInitialiser() {}
@@ -61,16 +63,10 @@ void PostBiosInitialiser::InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c,
     }
 
     try {
-        IoExpander::Init(bus_d);
+        Antenna::GetAntenna()->InitAntenna(bus_d);
     } catch (etl::exception& e) {
         // TODO(dingbenjamin): Possible failure mode needs to be handled
         MspException::LogException(e);
-    }
-
-    try {
-        Antenna::GetAntenna()->InitAntenna(bus_d);
-    } catch (etl::exception& e) {
-        // TODO(akremor): Possible failure mode needs to be handled
     }
 
     try {
@@ -180,6 +176,22 @@ void PostBiosInitialiser::InitHardware() {
         // TODO(akremor): Possible failure mode needs to be handled
     }
 
+    ///////////////////////
+
+    I2c* bus_d = new I2c(I2C_BUS_D);
+    IoExpander::Init(bus_d);
+
+    DropBaseload::CutPowerToFlightSystems();
+    DropBaseload::CutPowerToTelecoms();
+
+    TaskUtils::SleepMilli(3000);
+
+    GPIO_write(nCOMMS_RST, 0);
+    DropBaseload::RestorePowerToTelecoms();
+    DropBaseload::RestorePowerToFlightSystems();
+
+    ///////////////////////
+
     try {
         Eeprom::Init();
     } catch (etl::exception& e) {
@@ -238,6 +250,7 @@ void PostBiosInitialiser::InitConsoleUart() {
 
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
+    TaskUtils::SleepMilli(500);
 
     if (kDitlMode) {
         InitMemoryLogger();

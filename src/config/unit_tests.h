@@ -31,7 +31,7 @@ static constexpr bool kEepromAvailable =
             // conflict with the SD cards as they share the same
             // bus
 static constexpr bool kI2cAvailable = true;
-static constexpr bool kSdCardAvailable = true;
+static constexpr bool kSdCardAvailable = false;
 static constexpr bool kHilAvailable = false;
 static constexpr bool kBmsAvailable = true;
 static constexpr bool kAntennaAvailable = false;
@@ -47,10 +47,10 @@ static constexpr bool kDitlMode = false;
 // static const char* test_args[] = {"exe"};
 
 // Run all tests verbosely
-// static const char* test_args[] = {"exe", "-v"};
+static const char* test_args[] = {"exe", "-v"};
 
 // Run only this group of tests
-// static const char* test_args[] = {"exe", "-sg", "NameOfTestGroup"};
+//static const char* test_args[] = {"exe", "-v", "-sg", "LithiumAckParse"};
 
 // Run everything but this group of tests
 // static const char* test_args[] = {"exe", "-xg", "NameOfTestGroup"};
@@ -61,6 +61,6 @@ static constexpr bool kDitlMode = false;
 // Run everything but this test
 // static const char* test_args[] = {"exe", "-xn", "NameOfTest"};
 
-static const char* test_args[] = {"exe"};
+//static const char* test_args[] = {"exe"};
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_

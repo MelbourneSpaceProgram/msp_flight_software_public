@@ -11,7 +11,7 @@ static constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 static constexpr bool kLogToUart = true;
 static constexpr bool kLogToSd = true;
 static constexpr bool kFormatSdOnStartup = false;
-static constexpr uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
+static constexpr uint32_t kNominalBeaconPeriodMs = 30000;  // In milliseconds
 static constexpr uint8_t kNominalLithiumPowerLevel =
     150;  // Scaled between 0-255
 
@@ -25,9 +25,9 @@ static bool kDeployAntenna = false;
 // Will disable orientation control if true
 static bool kRunMagnetorquersAtConstantPower = false;
 // float value in range [-1, 1]
-static float kMagnetorquerPowerFractionX = 1.0;
-static float kMagnetorquerPowerFractionY = 1.0;
-static float kMagnetorquerPowerFractionZ = 1.0;
+static float kMagnetorquerPowerFractionX = 0;
+static float kMagnetorquerPowerFractionY = 0;
+static float kMagnetorquerPowerFractionZ = 0;
 
 // The strength of the magnetorquers
 const double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.05};

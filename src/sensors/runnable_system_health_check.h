@@ -30,7 +30,9 @@ class RunnableSystemHealthCheck : public Runnable {
     static bool IsEnabled();
     static void EnableDatalogger(bool enable_logger);
 
-    static constexpr uint32_t kHealthCheckPeriodMillis = 1000;
+    static constexpr uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
+    static constexpr uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
+    static constexpr uint32_t kHealthCheckPeriodMillis = 500;
 
    private:
     static bool datalogger_enabled;

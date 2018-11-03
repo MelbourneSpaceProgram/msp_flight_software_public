@@ -50,56 +50,6 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
         uint32_t cpu_load = Load_getCPULoad();
 
         if (datalogger_enabled) {
-            if (kTcomBoardAvailable) {
-                LogMeasurableMacro(VoltageReading)(kComInV1);
-                LogMeasurableMacro(VoltageReading)(kComOutV1);
-                LogMeasurableMacro(VoltageReading)(kComInV2);
-                LogMeasurableMacro(VoltageReading)(kComOutV2);
-                LogMeasurableMacro(CurrentReading)(kComInI1);
-                LogMeasurableMacro(CurrentReading)(kComOutI1);
-                LogMeasurableMacro(CurrentReading)(kComInI2);
-                LogMeasurableMacro(CurrentReading)(kComOutI2);
-                LogMeasurableMacro(TemperatureReading)(kComT1);
-                LogMeasurableMacro(TemperatureReading)(kComT2);
-            }
-
-            if (kEpsBoardAvailable) {
-                LogMeasurableMacro(CurrentReading)(kEpsBoostInI1);
-                LogMeasurableMacro(CurrentReading)(kEpsLoadI1);
-                LogMeasurableMacro(CurrentReading)(kEpsBoostInI2);
-                LogMeasurableMacro(CurrentReading)(kEpsLoadI2);
-                LogMeasurableMacro(TemperatureReading)(kEpsT1);
-                LogMeasurableMacro(TemperatureReading)(kEpsT2);
-                LogMeasurableMacro(TemperatureReading)(kEpsBmsDieT1);
-                LogMeasurableMacro(TemperatureReading)(kEpsBmsDieT2);
-                LogMeasurableMacro(TemperatureReading)(kEpsBmsBatT1);
-                LogMeasurableMacro(TemperatureReading)(kEpsBmsBatT2);
-                LogMeasurableMacro(VoltageReading)(kEpsAdcBatV1);
-                LogMeasurableMacro(VoltageReading)(kEpsBoostOutV1);
-                LogMeasurableMacro(VoltageReading)(kEpsAdcBatV2);
-                LogMeasurableMacro(VoltageReading)(kEpsBoostOutV2);
-                LogMeasurableMacro(VoltageReading)(kEpsRail1);
-                LogMeasurableMacro(VoltageReading)(kEpsRail2);
-                LogMeasurableMacro(BmsChargingInfoReading)(
-                    kEpsBmsChargingInfoReading1);
-                LogMeasurableMacro(BmsCurrentsReading)(kEpsBmsCurrentsReading1);
-                LogMeasurableMacro(BmsOperationValuesReading)(
-                    kEpsBmsOperationValuesReading1);
-                LogMeasurableMacro(BmsSettingsReading)(kEpsBmsSettingsReading1);
-                LogMeasurableMacro(BmsTemperatureReading)(
-                    kEpsBmsTemperatureReading1);
-                LogMeasurableMacro(BmsVoltagesReading)(kEpsBmsVoltagesReading1);
-                LogMeasurableMacro(BmsChargingInfoReading)(
-                    kEpsBmsChargingInfoReading2);
-                LogMeasurableMacro(BmsCurrentsReading)(kEpsBmsCurrentsReading2);
-                LogMeasurableMacro(BmsOperationValuesReading)(
-                    kEpsBmsOperationValuesReading2);
-                LogMeasurableMacro(BmsSettingsReading)(kEpsBmsSettingsReading2);
-                LogMeasurableMacro(BmsTemperatureReading)(
-                    kEpsBmsTemperatureReading2);
-                LogMeasurableMacro(BmsVoltagesReading)(kEpsBmsVoltagesReading2);
-            }
-
             if (kXPosAvailable) {
                 LogMeasurableMacro(VoltageReading)(kXPosV);
                 LogMeasurableMacro(VoltageReading)(kXPosSolarV);
@@ -153,6 +103,56 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 LogMeasurableMacro(TemperatureReading)(kZNegT2);
             }
 
+            if (kTcomBoardAvailable) {
+                LogMeasurableMacro(VoltageReading)(kComInV1);
+                LogMeasurableMacro(VoltageReading)(kComOutV1);
+                LogMeasurableMacro(VoltageReading)(kComInV2);
+                LogMeasurableMacro(VoltageReading)(kComOutV2);
+                LogMeasurableMacro(CurrentReading)(kComInI1);
+                LogMeasurableMacro(CurrentReading)(kComOutI1);
+                LogMeasurableMacro(CurrentReading)(kComInI2);
+                LogMeasurableMacro(CurrentReading)(kComOutI2);
+                LogMeasurableMacro(TemperatureReading)(kComT1);
+                LogMeasurableMacro(TemperatureReading)(kComT2);
+            }
+
+            if (kEpsBoardAvailable) {
+                LogMeasurableMacro(CurrentReading)(kEpsBoostInI1);
+                LogMeasurableMacro(CurrentReading)(kEpsLoadI1);
+                LogMeasurableMacro(CurrentReading)(kEpsBoostInI2);
+                LogMeasurableMacro(CurrentReading)(kEpsLoadI2);
+                LogMeasurableMacro(TemperatureReading)(kEpsT1);
+                LogMeasurableMacro(TemperatureReading)(kEpsT2);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsDieT1);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsDieT2);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsBatT1);
+                LogMeasurableMacro(TemperatureReading)(kEpsBmsBatT2);
+                LogMeasurableMacro(VoltageReading)(kEpsAdcBatV1);
+                LogMeasurableMacro(VoltageReading)(kEpsBoostOutV1);
+                LogMeasurableMacro(VoltageReading)(kEpsAdcBatV2);
+                LogMeasurableMacro(VoltageReading)(kEpsBoostOutV2);
+                LogMeasurableMacro(VoltageReading)(kEpsRail1);
+                LogMeasurableMacro(VoltageReading)(kEpsRail2);
+                LogMeasurableMacro(BmsChargingInfoReading)(
+                    kEpsBmsChargingInfoReading1);
+                LogMeasurableMacro(BmsCurrentsReading)(kEpsBmsCurrentsReading1);
+                LogMeasurableMacro(BmsOperationValuesReading)(
+                    kEpsBmsOperationValuesReading1);
+                LogMeasurableMacro(BmsSettingsReading)(kEpsBmsSettingsReading1);
+                LogMeasurableMacro(BmsTemperatureReading)(
+                    kEpsBmsTemperatureReading1);
+                LogMeasurableMacro(BmsVoltagesReading)(kEpsBmsVoltagesReading1);
+                LogMeasurableMacro(BmsChargingInfoReading)(
+                    kEpsBmsChargingInfoReading2);
+                LogMeasurableMacro(BmsCurrentsReading)(kEpsBmsCurrentsReading2);
+                LogMeasurableMacro(BmsOperationValuesReading)(
+                    kEpsBmsOperationValuesReading2);
+                LogMeasurableMacro(BmsSettingsReading)(kEpsBmsSettingsReading2);
+                LogMeasurableMacro(BmsTemperatureReading)(
+                    kEpsBmsTemperatureReading2);
+                LogMeasurableMacro(BmsVoltagesReading)(kEpsBmsVoltagesReading2);
+            }
+
             if (kFsBoardAvailable) {
                 LogMeasurableMacro(CurrentReading)(kFsTorquerXI);
                 LogMeasurableMacro(CurrentReading)(kFsTorquerTotalI);
@@ -188,7 +188,6 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             }
         }
         SystemWatchdog::ResetTimer();
-        GPIO_toggle(SYS_LED);
         TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
     }
 }
