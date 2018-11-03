@@ -28,7 +28,7 @@ static constexpr bool kEepromAvailable =
             // the SD cards as they share the same bus
 static constexpr bool kI2cAvailable = false;
 static constexpr bool kSdCardAvailable = false;
-static constexpr bool kHilAvailable = false;
+static constexpr bool kHilAvailable = true;
 static constexpr bool kBmsAvailable = false;
 static constexpr bool kAntennaAvailable = false;
 static constexpr bool kDitlMode = false;
