@@ -239,7 +239,7 @@ void RunnableOrientationControl::ControlOrientation() {
               alt = location_est.GetAltitudeAboveEllipsoidKm();
               longitude = location_est.GetLongitudeDegrees();
               lat = location_est.GetLattitudeGeodeticDegrees();
-              mag_field = MagModel(2018, alt,lat,longitude);
+              mag_field = MagModel(2018, alt,lat,longitude); // TODO: (jmcrobbie) fix this to have a proper date!
 
               /* Read from sensors*/
               MagnetometerReading magnetometer_reading =
