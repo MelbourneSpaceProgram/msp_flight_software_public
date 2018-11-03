@@ -217,7 +217,7 @@ void RunnableOrientationControl::ControlOrientation() {
            longitude = location_est.GetLongitudeDegrees();
            lat = location_est.GetLattitudeGeodeticDegrees();
            /* Obtain estimate of magnetic field*/
-           mag_field = MagModel(2018, alt,lat,longitude);
+           mag_field = MagModel(2019, alt,lat,longitude);
            /*Write to the r1 and r2 vectors*/
            /*r1 and r2 are in the north east vertical frame */
            r1.Set(0,0,magnetometer_reading.x);
