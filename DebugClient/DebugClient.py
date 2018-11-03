@@ -121,7 +121,7 @@ def log_to_csv(message, session_timestamp):
     field_names = [field.name for field in list(message.DESCRIPTOR.fields)]
 
     if not(os.path.isfile(fpath)):
-        csvfile = open(fpath, 'w+')
+        csvfile = open(fpath, 'a')
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(field_names + ['ground_timestamp_ms'])
         csvfile.close()

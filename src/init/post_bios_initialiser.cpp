@@ -129,9 +129,6 @@ void PostBiosInitialiser::InitOrientationControl() {
     // Set up timer for orientation control loop
     RunnableOrientationControl::SetupControlLoopTimer();
 
-    // Set up timer for degaussing routine
-    MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
-
     // TODO(rskew) review priority
     TaskHolder* orientation_control_task =
         new TaskHolder(kOrientationControlStackSize, "OrientationControl", 7,

@@ -35,6 +35,8 @@ void RunnablePreDeploymentMagnetometerPoller::PollMagnetometer() {
     MeasurableManager* measurable_manager =
         MeasurableManager::GetInstance();
 
+    // Set up timer for degaussing routine
+    MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
     MagnetorquerControl::Degauss();
 
     while (1) {
