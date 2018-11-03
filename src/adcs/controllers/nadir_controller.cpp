@@ -9,10 +9,11 @@ const double NadirController::kd = 7.0;
 void NadirController::Control(const Matrix &nadir_error_quart, Matrix &omega,
                               Matrix &torque_output) {
     NewStackMatrixMacro(error_vector, 3, 1);
+    int sign = (nadir_error_quart.Get(3,0)>=0)-(nadir_error_quart.Get(3,0)<0);
     for (int i = 0; i < 3; i++) {
         error_vector.Set(i, 0, nadir_error_quart.Get(i + 1, 0));
     }
     error_vector.MultiplyScalar(error_vector, -1 * kp);
-    omega.MultiplyScalar(omega, -1 * kd);
+    omega.MultiplyScalar(omega, -sign * kd);
     torque_output.Add(omega, error_vector);
 }
