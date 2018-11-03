@@ -107,6 +107,7 @@ void RunnableOrientationControl::ControlOrientation() {
         Log_error0("Magnetometer on bus B calibration failed");
     }
     double tsince_millis = 250; // TODO: {jmcrobbie} fix dis
+    NewStackMatrixMacro(desired_torque,3,1);
     bool check_tle = false;
     NewStackMatrixMacro(b_dot_estimate, 3, 1);
     NewStackMatrixMacro(geomag, 3, 1);
@@ -142,6 +143,7 @@ void RunnableOrientationControl::ControlOrientation() {
 
     /* Initialise wmm output variables*/
     r_vector mag_field;
+    NewStackMatrixMacro(geomag_unit,3,1);
 
    /* Earth Sensor Class*/
    EarthSensor earth_sensor;
@@ -302,8 +304,11 @@ void RunnableOrientationControl::ControlOrientation() {
 
               /* Use Controllers*/
               ErrorQuaternionCalculatorMarkely(r2,kf.q_estimate,error_q);
-              NadirController::Control(error_q, gyro, signed_pwm_output);
-
+              NadirController::Control(error_q, gyro, desired_torque);
+              /*Computes desired pwm signal!*/
+              geomag_unit.MultiplyScalar(geomag,-1.0/geomag.VectorNorm(geomag));
+              signed_pwm_output.CrossProduct(geomag,desired_torque);
+              /*fin*/
             }
         }
         else{ // run bdot
