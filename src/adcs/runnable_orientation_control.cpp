@@ -38,6 +38,7 @@
 #include <external/wmm/worldMagneticModel.h>
 #include <src/sensors/earth_sensor.h>
 #include <src/adcs/state_estimators/nadir_error_generator.h>
+#include <src/adcs/controllers/nadir_controller.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
@@ -299,6 +300,7 @@ void RunnableOrientationControl::ControlOrientation() {
 
               /* Use Controllers*/
               ErrorQuaternionCalculatorMarkely(r2,kf.q_estimate,error_q);
+              NadirController::Control(error_q, gyro, signed_pwm_output);
 
             }
         }
@@ -314,10 +316,10 @@ void RunnableOrientationControl::ControlOrientation() {
             // Use magnetorquer driver to set magnetorquer power.
             // Driver input power range should be [-1, 1]
 
-            MagnetorquerControl::SetMagnetorquersPowerFraction(
-                signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
-                signed_pwm_output.Get(2, 0));
         }
+        MagnetorquerControl::SetMagnetorquersPowerFraction(
+          signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
+          signed_pwm_output.Get(2, 0));
     }
 
 }
