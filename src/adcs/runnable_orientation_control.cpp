@@ -1,20 +1,27 @@
 #include <external/nanopb/pb_decode.h>
+#include <external/wmm/worldMagneticModel.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
+#include <src/adcs/controllers/nadir_controller.h>
+#include <src/adcs/kalman_filter.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/adcs/state_estimators/nadir_error_generator.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/init/init.h>
 #include <src/messages/BDotEstimate.pb.h>
+#include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
+#include <src/sensors/earth_sensor.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
+#include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/util/matrix.h>
@@ -25,13 +32,6 @@
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
-#include <src/adcs/kalman_filter.h>
-#include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
-#include <src/messages/GyroscopeReading.pb.h>
-#include <external/wmm/worldMagneticModel.h>
-#include <src/sensors/earth_sensor.h>
-#include <src/adcs/state_estimators/nadir_error_generator.h>
-#include <src/adcs/controllers/nadir_controller.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
 
@@ -82,8 +82,8 @@ void RunnableOrientationControl::ControlOrientation() {
         kBDotEstimatorTimeConstantMillis);
 
     FirstOrderIirLowpass gyro_filter(
-      RunnableOrientationControl::kControlLoopPeriodMicros*1e-3,
-      kBDotEstimatorTimeConstantMillis);
+        RunnableOrientationControl::kControlLoopPeriodMicros * 1e-3,
+        kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     BDotEstimate b_dot_estimate_pb;
@@ -99,18 +99,18 @@ void RunnableOrientationControl::ControlOrientation() {
              ->Calibrate()) {
         Log_error0("Magnetometer on bus B calibration failed");
     }
-    double tsince_millis = 250; // TODO: {jmcrobbie} fix dis
-    NewStackMatrixMacro(desired_torque,3,1);
+    double tsince_millis = 250;  // TODO: {jmcrobbie} fix dis
+    NewStackMatrixMacro(desired_torque, 3, 1);
     bool check_tle = false;
     NewStackMatrixMacro(b_dot_estimate, 3, 1);
     NewStackMatrixMacro(geomag, 3, 1);
     NewStackMatrixMacro(gyro, 3, 1);
-    NewStackMatrixMacro(gyro_smooth,3,1);
+    NewStackMatrixMacro(gyro_smooth, 3, 1);
     double gyro_norm;
 
     /* Matrices for the kalman filter:*/
-    NewStackMatrixMacro(r1,3,1);
-    NewStackMatrixMacro(r2,3,1);
+    NewStackMatrixMacro(r1, 3, 1);
+    NewStackMatrixMacro(r2, 3, 1);
 
     double q0_data[4][1] = {{0}, {0}, {0}, {1}};
     Matrix q0(q0_data);
@@ -126,9 +126,9 @@ void RunnableOrientationControl::ControlOrientation() {
     R0.Identity();
     R0.MultiplyScalar(R0, 0.1);
 
-    NewStackMatrixMacro(y,6,1);
+    NewStackMatrixMacro(y, 6, 1);
 
-    NewStackMatrixMacro(nadir,3,1);
+    NewStackMatrixMacro(nadir, 3, 1);
 
     /* Initialise location estimation variables*/
     LocationEstimator location_est;
@@ -136,21 +136,20 @@ void RunnableOrientationControl::ControlOrientation() {
 
     /* Initialise wmm output variables*/
     r_vector mag_field;
-    NewStackMatrixMacro(geomag_unit,3,1);
+    NewStackMatrixMacro(geomag_unit, 3, 1);
 
-   /* Earth Sensor Class*/
-   EarthSensor earth_sensor;
+    /* Earth Sensor Class*/
+    EarthSensor earth_sensor;
 
-   /*Controller matrices*/
-   NewStackMatrixMacro(error_q,4,1);
-   NewStackMatrixMacro(ideal_torque,3,1);
+    /*Controller matrices*/
+    NewStackMatrixMacro(error_q, 4, 1);
+    NewStackMatrixMacro(ideal_torque, 3, 1);
     while (1) {
-      Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+        Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
         /* If TLE hasnt been received yet*/
-        if (check_tle || location_est.CheckForUpdatedTle()){
+        if (check_tle || location_est.CheckForUpdatedTle()) {
             check_tle = true;
             location_est.UpdateLocation(tsince_millis);
-
         }
 
             // TODO(dingbenjamin): Check if we should turn orientation control
@@ -165,7 +164,9 @@ void RunnableOrientationControl::ControlOrientation() {
         MagnetometerReading magnetometer_reading =
             measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
                 kFsImuMagno2, 0);
-       GyroscopeReading gyro_reading = measurable_manager->ReadNanopbMeasurable<GyroscopeReading>(kFsImuGyro1,0);
+        GyroscopeReading gyro_reading =
+            measurable_manager->ReadNanopbMeasurable<GyroscopeReading>(
+                kFsImuGyro1, 0);
         if (kHilAvailable) {
             // Echo magnetometer reading to DebugClient
             PostNanopbToSimMacro(MagnetometerReading, kMagnetometerReadingCode,
@@ -183,7 +184,6 @@ void RunnableOrientationControl::ControlOrientation() {
         gyro.Set(1, 0, gyro_reading.y);
         gyro.Set(2, 0, gyro_reading.z);
         gyro_norm = Matrix::VectorNorm(gyro);
-
 
         // Failed readings return a value of (-9999.0,-9999.0,-9999.0) which
         // winds up the BDotEstimator.
@@ -205,119 +205,125 @@ void RunnableOrientationControl::ControlOrientation() {
         // Run controller
         NewStackMatrixMacro(signed_pwm_output, 3, 1);
 
-        /*Run advanced pointing if angular rate is below threshold and tle exists*/
+        /*Run advanced pointing if angular rate is below threshold and tle
+         * exists*/
 
         if (gyro_filter.ProcessSample(gyro_norm) <=
-        RunnableOrientationControl::gyro_rate_threshold
-         && check_tle == true){
+                RunnableOrientationControl::gyro_rate_threshold &&
+            check_tle == true) {
+            /*Obtain position estimate from sgp4 routine*/
+            location_est.UpdateLocation(tsince_millis);
+            alt = location_est.GetAltitudeAboveEllipsoidKm();
+            longitude = location_est.GetLongitudeDegrees();
+            lat = location_est.GetLattitudeGeodeticDegrees();
+            /* Obtain estimate of magnetic field*/
+            mag_field = MagModel(2019, alt, lat, longitude);
+            /*Write to the r1 and r2 vectors*/
+            /*r1 and r2 are in the north east vertical frame */
+            r1.Set(0, 0, magnetometer_reading.x);
+            r1.Set(1, 0, magnetometer_reading.y);
+            r1.Set(2, 0, magnetometer_reading.z);
+            r2.Set(0, 0, 0.0);
+            r2.Set(0, 0, 0.0);
+            r2.Set(0, 0,
+                   -1.0);  // earth vector is always (0,0,-1) in this frame
 
-           /*Obtain position estimate from sgp4 routine*/
-           location_est.UpdateLocation(tsince_millis);
-           alt = location_est.GetAltitudeAboveEllipsoidKm();
-           longitude = location_est.GetLongitudeDegrees();
-           lat = location_est.GetLattitudeGeodeticDegrees();
-           /* Obtain estimate of magnetic field*/
-           mag_field = MagModel(2019, alt,lat,longitude);
-           /*Write to the r1 and r2 vectors*/
-           /*r1 and r2 are in the north east vertical frame */
-           r1.Set(0,0,magnetometer_reading.x);
-           r1.Set(1,0,magnetometer_reading.y);
-           r1.Set(2,0,magnetometer_reading.z);
-           r2.Set(0,0,0.0);
-           r2.Set(0,0,0.0);
-           r2.Set(0,0,-1.0); // earth vector is always (0,0,-1) in this frame
+            KalmanFilter kf(kControlLoopPeriodMicros, r1, r2, Q0, R0, P0, q0);
+            while (gyro_filter.ProcessSample(gyro_norm) <=
+                       RunnableOrientationControl::gyro_rate_threshold &&
+                   check_tle == true) {
+                Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+                MagnetorquerControl::Degauss();
 
-           KalmanFilter kf(kControlLoopPeriodMicros,r1,r2,Q0,R0,P0,q0);
-           while(gyro_filter.ProcessSample(gyro_norm) <=
-           RunnableOrientationControl::gyro_rate_threshold
-            && check_tle == true){
-              Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
-              MagnetorquerControl::Degauss();
+                location_est.UpdateLocation(tsince_millis);
 
-              location_est.UpdateLocation(tsince_millis);
+                alt = location_est.GetAltitudeAboveEllipsoidKm();
+                longitude = location_est.GetLongitudeDegrees();
+                lat = location_est.GetLattitudeGeodeticDegrees();
+                mag_field = MagModel(2018, alt, lat,
+                                     longitude);  // TODO: (jmcrobbie) fix this
+                                                  // to have a proper date!
 
-              alt = location_est.GetAltitudeAboveEllipsoidKm();
-              longitude = location_est.GetLongitudeDegrees();
-              lat = location_est.GetLattitudeGeodeticDegrees();
-              mag_field = MagModel(2018, alt,lat,longitude); // TODO: (jmcrobbie) fix this to have a proper date!
+                /* Read from sensors*/
+                MagnetometerReading magnetometer_reading =
+                    measurable_manager
+                        ->ReadNanopbMeasurable<MagnetometerReading>(
+                            kFsImuMagno2, 0);
+                GyroscopeReading gyro_reading =
+                    measurable_manager->ReadNanopbMeasurable<GyroscopeReading>(
+                        kFsImuGyro1, 0);
+                /*TODO handle bad read exception (foo = +/-9999.0) */
+                geomag.Set(0, 0, magnetometer_reading.x);
+                geomag.Set(1, 0, magnetometer_reading.y);
+                geomag.Set(2, 0, magnetometer_reading.z);
 
-              /* Read from sensors*/
-              MagnetometerReading magnetometer_reading =
-                  measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-                      kFsImuMagno2, 0);
-              GyroscopeReading gyro_reading =
-                measurable_manager->ReadNanopbMeasurable<GyroscopeReading>(
-                  kFsImuGyro1,0);
-              /*TODO handle bad read exception (foo = +/-9999.0) */
-              geomag.Set(0, 0, magnetometer_reading.x);
-              geomag.Set(1, 0, magnetometer_reading.y);
-              geomag.Set(2, 0, magnetometer_reading.z);
+                b_dot_estimate_pb = BDotEstimate_init_zero;
 
-              b_dot_estimate_pb = BDotEstimate_init_zero;
+                gyro.Set(0, 0, gyro_reading.x);
+                gyro.Set(1, 0, gyro_reading.y);
+                gyro.Set(2, 0, gyro_reading.z);
+                gyro_norm = Matrix::VectorNorm(gyro);
 
-              gyro.Set(0, 0, gyro_reading.x);
-              gyro.Set(1, 0, gyro_reading.y);
-              gyro.Set(2, 0, gyro_reading.z);
-              gyro_norm = Matrix::VectorNorm(gyro);
+                if (geomag.Get(0, 0) !=
+                    measurable_manager
+                        ->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
+                        ->GetFailureReading()
+                        .x) {
+                    b_dot_estimator.Estimate(geomag, b_dot_estimate);
+                    b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
+                    b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
+                    b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
+                }
 
-              if (geomag.Get(0, 0) !=
-                  measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
-                      ->GetFailureReading()
-                      .x) {
-                  b_dot_estimator.Estimate(geomag, b_dot_estimate);
-                  b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
-                  b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
-                  b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
-              }
+                earth_sensor.CalculateNadirVector();
+                nadir = earth_sensor.GetNadirVector();
 
-              earth_sensor.CalculateNadirVector();
-              nadir = earth_sensor.GetNadirVector();
+                /* Update reference vector*/
+                kf.ref1.Set(0, 0, mag_field.x);
+                kf.ref1.Set(1, 0, mag_field.y);
+                kf.ref1.Set(2, 0, mag_field.z);
 
-              /* Update reference vector*/
-              kf.ref1.Set(0,0,mag_field.x);
-              kf.ref1.Set(1,0,mag_field.y);
-              kf.ref1.Set(2,0,mag_field.z);
+                kf.Predict(gyro);
+                y.Set(0, 0, geomag.Get(0, 0));
+                y.Set(1, 0, geomag.Get(1, 0));
+                y.Set(2, 0, geomag.Get(2, 0));
+                y.Set(3, 0, nadir.Get(0, 0));
+                y.Set(4, 0, nadir.Get(1, 0));
+                y.Set(5, 0, nadir.Get(2, 0));
 
-              kf.Predict(gyro);
-              y.Set(0,0,geomag.Get(0,0));
-              y.Set(1,0,geomag.Get(1,0));
-              y.Set(2,0,geomag.Get(2,0));
-              y.Set(3,0,nadir.Get(0,0));
-              y.Set(4,0,nadir.Get(1,0));
-              y.Set(5,0,nadir.Get(2,0));
+                kf.Update(y);
 
-              kf.Update(y);
+                tsince_millis +=
+                    kControlLoopPeriodMicros;  // TODO: {jmcrobbie} make this
+                                               // use rtc instead.
 
-              tsince_millis += kControlLoopPeriodMicros; //TODO: {jmcrobbie} make this use rtc instead.
-
-              /* Use Controllers*/
-              ErrorQuaternionCalculatorMarkely(r2,kf.q_estimate,error_q);
-              NadirController::Control(error_q, gyro, desired_torque);
-              /*Computes desired pwm signal!*/
-              geomag_unit.MultiplyScalar(geomag,-1.0/geomag.VectorNorm(geomag));
-              signed_pwm_output.CrossProduct(geomag,desired_torque);
-              /*fin - write to the magnetorquers*/
-              MagnetorquerControl::SetMagnetorquersPowerFraction(
-                signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
-                signed_pwm_output.Get(2, 0));
+                /* Use Controllers*/
+                ErrorQuaternionCalculatorMarkely(r2, kf.q_estimate, error_q);
+                NadirController::Control(error_q, gyro, desired_torque);
+                /*Computes desired pwm signal!*/
+                geomag_unit.MultiplyScalar(geomag,
+                                           -1.0 / geomag.VectorNorm(geomag));
+                signed_pwm_output.CrossProduct(geomag, desired_torque);
+                /*fin - write to the magnetorquers*/
+                MagnetorquerControl::SetMagnetorquersPowerFraction(
+                    signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
+                    signed_pwm_output.Get(2, 0));
             }
-        }
-        else{ // run bdot
+        } else {  // run bdot
             BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
             // Scale actuation strength for power budgeting
             for (uint8_t i = 0; i < 3; i++) {
-                signed_pwm_output.Set(
-                    i, 0,
-                    signed_pwm_output.Get(i, 0) * kOrientationControlPowerLevel);
+                signed_pwm_output.Set(i, 0,
+                                      signed_pwm_output.Get(i, 0) *
+                                          kOrientationControlPowerLevel);
             }
 
             // Use magnetorquer driver to set magnetorquer power.
             // Driver input power range should be [-1, 1]
 
             MagnetorquerControl::SetMagnetorquersPowerFraction(
-              signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
-              signed_pwm_output.Get(2, 0));
+                signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
+                signed_pwm_output.Get(2, 0));
         }
     }
-
 }
