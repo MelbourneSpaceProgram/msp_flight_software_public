@@ -215,9 +215,9 @@ void RunnableOrientationControl::ControlOrientation() {
             longitude = location_est.GetLongitudeDegrees();
             lat = location_est.GetLattitudeGeodeticDegrees();
             /* Obtain estimate of magnetic field*/
-            mag_field = MagModel(2019, alt, lat, longitude);
+            mag_field = MagModel(kMissionYear, alt, lat, longitude);
             /*Write to the r1 and r2 vectors*/
-            /*r1 and r2 are in the north east down frame */
+            /*r1 and r2 are in the north east vertical frame */
             r1.Set(0, 0, magnetometer_reading.x);
             r1.Set(1, 0, magnetometer_reading.y);
             r1.Set(2, 0, magnetometer_reading.z);
@@ -238,7 +238,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 alt = location_est.GetAltitudeAboveEllipsoidKm();
                 longitude = location_est.GetLongitudeDegrees();
                 lat = location_est.GetLattitudeGeodeticDegrees();
-                mag_field = MagModel(2018, alt, lat,
+                mag_field = MagModel(kMissionYear, alt, lat,
                                      longitude);  // TODO: (jmcrobbie) fix this
                                                   // to have a proper date!
 
