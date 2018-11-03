@@ -134,7 +134,7 @@ void RunnableOrientationControl::ControlOrientation() {
     double alt, longitude, lat;
 
     /* Initialise wmm output variables*/
-    r_vector mag_field;
+    r_vector mag_field_reference;
     NewStackMatrixMacro(geomag_unit, 3, 1);
 
     /* Earth Sensor Class*/
@@ -215,7 +215,7 @@ void RunnableOrientationControl::ControlOrientation() {
             longitude = location_est.GetLongitudeDegrees();
             lat = location_est.GetLattitudeGeodeticDegrees();
             /* Obtain estimate of magnetic field*/
-            mag_field = MagModel(kMissionYear, alt, lat, longitude);
+            mag_field_reference = MagModel(kMissionYear, alt, lat, longitude);
             /*Write to the r1 and r2 vectors*/
             /*r1 and r2 are in the north east vertical frame */
             r1.Set(0, 0, magnetometer_reading.x);
@@ -238,9 +238,10 @@ void RunnableOrientationControl::ControlOrientation() {
                 alt = location_est.GetAltitudeAboveEllipsoidKm();
                 longitude = location_est.GetLongitudeDegrees();
                 lat = location_est.GetLattitudeGeodeticDegrees();
-                mag_field = MagModel(kMissionYear, alt, lat,
-                                     longitude);  // TODO: (jmcrobbie) fix this
-                                                  // to have a proper date!
+                mag_field_reference =
+                    MagModel(kMissionYear, alt, lat,
+                             longitude);  // TODO: (jmcrobbie) fix this
+                                          // to have a proper date!
 
                 /* Read from sensors*/
                 MagnetometerReading magnetometer_reading =
@@ -277,9 +278,9 @@ void RunnableOrientationControl::ControlOrientation() {
                 nadir = earth_sensor.GetNadirVector();
 
                 /* Update reference vector*/
-                kf.ref1.Set(0, 0, mag_field.x);
-                kf.ref1.Set(1, 0, mag_field.y);
-                kf.ref1.Set(2, 0, mag_field.z);
+                kf.ref1.Set(0, 0, mag_field_reference.x);
+                kf.ref1.Set(1, 0, mag_field_reference.y);
+                kf.ref1.Set(2, 0, mag_field_reference.z);
 
                 kf.Predict(gyro);
                 y.Set(0, 0, geomag.Get(0, 0));
