@@ -1,0 +1,4 @@
+message InfraredReading {
+   required float infrared = 1 [default = -9999];
+   required fixed64 timestamp_ms = 2 [default = 0];
+}

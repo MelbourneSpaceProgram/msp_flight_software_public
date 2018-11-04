@@ -3,7 +3,7 @@
 
 #include <src/sensors/i2c_sensors/i2c_device.h>
 
-class Mlx90615 : I2cDevice {
+class Mlx90615 : public I2cDevice {
    public:
     Mlx90615(
         const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
