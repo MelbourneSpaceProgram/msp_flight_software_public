@@ -14,6 +14,8 @@ class SatellitePower {
     static void RestorePowerToFlightSystems();
     static void CutPowerToTelecoms();
     static void RestorePowerToTelecoms();
+    static void DisableRadio();
+    static void EnableRadio();
 
    private:
     static constexpr IoExpander::IoPin kIoExpanderPinBms1En =
