@@ -21,11 +21,15 @@ static constexpr bool kZNegAvailable = true;
 static constexpr bool kLithiumFlashTestEnabled = false;
 static constexpr bool kForceResetCommandEnabled =
     false;  // It will reset the satellite
+static constexpr bool kResetUnitTestEnabled =
+    false;  // This will cause the satellite to reset mutliple times during the
+            // unit tests
 
 // Hardware available
 static constexpr bool kEepromAvailable =
-    false;  // It is actually available but there is a resource conflict with
-            // the SD cards as they share the same bus
+    false;  // It is actually available but there is a resource
+            // conflict with the SD cards as they share the same
+            // bus
 static constexpr bool kI2cAvailable = true;
 static constexpr bool kSdCardAvailable = true;
 static constexpr bool kHilAvailable = false;
