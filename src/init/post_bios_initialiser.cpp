@@ -247,6 +247,8 @@ void PostBiosInitialiser::PostBiosInit() {
         InitConsoleUart();
         Log_info0("UART logger/listener started");
 
+        MspException::Init();
+
         // TODO(dingbenjamin): Init var length array pool
 
         InitHardware();

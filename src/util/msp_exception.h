@@ -1,7 +1,6 @@
 #ifndef SRC_UTILS_MSP_EXCEPTION_H_
 #define SRC_UTILS_MSP_EXCEPTION_H_
 
-#include <external/etl/deque.h>
 #include <external/etl/exception.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
@@ -16,11 +15,11 @@ typedef struct SerialisedException {
         : timestamp_ms(SatelliteTimeSource::GetTime().timestamp_ms),
           error_id(error_id),
           catch_id(catch_id),
-          task_name((*static_cast<const char**>(task_stats.env))[0]),
+          task_name(*((char*)task_stats.env)),
           task_priority(task_stats.priority),
           task_stack_used(task_stats.used),
-          exception_param_1(0),
-          exception_param_2(0) {}
+          exception_param_1(exception_param_1),
+          exception_param_2(exception_param_2) {}
 
     SerialisedException()
         : timestamp_ms(0),
@@ -44,15 +43,22 @@ typedef struct SerialisedException {
 
 class MspException : public etl::exception {
    public:
-    static void LogException(MspException& e, CatchId catch_id);
-    static void LogException(const MspException& e);
-    // TODO(dingbenjamin): Remove once all uses of etl::exception removed
+    static constexpr uint8_t kNumExceptionTypes = 75;
+    static constexpr uint8_t kNumEachException = 5;
+
+    // TODO(dingbenjamin): Haven't been able to perform static compile time
+    // initialisation due to some suspected linker issues, investigate and
+    // remove need for Init() function
+    static void Init();
+    static void LogException(MspException& e, CatchId catch_id,
+                             bool store_only = true);
+    static void LogException(const MspException& e, bool store_only = true);
     static void LogException(etl::exception& e);
-    static SerialisedException PeekException();
-    static SerialisedException PopException();
-    static void ClearExceptions();
-    static uint16_t GetNumExceptions();
-    static bool IsExceptionsFull();
+    static void ClearType(uint8_t error_id);
+    static void ClearAll();
+    static uint8_t GetNumType(uint8_t error_id);
+    static const uint8_t* GetNumAll();
+    static const SerialisedException* GetExceptions(uint8_t error_id);
 
     MspException(string_type reason, uint8_t error_id, string_type file,
                  numeric_type line, uint8_t exception_param_1 = 0,
@@ -62,11 +68,13 @@ class MspException : public etl::exception {
     uint64_t GetTimestamp() const;
 
    private:
-    static void PushException(const SerialisedException& serial_exception);
     static xdc_IArg CharToIarg(const char* string);
-    static constexpr uint16_t kNumExceptionsInBuffer = 500;
-    static constexpr uint8_t kInvalidExceptionId = 255;
-    static etl::deque<SerialisedException, kNumExceptionsInBuffer> deque;
+
+    // TODO(dingbenjamin): Store in flash memory
+    static SerialisedException** exception_log;
+    static uint8_t* num_exceptions;
+    static uint8_t* log_circle_index;
+    static bool initialised;
 
     SerialisedException serialised_exception;
 };
