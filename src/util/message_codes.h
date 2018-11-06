@@ -45,7 +45,9 @@ enum PayloadType {
     kTestOnesPayloadCode = 6,
     kSciencePayloadCode = 7,
     kLithiumGetConfigurationUplinkPayloadCode = 8,
-    kQuerySectionsPayloadCode = 9
+    kQuerySectionsPayloadCode = 9,
+    kExceptionsPayloadCode = 10,
+    kNumExceptionsPayloadCode = 11,
 };
 
 enum Uplinks {
@@ -69,6 +71,9 @@ enum Uplinks {
     kClearSectionsUplink = 17,
     kExecuteSectionsUplink = 18,
     kQuerySectionsUplink = 19,
+    kClearExceptionsUplink = 20,
+    kQueryExceptionsUplink = 21,
+    kQueryNumExceptionsUplink = 22,
     kUplinksLength
 };
 
