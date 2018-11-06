@@ -1,3 +1,4 @@
+#include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
@@ -66,6 +67,9 @@ void PreBiosInit() {
                 case kUnexpectedReset:
                     EnterLimpMode();
                     break;
+                default:
+                    throw etl::exception("Invalid reset flag", __FILE__,
+                                         __LINE__);
             }
         }
     } catch (etl::exception& e) {
@@ -92,6 +96,10 @@ void InitSdCs() {
 }
 
 void EnterLimpMode() {
+    if (!kLimpModeEnabled) {
+        Log_info0("Tried to enter limp mode but disabled");
+        return;
+    }
     Log_info0("Entered limp mode");
     initGeneral();
     GPIO_init();
