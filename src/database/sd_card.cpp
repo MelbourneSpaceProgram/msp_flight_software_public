@@ -36,8 +36,8 @@ SdCard::SdCard()
     GateMutexPri_Params_init(&mutex_params);
     sd_mutex = GateMutexPri_create(&mutex_params, NULL);
     if (sd_mutex == NULL) {
-        throw SdException("Failed to create SD card mutex", 0,
-                          kSdMutexCreateFail, __FILE__, __LINE__);
+        throw SdException("Failed to create SD card mutex", kSdMutexCreateFail,
+                          __FILE__, __LINE__);
     }
 }
 
@@ -49,15 +49,15 @@ SdHandle SdCard::SdOpen() {
 
     handle = SDFatFS_open(0, kDriveNum);
     if (handle == NULL) {
-        throw SdException("Error starting the SD card.", 0, kSdOpenFail,
-                          __FILE__, __LINE__);
+        throw SdException("Error starting the SD card.", kSdOpenFail, __FILE__,
+                          __LINE__);
     }
     return handle;
 }
 
 void SdCard::SdClose(SdHandle handle) {
     if (is_locked) {
-        throw SdException("Cannot close SD card, there is a file open", 0,
+        throw SdException("Cannot close SD card, there is a file open",
                           kFileCloseLockFail, __FILE__, __LINE__);
     }
     SDFatFS_close(handle);
@@ -73,17 +73,17 @@ File *SdCard::FileOpen(const char *path, byte mode) {
         delete open_file;
         open_file = NULL;
         Unlock();
-        throw SdException("Could not find file", 0, kFileOpenNotFoundFail,
+        throw SdException("Could not find file", kFileOpenNotFoundFail,
                           __FILE__, __LINE__, result);
     } else if (result == FR_EXIST) {
         // TODO(dingbenjamin): Add filename
-        throw SdException("File already exists", 0, kFileOpenExistsFail,
-                          __FILE__, __LINE__, result);
+        throw SdException("File already exists", kFileOpenExistsFail, __FILE__,
+                          __LINE__, result);
     } else if (result != FR_OK) {
         delete open_file;
         open_file = NULL;
         Unlock();
-        throw SdException("Error opening file", 0, kFileOpenFail, __FILE__,
+        throw SdException("Error opening file", kFileOpenFail, __FILE__,
                           __LINE__, result);
     }
     return open_file;
@@ -95,7 +95,7 @@ uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
     uint32_t bytes_written;
     FResult result = f_write(f, write_buffer, num_bytes, &bytes_written);
     if (result != FR_OK) {
-        throw SdException("Error writing to file", 0, kFileWriteFail, __FILE__,
+        throw SdException("Error writing to file", kFileWriteFail, __FILE__,
                           __LINE__, result);
     }
     return bytes_written;
@@ -107,7 +107,7 @@ uint32_t SdCard::FileRead(File *f, void *read_buffer,
     uint32_t bytes_read;
     FResult result = f_read(f, read_buffer, num_bytes, &bytes_read);
     if (result != FR_OK) {
-        throw SdException("Error reading from file", 0, kFileReadFail, __FILE__,
+        throw SdException("Error reading from file", kFileReadFail, __FILE__,
                           __LINE__, result);
     }
     return bytes_read;
@@ -117,7 +117,7 @@ void SdCard::FileFlush(File *f) const {
     // Don't need a lock check as the file handle itself is the key
     FResult result = f_sync(f);
     if (result != FR_OK) {
-        throw SdException("Error flushing to file", 0, kFileFlushFail, __FILE__,
+        throw SdException("Error flushing to file", kFileFlushFail, __FILE__,
                           __LINE__, result);
     }
 }
@@ -126,22 +126,22 @@ void SdCard::FileSeek(File *f, uint32_t dest) const {
     // Don't need a lock check as the file handle itself is the key
     FResult result = f_lseek(f, dest);
     if (result != FR_OK) {
-        throw SdException("Error seeking in file", 0, kFileSeekFail, __FILE__,
+        throw SdException("Error seeking in file", kFileSeekFail, __FILE__,
                           __LINE__, result);
     }
 }
 
 void SdCard::FileClose(File *f) {
     if (open_file == NULL) {
-        throw SdException("No file currently open", 0, kFileCloseNullFail,
+        throw SdException("No file currently open", kFileCloseNullFail,
                           __FILE__, __LINE__);
     } else if (f != open_file) {
-        throw SdException("Must close the currently open file", 0,
+        throw SdException("Must close the currently open file",
                           kFileCloseWrongFail, __FILE__, __LINE__);
     }
     FResult result = f_close(f);
     if (result != FR_OK) {
-        throw SdException("Error closing file", 0, kFileCloseFail, __FILE__,
+        throw SdException("Error closing file", kFileCloseFail, __FILE__,
                           __LINE__);
     }
     delete open_file;
@@ -151,11 +151,11 @@ void SdCard::FileClose(File *f) {
 
 void SdCard::FileDelete(const char *path) const {
     if (is_locked)
-        throw SdException("Cannot delete files while a file is open", 0,
+        throw SdException("Cannot delete files while a file is open",
                           kFileDeleteOpenFail, __FILE__, __LINE__);
     FResult result = f_unlink(path);
     if (result != FR_OK) {
-        throw SdException("Error deleting file", 0, kFileDeleteFail, __FILE__,
+        throw SdException("Error deleting file", kFileDeleteFail, __FILE__,
                           __LINE__);
     }
 }
@@ -172,8 +172,8 @@ void SdCard::Format() {
     FResult result = f_mkfs("0", FM_ANY, 0, work, sizeof(work));
     Unlock();
     if (result != FR_OK) {
-        throw SdException("Could not format SdCard", 0, kFileFormatFail,
-                          __FILE__, __LINE__, result);
+        throw SdException("Could not format SdCard", kFileFormatFail, __FILE__,
+                          __LINE__, result);
     }
     Log_info0("SD Card Formatted");
 }
@@ -183,7 +183,7 @@ void SdCard::Lock() {
     assert(!is_locked);
     if (is_locked) {
         throw SdException(
-            "Something else is using the sd card in the same thread", 0,
+            "Something else is using the sd card in the same thread",
             kFileThreadFail, __FILE__, __LINE__);
     }
     is_locked = true;
