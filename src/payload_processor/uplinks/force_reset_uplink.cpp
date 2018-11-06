@@ -10,8 +10,7 @@ ForceResetUplink::ForceResetUplink(byte* payload)
 
 bool ForceResetUplink::ExecuteUplink() {
     if (kResetUplinkCodeKey == reset_enable.reset_enable) {
-        ResetManagement::SetResetFlag(ResetManagement::kForceResetCommand);
-        ResetManagement::ResetSystem();
+        ResetManagement::ResetSystemWithMessage(kForceResetCommandExecuted);
         return true;
     } else {
         Log_error0("Reset command has failed.");

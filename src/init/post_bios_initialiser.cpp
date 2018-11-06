@@ -9,6 +9,7 @@
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
 #include <src/database/eeprom.h>
+#include <src/database/flash_memory/flash_storables/reset_info_container.h>
 #include <src/database/sd_card.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/init/test_initialiser.h>

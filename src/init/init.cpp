@@ -1,6 +1,7 @@
 #include <src/board/board.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
+#include <src/database/flash_memory/flash_storables/reset_info_container.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>
 #include <src/payload_processor/runnable_payload_processor.h>
@@ -47,6 +48,29 @@ void PreBiosInit() {
 
     InitSdCs();
     InitRtcInterrupt();
+
+    try {
+        ResetInfoContainer* reset_info_container =
+            ResetInfoContainer::GetInstance();
+        // TODO(hugorilla): Develop this logic further to handle different reset
+        // states
+        if (reset_info_container->GetNumResets() > kMaxNumResets) {
+            EnterLimpMode();
+        } else {
+            switch (reset_info_container->GetMostRecentResetMessage()) {
+                case kFirstWakeup:
+                case kResetUnitTestMessage1:
+                case kResetUnitTestMessage2:
+                case kForceResetCommandExecuted:
+                    break;
+                case kUnexpectedReset:
+                    EnterLimpMode();
+                    break;
+            }
+        }
+    } catch (etl::exception& e) {
+        EnterLimpMode();
+    }
 
     TaskHolder* post_bios_initialiser_task =
         new TaskHolder(3000, "Initialiser", 10, new PostBiosInitialiser());

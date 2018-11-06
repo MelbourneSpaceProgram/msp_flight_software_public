@@ -21,6 +21,9 @@ static constexpr bool kZNegAvailable = false;
 static constexpr bool kLithiumFlashTestEnabled = false;
 static constexpr bool kForceResetCommandEnabled =
     false;  // It will reset the satellite
+static constexpr bool kResetUnitTestEnabled =
+    false;  // This will cause the satellite to reset mutliple times during the
+            // unit tests
 
 // Hardware available
 static constexpr bool kEepromAvailable =
