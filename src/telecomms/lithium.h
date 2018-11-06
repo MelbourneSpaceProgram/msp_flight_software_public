@@ -78,12 +78,12 @@ class Lithium {
     bool IsStateLocked(LithiumShutoffCondition condition);
     void ForceUnlock();
 
-    bool DoTelemetryQuery(LithiumTelemetry& returned_telemetry) const;
-    bool DoGetConfiguration(LithiumConfiguration& returned_configuration) const;
-    bool DoSetConfiguration(LithiumConfiguration config) const;
-    bool DoWriteFlash(LithiumMd5 md5) const;
-    bool DoNoOp() const;
-    bool DoFastPa(uint8_t pa_level) const;
+    bool DoTelemetryQuery(LithiumTelemetry& returned_telemetry);
+    bool DoGetConfiguration(LithiumConfiguration& returned_configuration);
+    bool DoSetConfiguration(LithiumConfiguration config);
+    bool DoWriteFlash(LithiumMd5 md5);
+    bool DoNoOp();
+    bool DoFastPa(uint8_t pa_level);
     bool Transmit(TransmitPayload* transmit_payload);
 
     static bool IsTransmitting();
@@ -96,6 +96,8 @@ class Lithium {
     static constexpr uint32_t kUartWriteTimeoutMilli = 500;
     static constexpr uint32_t kWaitForAckMilli = 3000;
     static constexpr uint32_t kWaitForReplyPayloadMilli = 5000;
+    static constexpr uint8_t kFailsBeforeReset = 5;
+    static constexpr uint16_t kResetWaitMs = 1000;
 
     static uint8_t tx_count;
     static uint8_t rx_count;
@@ -104,8 +106,14 @@ class Lithium {
 
     Uart uart;
     bool lithium_transmit_enabled;
-    kLithiumState state;
     uint8_t lock;
+    kLithiumState state;
+    uint8_t consecutive_serial_failures;
+    GateMutexPri_Params mutex_params;
+    GateMutexPri_Handle lithium_mutex;
+
+    void FailSerial(IArg key);
+    void SuccessSerial(IArg key);
 
     Mailbox_Params uplink_mailbox_params;
     Mailbox_Handle uplink_mailbox_handle;
@@ -122,7 +130,7 @@ class Lithium {
 
     Lithium();
     Uart* GetUart();
-    bool DoCommand(LithiumCommand* command) const;
+    bool DoCommand(LithiumCommand* command);
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_H_
