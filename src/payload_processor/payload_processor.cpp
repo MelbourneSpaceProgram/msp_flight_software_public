@@ -1,4 +1,5 @@
 #include <src/payload_processor/payload_processor.h>
+#include <src/payload_processor/uplinks/clear_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/clear_sections_uplink.h>
 #include <src/payload_processor/uplinks/deploy_antenna_uplink.h>
 #include <src/payload_processor/uplinks/enable_datalogger_uplink.h>
@@ -13,6 +14,8 @@
 #include <src/payload_processor/uplinks/lithium_set_pa_uplink.h>
 #include <src/payload_processor/uplinks/lithium_test_uplink.h>
 #include <src/payload_processor/uplinks/lithium_write_flash_uplink.h>
+#include <src/payload_processor/uplinks/query_exceptions_uplink.h>
+#include <src/payload_processor/uplinks/query_num_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/query_sections_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/section_uplink.h>
@@ -89,6 +92,12 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new ExecuteSectionsUplink(payload, this);
         case kQuerySectionsUplink:
             return new QuerySectionsUplink(payload, this);
+        case kClearExceptionsUplink:
+            return new ClearExceptionsUplink(payload);
+        case kQueryExceptionsUplink:
+            return new QueryExceptionsUplink(payload);
+        case kQueryNumExceptionsUplink:
+            return new QueryNumExceptionsUplink(payload);
         default:
             // TODO(dingbenjamin): Put erroneous command ID in exception
             etl::exception e("Could not parse command code", __FILE__,

@@ -15,8 +15,11 @@
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/payload_processor/tests/mock_uplink_builder.h>
+#include <src/payload_processor/uplinks/clear_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/io_expander_toggle_uplink.h>
 #include <src/payload_processor/uplinks/lithium_beacon_period_uplink.h>
+#include <src/payload_processor/uplinks/query_exceptions_uplink.h>
+#include <src/payload_processor/uplinks/query_num_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
@@ -27,15 +30,19 @@
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/telecomms/runnable_beacon.h>
-#include <src/util/msp_exception.h>
 #include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
 
-TEST_GROUP(PayloadProcessor){};
+TEST_GROUP(PayloadProcessor) {
+    void setup() { MspException::ClearAll(); };
+
+    void teardown() { MspException::ClearAll(); }
+};
 
 TEST(PayloadProcessor, TestPayloadProcessor) {
     byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
@@ -196,10 +203,10 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
         CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
         SdCard::GetInstance()->FileDelete(filename);
-        } catch (etl::exception& e) {
-            MspException::LogException(e);
-            FAIL("Uncaught exception in test");
-        }
+    } catch (etl::exception& e) {
+        MspException::LogException(e);
+        FAIL("Uncaught exception in test");
+    }
 }
 
 // TODO(dingbenjamin): Figure out how to teardown for just this test
@@ -322,6 +329,30 @@ TEST(PayloadProcessor, TestLithumGetSetConfigUplink) {
     reset_builder.AddUplinkCode(kLithiumSetConfigurationUplink)
         .AddNanopbMacro(LithiumConfigurationPayload)(default_config);
     CHECK(payload_processor.ParseAndExecuteUplinks(reset_builder.Build()));
+}
+
+TEST(PayloadProcessor, TestExceptionUplinks) {
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+
+    try {
+        throw MspException("This is a test", 5, __FILE__, __LINE__, 2, 3);
+    } catch (MspException& e) {
+        MspException::LogException(e, true);
+    }
+
+    CHECK_EQUAL(1, MspException::GetNumType(5));
+    builder.AddUplinkCode(kQueryExceptionsUplink)
+        .AddData<uint8_t>(5)
+        .AddUplinkCode(kClearExceptionsUplink)
+        .AddData<uint8_t>(255)  // 255 is the signal to clear all exceptions
+        .AddUplinkCode(kQueryNumExceptionsUplink);
+
+    PayloadProcessor payload_processor;
+    // Should downlink a single valid exception and then the number of
+    // exceptions
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
+    CHECK_EQUAL(0, MspException::GetNumType(5));
 }
 
 TEST(PayloadProcessor, TestSequence) {
