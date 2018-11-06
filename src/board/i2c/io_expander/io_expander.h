@@ -26,15 +26,13 @@ class IoExpander : public I2cDevice {
         kIoPin5 = 0x05,
         kIoPin6 = 0x06,
         kIoPin7 = 0x07,
-        kIoPin8 = 0x08,
-        kIoPin9 = 0x09,
-        kIoPin10 = 0x0A,
-        kIoPin11 = 0x0B,
-        kIoPin12 = 0x0C,
-        kIoPin13 = 0x0D,
-        kIoPin14 = 0x0E,
-        kIoPin15 = 0x0F,
-        kNumIoExpanderPins
+        kIoPin10 = 0x08,
+        kIoPin11 = 0x09,
+        kIoPin12 = 0x0A,
+        kIoPin13 = 0x0B,
+        kIoPin14 = 0x0C,
+        kIoPin15 = 0x0D,
+		kNumIoExpanderPins
     };
 
     enum IoExpanderIds {
