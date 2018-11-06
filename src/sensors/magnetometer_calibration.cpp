@@ -293,6 +293,8 @@ MagnetometerReading MagnetometerCalibration::GetReadingFromBuffer(
 }
 
 bool MagnetometerCalibration::Store(MagnetometerReading magnetometer_reading) {
+    if (!kSdCardAvailable) { return false; }
+
     try {
         // Write to circular buffer for calibration.
         // TODO (rskew) catch exceptions for pb encode error, sdcard write
