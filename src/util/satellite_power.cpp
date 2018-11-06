@@ -1,6 +1,8 @@
+#include <src/board/MSP432E.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
+#include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 
 void SatellitePower::Initialize() {
@@ -93,3 +95,7 @@ void SatellitePower::RestorePowerToTelecoms() {
     io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, true);
     io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, true);
 }
+
+void SatellitePower::DisableRadio() { GPIO_write(nCOMMS_RST, 0); }
+
+void SatellitePower::EnableRadio() { GPIO_write(nCOMMS_RST, 1); }
