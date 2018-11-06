@@ -72,7 +72,7 @@ enum Uplinks {
     kUplinksLength
 };
 
-enum SdErrorId {
+enum ErrorId {
     kSdMutexCreateFail = 0,
     kSdOpenFail,
     kFileCloseLockFail,
@@ -92,8 +92,9 @@ enum SdErrorId {
     kFileThreadFail,
 };
 
-enum ExceptionSubsystemId {
-    kSdSubsystem = 0,
+enum CatchId {
+    kUncaught = 0,
+    kTopLevelCatch,
 };
 
 #endif  // SRC_UTIL_MESSAGE_CODES_H_

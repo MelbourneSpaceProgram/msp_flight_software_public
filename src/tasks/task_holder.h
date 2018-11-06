@@ -19,6 +19,7 @@ class TaskHolder {
    private:
     uint16_t stack_size;
     const char *name;
+    char short_name;  // First character
     int priority;
     Runnable *runnable;
     Task_Params task_params;

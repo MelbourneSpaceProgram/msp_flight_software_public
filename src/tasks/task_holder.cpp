@@ -6,6 +6,7 @@ TaskHolder::TaskHolder(uint16_t stack_size, const char* name, int priority,
                        Runnable* runnable)
     : stack_size(stack_size),
       name(name),
+      short_name(name[0]),
       priority(priority),
       runnable(runnable),
       task_params(),
@@ -14,6 +15,7 @@ TaskHolder::TaskHolder(uint16_t stack_size, const char* name, int priority,
     task_params.stackSize = stack_size;
     task_params.instance->name = name;
     task_params.priority = -1;  // All tasks start suspended by default
+    task_params.env = (void*)(&short_name);
     handle = Task_create((Task_FuncPtr)runnable->GetRunnablePointer(),
                          &task_params, NULL);
     if (handle == NULL) {

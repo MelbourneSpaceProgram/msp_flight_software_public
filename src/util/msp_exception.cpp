@@ -1,17 +1,24 @@
 #include <src/util/msp_exception.h>
-#include <src/util/satellite_time_source.h>
 #include <string>
 
 etl::deque<SerialisedException, MspException::kNumExceptionsInBuffer>
     MspException::deque;
 
-MspException::MspException(string_type reason, uint8_t task_id,
-                           uint8_t subsystem_id, uint8_t error_id,
-                           uint8_t stack_level, string_type file,
-                           numeric_type line)
-    : exception(reason, file, line),
-      serialised_exception({task_id, subsystem_id, error_id, stack_level,
-                            SatelliteTimeSource::GetTime().timestamp_ms}) {}
+MspException::MspException(string_type reason, uint8_t error_id,
+                           string_type file, numeric_type line,
+                           uint8_t exception_param_1, uint8_t exception_param_2)
+    : exception(reason, file, line) {
+    Task_Stat task_stat;
+    Task_stat(Task_self(), &task_stat);
+    serialised_exception =
+        SerialisedException(error_id, static_cast<uint8_t>(kUncaught),
+                            task_stat, exception_param_1, exception_param_2);
+}
+
+void MspException::LogException(MspException& e, CatchId catch_id) {
+    e.serialised_exception.catch_id = catch_id;
+    LogException(e);
+}
 
 void MspException::LogException(const MspException& e) {
     // Circular buffer
@@ -31,10 +38,7 @@ void MspException::LogException(etl::exception& e) {
 
 SerialisedException MspException::PopException() {
     // Invalid exception
-    if (deque.empty())
-        return {kInvalidExceptionId, kInvalidExceptionId, kInvalidExceptionId,
-                kInvalidExceptionId};
-
+    if (deque.empty()) return SerialisedException();
     SerialisedException popped_exception = deque.front();
     deque.pop_front();
     return popped_exception;
@@ -60,20 +64,6 @@ const SerialisedException& MspException::GetSerialisedException() const {
     return serialised_exception;
 }
 
-uint8_t MspException::GetTaskId() const { return serialised_exception.task_id; }
-
-uint8_t MspException::GetSubsystemId() const {
-    return serialised_exception.subsystem_id;
-}
-
 uint8_t MspException::GetErrorId() const {
     return serialised_exception.error_id;
-}
-
-uint8_t MspException::GetStackLevel() const {
-    return serialised_exception.stack_level;
-}
-
-uint64_t MspException::GetTimestamp() const {
-    return serialised_exception.timestamp_ms;
 }
