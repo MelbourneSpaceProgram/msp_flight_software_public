@@ -13,7 +13,7 @@ static constexpr bool kLogToSd = true;
 static constexpr bool kFormatSdOnStartup = false;
 static constexpr uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
 static constexpr uint8_t kNominalLithiumPowerLevel =
-    150;  // Scaled between 0-255
+    140;  // Scaled between 0-255
 
 static constexpr bool kLimpModeEnabled = false;
 static constexpr bool kUseFecDefault = true;
