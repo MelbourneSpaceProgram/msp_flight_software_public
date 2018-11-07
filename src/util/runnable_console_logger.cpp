@@ -10,7 +10,7 @@
 // These are created outside of the class to make getting C linkage easier
 extern "C" {
 RingBuf_Object ring_buffer;
-byte buffer[5000] = {0};
+byte buffer[5000];
 bool wait = false;
 }
 
