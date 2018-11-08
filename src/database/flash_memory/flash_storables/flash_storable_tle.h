@@ -13,6 +13,7 @@ class FlashStorableTle : FlashStorable<FlashStorableTleStruct> {
         FlashStorableTleStruct* flash_storable_tle_struct);
     void UpdateFromFlashStorableStruct(
         FlashStorableTleStruct* flash_storable_tle_struct);
+
     FlashStorableTleStruct tle_data;
 };
 
