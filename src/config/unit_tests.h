@@ -47,7 +47,7 @@ static constexpr bool kDitlMode = false;
 // static const char* test_args[] = {"exe"};
 
 // Run all tests verbosely
-// static const char* test_args[] = {"exe", "-v"};
+static const char* test_args[] = {"exe", "-v"};
 
 // Run only this group of tests
 // static const char* test_args[] = {"exe", "-sg", "NameOfTestGroup"};
@@ -61,6 +61,6 @@ static constexpr bool kDitlMode = false;
 // Run everything but this test
 // static const char* test_args[] = {"exe", "-xn", "NameOfTest"};
 
-static const char* test_args[] = {"exe"};
+//static const char* test_args[] = {"exe"};
 
 #endif  //  SRC_CONFIG_UNIT_TESTS_H_
