@@ -35,7 +35,6 @@
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <string.h>
-#include <ti/drivers/GPIO.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
 
