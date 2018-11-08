@@ -143,14 +143,11 @@ void RunnableOrientationControl::ControlOrientation() {
     /*Controller matrices*/
     NewStackMatrixMacro(error_q, 4, 1);
     NewStackMatrixMacro(ideal_torque, 3, 1);
+    check_tle = true;
+    //location_est.RequestTleFromDebugClient();
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
         /* If TLE hasnt been received yet*/
-        if (check_tle || location_est.CheckForUpdatedTle()) {
-            check_tle = true;
-            location_est.UpdateLocation(tsince_millis);
-        }
-
         // TODO(dingbenjamin): Check if we should turn orientation control off
 
         MagnetorquerControl::Degauss();
@@ -207,7 +204,7 @@ void RunnableOrientationControl::ControlOrientation() {
          * exists*/
 
         if (gyro_filter.ProcessSample(gyro_norm) <=
-                RunnableOrientationControl::gyro_rate_threshold &&
+                RunnableOrientationControl::kGyroRateThreshold &&
             check_tle == true) {
             /*Obtain position estimate from sgp4 routine*/
             location_est.UpdateLocation(tsince_millis);
@@ -226,9 +223,9 @@ void RunnableOrientationControl::ControlOrientation() {
             r2.Set(0, 0,
                    1.0);  // earth vector is always (0,0,1) in this frame
 
-            KalmanFilter kf(kControlLoopPeriodMicros, r1, r2, Q0, R0, P0, q0);
+            KalmanFilter kf((int)kControlLoopPeriodMicros, r1, r2, Q0, R0, P0, q0);
             while (gyro_filter.ProcessSample(gyro_norm) <=
-                       RunnableOrientationControl::gyro_rate_threshold &&
+                       RunnableOrientationControl::kGyroRateThreshold &&
                    check_tle == true) {
                 Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
                 MagnetorquerControl::Degauss();
@@ -302,7 +299,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 /*Computes desired pwm signal!*/
                 geomag_unit.MultiplyScalar(geomag,
                                            -1.0 / geomag.VectorNorm(geomag));
-                signed_pwm_output.CrossProduct(geomag, desired_torque);
+                signed_pwm_output.CrossProduct(geomag_unit, desired_torque);
                 /*fin - write to the magnetorquers*/
                 MagnetorquerControl::SetMagnetorquersPowerFraction(
                     signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
@@ -314,7 +311,7 @@ void RunnableOrientationControl::ControlOrientation() {
             for (uint8_t i = 0; i < 3; i++) {
                 signed_pwm_output.Set(i, 0,
                                       signed_pwm_output.Get(i, 0) *
-                                          kOrientationControlPowerLevel);
+                                          5);
             }
 
             // Use magnetorquer driver to set magnetorquer power.
