@@ -42,4 +42,15 @@ struct ResetInfoContainerStruct {
     bool expected_reset;
 };
 
+struct FlashStorableTleStruct {
+    double mean_motion;
+    double mean_anomaly;
+    double inclination;
+    double raan;
+    double bstar_drag;
+    double epoch;
+    double eccentricity_1e7;
+    double argument_of_perigee;
+};
+
 #endif  // SRC_DATABASE_FLASH_MEMORY_FLASH_STORABLES_FLASH_STORABLE_DATA_TYPES_H_
