@@ -30,9 +30,6 @@ Lithium::Lithium()
       lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded),
       state(kLithiumTempNominal),
       lock(kLithiumOnCondition) {
-    // Ensure Lithium is not in reset
-    GPIO_write(nCOMMS_RST, 1);
-
     uart.SetBaudRate(Uart::kBaud9600)
         ->SetReadMode(UART_MODE_BLOCKING)
         ->SetWriteMode(UART_MODE_BLOCKING)

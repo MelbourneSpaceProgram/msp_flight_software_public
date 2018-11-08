@@ -6,8 +6,9 @@
 #include <xdc/runtime/Log.h>
 
 void SatellitePower::Initialize() {
+    CutPowerToTelecoms();
+
     const IoExpander* io_expander_bms = IoExpander::GetIoExpander(0);
-    const IoExpander* io_expander_telecoms = IoExpander::GetIoExpander(1);
 
     try {
         io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
@@ -30,23 +31,6 @@ void SatellitePower::Initialize() {
     } catch (etl::exception& e) {
         MspException::LogException(e);
         Log_error0("BMS IO expander failed to initialise properly");
-    }
-
-    try {
-        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, false);
-        io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, false);
-
-        io_expander_telecoms->SetDirection(kIoExpanderPinTelecomsEn1,
-                                           IoExpander::kIoOutput);
-        io_expander_telecoms->SetDirection(kIoExpanderPinTelecomsEn4,
-                                           IoExpander::kIoOutput);
-        io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn1,
-                                          IoExpander::kIoActiveHigh);
-        io_expander_telecoms->SetPolarity(kIoExpanderPinTelecomsEn4,
-                                          IoExpander::kIoActiveHigh);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
-        Log_error0("Telecomms IO expander failed to initialise properly");
     }
 }
 
@@ -82,20 +66,10 @@ void SatellitePower::RestorePowerToFlightSystems() {
 
 void SatellitePower::CutPowerToTelecoms() {
     Log_info0("Cutting power to Telecoms");
-    const IoExpander* io_expander_telecoms =
-        IoExpander::GetIoExpander(IoExpander::kCommsIoExpander);
-    io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, false);
-    io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, false);
+    GPIO_write(nCOMMS_RST, 0);
 }
 
 void SatellitePower::RestorePowerToTelecoms() {
     Log_info0("Restoring power to Telecoms");
-    const IoExpander* io_expander_telecoms =
-        IoExpander::GetIoExpander(IoExpander::kCommsIoExpander);
-    io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn1, true);
-    io_expander_telecoms->SetPin(kIoExpanderPinTelecomsEn4, true);
+    GPIO_write(nCOMMS_RST, 1);
 }
-
-void SatellitePower::DisableRadio() { GPIO_write(nCOMMS_RST, 0); }
-
-void SatellitePower::EnableRadio() { GPIO_write(nCOMMS_RST, 1); }
