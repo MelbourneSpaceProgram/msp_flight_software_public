@@ -10,7 +10,10 @@ enum FlashStorageAddress {
     kAcrux1DataFlashAddress = 0x000F0000,  // this value must match the
                                            // ACRUX1DATA memory address defined
                                            // in linker.cmd
-    kResetInfoContainerFlashStorageAddress = 0x000F0000
+    kResetInfoContainerFlashStorageAddress = 0x000F0000,
+    kFlashStorableTleFlashStorageAddress =
+        kResetInfoContainerFlashStorageAddress +
+        sizeof(ResetInfoContainerStruct),
 };
 
 class FlashMemoryManagement {
