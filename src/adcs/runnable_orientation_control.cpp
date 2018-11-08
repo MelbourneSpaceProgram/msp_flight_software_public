@@ -91,7 +91,7 @@ void RunnableOrientationControl::ControlOrientation() {
 
         // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
-        MagnetorquerControl::Degauss();
+//        MagnetorquerControl::Degauss();
 
         // Read Magnetometer
         // TODO (rskew) fuse readings from both magnetometers giving redundancy

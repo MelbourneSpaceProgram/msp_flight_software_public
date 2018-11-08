@@ -23,8 +23,11 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
 MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     MPU9250MotionTracker* imu_sensor =
         static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor);
-    MagnetometerReading raw_reading = imu_sensor->TakeMagnetometerReading();
 
+    if (kHilAvailable) {
+           return TakeSimulationReading();
+       }
+    MagnetometerReading raw_reading = imu_sensor->TakeMagnetometerReading();
     // Apply change of frame from magnetometer frame to satellite body frame
     NewStackMatrixMacro(reading_magnetometer_frame, 3, 1);
     reading_magnetometer_frame.Set(0, 0, raw_reading.x);
@@ -43,15 +46,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
                              last_reading);
     }
 
-    if (kHilAvailable) {
-        MagnetometerReading simulation_reading = TakeSimulationReading();
-        // Combine readings.
-        // The static hardware reading will be calibrated out, and the
-        // true hardware noise will be added to the simulated reading.
-        last_reading.x = last_reading.x + simulation_reading.x;
-        last_reading.y = last_reading.y + simulation_reading.y;
-        last_reading.z = last_reading.z + simulation_reading.z;
-    }
+
 
     if (kSdCardAvailable) {
         magnetometer_calibration.Store(last_reading);
