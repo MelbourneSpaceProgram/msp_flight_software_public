@@ -6,6 +6,7 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
+#include <src/database/flash_memory/flash_storables/flash_storable_tle.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/util/message_codes.h>
 #include <src/util/physical_constants.h>
@@ -43,6 +44,8 @@ void LocationEstimator::RequestTleFromDebugClient() {
 
 void LocationEstimator::StoreTle(Tle tle) {
     Sgp4::InitialisePropagator(tle, satrec);
+    FlashStorableTle flash_storable_tle(tle);
+    flash_storable_tle.StoreInFlash();
 }
 
 void LocationEstimator::UpdateLocation(double tsince_millis) {
