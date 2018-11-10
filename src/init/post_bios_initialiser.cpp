@@ -26,6 +26,7 @@
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/flash.h>
 #include <src/util/runnable_console_listener.h>
 #include <src/util/runnable_console_logger.h>
 #include <src/util/runnable_memory_logger.h>
@@ -183,10 +184,17 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
+        Flash::FlashLed();
         SatellitePower::Initialize();
         TaskUtils::SleepMilli(3000);
+        TaskUtils::SleepMilli(1000);
+        Flash::FlashLed();
+        Flash::FlashLed();
         SatellitePower::RestorePowerToFlightSystems();
         TaskUtils::SleepMilli(1000);
+        Flash::FlashLed();
+        Flash::FlashLed();
+        Flash::FlashLed();
         SatellitePower::RestorePowerToTelecoms();
     } catch (etl::exception& e) {
         MspException::LogException(e);
