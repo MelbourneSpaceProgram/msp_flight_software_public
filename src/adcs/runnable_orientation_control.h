@@ -12,6 +12,9 @@ class RunnableOrientationControl : public Runnable {
     static void SetupControlLoopTimer();
     static void OrientationControlTimerISR(
         UArg orientation_control_timer_semaphore);
+    static void SetupBeaconOverSemaphore();
+
+    static Semaphore_Handle beacon_over_semaphore;
 
    private:
     static void ControlOrientation();

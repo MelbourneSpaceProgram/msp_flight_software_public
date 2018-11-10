@@ -27,6 +27,7 @@
 #include <xdc/runtime/Log.h>
 
 Semaphore_Handle RunnableOrientationControl::control_loop_timer_semaphore;
+Semaphore_Handle RunnableOrientationControl::beacon_over_semaphore;
 
 RunnableOrientationControl::RunnableOrientationControl() {}
 
@@ -57,6 +58,14 @@ void RunnableOrientationControl::SetupControlLoopTimer() {
         etl::exception e("Timer create failed", __FILE__, __LINE__);
         throw e;
     }
+}
+
+void RunnableOrientationControl::SetupBeaconOverSemaphore() {
+    Semaphore_Params beacon_over_semaphore_params;
+    Semaphore_Params_init(&beacon_over_semaphore_params);
+    beacon_over_semaphore_params.mode = Semaphore_Mode_BINARY;
+    RunnableOrientationControl::beacon_over_semaphore =
+        Semaphore_create(0, &beacon_over_semaphore_params, NULL);
 }
 
 void RunnableOrientationControl::OrientationControlTimerISR(
@@ -96,6 +105,11 @@ void RunnableOrientationControl::ControlOrientation() {
         // Read Magnetometer
         // TODO (rskew) fuse readings from both magnetometers giving redundancy
         // TODO(rskew) handle exception from magnetometer overflow
+        // Check if a beacon has occurred, in which case we need to degauss
+        if (Semaphore_pend(beacon_over_semaphore, BIOS_NO_WAIT)) {
+            Log_info0("Beacon occurred, degaussing magnetorquers");
+            continue;
+        }
         MagnetometerReading magnetometer_reading =
             measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
                 kFsImuMagno2, 0);

@@ -113,6 +113,10 @@ void PostBiosInitialiser::InitOrientationControl() {
         // Set up timer for degaussing routine
         MagnetorquerControl::SetupDegaussingPolaritySwitchTimer();
 
+        // Set up semaphore for the beacon to safely turn off the
+        // flight systems board
+        RunnableOrientationControl::SetupBeaconOverSemaphore();
+
         // TODO(rskew) review priority
         TaskHolder* orientation_control_task =
             new TaskHolder(kOrientationControlStackSize, "OrientationControl",
@@ -180,7 +184,7 @@ void PostBiosInitialiser::InitHardware() {
 
     try {
         SatellitePower::Initialize();
-        TaskUtils::SleepMilli(1000);
+        TaskUtils::SleepMilli(3000);
         SatellitePower::RestorePowerToFlightSystems();
         TaskUtils::SleepMilli(1000);
         SatellitePower::RestorePowerToTelecoms();
