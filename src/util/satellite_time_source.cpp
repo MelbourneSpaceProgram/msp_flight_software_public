@@ -8,7 +8,7 @@
 
 Time SatelliteTimeSource::satellite_time = {0, false};
 Time SatelliteTimeSource::initial_time = {0, false};
-uint64_t SatelliteTimeSource::delta_time = 0;
+volatile uint64_t SatelliteTimeSource::delta_time = 0;
 
 /**
  * Interrupt called with a frequency of 100hz (i.e. every 10ms)

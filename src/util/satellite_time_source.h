@@ -12,7 +12,8 @@ class SatelliteTimeSource {
     static uint64_t TimeDifferenceMilli(Time start, Time end);
     static void RealTimeWait(uint32_t delay);
     static void RtcInterrupt(uint_least8_t index);
-    static uint64_t delta_time;  // time (in millis) between calls to the rtc
+    static volatile uint64_t
+        delta_time;  // time (in millis) between calls to the rtc
 
    private:
     static Time satellite_time;
