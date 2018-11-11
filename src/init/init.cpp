@@ -48,7 +48,6 @@ void PreBiosInit() {
     }
 
     InitSdCs();
-    InitRtcInterrupt();
 
     try {
         ResetInfoContainer* reset_info_container =
