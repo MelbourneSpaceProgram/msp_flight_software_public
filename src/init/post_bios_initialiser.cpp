@@ -227,10 +227,13 @@ void PostBiosInitialiser::InitHardware() {
 }
 
 void PostBiosInitialiser::InitMemoryLogger() {
-    TaskHolder* memory_logger_task = new TaskHolder(
-        kMemoryLoggerStackSize, "MemoryLogger", 11, new RunnableMemoryLogger());
-    memory_logger_task->Start();
-    Log_info0("Memory logger started");
+    if (kDitlMode) {
+        TaskHolder* memory_logger_task =
+            new TaskHolder(kMemoryLoggerStackSize, "MemoryLogger", 11,
+                           new RunnableMemoryLogger());
+        memory_logger_task->Start();
+        Log_info0("Memory logger started");
+    }
 }
 
 void PostBiosInitialiser::InitTimeSource() {
@@ -246,17 +249,17 @@ void PostBiosInitialiser::InitConsoleUart() {
         ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
         ->Open();
 
-    TaskHolder* console_uart_listener_task =
-        new TaskHolder(kConsoleListenerStackSize, "UartListener", 12,
-                       new RunnableConsoleListener(debug_uart));
-    console_uart_listener_task->Start();
-    Log_info0("Umbilical UART listener started");
-
     TaskHolder* console_uart_logger_task =
         new TaskHolder(kConsoleLoggerStackSize, "UartLogger", 7,
                        new RunnableConsoleLogger(debug_uart));
     console_uart_logger_task->Start();
     Log_info0("Umbilical UART logger started");
+
+    TaskHolder* console_uart_listener_task =
+        new TaskHolder(kConsoleListenerStackSize, "UartListener", 12,
+                       new RunnableConsoleListener(debug_uart));
+    console_uart_listener_task->Start();
+    Log_info0("Umbilical UART listener started");
 }
 
 void PostBiosInitialiser::InitAntennaBurner() {
@@ -291,8 +294,9 @@ void PostBiosInitialiser::PostBiosInit() {
 
     try {
         // TODO(dingbenjamin): Init var length array pool
-        MspException::Init();
         InitConsoleUart();
+        InitMemoryLogger();
+        MspException::Init();
         InitHardware();
         InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
         InitRadioListener();

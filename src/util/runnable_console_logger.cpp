@@ -9,8 +9,8 @@
 
 // These are created outside of the class to make getting C linkage easier
 extern "C" {
-RingBuf_Object ring_buffer;
-byte buffer[5000];
+RingBuf_Object console_logger_ring_buffer;
+byte console_logger_buffer[5000];
 bool wait = false;
 }
 
@@ -21,8 +21,7 @@ GateMutexPri_Handle RunnableConsoleLogger::console_uart_mutex = NULL;
 
 RunnableConsoleLogger::RunnableConsoleLogger(Uart* debug_uart) {
     assert(!initialised);
-    initialised = true;
-    RingBuf_construct(&ring_buffer, buffer, sizeof(buffer));
+    RingBuf_construct(&console_logger_ring_buffer, console_logger_buffer, 5000);
     RunnableConsoleLogger::debug_uart = debug_uart;
 
     GateMutexPri_Params_init(&console_uart_mutex_params);
@@ -30,7 +29,10 @@ RunnableConsoleLogger::RunnableConsoleLogger(Uart* debug_uart) {
     if (console_uart_mutex == NULL) {
         throw etl::exception("Failed to create mutex.", __FILE__, __LINE__);
     }
+    initialised = true;
 }
+
+bool RunnableConsoleLogger::IsInitialised() { return initialised; }
 
 fnptr RunnableConsoleLogger::GetRunnablePointer() { return &LogToConsole; }
 
@@ -60,24 +62,30 @@ void RunnableConsoleLogger::WriteToDataLogger(uint8_t measurable_id,
     GateMutexPri_leave(console_uart_mutex, key);
 }
 
-void UartPutch(char ch) { RingBuf_put(&ring_buffer, ch); }
+void UartPutch(char ch) {
+    if (RunnableConsoleLogger::IsInitialised)
+        RingBuf_put(&console_logger_ring_buffer, ch);
+}
 
 void UartFlush() {
-    byte encoded_message[RunnableConsoleLogger::kMaxEncodedMessageLength];
+    if (RunnableConsoleLogger::IsInitialised) {
+        byte encoded_message[RunnableConsoleLogger::kMaxEncodedMessageLength];
 
-    int bytes_available = RingBuf_getCount(&ring_buffer);
-    if (bytes_available == -1 || bytes_available == 0) {
-        wait = true;
-        return;
+        int bytes_available = RingBuf_getCount(&console_logger_ring_buffer);
+        if (bytes_available == -1 || bytes_available == 0) {
+            wait = true;
+            return;
+        }
+
+        uint32_t byte_counter = 0;
+        while (byte_counter < RunnableConsoleLogger::kMaxEncodedMessageLength &&
+               byte_counter < bytes_available) {
+            RingBuf_get(&console_logger_ring_buffer,
+                        encoded_message + byte_counter);
+            byte_counter++;
+        }
+
+        RunnableConsoleLogger::WriteToDataLogger(kConsoleMessage,
+                                                 encoded_message, byte_counter);
     }
-
-    uint32_t byte_counter = 0;
-    while (byte_counter < RunnableConsoleLogger::kMaxEncodedMessageLength &&
-           byte_counter < bytes_available) {
-        RingBuf_get(&ring_buffer, encoded_message + byte_counter);
-        byte_counter++;
-    }
-
-    RunnableConsoleLogger::WriteToDataLogger(kConsoleMessage, encoded_message,
-                                             byte_counter);
 }

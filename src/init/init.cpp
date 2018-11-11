@@ -1,6 +1,8 @@
 #include <external/etl/exception.h>
 #include <src/board/board.h>
+#include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
+#include <src/config/stacks.h>
 #include <src/config/unit_tests.h>
 #include <src/database/flash_memory/flash_storables/reset_info_container.h>
 #include <src/init/init.h>
@@ -9,8 +11,11 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/runnable_console_listener.h>
+#include <src/util/runnable_console_logger.h>
 #include <src/util/reset_management.h>
 #include <src/util/satellite_time_source.h>
+#include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
 #include <ti/drivers/PWM.h>
@@ -95,9 +100,26 @@ void InitSdCs() {
 
 void EnterLimpMode() {
     if (!kLimpModeEnabled) {
-        Log_info0("Tried to enter limp mode but disabled");
         return;
     }
+    Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
+    debug_uart->SetBaudRate(Uart::kBaud115200)
+        ->SetReadTimeout(TaskUtils::MilliToCycles(1000))
+        ->SetWriteTimeout(TaskUtils::MilliToCycles(1000))
+        ->Open();
+
+    TaskHolder* console_uart_logger_task =
+        new TaskHolder(kConsoleLoggerStackSize, "UartLogger", 7,
+                       new RunnableConsoleLogger(debug_uart));
+    console_uart_logger_task->Start();
+    Log_info0("Umbilical UART logger started");
+
+    TaskHolder* console_uart_listener_task =
+        new TaskHolder(kConsoleListenerStackSize, "UartListener", 12,
+                       new RunnableConsoleListener(debug_uart));
+    console_uart_listener_task->Start();
+    Log_info0("Umbilical UART listener started");
+
     Log_info0("Entered limp mode");
     initGeneral();
     GPIO_init();
