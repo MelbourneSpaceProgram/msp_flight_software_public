@@ -1,12 +1,11 @@
+#include <src/board/MSP432E.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
 #include <src/util/task_utils.h>
-#include <xdc/runtime/Log.h>
 #include <ti/drivers/GPIO.h>
-#include <src/board/MSP432E.h>
-
+#include <xdc/runtime/Log.h>
 
 Antenna *Antenna::instance = NULL;
 
@@ -53,7 +52,7 @@ bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
 bool Antenna::ForceDeploy() const {
     if (!kDeployAntenna) return false;
 
-    Log_info0("Trying override pin 1")
+    Log_info0("Trying override pin 1");
     GPIO_write(ANT_OVERRIDE_1, 1);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
     GPIO_write(ANT_OVERRIDE_1, 0);
@@ -61,7 +60,7 @@ bool Antenna::ForceDeploy() const {
         return true;
     }
 
-    Log_info0("Trying override pin 2")
+    Log_info0("Trying override pin 2");
     GPIO_write(ANT_OVERRIDE_2, 1);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
     GPIO_write(ANT_OVERRIDE_2, 0);
@@ -118,6 +117,7 @@ bool Antenna::IsInitialised() const { return initialised; }
 I2c *Antenna::GetBus() const { return bus; }
 
 void Antenna::DeployAntenna() {
+    AntennaMessage status = GetStatus();
     if (!IsDoorsOpen()) {
         Log_info0("Trying safe deploy");
         SafeDeploy();

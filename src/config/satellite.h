@@ -21,7 +21,7 @@ static constexpr bool kCheckHmacDefault = true;
 static constexpr bool kCheckSequenceDefault = false;
 
 // DO NOT TURN ON UNTIL LAUNCH
-static bool kDeployAntenna = false;
+static bool kDeployAntenna = true;
 // Will disable orientation control if true
 static bool kRunMagnetorquersAtConstantPower = false;
 // float value in range [-1, 1]

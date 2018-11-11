@@ -14,7 +14,7 @@ I2C_Handle I2c::I2c_busses[] = {NULL, NULL, NULL, NULL};
 I2C_Params I2c::I2c_params[] = {{I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_100kHz, NULL},
-                                {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL}};
+                                {I2C_MODE_CALLBACK, NULL, I2C_100kHz, NULL}};
 
 GateMutexPri_Params I2c::mutex_params = {NULL};
 GateMutexPri_Handle I2c::i2c_mutex = NULL;
@@ -110,7 +110,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     bool transfer_outcome = false;
     bool timed_out =
         !Mailbox_pend(i2c_mailbox, &transfer_outcome,
-                     TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
+                      TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
     Mailbox_delete(&i2c_mailbox);
 
     if (kLogI2c) {

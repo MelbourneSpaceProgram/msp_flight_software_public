@@ -229,7 +229,8 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
+        //        MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c,
+        //        bus_d);
     } catch (etl::exception& e) {
         // TODO(akremor): Possible failure mode needs to be handled
         // Pass exceptions up so that an incompletely initialised
@@ -309,7 +310,7 @@ void PostBiosInitialiser::PostBiosInit() {
         InitPreDeploymentMagnetometerPoller();
         DeployAntenna();
         InitOrientationControl();
-        InitBeacon();
+        // InitBeacon();
         InitSystemHealthCheck();
         Log_info0("System start up complete");
 #endif

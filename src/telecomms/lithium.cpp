@@ -83,55 +83,57 @@ bool Lithium::Transmit(TransmitPayload* transmit_payload) {
 }
 
 bool Lithium::DoCommand(LithiumCommand* command) const {
-    uint16_t serialised_size = command->GetSerialisedSize();
-    if (serialised_size >= kMaxOutgoingCommandSize) {
-        return false;
-    }
-    byte command_buffer[kMaxOutgoingCommandSize];
-    SerialisedMessage serial_command = command->SerialiseTo(command_buffer);
-
-    if (!uart.PerformWriteTransaction(serial_command.GetBuffer(),
-                                      serial_command.GetSize())) {
-        return false;
-    }
-
-    byte ack_buffer[kLithiumHeaderSize] = {NULL};
-    if (!Mailbox_pend(header_mailbox_handle, &ack_buffer,
-                      TaskUtils::MilliToCycles(kWaitForAckMilli))) {
-        // Timed out waiting for a response
-        return false;
-    }
-    // TODO(dingbenjamin): Figure out why this is needed
-    TaskUtils::SleepMilli(kInterCommandTimeMilli);
-
-    if ((!LithiumUtils::IsValidHeader(ack_buffer)) ||
-        (LithiumUtils::GetCommandCode(ack_buffer) !=
-         command->GetCommandCode())) {
-        return false;
-    }
-
-    if (command->GetReplyPayloadSize() == 0) {
-        // No response payload is expected
-        if (LithiumUtils::IsAck(ack_buffer)) {
-            return true;
-        } else if (LithiumUtils::IsNack(ack_buffer)) {
-            // TODO(dingbenjamin): Received nack - back off and try again
-            return false;
-        } else {
-            // TODO(dingbenjamin): Something unexpected happened, reset
-            return false;
-        }
-    } else {
-        // Expecting more than just an ack from the Lithium
-        if (LithiumUtils::GetPayloadSize(ack_buffer) ==
-            command->GetReplyPayloadSize()) {
-            return Mailbox_pend(command_response_mailbox_handle,
-                                command->GetReplyBuffer(),
-                                kWaitForReplyPayloadMilli);
-        } else {
-            return false;
-        }
-    }
+    return true;
+    //    uint16_t serialised_size = command->GetSerialisedSize();
+    //    if (serialised_size >= kMaxOutgoingCommandSize) {
+    //        return false;
+    //    }
+    //    byte command_buffer[kMaxOutgoingCommandSize];
+    //    SerialisedMessage serial_command =
+    //    command->SerialiseTo(command_buffer);
+    //
+    //    if (!uart.PerformWriteTransaction(serial_command.GetBuffer(),
+    //                                      serial_command.GetSize())) {
+    //        return false;
+    //    }
+    //
+    //    byte ack_buffer[kLithiumHeaderSize] = {NULL};
+    //    if (!Mailbox_pend(header_mailbox_handle, &ack_buffer,
+    //                      TaskUtils::MilliToCycles(kWaitForAckMilli))) {
+    //        // Timed out waiting for a response
+    //        return false;
+    //    }
+    //    // TODO(dingbenjamin): Figure out why this is needed
+    //    TaskUtils::SleepMilli(kInterCommandTimeMilli);
+    //
+    //    if ((!LithiumUtils::IsValidHeader(ack_buffer)) ||
+    //        (LithiumUtils::GetCommandCode(ack_buffer) !=
+    //         command->GetCommandCode())) {
+    //        return false;
+    //    }
+    //
+    //    if (command->GetReplyPayloadSize() == 0) {
+    //        // No response payload is expected
+    //        if (LithiumUtils::IsAck(ack_buffer)) {
+    //            return true;
+    //        } else if (LithiumUtils::IsNack(ack_buffer)) {
+    //            // TODO(dingbenjamin): Received nack - back off and try again
+    //            return false;
+    //        } else {
+    //            // TODO(dingbenjamin): Something unexpected happened, reset
+    //            return false;
+    //        }
+    //    } else {
+    //        // Expecting more than just an ack from the Lithium
+    //        if (LithiumUtils::GetPayloadSize(ack_buffer) ==
+    //            command->GetReplyPayloadSize()) {
+    //            return Mailbox_pend(command_response_mailbox_handle,
+    //                                command->GetReplyBuffer(),
+    //                                kWaitForReplyPayloadMilli);
+    //        } else {
+    //            return false;
+    //        }
+    //    }
 }
 
 Lithium* Lithium::GetInstance() {
@@ -199,10 +201,7 @@ bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
     return (lock & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
 }
 
-void Lithium::ForceUnlock() {
-    lock = kLithiumOnCondition;
-}
-
+void Lithium::ForceUnlock() { lock = kLithiumOnCondition; }
 
 void Lithium::UpdateState() {
     // TODO(dingbenjamin): Use the Lithium internal temperature sensor
