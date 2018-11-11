@@ -41,14 +41,11 @@ class Antenna {
     // State bit mask in status packet
     static constexpr byte kStateMask = 0b00000011;
     // Time to wait (in milliseconds) after trying deployment algorithms
-    static constexpr uint32_t kWaitTime = 20000;
+    static constexpr uint32_t kWaitTime = 10000;
     // Time to wait (in milliseconds) when manually overriding deployment
-    static constexpr uint32_t kWaitTimeManualOverride = 30000;
+    static constexpr uint32_t kWaitTimeManualOverride = 10000;
     // TODO(wschuetz): Confirm with EnduroSat how long override should be held
     // high for
-    static constexpr IoExpander::IoPin kPrimaryOverridePin =
-        IoExpander::kIoPin4;
-    static constexpr IoExpander::IoPin kBackupOverridePin = IoExpander::kIoPin5;
     static constexpr uint8_t kMaxNumberOfIterations = 0x03;
     static constexpr byte kAntennaOverRideIoExpanderAddress = 0x22;
 

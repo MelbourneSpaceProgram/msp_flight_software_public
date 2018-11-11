@@ -35,11 +35,9 @@ class PostBiosInitialiser : public Runnable {
     static constexpr uint16_t kDebugUartWriteTimeout = 1000;
     static constexpr uint16_t kSecsInMin = 60;
     static constexpr uint16_t kBeaconDelayMins = 30;
-    static constexpr uint16_t kBeaconDelaySeconds =
-        kBeaconDelayMins * kSecsInMin;
+    static constexpr uint16_t kBeaconDelaySeconds = 1;
     static constexpr uint16_t kAntennaDelayMins = 90;
-    static constexpr uint16_t kAntennaDelaySeconds =
-        kAntennaDelayMins * kSecsInMin;
+    static constexpr uint16_t kAntennaDelaySeconds = 5;
 };
 
 #endif  // SRC_INIT_POST_BIOS_INITIALISER_H_

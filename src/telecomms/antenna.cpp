@@ -4,6 +4,9 @@
 #include <src/telecomms/antenna.h>
 #include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
+#include <ti/drivers/GPIO.h>
+#include <src/board/MSP432E.h>
+
 
 Antenna *Antenna::instance = NULL;
 
@@ -50,27 +53,18 @@ bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
 bool Antenna::ForceDeploy() const {
     if (!kDeployAntenna) return false;
 
-    const IoExpander *io_expander =
-        IoExpander::GetIoExpander(IoExpander::kCommsIoExpander);
-
-    // Perform manual override of primary burners
-    io_expander->SetDirection(kPrimaryOverridePin, IoExpander::kIoOutput);
-    io_expander->SetPolarity(kPrimaryOverridePin, IoExpander::kIoActiveHigh);
-
-    io_expander->SetPin(kPrimaryOverridePin, true);
+    Log_info0("Trying override pin 1")
+    GPIO_write(ANT_OVERRIDE_1, 1);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
-    io_expander->SetPin(kPrimaryOverridePin, false);
+    GPIO_write(ANT_OVERRIDE_1, 0);
     if (IsDoorsOpen()) {
         return true;
     }
 
-    // Perform manual override of backup burners
-    io_expander->SetDirection(kBackupOverridePin, IoExpander::kIoOutput);
-    io_expander->SetPolarity(kBackupOverridePin, IoExpander::kIoActiveHigh);
-
-    io_expander->SetPin(kBackupOverridePin, true);
+    Log_info0("Trying override pin 2")
+    GPIO_write(ANT_OVERRIDE_2, 1);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
-    io_expander->SetPin(kBackupOverridePin, false);
+    GPIO_write(ANT_OVERRIDE_2, 0);
     if (IsDoorsOpen()) {
         return true;
     }
