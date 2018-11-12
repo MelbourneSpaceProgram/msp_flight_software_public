@@ -25,7 +25,7 @@ class PostBiosInitialiser : public Runnable {
     static void InitBeacon();
     static void RunUnitTests();
     static void InitHardware();
-    static void DeployAntenna();
+    static void InitAntennaBurner();
     static void InitMemoryLogger();
     static void InitTimeSource();
     static void InitContinuousTransmitShutoff();

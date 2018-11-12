@@ -23,15 +23,27 @@ class FlashStorable : GenericFlashStorable {
             flash_storable_struct_byte_ptr);
     }
 
-    void UpdateFromFlash() {
+    bool UpdateFromFlash() {
         uint32_t flash_storable_struct_byte_ptr[kFlashStorageSize];
         FlashMemoryManagement::ReadFromFlashMemory(
             kFlashStorageAddress, kFlashStorageSize,
             flash_storable_struct_byte_ptr);
+        // TODO (hugorilla) check if flash is valid
+        // if
+        // (!FlashMemoryManagement::FlashDataValid(flash_storable_struct_byte_ptr))
+        // {
+        //     return false;
+        // }
+        // or something.
+        // If flash has 0xffs then it's fressssssh
+        if (flash_storable_struct_byte_ptr[0] == 0xff) {
+            return false;
+        }
         FlashStorableStruct* flash_storable_struct =
             reinterpret_cast<FlashStorableStruct*>(
                 flash_storable_struct_byte_ptr);
         UpdateFromFlashStorableStruct(flash_storable_struct);
+        return true;
     }
 
    private:

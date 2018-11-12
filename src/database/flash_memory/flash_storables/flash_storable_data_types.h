@@ -45,4 +45,9 @@ struct ResetInfoContainerStruct {
     bool expected_reset;
 };
 
+struct AntennaBurnerInfoStruct {
+    uint64_t last_burn_attempt_timestamp_ms;
+    uint64_t burn_interval_ms;
+};
+
 #endif  // SRC_DATABASE_FLASH_MEMORY_FLASH_STORABLES_FLASH_STORABLE_DATA_TYPES_H_

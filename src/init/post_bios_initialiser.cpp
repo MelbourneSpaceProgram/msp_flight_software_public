@@ -22,6 +22,7 @@
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/fast_pa_command.h>
+#include <src/telecomms/runnable_antenna_burner.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 #include <src/telecomms/runnable_lithium_listener.h>
@@ -258,13 +259,12 @@ void PostBiosInitialiser::InitConsoleUart() {
     Log_info0("Umbilical UART logger started");
 }
 
-void PostBiosInitialiser::DeployAntenna() {
-    // TODO(akremor): We should add a force-enable based on number of
-    // reboots feature In case the satellite gets stuck in a boot loop or
-    // similar, we don't want the timers to be operating each time
-    SatelliteTimeSource::RealTimeWait(kAntennaDelaySeconds);
-    Log_info0("Antenna deploying, can take awhile");
-    Antenna::GetAntenna()->DeployAntenna();
+void PostBiosInitialiser::InitAntennaBurner() {
+    // TODO (rskew) review priority
+    TaskHolder* antenna_burner_task =
+        new TaskHolder(kAntennaBurnerStackSize, "AntennaBurner", 6,
+                       new RunnableAntennaBurner());
+    antenna_burner_task->Start();
 }
 
 void PostBiosInitialiser::PostBiosInit() {
@@ -290,7 +290,8 @@ void PostBiosInitialiser::PostBiosInit() {
 
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
-        DeployAntenna();
+        // TODO (rskew) call EjectionWait() to wait 30 minutes once
+        InitAntennaBurner();
         InitOrientationControl();
         InitBeacon();
         InitSystemHealthCheck();

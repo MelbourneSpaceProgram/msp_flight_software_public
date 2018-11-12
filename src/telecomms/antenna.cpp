@@ -1,8 +1,10 @@
+#include <src/board/MSP432E.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
 #include <src/util/task_utils.h>
+#include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 
 Antenna *Antenna::instance = NULL;
@@ -18,6 +20,7 @@ Antenna *Antenna::GetAntenna() {
 Antenna::Antenna() {
     initialised = false;
     bus = NULL;
+    burning_now = false;
 }
 
 bool Antenna::SafeDeploy() const {
@@ -50,30 +53,24 @@ bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
 bool Antenna::ForceDeploy() const {
     if (!kDeployAntenna) return false;
 
-    const IoExpander *io_expander =
-        IoExpander::GetIoExpander(IoExpander::kCommsIoExpander);
-
-    // Perform manual override of primary burners
-    io_expander->SetDirection(kPrimaryOverridePin, IoExpander::kIoOutput);
-    io_expander->SetPolarity(kPrimaryOverridePin, IoExpander::kIoActiveHigh);
-
-    io_expander->SetPin(kPrimaryOverridePin, true);
+    Log_info0("Trying override pin 1");
+    GPIO_write(ANT_OVERRIDE_1, 1);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
-    io_expander->SetPin(kPrimaryOverridePin, false);
+    GPIO_write(ANT_OVERRIDE_1, 0);
     if (IsDoorsOpen()) {
+        Log_info0("Force deploy successful");
         return true;
     }
 
-    // Perform manual override of backup burners
-    io_expander->SetDirection(kBackupOverridePin, IoExpander::kIoOutput);
-    io_expander->SetPolarity(kBackupOverridePin, IoExpander::kIoActiveHigh);
-
-    io_expander->SetPin(kBackupOverridePin, true);
+    Log_info0("Trying override pin 2");
+    GPIO_write(ANT_OVERRIDE_2, 1);
     TaskUtils::SleepMilli(kWaitTimeManualOverride);
-    io_expander->SetPin(kBackupOverridePin, false);
+    GPIO_write(ANT_OVERRIDE_2, 0);
     if (IsDoorsOpen()) {
+        Log_info0("Force deploy successful");
         return true;
     }
+    Log_info0("Force deploy finished");
     return false;
 }
 
@@ -123,18 +120,25 @@ bool Antenna::IsInitialised() const { return initialised; }
 
 I2c *Antenna::GetBus() const { return bus; }
 
-void Antenna::DeployAntenna() {
+bool Antenna::IsBurning() const { return burning_now; };
+
+bool Antenna::DeployAntenna() {
     if (!IsDoorsOpen()) {
+        burning_now = true;
         Log_info0("Trying safe deploy");
         SafeDeploy();
     }
     if (!IsDoorsOpen()) {
+        burning_now = true;
         Log_info0("Trying force deploy");
         ForceDeploy();
     }
+    burning_now = false;
     if (IsDoorsOpen()) {
         Log_info0("Antenna deployed");
+        return true;
     } else {
         Log_error0("Antenna failed to deploy");
+        return false;
     }
 }

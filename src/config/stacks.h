@@ -15,5 +15,6 @@ constexpr uint16_t kConsoleListenerStackSize = 2048;
 constexpr uint16_t kStateManagementStackSize = 1024;
 constexpr uint16_t kOrientationControlStackSize = 4096;
 constexpr uint16_t kSystemHealthCheckStackSize = 4096;
+constexpr uint16_t kAntennaBurnerStackSize = 1024;
 
 #endif  //  SRC_CONFIG_STACKS_H_

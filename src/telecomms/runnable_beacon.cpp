@@ -1,4 +1,5 @@
 #include <src/config/satellite.h>
+#include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/msp_payloads/beacon_payload.h>
@@ -20,8 +21,14 @@ void RunnableBeacon::Beacon() {
     while (1) {
         // TODO(dingbenjamin): Implement remaining beacon fields
 
+        TaskUtils::SleepMilli(beacon_period_ms);
+
         // Avoid building the packet if transmit is disabled
         if (lithium->IsTransmitEnabled()) {
+            if (Antenna::GetAntenna()->IsBurning()) {
+                Log_info0("Aborting beacon while antenna is burning");
+                continue;
+            }
             BeaconPayload beacon;
             try {
                 SatellitePower::CutPowerToFlightSystems();
@@ -41,7 +48,6 @@ void RunnableBeacon::Beacon() {
         } else {
             Log_info0("Beacon is disabled, did not transmit");
         }
-        TaskUtils::SleepMilli(beacon_period_ms);
     }
 }
 

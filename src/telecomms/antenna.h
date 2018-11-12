@@ -25,9 +25,11 @@ class Antenna {
     bool IsHeatersOn() const;
     bool IsInitialised() const;
     I2c* GetBus() const;
-    void DeployAntenna();
+    bool IsBurning() const;
+    bool DeployAntenna();
 
    private:
+    bool burning_now;
     // I2C Address
     static constexpr byte kAddress = 0x33;
     // Door 1 bit mask in status packet
@@ -46,11 +48,7 @@ class Antenna {
     static constexpr uint32_t kWaitTimeManualOverride = 30000;
     // TODO(wschuetz): Confirm with EnduroSat how long override should be held
     // high for
-    static constexpr IoExpander::IoPin kPrimaryOverridePin =
-        IoExpander::kIoPin4;
-    static constexpr IoExpander::IoPin kBackupOverridePin = IoExpander::kIoPin5;
     static constexpr uint8_t kMaxNumberOfIterations = 0x03;
-    static constexpr byte kAntennaOverRideIoExpanderAddress = 0x22;
 
     bool WriteCommand(AntennaCommand command) const;
     Antenna();

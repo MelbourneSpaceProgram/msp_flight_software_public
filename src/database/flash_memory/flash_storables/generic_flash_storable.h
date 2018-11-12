@@ -11,7 +11,7 @@ class GenericFlashStorable {
         : kFlashStorageAddress(flash_storage_address),
           kFlashStorageSize(flash_storage_size) {}
     virtual void StoreInFlash() = 0;
-    virtual void UpdateFromFlash() = 0;
+    virtual bool UpdateFromFlash() = 0;
 
    protected:
     const FlashStorageAddress kFlashStorageAddress;

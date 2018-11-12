@@ -4,6 +4,8 @@
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
 
+
+
 constexpr bool kEnterDeepSleepOnStartup = false;
 static constexpr bool kInstantDeploymentWaits = true;
 static constexpr bool kLogI2c = false;
@@ -20,8 +22,14 @@ static constexpr bool kUseFecDefault = true;
 static constexpr bool kCheckHmacDefault = true;
 static constexpr bool kCheckSequenceDefault = false;
 
+// Orbital parameters
+static uint64_t kHalfOrbitPeriodMs = 46.5 * 60 * 1000;
+
 // DO NOT TURN ON UNTIL LAUNCH
 static bool kDeployAntenna = false;
+static uint64_t kInitialAntennaBurnIntervalMs = kHalfOrbitPeriodMs;
+static uint64_t kBackupAntennaBurnIntervalMs = 3 * kHalfOrbitPeriodMs;
+static float kAntennaBurnIntervalMultiplier = 2.5;
 // Will disable orientation control if true
 static bool kRunMagnetorquersAtConstantPower = false;
 // float value in range [-1, 1]
