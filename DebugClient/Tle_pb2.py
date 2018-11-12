@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Tle.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\tTle.proto\"\xad\x01\n\x03Tle\x12\x13\n\x0bmean_motion\x18\x01 \x02(\x01\x12\x14\n\x0cmean_anomaly\x18\x02 \x02(\x01\x12\x13\n\x0binclination\x18\x03 \x02(\x01\x12\x0c\n\x04raan\x18\x04 \x02(\x01\x12\x12\n\nbstar_drag\x18\x05 \x02(\x01\x12\r\n\x05\x65poch\x18\x06 \x02(\x01\x12\x18\n\x10\x65\x63\x63\x65ntricity_1e7\x18\x07 \x02(\x01\x12\x1b\n\x13\x61rgument_of_perigee\x18\x08 \x02(\x01')
+  serialized_pb=_b('\n\tTle.proto\"\x85\x02\n\x03Tle\x12\x1a\n\x0bmean_motion\x18\x01 \x02(\x01:\x05-9999\x12\x1b\n\x0cmean_anomaly\x18\x02 \x02(\x01:\x05-9999\x12\x1a\n\x0binclination\x18\x03 \x02(\x01:\x05-9999\x12\x13\n\x04raan\x18\x04 \x02(\x01:\x05-9999\x12\x19\n\nbstar_drag\x18\x05 \x02(\x01:\x05-9999\x12\x14\n\x05\x65poch\x18\x06 \x02(\x01:\x05-9999\x12\x1f\n\x10\x65\x63\x63\x65ntricity_1e7\x18\x07 \x02(\x01:\x05-9999\x12\"\n\x13\x61rgument_of_perigee\x18\x08 \x02(\x01:\x05-9999\x12\x1e\n\x13time_since_epoch_ms\x18\t \x02(\x06:\x01\x30')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -36,56 +36,63 @@ _TLE = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='mean_motion', full_name='Tle.mean_motion', index=0,
       number=1, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='mean_anomaly', full_name='Tle.mean_anomaly', index=1,
       number=2, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='inclination', full_name='Tle.inclination', index=2,
       number=3, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='raan', full_name='Tle.raan', index=3,
       number=4, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='bstar_drag', full_name='Tle.bstar_drag', index=4,
       number=5, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='epoch', full_name='Tle.epoch', index=5,
       number=6, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='eccentricity_1e7', full_name='Tle.eccentricity_1e7', index=6,
       number=7, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='argument_of_perigee', full_name='Tle.argument_of_perigee', index=7,
       number=8, type=1, cpp_type=5, label=2,
-      has_default_value=False, default_value=float(0),
+      has_default_value=True, default_value=float(-9999),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='time_since_epoch_ms', full_name='Tle.time_since_epoch_ms', index=8,
+      number=9, type=6, cpp_type=4, label=2,
+      has_default_value=True, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -102,7 +109,7 @@ _TLE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=14,
-  serialized_end=187,
+  serialized_end=275,
 )
 
 DESCRIPTOR.message_types_by_name['Tle'] = _TLE
