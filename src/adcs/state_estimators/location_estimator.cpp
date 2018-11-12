@@ -10,6 +10,7 @@
 #include <src/util/message_codes.h>
 #include <src/util/physical_constants.h>
 #include <ti/sysbios/BIOS.h>
+#include <src/util/satellite_time_source.h>
 
 Mailbox_Handle LocationEstimator::tle_update_uplink_mailbox_handle;
 Mailbox_Params LocationEstimator::tle_update_uplink_mailbox_params;
@@ -18,7 +19,11 @@ LocationEstimator::LocationEstimator()
     : satrec(),
       lattitude_geodetic_degrees(0),
       longitude_degrees(0),
-      altitude_above_ellipsoid_km(0) {}
+      altitude_above_ellipsoid_km(0),
+      tle_epoch_offset_ms(0),
+      tle_is_current(false) {
+  // TODO (rskew) read TLE from flash memory
+}
 
 void LocationEstimator::SetTleUpdateUplinkMailboxHandle(
     Mailbox_Handle tle_update_uplink_mailbox_handle) {
@@ -41,11 +46,30 @@ void LocationEstimator::RequestTleFromDebugClient() {
     StoreTle(tle);
 }
 
-void LocationEstimator::StoreTle(Tle tle) {
-    Sgp4::InitialisePropagator(tle, satrec);
+bool LocationEstimator::StoreTle(Tle tle) {
+    Time current_time = SatelliteTimeSource::GetTime();
+    if (current_time.is_valid) {
+      Sgp4::InitialisePropagator(tle, satrec);
+      tle_epoch_offset_ms = tle.time_since_epoch_ms - current_time.timestamp_ms;
+      // TODO (rskew) store TLE in flash, along with tle_epoch_time_ms
+      tle_is_current = true;
+      return true;
+    }
+    return false;
 }
 
-void LocationEstimator::UpdateLocation(double tsince_millis) {
+bool LocationEstimator::UpdateLocation() {
+    Time current_time = SatelliteTimeSource::GetTime();
+    if (!current_time.is_valid) {
+        return false;
+    }
+    if (current_time.timestamp_ms + tle_epoch_offset_ms > kTleShelfLifeMs) {
+      tle_is_current = false;
+    }
+    if (!tle_is_current) {
+      return false;
+    }
+    double tsince_millis = (double)(current_time.timestamp_ms + tle_epoch_offset_ms);
     double position_true_equator_mean_equinox[3];
     double velocity_true_equator_mean_equinox[3];
     double tsince_minutes = tsince_millis / (1000 * 60);

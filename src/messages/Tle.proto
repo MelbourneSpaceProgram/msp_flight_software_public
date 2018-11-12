@@ -1,0 +1,11 @@
+message Tle {
+    required double mean_motion = 1 [default = -9999];
+    required double mean_anomaly = 2 [default = -9999];
+    required double inclination = 3 [default = -9999];
+    required double raan = 4 [default = -9999];
+    required double bstar_drag = 5 [default = -9999];
+    required double epoch = 6 [default = -9999];
+    required double eccentricity_1e7 = 7 [default = -9999];
+    required double argument_of_perigee = 8 [default = -9999];
+    required fixed64 time_since_epoch_ms = 9 [default = 0];
+}

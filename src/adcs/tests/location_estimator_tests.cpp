@@ -20,11 +20,11 @@ TEST(LocationEstimator, UpdateLocation) {
     tle.argument_of_perigee = 331.7664;
     tle.mean_anomaly = 19.3264;
     tle.bstar_drag = 0.000028098;
+    tle.time_since_epoch_ms = 360 * 60 * 1000;
 
     location_estimator.StoreTle(tle);
 
-    double tsince_millis = 360.0 * 60 * 1000;
-    location_estimator.UpdateLocation(tsince_millis);
+    location_estimator.UpdateLocation();
 
     double calculated_lattitude_geodetic_degrees =
         location_estimator.GetLattitudeGeodeticDegrees();
