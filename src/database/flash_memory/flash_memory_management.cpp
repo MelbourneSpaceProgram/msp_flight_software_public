@@ -1,5 +1,6 @@
 #include <src/database/flash_memory/flash_memory_management.h>
 #include <ti/devices/msp432e4/driverlib/flash.h>
+#include <xdc/runtime/Log.h>
 
 bool FlashMemoryManagement::WriteToFlashMemory(
     FlashStorageAddress flash_storage_address,
@@ -47,5 +48,11 @@ void FlashMemoryManagement::ReadFromFlashMemory(
         reinterpret_cast<uint32_t *>(flash_storage_address);
     for (uint32_t i = 0; i < flash_storage_size_bytes / 4; i++) {
         array_retrieved_from_flash[i] = flash_address_ptr[i];
+    }
+}
+
+void FlashMemoryManagement::EraseFlashMemory() {
+    if (!FlashErase(kAcrux1DataFlashBlockStartAddress)) {
+        Log_error0("Flash erase was not successful");
     }
 }

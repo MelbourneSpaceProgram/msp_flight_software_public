@@ -6,8 +6,10 @@
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
+#include <src/database/flash_memory/flash_memory_management.h>
 #include <src/database/sd_card.h>
 #include <src/messages/CurrentReading.pb.h>
+#include <src/messages/EraseFlashUplinkPayload.pb.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
 #include <src/messages/LithiumConfigurationPayload.pb.h>
 #include <src/messages/Time.pb.h>
@@ -283,6 +285,25 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
     CHECK(payload_processor.ParseAndExecuteUplinks(builder_on.Build()));
     TaskUtils::SleepMilli(2000);
     CHECK(Lithium::GetInstance()->Transmit(&ones));
+}
+
+TEST(PayloadProcessor, TestEraseFlashUplink) {
+    if (!kEraseFlashTestEnabled) {
+        TEST_EXIT;
+    }
+    PayloadProcessor payload_processor;
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+
+    EraseFlashUplinkPayload flash_erase_uplink;
+    flash_erase_uplink.erase_flash = 1;
+
+    builder.AddUplinkCode(kEraseFlashUplink)
+        .AddNanopbMacro(EraseFlashUplinkPayload)(flash_erase_uplink);
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
+
+    // Perform visual check here (using the memory browser) that the flash
+    // memory has been erased
 }
 
 TEST(PayloadProcessor, TestLithumGetSetConfigUplink) {

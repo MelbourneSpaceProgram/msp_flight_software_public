@@ -3,6 +3,7 @@
 #include <src/payload_processor/uplinks/clear_sections_uplink.h>
 #include <src/payload_processor/uplinks/deploy_antenna_uplink.h>
 #include <src/payload_processor/uplinks/enable_datalogger_uplink.h>
+#include <src/payload_processor/uplinks/erase_flash_uplink.h>
 #include <src/payload_processor/uplinks/execute_sections_uplink.h>
 #include <src/payload_processor/uplinks/force_reset_uplink.h>
 #include <src/payload_processor/uplinks/format_sd_uplink.h>
@@ -98,6 +99,8 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new QueryExceptionsUplink(payload);
         case kQueryNumExceptionsUplink:
             return new QueryNumExceptionsUplink(payload);
+        case kEraseFlashUplink:
+            return new EraseFlashUplink(payload);
         default:
             // TODO(dingbenjamin): Put erroneous command ID in exception
             etl::exception e("Could not parse command code", __FILE__,

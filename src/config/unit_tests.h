@@ -24,6 +24,8 @@ static constexpr bool kForceResetCommandEnabled =
 static constexpr bool kResetUnitTestEnabled =
     false;  // This will cause the satellite to reset mutliple times during the
             // unit tests
+static constexpr bool kEraseFlashTestEnabled =
+    false;  // This will cause the flash memory to be erased
 
 // Hardware available
 static constexpr bool kEepromAvailable =

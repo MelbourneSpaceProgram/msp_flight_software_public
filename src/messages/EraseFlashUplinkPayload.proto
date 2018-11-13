@@ -1,0 +1,3 @@
+message EraseFlashUplinkPayload {
+  required fixed32 erase_flash = 1 [default = 0];
+}

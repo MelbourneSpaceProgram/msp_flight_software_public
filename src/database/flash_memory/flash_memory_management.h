@@ -29,6 +29,8 @@ class FlashMemoryManagement {
         uint32_t *array_retrieved_from_flash);  // flash_storage_size_bytes must
                                                 // be a multiple of 4
 
+    static void EraseFlashMemory();
+
     static const uint32_t kDefaultFlashMemoryWord = 0xFFFFFFFF;  // when the
                                                                  // flash
                                                                  // memory
