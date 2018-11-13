@@ -71,19 +71,6 @@ void RunnableOrientationControl::ControlOrientation() {
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
-    if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
-              measurable_manager->GetMeasurable<MagnetometerReading>(
-                  kFsImuMagno1)))
-             ->Calibrate()) {
-        Log_error0("Magnetometer on bus A calibration failed");
-    }
-    if (!(dynamic_cast<ImuMagnetometerMeasurable*>(
-              measurable_manager->GetMeasurable<MagnetometerReading>(
-                  kFsImuMagno2)))
-             ->Calibrate()) {
-        Log_error0("Magnetometer on bus B calibration failed");
-    }
-
     while (1) {
         Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 

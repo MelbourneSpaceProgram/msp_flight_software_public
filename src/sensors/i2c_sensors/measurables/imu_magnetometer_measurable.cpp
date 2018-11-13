@@ -1,21 +1,16 @@
-#include <external/nanopb/pb_decode.h>
-#include <external/nanopb/pb_encode.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/unit_tests.h>
-#include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/util/message_codes.h>
 
 ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
     MPU9250MotionTracker* imu_sensor, const Matrix& frame_mapping,
-    const Matrix& initial_biases, const Matrix& initial_scale_factors,
-    const char* calibration_readings_buffer_filename)
+    const Matrix& initial_biases, const Matrix& initial_scale_factors)
     : I2cMeasurable<MagnetometerReading>(imu_sensor,
                                          MagnetometerReading_init_default),
       magnetometer_to_body_frame_transform(frame_mapping),
-      magnetometer_calibration(initial_biases, initial_scale_factors,
-                               calibration_readings_buffer_filename) {}
+      magnetometer_calibration(initial_biases, initial_scale_factors) {}
 
 // Get readings from the hardware magnetometer and the simulation.
 // Fuse the hardware and simulation readings for the controller, and
@@ -53,10 +48,6 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
         last_reading.z = last_reading.z + simulation_reading.z;
     }
 
-    if (kSdCardAvailable) {
-        magnetometer_calibration.Store(last_reading);
-    }
-
     magnetometer_calibration.Apply(last_reading);
 
     if (kHilAvailable) {
@@ -73,8 +64,4 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
         MagnetometerReading, kMagnetometerReadingRequestCode);
 
     return simulation_reading;
-}
-
-bool ImuMagnetometerMeasurable::Calibrate() {
-    return magnetometer_calibration.Calibrate();
 }

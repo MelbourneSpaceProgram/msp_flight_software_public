@@ -11,53 +11,16 @@
 class MagnetometerCalibration {
    public:
     MagnetometerCalibration(const Matrix &initial_biases,
-                            const Matrix &initial_scale_factors,
-                            const char *calibration_readings_buffer_filename);
-    void ComputeCalibrationParameters();
-    void AggregateReadings(const Matrix &mag_data);
+                            const Matrix &initial_scale_factors);
     Matrix GetBiases() const;
     Matrix GetScaleFactors() const;
-    Matrix GetAggregatedReadings() const;
     void Apply(MagnetometerReading &magnetometer_reading_struct);
-    bool Calibrate();
-    bool Store(MagnetometerReading magnetometer_reading);
-
-    static MagnetometerReading GetReadingFromBuffer(const char *file_name);
-
-    static constexpr uint8_t kBatchSizeInReadings = 40;
-
-    // TODO (rskew) check this value
-    static constexpr uint32_t kMinimumSamplesForValidCalibration = 250;
-
-    static const char *kBufferFilenameA;
-    static const char *kBufferFilenameB;
 
    private:
-    void GenerateBiases(const Matrix &v, const Matrix &Q);
-    void GenerateScaleFactors(double *eigen_real3, double hmb,
-                              const Matrix &SSSS);
-
-    double aggregated_readings_data[10][10] = {
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
     double biases_data[3][1] = {{0}, {0}, {0}};
-    ;
     double scale_factors_data[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     Matrix biases;
     Matrix scale_factors;
-    Matrix aggregated_readings;
-    const char *calibration_readings_buffer_filename;
-
-    // Reading at 1Hz for 2 hours requires a buffer size of
-    // 60 * 60 * 2 = 7200 readings
-    static constexpr uint32_t kCalibrationReadingsBufferSizeInReadings = 7200;
-
-    // The number of sequential reads that have to fail before
-    // we give up on calibration
-    static constexpr uint32_t kBufferReadAttempts = 10;
 };
 
 #endif /* SRC_SENSORS_MAGNETOMETER_CALIBRATION_H_ */

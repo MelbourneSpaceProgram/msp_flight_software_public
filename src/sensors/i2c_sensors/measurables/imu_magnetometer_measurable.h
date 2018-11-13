@@ -8,13 +8,12 @@
 
 class ImuMagnetometerMeasurable : public I2cMeasurable<MagnetometerReading> {
    public:
-    explicit ImuMagnetometerMeasurable(
-        MPU9250MotionTracker *imu_sensor, const Matrix &frame_mapping,
-        const Matrix &initial_biases, const Matrix &initial_scale_factors,
-        const char *calibration_readings_buffer_filename);
+    explicit ImuMagnetometerMeasurable(MPU9250MotionTracker *imu_sensor,
+                                       const Matrix &frame_mapping,
+                                       const Matrix &initial_biases,
+                                       const Matrix &initial_scale_factors);
     MagnetometerReading TakeDirectI2cReading();
     MagnetometerReading TakeSimulationReading();
-    bool Calibrate();
 
    private:
     const Matrix magnetometer_to_body_frame_transform;

@@ -1,6 +1,5 @@
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
-#include <src/adcs/runnable_pre_deployment_magnetometer_poller.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
@@ -105,8 +104,6 @@ void PostBiosInitialiser::InitOrientationControl() {
             kMagnetorquerPowerFractionZ);
         Log_info0("Magnetorquers set to constant power");
     } else {
-        Semaphore_post(RunnablePreDeploymentMagnetometerPoller::
-                           kill_task_on_orientation_control_begin_semaphore);
         // Set up timer for orientation control loop
         RunnableOrientationControl::SetupControlLoopTimer();
 
@@ -134,19 +131,6 @@ void PostBiosInitialiser::InitOrientationControl() {
 
         orientation_control_task->Start();
         Log_info0("Orientation control started");
-    }
-}
-
-void PostBiosInitialiser::InitPreDeploymentMagnetometerPoller() {
-    if (kRunMagnetorquersAtConstantPower == false) {
-        RunnablePreDeploymentMagnetometerPoller::
-            SetupKillTaskOnOrientationControlBeginSemaphore();
-        // TODO(rskew) review priority
-        TaskHolder* pre_deployment_magnetometer_poller_task =
-            new TaskHolder(kPreDeploymentMagnetometerPollerStackSize,
-                           "PreDeploymentMagnetometerPoller", 4,
-                           new RunnablePreDeploymentMagnetometerPoller());
-        pre_deployment_magnetometer_poller_task->Start();
     }
 }
 
@@ -306,7 +290,6 @@ void PostBiosInitialiser::PostBiosInit() {
 
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
-        InitPreDeploymentMagnetometerPoller();
         DeployAntenna();
         InitOrientationControl();
         InitBeacon();
