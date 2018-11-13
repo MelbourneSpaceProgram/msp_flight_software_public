@@ -9,6 +9,7 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/reset_management.h>
 #include <src/util/satellite_time_source.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
@@ -54,17 +55,15 @@ void PreBiosInit() {
             ResetInfoContainer::GetInstance();
         // TODO(hugorilla): Develop this logic further to handle different reset
         // states
-        if (reset_info_container->GetNumResets() > kMaxNumResets) {
+        if (reset_info_container->GetNumResets() == kNumResetsForLimpMode) {
             EnterLimpMode();
         } else {
             switch (reset_info_container->GetMostRecentResetMessage()) {
-                case kFirstWakeup:
+                case kFirstWakeupMessage:
                 case kResetUnitTestMessage1:
                 case kResetUnitTestMessage2:
                 case kForceResetCommandExecuted:
-                    break;
                 case kUnexpectedReset:
-                    EnterLimpMode();
                     break;
                 default:
                     throw etl::exception("Invalid reset flag", __FILE__,
@@ -104,7 +103,13 @@ void EnterLimpMode() {
     GPIO_init();
     UART_init();
 
-    Log_info0("Started hardware peripherals");
+    // Re-initialise the section of memory keeping track of satellite resets
+    ResetInfoContainer* reset_info_container =
+        ResetInfoContainer::GetInstance();
+    reset_info_container->InitialiseValues();
+    reset_info_container->StoreInFlash();
+
+        Log_info0("Started hardware peripherals");
 
     // TODO(akremor): Use the GPIO to force burn the antenna (not over I2C)
 

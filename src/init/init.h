@@ -9,5 +9,6 @@ void InitRtcInterrupt();
 void InitSdCs();
 
 static constexpr uint32_t kMaxNumResets = 100;
+static constexpr uint8_t kNumResetsForLimpMode = 10;
 
 #endif  // SRC_INIT_INIT_H_

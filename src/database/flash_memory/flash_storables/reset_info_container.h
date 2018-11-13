@@ -20,6 +20,7 @@ class ResetInfoContainer : public FlashStorable<ResetInfoContainerStruct> {
     ResetInfoContainer();
     void Init();
     static ResetInfoContainer* GetInstance();
+    void InitialiseValues();
 
     /* get methods */
     ResetCauses GetMostRecentResetCause() const;

@@ -18,13 +18,16 @@ enum ResetCauses {
     kWatchdog1Reset = SYSCTL_CAUSE_WDOG1,
     kHibernateReset = SYSCTL_CAUSE_HIB,
     kHardwareSystemServiceRequest = SYSCTL_CAUSE_HSRVREQ,
-    kUnknownResetCause = 0x0000AAAA
+    kFirstWakeupCause = 0x0000AAAA, // arbitrary value
+    kNoResetCause = 0x0000BBBB, // arbitrary value
+    kUnknownResetCause = 0x0000CCCC // arbitrary value
 };
-static constexpr uint32_t kNumResetCauses = 9;
+static constexpr uint32_t kNumResetCauses = 11;
 
 // reset messages defined by us to control satellite mode after reset
 enum ResetMessage {
-    kFirstWakeup = 0,
+    kFirstWakeupMessage = 0,
+    kNoResetMessage,
     kForceResetCommandExecuted,
     kResetUnitTestMessage1,
     kResetUnitTestMessage2,

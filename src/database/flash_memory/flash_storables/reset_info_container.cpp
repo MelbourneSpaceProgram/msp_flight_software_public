@@ -79,19 +79,29 @@ void ResetInfoContainer::UpdateFromFlashStorableStruct(
 
     } else if (reset_info_container_struct->first_wakeup ==
                FlashMemoryManagement::kDefaultFlashMemoryWord) {
-        most_recent_reset_cause = GetMostRecentResetCauseFromFlash();
-        most_recent_reset_message = kFirstWakeup;
-        num_resets = 0;
-        for (int16_t i = 0; i < kNumResetCauses; i++) {
-            num_resets_of_cause[i] = 0;
-        }
-        for (int16_t i = 0; i < kNumResetMessages; i++) {
-            num_resets_with_message[i] = 0;
-        }
+        InitialiseValues();
+        most_recent_reset_cause = kFirstWakeupCause;
+        most_recent_reset_message = kFirstWakeupMessage;
     }
 
     // internal flag variables (which do not track the actual reset state of the
     // satellite)
+    first_wakeup = kNotFirstWakeup;
+    expected_reset = false;
+}
+
+void ResetInfoContainer::InitialiseValues() {
+    // update variables to an intial state immediately after first wakeup (so
+    // that they are not all 0xFFs)
+    most_recent_reset_cause = kNoResetCause;
+    most_recent_reset_message = kNoResetMessage;
+    num_resets = 0;
+    for (int16_t i = 0; i < kNumResetCauses; i++) {
+        num_resets_of_cause[i] = 0;
+    }
+    for (int16_t i = 0; i < kNumResetMessages; i++) {
+        num_resets_with_message[i] = 0;
+    }
     first_wakeup = kNotFirstWakeup;
     expected_reset = false;
 }
