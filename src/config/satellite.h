@@ -4,8 +4,6 @@
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
 
-
-
 constexpr bool kEnterDeepSleepOnStartup = false;
 static constexpr bool kInstantDeploymentWaits = true;
 static constexpr bool kLogI2c = false;

@@ -10,11 +10,9 @@
 Time SatelliteTimeSource::satellite_time = {0, false};
 Time SatelliteTimeSource::initial_time = {0, false};
 
-// TODO(dsutherland): This was the code in HEAD when doing the rebase. Do we
-// want to keep this variable volatile?
-/* volatile uint64_t SatelliteTimeSource::delta_time = 0; */
+volatile uint64_t SatelliteTimeSource::delta_time = 0;
 
-uint64_t SatelliteTimeSource::delta_time = 0;
+// uint64_t SatelliteTimeSource::delta_time = 0;
 uint64_t SatelliteTimeSource::offset_time = 0;
 
 /**
