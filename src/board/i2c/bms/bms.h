@@ -183,10 +183,10 @@ class Bms : public I2cDevice {
     static const byte kRechargeThresholdConfigurationUBValue = 0x43;
 
     // Direct Energy Transfer mode
-    static const byte kIchargeJeita5to6ConfigurationLBValue = 0x21;
+    static const byte kIchargeJeita5to6ConfigurationLBValue = 0xC6;
     static const byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
-    static const byte kIchargeJeita2to4ConfigurationLBValue = 0x21;
-    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x04;
+    static const byte kIchargeJeita2to4ConfigurationLBValue = 0xC6;
+    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x18;
     static const byte kVinUvclSettingConfigurationValue = 0x00;
 
     // Value for registers with values determined by JEITA region
