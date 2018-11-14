@@ -10,10 +10,12 @@ enum FlashStorageAddress {
     kAcrux1DataFlashAddress = 0x000F0000,  // this value must match the
                                            // ACRUX1DATA memory address defined
                                            // in linker.cmd
-    kResetInfoContainerFlashStorageAddress = 0x000F0000,
+    kResetInfoContainerFlashStorageAddress = kAcrux1DataFlashAddress,
     kAntennaBurnerInfoFlashStorageAddress =
         kResetInfoContainerFlashStorageAddress +
         sizeof(ResetInfoContainerStruct),
+    kRtcTimeFlashStorageAddress =
+        kAntennaBurnerInfoFlashStorageAddress + sizeof(AntennaBurnerInfoStruct),
 };
 
 class FlashMemoryManagement {
@@ -51,10 +53,10 @@ class FlashMemoryManagement {
                      // defined in linker.cmd
 
     static constexpr uint32_t kTotalAcrux1DataStorageSizeBytes =
-        sizeof(ResetInfoContainerStruct) +
-        sizeof(AntennaBurnerInfoStruct);  // sum of the sizes (in bytes) of all
-                                          // flash storable object structs to
-                                          // be stored in the flash memory
+        sizeof(ResetInfoContainerStruct) + sizeof(AntennaBurnerInfoStruct) +
+        sizeof(RtcTimeFlashStruct);  // sum of the sizes (in bytes) of all
+                                     // flash storable object structs to
+                                     // be stored in the flash memory
     static constexpr uint32_t kTotalAcrux1DataStorageSizeWords =
         kTotalAcrux1DataStorageSizeBytes / 4;
 };

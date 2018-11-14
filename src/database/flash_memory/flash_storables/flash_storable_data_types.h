@@ -50,4 +50,9 @@ struct AntennaBurnerInfoStruct {
     uint64_t burn_interval_ms;
 };
 
+typedef struct RtcTimeFlashStruct {
+    int64_t rtc_time;
+    int32_t rtc_time_offset;
+} RtcTimeFlashStruct;
+
 #endif  // SRC_DATABASE_FLASH_MEMORY_FLASH_STORABLES_FLASH_STORABLE_DATA_TYPES_H_

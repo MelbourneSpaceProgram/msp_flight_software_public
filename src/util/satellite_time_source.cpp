@@ -8,7 +8,13 @@
 
 Time SatelliteTimeSource::satellite_time = {0, false};
 Time SatelliteTimeSource::initial_time = {0, false};
-volatile uint64_t SatelliteTimeSource::delta_time = 0;
+
+// TODO(dsutherland): This was the code in HEAD when doing the rebase. Do we
+// want to keep this variable volatile?
+/* volatile uint64_t SatelliteTimeSource::delta_time = 0; */
+
+uint64_t SatelliteTimeSource::delta_time = 0;
+uint64_t SatelliteTimeSource::offset_time = 0;
 
 /**
  * Interrupt called with a frequency of 100hz (i.e. every 10ms)
@@ -29,11 +35,44 @@ void SatelliteTimeSource::SetTime(RTime time) {
         satellite_time.is_valid = true;
         if (!initial_time.is_valid) {
             initial_time = {epoch_seconds, true};
+            VerifyTimeOnBoot();
         }
+
+        // Update time stored on the flash
+        RtcTimeFlash* time_flash = RtcTimeFlash::GetInstance();
+        time_flash->rtc_time = satellite_time.timestamp_ms;
+        time_flash->StoreInFlash();
+
     } else {
         Log_error0("Unable to convert from RTime -> tm");
         satellite_time.timestamp_ms = NULL;
         satellite_time.is_valid = false;
+    }
+}
+
+/**
+ * Verifies that time has not reversed upon being booted up, and if so, revert
+ * to last stored time. Note: An offset needs to be stored, which is applied
+ * whenever GetTime is called.
+ **/
+void SatelliteTimeSource::VerifyTimeOnBoot() {
+    RtcTimeFlash* time_flash = RtcTimeFlash::GetInstance();
+
+    // Get the (previously) stored time and offset from flash
+    time_flash->UpdateFromFlash();
+    uint64_t flash_time = time_flash->rtc_time;
+    offset_time = time_flash->rtc_time_offset;
+
+    // If time has gone backwards
+    if (satellite_time.timestamp_ms < flash_time) {
+        // Recalculating offset (to be applied whenever GetTime is called since
+        // the Rtc is now permanently behind
+        offset_time = flash_time - satellite_time.timestamp_ms;
+        // Setting time to the last stored value
+        satellite_time.timestamp_ms = flash_time;
+
+        // Update offset_time stored on flash
+        time_flash->rtc_time_offset = offset_time;
     }
 }
 
@@ -47,7 +86,8 @@ Time SatelliteTimeSource::GetTime() {
     }
 
     // Create a new time object, which uses delta_time (more granular)
-    return {satellite_time.timestamp_ms + delta_time, satellite_time.is_valid};
+    return {satellite_time.timestamp_ms + delta_time + offset_time,
+            satellite_time.is_valid};
 }
 
 Time SatelliteTimeSource::GetInitialTime() { return initial_time; }
