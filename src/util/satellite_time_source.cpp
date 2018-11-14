@@ -1,5 +1,6 @@
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
+#include <src/database/flash_memory/flash_memory_management.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
@@ -38,11 +39,6 @@ void SatelliteTimeSource::SetTime(RTime time) {
             VerifyTimeOnBoot();
         }
 
-        // Update time stored on the flash
-        RtcTimeFlash* time_flash = RtcTimeFlash::GetInstance();
-        time_flash->rtc_time = satellite_time.timestamp_ms;
-        time_flash->StoreInFlash();
-
     } else {
         Log_error0("Unable to convert from RTime -> tm");
         satellite_time.timestamp_ms = NULL;
@@ -55,25 +51,41 @@ void SatelliteTimeSource::SetTime(RTime time) {
  * to last stored time. Note: An offset needs to be stored, which is applied
  * whenever GetTime is called.
  **/
+// TODO(dsutherland): Check this. Hugo has added in some logic to deal with
+// first wakeup
 void SatelliteTimeSource::VerifyTimeOnBoot() {
-    RtcTimeFlash* time_flash = RtcTimeFlash::GetInstance();
-
     // Get the (previously) stored time and offset from flash
+    RtcTimeFlash* time_flash = RtcTimeFlash::GetInstance();
     time_flash->UpdateFromFlash();
-    uint64_t flash_time = time_flash->rtc_time;
-    offset_time = time_flash->rtc_time_offset;
 
-    // If time has gone backwards
-    if (satellite_time.timestamp_ms < flash_time) {
-        // Recalculating offset (to be applied whenever GetTime is called since
-        // the Rtc is now permanently behind
-        offset_time = flash_time - satellite_time.timestamp_ms;
-        // Setting time to the last stored value
-        satellite_time.timestamp_ms = flash_time;
-
-        // Update offset_time stored on flash
+    if (time_flash->rtc_time ==
+        FlashMemoryManagement::kDefaultFlashMemoryDoubleWord) {
+        // No time information is stored in the flash (e.g. on first wakeup)
+        Time current_time = GetTime();
+        time_flash->rtc_time =
+            current_time.is_valid
+                ? current_time.timestamp_ms
+                : FlashMemoryManagement::kDefaultFlashMemoryDoubleWord;
         time_flash->rtc_time_offset = offset_time;
+    } else {
+        uint64_t flash_time = time_flash->rtc_time;
+        offset_time = time_flash->rtc_time_offset;
+
+        // If time has gone backwards
+        if (satellite_time.timestamp_ms < flash_time) {
+            // Recalculating offset (to be applied whenever GetTime is called
+            // since the Rtc is now permanently behind
+            offset_time = flash_time - satellite_time.timestamp_ms;
+            // Setting time to the last stored value
+            satellite_time.timestamp_ms = flash_time;
+
+            // Update offset_time stored on flash
+            time_flash->rtc_time_offset = offset_time;
+            time_flash->rtc_time = satellite_time.timestamp_ms;
+        }
     }
+    // Update the timing information stored in the flash
+    time_flash->StoreInFlash();
 }
 
 Time SatelliteTimeSource::GetTime() {

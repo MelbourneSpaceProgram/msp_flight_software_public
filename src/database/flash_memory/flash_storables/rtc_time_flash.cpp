@@ -1,4 +1,5 @@
 #include <src/database/flash_memory/flash_storables/rtc_time_flash.h>
+#include <src/database/flash_memory/flash_memory_management.h>
 
 RtcTimeFlash* RtcTimeFlash::instance = NULL;
 

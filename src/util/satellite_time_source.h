@@ -16,12 +16,11 @@ class SatelliteTimeSource {
 
     // TODO(dsutherland): This was the code in HEAD when doing the rebase. Do we
     // want to keep this variable volatile?
-    static volatile uint64_t
-        delta_time;  // time (in millis) between calls to the rtc
+    /*static volatile uint64_t delta_time;  // time (in millis) between calls to
+     * the rtc*/
 
     static void VerifyTimeOnBoot();
     static uint64_t delta_time;  // time (in millis) between calls to the rtc
->>>>>>> Store time in flash and develop time-checking logic
 
    private:
     static Time satellite_time;

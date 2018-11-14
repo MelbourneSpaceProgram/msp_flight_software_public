@@ -30,17 +30,11 @@ class FlashMemoryManagement {
         uint32_t flash_storage_size_bytes,
         uint32_t *array_retrieved_from_flash);  // flash_storage_size_bytes must
                                                 // be a multiple of 4
-
     static void EraseFlashMemory();
 
-    static const uint32_t kDefaultFlashMemoryWord = 0xFFFFFFFF;  // when the
-                                                                 // flash
-                                                                 // memory
-                                                                 // is
-                                                                 // erased,
-                                                                 // all bits
-                                                                 // are set
-                                                                 // to 1
+    static constexpr uint32_t kDefaultFlashMemoryWord = 0xFFFFFFFF;
+    static constexpr uint64_t kDefaultFlashMemoryDoubleWord =
+        0xFFFFFFFFFFFFFFFF;
 
    private:
     static const uint32_t kAcrux1DataFlashBlockStartAddress =
@@ -49,8 +43,8 @@ class FlashMemoryManagement {
                      // and has the same value as it assuming that data is
                      // written from the beginning of the block
     static const uint32_t kAcrux1DataFlashSize =
-        0x00004000;  // this value must match the ACRUX1DATA memory address
-                     // defined in linker.cmd
+        0x00004000;  // this value must match the ACRUX1DATA memory section
+                     // length defined in linker.cmd
 
     static constexpr uint32_t kTotalAcrux1DataStorageSizeBytes =
         sizeof(ResetInfoContainerStruct) + sizeof(AntennaBurnerInfoStruct) +
