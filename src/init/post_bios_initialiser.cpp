@@ -267,7 +267,22 @@ void PostBiosInitialiser::InitAntennaBurner() {
     antenna_burner_task->Start();
 }
 
+void PostBiosInitialiser::EjectionWait() {
+    if (!kInstantDeploymentWaits) {
+        // TODO(hugorilla): Record time to flash if it's the first time
+        // Compare current time to first time, check if > 30 minutes has passed
+        // and continue
+    }
+}
+
+void PostBiosInitialiser::BeaconWait() {
+    if (!kInstantDeploymentWaits) {
+        TaskUtils::SleepMilli(kBeaconWaitMs);
+    }
+}
+
 void PostBiosInitialiser::PostBiosInit() {
+    TaskUtils::SleepMilli(1000);  // Externally activated hibernation window
     Log_info0("System has started");
 
     if (kDitlMode) {
@@ -290,11 +305,12 @@ void PostBiosInitialiser::PostBiosInit() {
 
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
-        // TODO (rskew) call EjectionWait() to wait 30 minutes once
-        InitAntennaBurner();
-        InitOrientationControl();
-        InitBeacon();
         InitSystemHealthCheck();
+        EjectionWait();
+        InitOrientationControl();
+        BeaconWait();
+        InitAntennaBurner();
+        InitBeacon();
         Log_info0("System start up complete");
 #endif
     } catch (etl::exception& e) {
