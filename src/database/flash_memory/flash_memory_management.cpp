@@ -6,14 +6,14 @@ bool FlashMemoryManagement::WriteToFlashMemory(
     FlashStorageAddress flash_storage_address,
     uint32_t flash_storage_size_bytes, uint32_t *array_to_store_in_flash) {
     // read current values into an array
-    uint32_t acrux_1_data[kTotalAcrux1DataStorageSize];
-    ReadFromFlashMemory(kAcrux1DataFlashAddress, kTotalAcrux1DataStorageSize,
-                        acrux_1_data);
+    uint32_t acrux_1_data[kTotalAcrux1DataStorageSizeWords];
+    ReadFromFlashMemory(kAcrux1DataFlashAddress,
+                        kTotalAcrux1DataStorageSizeBytes, acrux_1_data);
 
     // update array with new values to be written
     for (uint32_t i = 0; i < flash_storage_size_bytes / 4; i++) {
-        acrux_1_data[flash_storage_address - kAcrux1DataFlashAddress + i] =
-            array_to_store_in_flash[i];
+        acrux_1_data[(flash_storage_address - kAcrux1DataFlashAddress) / 4 +
+                     i] = array_to_store_in_flash[i];
     }
 
     int32_t flash_write_success =
