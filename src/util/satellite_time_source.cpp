@@ -36,6 +36,12 @@ void SatelliteTimeSource::SetTime(RTime time) {
             initial_time = {epoch_seconds, true};
             VerifyTimeOnBoot();
         }
+        // Update the most recent time in flash
+        // TODO(hugorilla): Check that this flash operation doesn't take too
+        // long
+        RtcTimeFlash* rtc_time_flash = RtcTimeFlash::GetInstance();
+        rtc_time_flash->rtc_time = satellite_time.timestamp_ms + offset_time;
+        rtc_time_flash->StoreInFlash();
 
     } else {
         Log_error0("Unable to convert from RTime -> tm");
@@ -59,11 +65,6 @@ void SatelliteTimeSource::VerifyTimeOnBoot() {
     if (time_flash->rtc_time ==
         FlashMemoryManagement::kDefaultFlashMemoryDoubleWord) {
         // No time information is stored in the flash (e.g. on first wakeup)
-        Time current_time = GetTime();
-        time_flash->rtc_time =
-            current_time.is_valid
-                ? current_time.timestamp_ms
-                : FlashMemoryManagement::kDefaultFlashMemoryDoubleWord;
         time_flash->rtc_time_offset = offset_time;
     } else {
         // Valid time information is stored in the flash
@@ -71,36 +72,23 @@ void SatelliteTimeSource::VerifyTimeOnBoot() {
         offset_time = time_flash->rtc_time_offset;
 
         if (satellite_time.timestamp_ms < flash_time - offset_time) {
-            // Time has gone backwards
-
-            // Recalculating offset (to be applied whenever GetTime is called
-            // since the Rtc is now permanently behind
+            // Time has gone backwards so recalculate offset (to be applied
+            // whenever GetTime is called since the Rtc is now permanently
+            // behind)
             offset_time = flash_time - satellite_time.timestamp_ms;
-            // Setting time to the last stored value
-            satellite_time.timestamp_ms = flash_time;
 
             // Update offset_time stored on flash
             time_flash->rtc_time_offset = offset_time;
-            time_flash->rtc_time = satellite_time.timestamp_ms;
-        } else {
-            // Some time has elapsed while the satellite has been asleep, but
-            // assume that the RTC has continued ticking reliably
-            time_flash->rtc_time =
-                satellite_time.timestamp_ms + offset_time;
         }
     }
-    // Update the timing information stored in the flash
-    time_flash->StoreInFlash();
 }
 
 Time SatelliteTimeSource::GetTime() {
     if (kI2cAvailable) {
         if (!satellite_time.is_valid) {
-            // Log_error0("Satellite time is not valid");
+            Log_error0("Satellite time is not valid");
         }
-    } /* else {
-        satellite_time.is_valid = false;
-    } */
+    }
 
     // Create a new time object, which uses delta_time (more granular)
     return {satellite_time.timestamp_ms + delta_time + offset_time,
