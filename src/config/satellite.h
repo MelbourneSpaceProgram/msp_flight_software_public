@@ -45,7 +45,8 @@ static uint64_t kBackupAntennaBurnIntervalMs = 3 * kHalfOrbitPeriodMs;
 static float kAntennaBurnIntervalMultiplier = 2.5;
 
 // Will disable orientation control if true
-static bool kRunMagnetorquersAtConstantPower = false;
+// MUST BE 'false' ON LAUNCH
+static bool kRunMagnetorquersAtConstantPower = true;
 // float value in range [-1, 1]
 static float kMagnetorquerPowerFractionX = 0.2;
 static float kMagnetorquerPowerFractionY = 0.2;
