@@ -189,6 +189,6 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
         }
         SystemWatchdog::ResetTimer();
         GPIO_toggle(SYS_LED);
-        TaskUtils::SleepMilli(kHealthCheckPeriodMillis);
+        TaskUtils::SleepMilli(kHealthCheckPeriodMs);
     }
 }

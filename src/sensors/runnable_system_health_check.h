@@ -30,8 +30,6 @@ class RunnableSystemHealthCheck : public Runnable {
     static bool IsEnabled();
     static void EnableDatalogger(bool enable_logger);
 
-    static constexpr uint32_t kHealthCheckPeriodMillis = 1000;
-
    private:
     static bool datalogger_enabled;
     static Uart* debug_uart;

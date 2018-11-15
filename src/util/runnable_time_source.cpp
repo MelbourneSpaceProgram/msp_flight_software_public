@@ -1,6 +1,7 @@
 #include <src/board/board.h>
 #include <src/board/i2c/i2c.h>
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
+#include <src/config/satellite.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <src/util/msp_exception.h>
 #include <src/util/runnable_time_source.h>
@@ -23,7 +24,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         } catch (etl::exception e) {
             MspException::LogException(e);
             Log_error0("Unable to retrieve time from RTC");
-            TaskUtils::SleepMilli(kTimeUpdatePeriod);
+            TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
             continue;
         }
 
@@ -31,6 +32,6 @@ void RunnableTimeSource::UpdateSatelliteTime() {
             SatelliteTimeSource::SetTime(time);
         }
 
-        TaskUtils::SleepMilli(kTimeUpdatePeriod);
+        TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
     }
 }

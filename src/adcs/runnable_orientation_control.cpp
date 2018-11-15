@@ -47,7 +47,7 @@ void RunnableOrientationControl::SetupControlLoopTimer() {
         Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
     Timer_Params_init(&orientation_control_timer_params);
     orientation_control_timer_params.period =
-        RunnableOrientationControl::kControlLoopPeriodMicros;
+        kOrientationControlLoopPeriodMicros;
     orientation_control_timer_params.arg =
         (UArg)RunnableOrientationControl::control_loop_timer_semaphore;
     orientation_control_timer = Timer_create(
@@ -66,7 +66,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     BDotEstimator b_dot_estimator(
-        RunnableOrientationControl::kControlLoopPeriodMicros * 1e-3,
+        kOrientationControlLoopPeriodMicros * 1e-3,
         kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();

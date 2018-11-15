@@ -39,7 +39,7 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                 }
                 antenna_burner_info->StoreInFlash();
             }
-            TaskUtils::SleepMilli(kDelayCheckIntervalMillis);
+            TaskUtils::SleepMilli(kAntennaBurnCheckIntervalMs);
         } else {
             TaskUtils::SleepMilli(kBackupAntennaBurnIntervalMs);
             Antenna::GetAntenna()->DeployAntenna();

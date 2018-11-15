@@ -20,7 +20,7 @@ bool FormatSdUplink::ExecuteUplink() {
         RunnableSystemHealthCheck::EnableDatalogger(false);
         // Wait for the datalogger to finish an iteration
         TaskUtils::SleepMilli(
-            RunnableSystemHealthCheck::kHealthCheckPeriodMillis * 10);
+            kHealthCheckPeriodMs * 10);
         SdCard::GetInstance()->Format();
     } catch (etl::exception& e) {
         Log_info0("Re-enabling data logger");

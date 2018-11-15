@@ -13,8 +13,6 @@ class RunnableAntennaBurner : public Runnable {
     static void PeriodicAntennaBurner();
 
     static AntennaBurnerInfo *antenna_burner_info;
-
-    static constexpr uint64_t kDelayCheckIntervalMillis = 60 * 1000;
 };
 
 #endif  // SRC_TELECOMMS_RUNNABLE_ANTENNA_BURNER_H_

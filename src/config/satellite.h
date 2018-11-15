@@ -13,7 +13,6 @@ static constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 static constexpr bool kLogToUart = true;
 static constexpr bool kLogToSd = true;
 static constexpr bool kFormatSdOnStartup = false;
-static constexpr uint32_t kNominalBeaconPeriodMs = 10000;  // In milliseconds
 static constexpr uint8_t kNominalLithiumPowerLevel =
     140;  // Scaled between 0-255
 
@@ -21,6 +20,13 @@ static constexpr bool kLimpModeEnabled = false;
 static constexpr bool kUseFecDefault = true;
 static constexpr bool kCheckHmacDefault = true;
 static constexpr bool kCheckSequenceDefault = false;
+
+// Task timing
+static constexpr uint32_t kNominalBeaconPeriodMs = 10000;
+static constexpr uint32_t kOrientationControlLoopPeriodMicros = 1000000;
+static constexpr uint32_t kHealthCheckPeriodMs = 1100;
+static constexpr uint64_t kAntennaBurnCheckIntervalMs = 60 * 1000;
+static constexpr uint32_t kTimeUpdatePeriodMs = 1000;
 
 // Wait times during boot
 static constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
@@ -41,9 +47,9 @@ static float kAntennaBurnIntervalMultiplier = 2.5;
 // Will disable orientation control if true
 static bool kRunMagnetorquersAtConstantPower = false;
 // float value in range [-1, 1]
-static float kMagnetorquerPowerFractionX = 1.0;
-static float kMagnetorquerPowerFractionY = 1.0;
-static float kMagnetorquerPowerFractionZ = 1.0;
+static float kMagnetorquerPowerFractionX = 0.2;
+static float kMagnetorquerPowerFractionY = 0.2;
+static float kMagnetorquerPowerFractionZ = 0.2;
 
 // The strength of the magnetorquers
 const double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.05};

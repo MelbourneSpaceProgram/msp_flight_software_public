@@ -9,7 +9,6 @@ class RunnableTimeSource : public Runnable {
 
    private:
     static void UpdateSatelliteTime();
-    static constexpr uint32_t kTimeUpdatePeriod = 1000;
     static constexpr uint8_t kRtcAddress = 0x69;
     static constexpr uint8_t kMuxAddress = 0x76;
 };
