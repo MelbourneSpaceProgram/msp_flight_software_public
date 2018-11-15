@@ -25,7 +25,7 @@ class Bms : public I2cDevice {
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
-    void SetConfiguration();
+    bool SetConfiguration();
     bool WriteToRegister(byte register_location, byte lower_byte,
                          byte upper_byte);
 

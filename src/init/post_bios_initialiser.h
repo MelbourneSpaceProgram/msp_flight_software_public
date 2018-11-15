@@ -34,8 +34,6 @@ class PostBiosInitialiser : public Runnable {
 
     static constexpr uint16_t kDebugUartReadTimeout = 1000;
     static constexpr uint16_t kDebugUartWriteTimeout = 1000;
-    static constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
-    static constexpr uint32_t kEjectionWaitMs = 30 * 60 * 1000;
 };
 
 #endif  // SRC_INIT_POST_BIOS_INITIALISER_H_

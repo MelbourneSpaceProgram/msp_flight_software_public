@@ -21,7 +21,7 @@ void RunnableBeacon::Beacon() {
     while (1) {
         // TODO(dingbenjamin): Implement remaining beacon fields
 
-        TaskUtils::SleepMilli(beacon_period_ms);
+        TaskUtils::SleepMilli(beacon_period_ms - kSolarPowerRecoveryTimeMs);
 
         // Avoid building the packet if transmit is disabled
         if (lithium->IsTransmitEnabled()) {
@@ -42,6 +42,17 @@ void RunnableBeacon::Beacon() {
             }
             try {
                 SatellitePower::RestorePowerToFlightSystems();
+            } catch (etl::exception& e) {
+                MspException::LogException(e);
+            }
+            try {
+                TaskUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
+                if (!SatellitePower::ConfigureBmsBusD()) {
+                    Log_error0("Failure to configure BMS on bus D");
+                }
+                if (!SatellitePower::ConfigureBmsBusC()) {
+                    Log_error0("Failure to configure BMS on bus C");
+                }
             } catch (etl::exception& e) {
                 MspException::LogException(e);
             }

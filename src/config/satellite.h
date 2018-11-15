@@ -22,6 +22,13 @@ static constexpr bool kUseFecDefault = true;
 static constexpr bool kCheckHmacDefault = true;
 static constexpr bool kCheckSequenceDefault = false;
 
+// Wait times during boot
+static constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
+static constexpr uint32_t kEjectionWaitMs = 30 * 60 * 1000;
+
+// Time taken for the solar panels to unlatch after the end of a beacon
+static constexpr uint32_t kSolarPowerRecoveryTimeMs = 300;
+
 // Orbital parameters
 static uint64_t kHalfOrbitPeriodMs = 46.5 * 60 * 1000;
 
@@ -30,6 +37,7 @@ static bool kDeployAntenna = false;
 static uint64_t kInitialAntennaBurnIntervalMs = kHalfOrbitPeriodMs;
 static uint64_t kBackupAntennaBurnIntervalMs = 3 * kHalfOrbitPeriodMs;
 static float kAntennaBurnIntervalMultiplier = 2.5;
+
 // Will disable orientation control if true
 static bool kRunMagnetorquersAtConstantPower = false;
 // float value in range [-1, 1]

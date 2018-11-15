@@ -164,7 +164,11 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        SatellitePower::Initialize();
+        Bms* bms_bus_d =
+            new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+        Bms* bms_bus_c =
+            new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+        SatellitePower::Initialize(bms_bus_d, bms_bus_c);
         TaskUtils::SleepMilli(1000);
         SatellitePower::RestorePowerToFlightSystems();
         TaskUtils::SleepMilli(1000);
@@ -278,11 +282,7 @@ void PostBiosInitialiser::EjectionWait() {
     }
 }
 
-void PostBiosInitialiser::BeaconWait() {
-    if (!kInstantDeploymentWaits) {
-        TaskUtils::SleepMilli(kBeaconWaitMs);
-    }
-}
+void PostBiosInitialiser::BeaconWait() { TaskUtils::SleepMilli(kBeaconWaitMs); }
 
 void PostBiosInitialiser::PostBiosInit() {
     TaskUtils::SleepMilli(1000);  // Externally activated hibernation window

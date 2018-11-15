@@ -5,7 +5,13 @@
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 
-void SatellitePower::Initialize() {
+Bms* SatellitePower::bms_d;
+Bms* SatellitePower::bms_c;
+
+void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
+    bms_d = bms_bus_d;
+    bms_c = bms_bus_c;
+
     CutPowerToTelecoms();
 
     const IoExpander* io_expander_bms = IoExpander::GetIoExpander(0);
@@ -73,3 +79,17 @@ void SatellitePower::RestorePowerToTelecoms() {
     Log_info0("Restoring power to Telecoms");
     GPIO_write(nCOMMS_RST, 1);
 }
+
+bool SatellitePower::ConfigureBmsBusD() {
+    Log_info0("Re-configuring BMS bus d");
+    return bms_d->SetConfiguration();
+}
+
+bool SatellitePower::ConfigureBmsBusC() {
+    Log_info0("Re-configuring BMS bus c");
+    return bms_c->SetConfiguration();
+}
+
+Bms* SatellitePower::GetBmsBusD() { return bms_d; }
+
+Bms* SatellitePower::GetBmsBusC() { return bms_c; }

@@ -20,6 +20,7 @@
 #include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
+#include <src/util/satellite_power.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
 
@@ -106,8 +107,8 @@ void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     Mcp9808 *power_temp_2 =
         new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel2);
 
-    Bms *bms_bus_d = new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
-    Bms *bms_bus_c = new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+    Bms* bms_bus_d = SatellitePower::GetBmsBusD();
+    Bms* bms_bus_c = SatellitePower::GetBmsBusC();
 
     // TODO(hugorilla): Remove redundant BMS measurables here
     AddTemperature(kEpsT1, power_temp_1);

@@ -9,54 +9,62 @@ Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
     SetConfiguration();
 }
 
-void Bms::SetConfiguration() {
-    WriteToRegister(kChargerConfigBitsRegisterLocation,
-                    kChargerConfigBitsConfigurationValue, kEmptyBufferValue);
+bool Bms::SetConfiguration() {
+    bool success = true;
+    success = success && WriteToRegister(kChargerConfigBitsRegisterLocation,
+                                         kChargerConfigBitsConfigurationValue,
+                                         kEmptyBufferValue);
 
-    WriteToRegister(kConfigBitsRegisterLocation,
-                    kConfigBitsConfigurationLBValue,
-                    kConfigBitsConfigurationUBValue);
+    success = success && WriteToRegister(kConfigBitsRegisterLocation,
+                                         kConfigBitsConfigurationLBValue,
+                                         kConfigBitsConfigurationUBValue);
 
-    WriteToRegister(kRechargeThresholdRegisterLocation,
-                    kRechargeThresholdConfigurationLBValue,
-                    kRechargeThresholdConfigurationUBValue);
+    success =
+        success && WriteToRegister(kRechargeThresholdRegisterLocation,
+                                   kRechargeThresholdConfigurationLBValue,
+                                   kRechargeThresholdConfigurationUBValue);
 
-    WriteToRegister(kMaxCvTimeRegisterLocation, kMaxCvTimeConfigurationValue,
-                    kEmptyBufferValue);
+    success = success &&
+              WriteToRegister(kMaxCvTimeRegisterLocation,
+                              kMaxCvTimeConfigurationValue, kEmptyBufferValue);
 
-    WriteToRegister(kCOverXThresholdRegisterLocation,
-                    kCOverXThresholdConfigurationLBValue,
-                    kCOverXThresholdConfigurationUBValue);
+    success = success && WriteToRegister(kCOverXThresholdRegisterLocation,
+                                         kCOverXThresholdConfigurationLBValue,
+                                         kCOverXThresholdConfigurationUBValue);
 
-    WriteToRegister(kJeitaT1RegisterLocation, kJeitaT1ConfigurationLBValue,
-                    kJeitaT1ConfigurationUBValue);
+    success = success && WriteToRegister(kJeitaT1RegisterLocation,
+                                         kJeitaT1ConfigurationLBValue,
+                                         kJeitaT1ConfigurationUBValue);
 
-    WriteToRegister(kVchargeJeita5to6RegisterLocation,
-                    kVchargeJeita5to6ConfigurationLBValue,
-                    kVchargeJeita5to6ConfigurationUBValue);
+    success = success && WriteToRegister(kVchargeJeita5to6RegisterLocation,
+                                         kVchargeJeita5to6ConfigurationLBValue,
+                                         kVchargeJeita5to6ConfigurationUBValue);
 
-    WriteToRegister(kVchargeJeita2to4RegisterLocation,
-                    kVchargeJeita2to4ConfigurationLBValue,
-                    kVchargeJeita2to4ConfigurationUBValue);
+    success = success && WriteToRegister(kVchargeJeita2to4RegisterLocation,
+                                         kVchargeJeita2to4ConfigurationLBValue,
+                                         kVchargeJeita2to4ConfigurationUBValue);
 
-    WriteToRegister(kIchargeJeita5to6RegisterLocation,
-                    kIchargeJeita5to6ConfigurationLBValue,
-                    kIchargeJeita5to6ConfigurationUBValue);
+    success = success && WriteToRegister(kIchargeJeita5to6RegisterLocation,
+                                         kIchargeJeita5to6ConfigurationLBValue,
+                                         kIchargeJeita5to6ConfigurationUBValue);
 
-    WriteToRegister(kIchargeJeita2to4RegisterLocation,
-                    kIchargeJeita2to4ConfigurationLBValue,
-                    kIchargeJeita2to4ConfigurationUBValue);
+    success = success && WriteToRegister(kIchargeJeita2to4RegisterLocation,
+                                         kIchargeJeita2to4ConfigurationLBValue,
+                                         kIchargeJeita2to4ConfigurationUBValue);
 
-    WriteToRegister(kQCountRegisterLocation,
-                    kQCountRegisterConfigurationLBValue,
-                    kQCountRegisterConfigurationUBValue);
+    success = success && WriteToRegister(kQCountRegisterLocation,
+                                         kQCountRegisterConfigurationLBValue,
+                                         kQCountRegisterConfigurationUBValue);
 
-    WriteToRegister(kQCountPrescaleFactorRegisterLocation,
-                    kQCountPrescaleFactorConfigurationLBValue,
-                    kQCountPrescaleFactorConfigurationUBValue);
+    success =
+        success && WriteToRegister(kQCountPrescaleFactorRegisterLocation,
+                                   kQCountPrescaleFactorConfigurationLBValue,
+                                   kQCountPrescaleFactorConfigurationUBValue);
 
-    WriteToRegister(kVinUvclSettingRegisterLocation,
-                    kVinUvclSettingConfigurationValue, kEmptyBufferValue);
+    success = success && WriteToRegister(kVinUvclSettingRegisterLocation,
+                                         kVinUvclSettingConfigurationValue,
+                                         kEmptyBufferValue);
+    return success;
 }
 
 bool Bms::WriteToRegister(byte register_location, byte lower_byte,
