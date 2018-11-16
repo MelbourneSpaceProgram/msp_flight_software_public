@@ -55,38 +55,3 @@ Time SatelliteTimeSource::GetInitialTime() { return initial_time; }
 uint64_t SatelliteTimeSource::TimeDifferenceMilli(Time start, Time end) {
     return end.timestamp_ms - start.timestamp_ms;
 }
-
-void SatelliteTimeSource::RealTimeWait(uint32_t delay_seconds) {
-    // The deployment wait acts as a timer counting for `delay_seconds`,
-    // starting from the time the `DeploymentWait` call is made.
-    // It is a blocking wait.
-
-    if (kInstantDeploymentWaits) {
-        Log_info0("Fast-forwarding through deployment wait");
-        return;
-    }
-
-    uint32_t delay_ms = delay_seconds * kMillisecondsInSecond;
-
-    Time init_time = SatelliteTimeSource::GetTime();
-    Time cur_time = init_time;
-    bool rtc_time_reliable = false;
-
-    if (init_time.is_valid) {
-        rtc_time_reliable = true;
-        while ((cur_time.timestamp_ms - init_time.timestamp_ms) < delay_ms) {
-            cur_time = SatelliteTimeSource::GetTime();
-
-            if (!cur_time.is_valid) {
-                rtc_time_reliable = false;
-                break;
-            }
-            TaskUtils::SleepMilli(kDelayCheckInterval);
-        }
-    }
-
-    if (!rtc_time_reliable) {
-        // Fallback to internal clock and reset timer (safest option)
-        TaskUtils::SleepMilli(delay_seconds * kMillisecondsInSecond);
-    }
-}

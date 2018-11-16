@@ -47,8 +47,6 @@ class Rtc : public I2cDevice {
     RTCMaskMap bit_mask_map;
 
     static constexpr uint8_t kReadBufLen = 1;
-    static constexpr uint16_t kCurrCentury = 2000;
-    static constexpr uint16_t kSatelliteEpochYear = 1970;
 
     enum Months {
         Jan = 0x01,

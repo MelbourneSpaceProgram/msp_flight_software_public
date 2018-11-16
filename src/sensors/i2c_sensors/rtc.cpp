@@ -30,7 +30,7 @@ RTime Rtc::GetTime() {
     real_time.hour = GetUnitTime(kTimeRegisterHour, read_buffer);
     real_time.date = GetUnitTime(kTimeRegisterDate, read_buffer);
     real_time.month = GetUnitTime(kTimeRegisterMonth, read_buffer);
-    real_time.year = kCurrCentury + GetUnitTime(kTimeRegisterYear, read_buffer);
+    real_time.year = GetUnitTime(kTimeRegisterYear, read_buffer);
 
     if (ValidTime(real_time)) {
         return real_time;
@@ -83,7 +83,7 @@ bool Rtc::ValidTime(RTime time) {
 
 time_t Rtc::RTimeToEpoch(RTime time) {
     tm converted_time;
-    converted_time.tm_year = time.year - kSatelliteEpochYear;
+    converted_time.tm_year = time.year;
     converted_time.tm_mon = time.month - 1;  // RTime uses 1 based month indices
     converted_time.tm_mday = time.date;
     converted_time.tm_hour = time.hour;

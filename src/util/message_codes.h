@@ -233,6 +233,7 @@ enum CatchId {
     kImuCatch,
     kLithiumUpdateStateCatch,
     kLithiumDoCommandCatch,
+	kEjectionWaitCatch,
     kRunnableMemoryLoggerCatch,
     kRunnableConsoleLoggerCatch,
     kRunnableConsoleListenerCatch,

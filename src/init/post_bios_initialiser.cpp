@@ -270,9 +270,32 @@ void PostBiosInitialiser::InitAntennaBurner(uint16_t stack_size) {
 
 void PostBiosInitialiser::EjectionWait() {
     if (!kInstantDeploymentWaits) {
-        // TODO(hugorilla): Record time to flash if it's the first time
-        // Compare current time to first time, check if > 30 minutes has passed
-        // and continue
+        try {
+            Time current_time = SatelliteTimeSource::GetTime();
+            if (current_time.is_valid) {
+                uint32_t time_since_ejection_ms =
+                    current_time.timestamp_ms - kTimeSourceDeployMs;
+                if (time_since_ejection_ms < kEjectionWaitMs) {
+                    Log_info0("Post-deployment wait starting");
+                    TaskUtils::SleepMilli(kEjectionWaitMs -
+                                          time_since_ejection_ms);
+                    Log_info0("Post-deployment wait finished");
+                }
+            } else {
+                Log_warning0("Invalid reading from RTC");
+                Log_info0("Post-deployment wait starting");
+                TaskUtils::SleepMilli(kEjectionWaitMs);
+                Log_info0("Post-deployment wait finished");
+            }
+        } catch (MspException& e) {
+            MspException::LogException(e, kEjectionWaitCatch);
+            Log_error0("Unable to retrieve time from RTC");
+            Log_info0("Post-deployment wait starting");
+            TaskUtils::SleepMilli(kEjectionWaitMs);
+            Log_info0("Post-deployment wait finished");
+        }
+    } else {
+        Log_info0("Skipping post-deployment wait");
     }
 }
 
