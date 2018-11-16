@@ -3,6 +3,7 @@
 #include <src/messages/Time.pb.h>
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/runnable_antenna_burner.h>
+#include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 
@@ -21,6 +22,7 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
         antenna_burner_info->burn_interval_ms = kInitialAntennaBurnIntervalMs;
     }
 
+    IArg power_key;
     while (1) {
         Time current_time = SatelliteTimeSource::GetTime();
         if (current_time.is_valid) {
@@ -32,11 +34,14 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                 // Store the record of the attempt before the burn
                 // in case the burn kills the power.
                 antenna_burner_info->StoreInFlash();
+                // Hold transmission and other power tasks until after the burn.
+                power_key = SatellitePower::Lock();
                 if (Antenna::GetAntenna()->DeployAntenna()) {
                     antenna_burner_info->burn_interval_ms *=
                         kAntennaBurnIntervalMultiplier;
                     antenna_burner_info->StoreInFlash();
                 }
+                SatellitePower::Unlock(power_key);
                 antenna_burner_info->StoreInFlash();
             }
             TaskUtils::SleepMilli(kAntennaBurnCheckIntervalMs);

@@ -96,10 +96,10 @@ void Lithium::PostTransmit() {
     // until re-configured.
     try {
         TaskUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
-        if (!SatellitePower::ConfigureBmsBusD()) {
+        if (!SatellitePower::ConfigureBms(SatellitePower::kBmsBusD)) {
             Log_error0("Failure to configure BMS on bus D");
         }
-        if (!SatellitePower::ConfigureBmsBusC()) {
+        if (!SatellitePower::ConfigureBms(SatellitePower::kBmsBusC)) {
             Log_error0("Failure to configure BMS on bus C");
         }
     } catch (etl::exception& e) {

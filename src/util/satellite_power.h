@@ -4,11 +4,16 @@
 #include <math.h>
 #include <src/board/i2c/bms/bms.h>
 #include <src/board/i2c/io_expander/io_expander.h>
+#include <src/sensors/measurable_id.h>
 #include <src/util/data_types.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
 
 class SatellitePower {
    public:
+    enum BmsId {
+        kBmsBusD = 0,
+        kBmsBusC = 1,
+    };
     static void Initialize(Bms* bms1, Bms* bms2);
     static void CutPowerFromPanels();
     static void RestorePowerFromPanels();
@@ -16,12 +21,15 @@ class SatellitePower {
     static void RestorePowerToFlightSystems();
     static void CutPowerToTelecoms();
     static void RestorePowerToTelecoms();
-    static bool ConfigureBmsBusD();
-    static bool ConfigureBmsBusC();
     static IArg Lock();
     static void Unlock(IArg key);
-    static Bms* GetBmsBusD();
-    static Bms* GetBmsBusC();
+    static Bms* GetBms(BmsId bms_id);
+    static void IncrementBmsICharge(BmsId bms_id);
+    static void DecrementBmsICharge(BmsId bms_id);
+    static bool BatteryIsCharging(BmsId bms_id);
+    static uint8_t GetIChargeIndex(BmsId bms_id);
+    static bool ConfigureBms(BmsId bms_id);
+    static bool ConfigureBmsICharge(BmsId bms_id);
 
    private:
     static constexpr IoExpander::IoPin kIoExpanderPinBms1En =
@@ -34,11 +42,13 @@ class SatellitePower {
         IoExpander::kIoPin1;
     static constexpr IoExpander::IoPin kIoExpanderPinTelecomsEn4 =
         IoExpander::kIoPin4;
-    static Bms* bms_d;
-    static Bms* bms_c;
-
     static GateMutexPri_Params mutex_params;
     static GateMutexPri_Handle power_mutex;
+    static Bms* bms[2];
+    static uint8_t i_charge_index[2];
+
+    static constexpr int kBmsCurrentsMeasurableId[2] = {
+        kEpsBmsCurrentsReading1, kEpsBmsCurrentsReading2};
 };
 
 #endif  // SRC_UTIL_SATELLITE_POWER_H_

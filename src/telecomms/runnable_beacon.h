@@ -2,6 +2,7 @@
 #define SRC_TELECOMMS_RUNNABLE_BEACON_H_
 
 #include <src/tasks/runnable.h>
+#include <src/util/data_types.h>
 
 class LithiumBeaconPeriodCommand;
 

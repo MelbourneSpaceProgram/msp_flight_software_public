@@ -2,6 +2,7 @@
 #define SRC_BOARD_I2C_BMS_BMS_H_
 
 #include <external/etl/array.h>
+#include <src/config/satellite.h>
 #include <src/messages/BmsChargingInfoReading.pb.h>
 #include <src/messages/BmsCurrentsReading.pb.h>
 #include <src/messages/BmsOperationValuesReading.pb.h>
@@ -25,7 +26,8 @@ class Bms : public I2cDevice {
    public:
     Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
-    bool SetConfiguration();
+    bool SetConfiguration(uint8_t i_charge_index = kInitialIChargeIndex);
+    bool SetICharge(uint8_t i_charge_index);
     bool WriteToRegister(byte register_location, byte lower_byte,
                          byte upper_byte);
 
@@ -69,6 +71,12 @@ class Bms : public I2cDevice {
     static constexpr uint16_t kQCountInitial =
         12000;  // 20% of kQCountFullCharge
     static constexpr uint16_t kQCountPrescaleFactor = 28;
+    static constexpr uint8_t kIChargeIndexMax = 9;
+    static constexpr uint16_t kBmsTryChargeIncreaseWaitMs = 500;
+    static constexpr uint16_t kBmsTryChargeDecreaseWaitMs = 1100;
+    static constexpr float kBatteryChargeCurrentLowerBoundA = 0.040;
+    static constexpr float kBmsMinimumValidCurrentReadingA = -10.0;
+    static constexpr float kBmsMaximumValidCurrentReadingA = 10.0;
 
    private:
     /* conversion methods */
@@ -182,13 +190,6 @@ class Bms : public I2cDevice {
     static const byte kRechargeThresholdConfigurationLBValue = 0x0C;
     static const byte kRechargeThresholdConfigurationUBValue = 0x43;
 
-    // Direct Energy Transfer mode
-    static const byte kIchargeJeita5to6ConfigurationLBValue = 0x63;
-    static const byte kIchargeJeita5to6ConfigurationUBValue = 0x00;
-    static const byte kIchargeJeita2to4ConfigurationLBValue = 0x63;
-    static const byte kIchargeJeita2to4ConfigurationUBValue = 0x0C;
-    static const byte kVinUvclSettingConfigurationValue = 0x00;
-
     // Value for registers with values determined by JEITA region
     static const byte kVchargeSettingAllJeitaRegionsValue =
         0x13;  // 0x13 = 0b10011 is repeated in a 5-bit unit to produce the
@@ -231,6 +232,49 @@ class Bms : public I2cDevice {
     static constexpr double kInputCurrentConversionFactor =
         0.00000146487 / kRSnsbResistance;
     static constexpr double kRechargeThresholdConversionFactor = 0.000192264;
+
+    // Direct Energy Transfer modes
+    static const byte kVinUvclSettingConfigurationValue = 0x00;
+
+    static constexpr byte kIchargeJeita5to6[kIChargeIndexMax][2] = {
+        {0x21,    // 61mA LB
+         0x00},   // 61mA UB
+        {0x42,    // 91mA LB
+         0x00},   // 91mA UB
+        {0x63,    // 122mA LB
+         0x00},   // 122mA UB
+        {0x84,    // 152mA LB
+         0x00},   // 152mA UB
+        {0xA5,    // 182mA LB
+         0x00},   // 182mA UB
+        {0xC6,    // 213mA LB
+         0x00},   // 213mA UB
+        {0xE7,    // 243mA LB
+         0x00},   // 243mA UB
+        {0x08,    // 273mA LB
+         0x01},   // 273mA UB
+        {0x29,    // 304mA LB
+         0x01}};  // 304mA UB
+
+    static constexpr byte kIchargeJeita2to4[kIChargeIndexMax][2] = {
+        {0x21,    // 61mA LB
+         0x04},   // 61mA UB
+        {0x42,    // 91mA LB
+         0x08},   // 91mA UB
+        {0x63,    // 122mA LB
+         0x0C},   // 122mA UB
+        {0x84,    // 152mA LB
+         0x10},   // 152mA UB
+        {0xA5,    // 182mA LB
+         0x14},   // 182mA UB
+        {0xC6,    // 213mA LB
+         0x18},   // 213mA UB
+        {0xE7,    // 243mA LB
+         0x1C},   // 243mA UB
+        {0x08,    // 273mA LB
+         0x21},   // 273mA UB
+        {0x29,    // 304mA LB
+         0x25}};  // 304mA UB
 };
 
 #endif  // SRC_BOARD_I2C_BMS_BMS_H_

@@ -29,6 +29,7 @@
 #include <src/util/runnable_console_listener.h>
 #include <src/util/runnable_console_logger.h>
 #include <src/util/runnable_memory_logger.h>
+#include <src/util/runnable_power_manager.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
@@ -292,6 +293,13 @@ void PostBiosInitialiser::EjectionWait() {
 
 void PostBiosInitialiser::BeaconWait() { TaskUtils::SleepMilli(kBeaconWaitMs); }
 
+void PostBiosInitialiser::InitPowerManager() {
+    // TODO (rskew) review priority
+    TaskHolder* power_manager_task = new TaskHolder(
+        kPowerManagerStackSize, "PowerManager", 8, new RunnablePowerManager());
+    power_manager_task->Start();
+}
+
 void PostBiosInitialiser::PostBiosInit() {
     TaskUtils::SleepMilli(1000);  // Externally activated hibernation window
     Log_info0("System has started");
@@ -318,6 +326,7 @@ void PostBiosInitialiser::PostBiosInit() {
 #if defined ORBIT_CONFIGURATION
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitSystemHealthCheck();
+        InitPowerManager();
         EjectionWait();
         InitOrientationControl();
         BeaconWait();

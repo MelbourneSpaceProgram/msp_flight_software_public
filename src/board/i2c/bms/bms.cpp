@@ -1,6 +1,10 @@
 #include <math.h>
 #include <src/board/i2c/bms/bms.h>
 #include <src/board/i2c/i2c.h>
+#include <src/config/satellite.h>
+
+constexpr byte Bms::kIchargeJeita5to6[Bms::kIChargeIndexMax][2];
+constexpr byte Bms::kIchargeJeita2to4[Bms::kIChargeIndexMax][2];
 
 Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
@@ -9,7 +13,7 @@ Bms::Bms(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
     SetConfiguration();
 }
 
-bool Bms::SetConfiguration() {
+bool Bms::SetConfiguration(uint8_t i_charge_index) {
     bool success = true;
     success = success && WriteToRegister(kChargerConfigBitsRegisterLocation,
                                          kChargerConfigBitsConfigurationValue,
@@ -44,13 +48,7 @@ bool Bms::SetConfiguration() {
                                          kVchargeJeita2to4ConfigurationLBValue,
                                          kVchargeJeita2to4ConfigurationUBValue);
 
-    success = success && WriteToRegister(kIchargeJeita5to6RegisterLocation,
-                                         kIchargeJeita5to6ConfigurationLBValue,
-                                         kIchargeJeita5to6ConfigurationUBValue);
-
-    success = success && WriteToRegister(kIchargeJeita2to4RegisterLocation,
-                                         kIchargeJeita2to4ConfigurationLBValue,
-                                         kIchargeJeita2to4ConfigurationUBValue);
+    success = success && SetICharge(i_charge_index);
 
     success = success && WriteToRegister(kQCountRegisterLocation,
                                          kQCountRegisterConfigurationLBValue,
@@ -64,6 +62,18 @@ bool Bms::SetConfiguration() {
     success = success && WriteToRegister(kVinUvclSettingRegisterLocation,
                                          kVinUvclSettingConfigurationValue,
                                          kEmptyBufferValue);
+    return success;
+}
+
+bool Bms::SetICharge(uint8_t i_charge_index) {
+    bool success = true;
+    success = success && WriteToRegister(kIchargeJeita5to6RegisterLocation,
+                                         kIchargeJeita5to6[i_charge_index][0],
+                                         kIchargeJeita5to6[i_charge_index][1]);
+
+    success = success && WriteToRegister(kIchargeJeita2to4RegisterLocation,
+                                         kIchargeJeita2to4[i_charge_index][0],
+                                         kIchargeJeita2to4[i_charge_index][1]);
     return success;
 }
 

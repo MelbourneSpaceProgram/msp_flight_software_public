@@ -116,8 +116,8 @@ void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     Mcp9808 *power_temp_2 =
         new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel2);
 
-    Bms *bms_bus_d = SatellitePower::GetBmsBusD();
-    Bms *bms_bus_c = SatellitePower::GetBmsBusC();
+    Bms *bms_bus_d = SatellitePower::GetBms(SatellitePower::kBmsBusD);
+    Bms *bms_bus_c = SatellitePower::GetBms(SatellitePower::kBmsBusC);
 
     // TODO(hugorilla): Remove redundant BMS measurables here
     AddTemperature(kEpsT1, power_temp_1);

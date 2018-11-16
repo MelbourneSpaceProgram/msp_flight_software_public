@@ -1,18 +1,24 @@
 #include <src/board/MSP432E.h>
+#include <src/config/satellite.h>
+#include <src/sensors/measurable_id.h>
+#include <src/sensors/measurable_manager.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
+#include <algorithm>
 
-Bms* SatellitePower::bms_d;
-Bms* SatellitePower::bms_c;
 GateMutexPri_Params SatellitePower::mutex_params = {NULL};
 GateMutexPri_Handle SatellitePower::power_mutex = NULL;
+Bms* SatellitePower::bms[2];
+uint8_t SatellitePower::i_charge_index[2] = {kInitialIChargeIndex,
+                                             kInitialIChargeIndex};
+constexpr int SatellitePower::kBmsCurrentsMeasurableId[2];
 
 void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
-    bms_d = bms_bus_d;
-    bms_c = bms_bus_c;
+    bms[kBmsBusD] = bms_bus_d;
+    bms[kBmsBusC] = bms_bus_c;
 
     GateMutexPri_Params_init(&mutex_params);
     power_mutex = GateMutexPri_create(&mutex_params, NULL);
@@ -97,16 +103,60 @@ void SatellitePower::RestorePowerToTelecoms() {
     GPIO_write(nCOMMS_RST, 1);
 }
 
-bool SatellitePower::ConfigureBmsBusD() {
-    Log_info0("Re-configuring BMS bus d");
-    return bms_d->SetConfiguration();
+bool SatellitePower::ConfigureBms(BmsId bms_id) {
+    return bms[bms_id]->SetConfiguration(i_charge_index[bms_id]);
 }
 
-bool SatellitePower::ConfigureBmsBusC() {
-    Log_info0("Re-configuring BMS bus c");
-    return bms_c->SetConfiguration();
+bool SatellitePower::ConfigureBmsICharge(BmsId bms_id) {
+    Log_info2("Re-configuring BMS bus %d with I-charge index: %d", bms_id,
+              i_charge_index[bms_id]);
+    bool success = bms[bms_id]->SetICharge(i_charge_index[bms_id]);
+    return success;
 }
 
-Bms* SatellitePower::GetBmsBusD() { return bms_d; }
+Bms* SatellitePower::GetBms(BmsId bms_id) { return bms[bms_id]; }
 
-Bms* SatellitePower::GetBmsBusC() { return bms_c; }
+void SatellitePower::IncrementBmsICharge(BmsId bms_id) {
+    uint8_t incremented_index = i_charge_index[bms_id] + 1;
+    if (incremented_index < Bms::kIChargeIndexMax) {
+        i_charge_index[bms_id] = incremented_index;
+    } else {
+        i_charge_index[bms_id] = Bms::kIChargeIndexMax - 1;
+    }
+    ConfigureBmsICharge(bms_id);
+    TaskUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
+}
+
+void SatellitePower::DecrementBmsICharge(BmsId bms_id) {
+    i_charge_index[bms_id] = std::max(i_charge_index[bms_id] - 1, 0);
+    ConfigureBmsICharge(bms_id);
+    TaskUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
+}
+
+bool SatellitePower::BatteryIsCharging(BmsId bms_id) {
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
+    BmsCurrentsReading bms_currents =
+        measurable_manager->ReadNanopbMeasurable<BmsCurrentsReading>(
+            kBmsCurrentsMeasurableId[bms_id], 0);
+    // Check value is in a valid range
+    if (bms_currents.battery_current < Bms::kBmsMinimumValidCurrentReadingA ||
+        bms_currents.battery_current > Bms::kBmsMaximumValidCurrentReadingA) {
+        Log_info2("Invalid battery current reading from BMS %d of: %f", bms_id,
+                  bms_currents.battery_current);
+        return false;
+    }
+    if (bms_currents.battery_current ==
+        measurable_manager
+            ->GetMeasurable<BmsCurrentsReading>(
+                kBmsCurrentsMeasurableId[bms_id])
+            ->GetFailureReading()
+            .battery_current) {
+        return false;
+    }
+    return bms_currents.battery_current >
+           Bms::kBatteryChargeCurrentLowerBoundA;
+}
+
+uint8_t SatellitePower::GetIChargeIndex(BmsId bms_id) {
+    return i_charge_index[bms_id];
+}

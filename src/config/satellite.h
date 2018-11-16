@@ -4,8 +4,6 @@
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
 
-
-
 constexpr bool kEnterDeepSleepOnStartup = false;
 static constexpr bool kInstantDeploymentWaits = true;
 static constexpr bool kLogI2c = false;
@@ -27,6 +25,8 @@ static constexpr uint32_t kOrientationControlLoopPeriodMicros = 1000000;
 static constexpr uint32_t kHealthCheckPeriodMs = 1100;
 static constexpr uint64_t kAntennaBurnCheckIntervalMs = 60 * 1000;
 static constexpr uint32_t kTimeUpdatePeriodMs = 1000;
+static constexpr uint16_t kIChargeHoldTimeMs = 5000;
+static constexpr uint16_t kIChargeHoldPollMs = 200;
 
 // Wait times during boot
 static constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
@@ -34,6 +34,9 @@ static constexpr uint32_t kEjectionWaitMs = 30 * 60 * 1000;
 
 // Time taken for the solar panels to unlatch after the end of a beacon
 static constexpr uint32_t kSolarPowerRecoveryTimeMs = 300;
+
+// Initialise BMS with 91mA battery-charge current
+static constexpr uint16_t kInitialIChargeIndex = 1;
 
 // Orbital parameters
 static uint64_t kHalfOrbitPeriodMs = 46.5 * 60 * 1000;
