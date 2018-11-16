@@ -562,7 +562,8 @@
 							<tool commandLinePattern="${command} ${flags} ${output_flag} ${output} ${inputs} ../ROMS.dat" id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.339213904" name="ARM Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex">
 								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.TOOL_ENABLE.2086997275" name="Enable tool" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.TOOL_ENABLE" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.IMAGE.1043725435" name="Select image mode (--image, -image)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.IMAGE" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.ARRAY.1580918044" name="Array output format (--array)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.ARRAY" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.ARRAY.1580918044" name="Array output format (--array)" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.ARRAY" value="false" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.OUTPUT_FORMAT.1637866442" name="Output format" superClass="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.OUTPUT_FORMAT" value="com.ti.ccstudio.buildDefinitions.MSP432_18.1.hex.OUTPUT_FORMAT.ASCII" valueType="enumerated"/>
 							</tool>
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.148128672" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool">
 								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH.1005581937" name="Package repositories (--xdcpath)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH" valueType="stringList">
