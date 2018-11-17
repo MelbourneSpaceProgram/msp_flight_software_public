@@ -80,7 +80,11 @@ class Lithium {
     bool IsStateLocked(LithiumShutoffCondition condition);
     void ForceUnlock();
 
+    static bool IsTransmitting();
+
    private:
+    static void PreTransmit();
+    static void PostTransmit();
     static Lithium* instance;
     static constexpr uint32_t kUartReadTimeoutMilli = 300;
     static constexpr uint32_t kUartWriteTimeoutMilli = 500;
@@ -102,6 +106,9 @@ class Lithium {
     Mailbox_Handle header_mailbox_handle;
     Mailbox_Params command_response_mailbox_params;
     Mailbox_Handle command_response_mailbox_handle;
+
+    static bool currently_transmitting;
+
     // TODO(wschuetz): Review the number of the payloads that can be stored in
     // the mailbox at any one time.
     static constexpr uint8_t kMaxNumberOfPayloads = 2;

@@ -5,7 +5,6 @@
 #include <src/telecomms/msp_payloads/beacon_payload.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/msp_exception.h>
-#include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
 #include <xdc/runtime/Log.h>
 
@@ -30,31 +29,10 @@ void RunnableBeacon::Beacon() {
                 continue;
             }
             BeaconPayload beacon;
-            try {
-                SatellitePower::CutPowerToFlightSystems();
-            } catch (etl::exception& e) {
-                MspException::LogException(e);
-            }
             if (lithium->Transmit(&beacon)) {
                 Log_info0("Beacon transmission succeeded");
             } else {
                 Log_error0("Beacon transmission failed");
-            }
-            try {
-                SatellitePower::RestorePowerToFlightSystems();
-            } catch (etl::exception& e) {
-                MspException::LogException(e);
-            }
-            try {
-                TaskUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
-                if (!SatellitePower::ConfigureBmsBusD()) {
-                    Log_error0("Failure to configure BMS on bus D");
-                }
-                if (!SatellitePower::ConfigureBmsBusC()) {
-                    Log_error0("Failure to configure BMS on bus C");
-                }
-            } catch (etl::exception& e) {
-                MspException::LogException(e);
             }
         } else {
             Log_info0("Beacon is disabled, did not transmit");

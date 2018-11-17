@@ -16,6 +16,8 @@
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
+#include <src/util/msp_exception.h>
+#include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
@@ -24,6 +26,7 @@ Lithium* Lithium::instance = NULL;
 uint8_t Lithium::tx_count = 0;
 uint8_t Lithium::rx_count = 0;
 uint8_t Lithium::command_success_count = 0;
+bool Lithium::currently_transmitting = false;
 
 Lithium::Lithium()
     : uart(TELECOMS),
@@ -67,6 +70,41 @@ Lithium::Lithium()
     }
 }
 
+void Lithium::PreTransmit() {
+    // Turn off flight systems before every transmission to avoid booting with
+    // flight systems on in the case of a brownout.
+    try {
+        SatellitePower::CutPowerToFlightSystems();
+    } catch (etl::exception& e) {
+        MspException::LogException(e);
+    }
+}
+
+void Lithium::PostTransmit() {
+    try {
+        SatellitePower::RestorePowerToFlightSystems();
+    } catch (etl::exception& e) {
+        MspException::LogException(e);
+    }
+
+    // Re-write the configuration to the BMSs in the event that
+    // one of the batteries has died during transmission.
+    // If one battery dies while the other is discharging, its BMS will reboot
+    // and use the unsupportable charging current from its hardware settings
+    // until re-configured.
+    try {
+        TaskUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
+        if (!SatellitePower::ConfigureBmsBusD()) {
+            Log_error0("Failure to configure BMS on bus D");
+        }
+        if (!SatellitePower::ConfigureBmsBusC()) {
+            Log_error0("Failure to configure BMS on bus C");
+        }
+    } catch (etl::exception& e) {
+        MspException::LogException(e);
+    }
+}
+
 bool Lithium::Transmit(TransmitPayload* transmit_payload) {
     UpdateState();
     if (!lithium_transmit_enabled) {
@@ -74,8 +112,17 @@ bool Lithium::Transmit(TransmitPayload* transmit_payload) {
         return false;
     }
 
+    currently_transmitting = true;
+    PreTransmit();
+
     TransmitCommand transmit_command(transmit_payload);
-    if (Lithium::GetInstance()->DoCommand(&transmit_command)) {
+    bool transmit_successful =
+        Lithium::GetInstance()->DoCommand(&transmit_command);
+
+    PostTransmit();
+    currently_transmitting = false;
+
+    if (transmit_successful) {
         tx_count = tx_count == 255 ? 0 : tx_count + 1;
         return true;
     }
@@ -199,10 +246,7 @@ bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
     return (lock & static_cast<uint8_t>(condition)) != kLithiumOnCondition;
 }
 
-void Lithium::ForceUnlock() {
-    lock = kLithiumOnCondition;
-}
-
+void Lithium::ForceUnlock() { lock = kLithiumOnCondition; }
 
 void Lithium::UpdateState() {
     // TODO(dingbenjamin): Use the Lithium internal temperature sensor
@@ -284,3 +328,5 @@ void Lithium::SetTransmitEnabled(bool lithium_enabled) {
 }
 
 bool Lithium::IsTransmitEnabled() { return lithium_transmit_enabled; }
+
+bool Lithium::IsTransmitting() { return currently_transmitting; }
