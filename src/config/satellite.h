@@ -48,7 +48,7 @@ static uint64_t kBackupAntennaBurnIntervalMs = 3 * kHalfOrbitPeriodMs;
 static float kAntennaBurnIntervalMultiplier = 2.5;
 
 // Will disable orientation control if true
-// MUST BE 'false' ON LAUNCH
+// TODO (rskew) MUST BE 'false' ON LAUNCH
 static bool kRunMagnetorquersAtConstantPower = true;
 // float value in range [-1, 1]
 static float kMagnetorquerPowerFractionX = 0.2;
@@ -56,7 +56,7 @@ static float kMagnetorquerPowerFractionY = 0.2;
 static float kMagnetorquerPowerFractionZ = 0.2;
 
 // The strength of the magnetorquers
-const double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.05};
+const double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.2};
 
 // Scale the actuation strength for power budgeting
 const double kOrientationControlPowerLevel = 0.2;
