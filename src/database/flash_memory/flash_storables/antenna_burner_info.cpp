@@ -15,11 +15,11 @@ uint64_t AntennaBurnerInfo::GetLastBurnAttempt() {
     return last_burn_attempt_timestamp_ms;
 }
 
-uint64_t AntennaBurnerInfo::SetBurnInterval(uint64_t new_burn_interval_ms) {
+void AntennaBurnerInfo::SetBurnInterval(uint64_t new_burn_interval_ms) {
     burn_interval_ms = new_burn_interval_ms;
 }
 
-uint64_t AntennaBurnerInfo::SetLastBurnAttempt(
+void AntennaBurnerInfo::SetLastBurnAttempt(
     uint64_t new_burn_attempt_timestamp_ms) {
     last_burn_attempt_timestamp_ms = new_burn_attempt_timestamp_ms;
 }

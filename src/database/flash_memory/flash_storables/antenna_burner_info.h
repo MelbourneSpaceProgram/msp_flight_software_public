@@ -11,8 +11,8 @@ class AntennaBurnerInfo : public FlashStorable<AntennaBurnerInfoStruct> {
     AntennaBurnerInfo();
     uint64_t GetLastBurnAttempt();
     uint64_t GetBurnInterval();
-    uint64_t SetLastBurnAttempt(uint64_t new_burn_attempt_timestamp_ms);
-    uint64_t SetBurnInterval(uint64_t new_burn_interval_ms);
+    void SetLastBurnAttempt(uint64_t new_burn_attempt_timestamp_ms);
+    void SetBurnInterval(uint64_t new_burn_interval_ms);
 
    private:
     void ConvertToFlashStorableStruct(
