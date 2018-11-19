@@ -5,12 +5,12 @@ message LithiumConfigurationPayload {
    required uint32 tx_rf_baud_rate_8 = 4 [default = 0x01];
    required uint32 rx_modulation_8 = 5 [default = 0];
    required uint32 tx_modulation_8 = 6 [default = 0];
-   required uint32 rx_freq_32 = 7 [default = 437425];
-   required uint32 tx_freq_32 = 8 [default = 437425];
-   required bytes source = 10 [default = "VK3EXO"];
-   required bytes destination = 11 [default = "CQ\x20\x20\x20\x20"];
+   required uint32 rx_freq_32 = 7 [default = 437200];
+   required uint32 tx_freq_32 = 8 [default = 437200];
+   required bytes source = 10 [default = "ACRUX1"];
+   required bytes destination = 11 [default = "CQCQCQ"];
    required uint32 tx_preamble_16 = 12 [default = 16];
    required uint32 tx_postamble_16 = 13 [default = 0];
-   required uint32 function_config_16 = 14 [default = 28673];
-   required uint32 function_config2_16 = 15 [default = 0];
+   required uint32 function_config_16 = 14 [default = 28672];
+   required uint32 function_config2_16 = 15 [default = 1];
 }
