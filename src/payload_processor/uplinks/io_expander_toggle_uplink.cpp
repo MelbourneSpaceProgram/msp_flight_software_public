@@ -4,6 +4,7 @@
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 
 IoExpanderToggleUplink::IoExpanderToggleUplink(byte* payload)
     : Uplink(IoExpanderToggleUplinkPayload_size),
@@ -23,69 +24,77 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
     }
 
     const IoExpander* expander = IoExpander::GetIoExpander(io_expander_id);
+    IArg key = SatellitePower::Lock();
 
-    switch (toggle_type) {
-        case kToggleOffOn:
-            expander->SetPin(pin, false);
-            TaskUtils::SleepMilli(toggle_duration);
-            expander->SetPin(pin, true);
-            break;
+    try {
+        switch (toggle_type) {
+            case kToggleOffOn:
+                expander->SetPin(pin, false);
+                TaskUtils::SleepMilli(toggle_duration);
+                expander->SetPin(pin, true);
+                break;
 
-        case kToggleOn:
-            expander->SetPin(pin, true);
-            break;
+            case kToggleOn:
+                expander->SetPin(pin, true);
+                break;
 
-        case kToggleOff:
-            expander->SetPin(pin, false);
-            break;
+            case kToggleOff:
+                expander->SetPin(pin, false);
+                break;
 
-        case kToggleOffOnFlightSystems:
-            SatellitePower::CutPowerToFlightSystems();
-            TaskUtils::SleepMilli(toggle_duration);
-            SatellitePower::RestorePowerToFlightSystems();
-            break;
+            case kToggleOffOnFlightSystems:
+                SatellitePower::CutPowerToFlightSystems();
+                TaskUtils::SleepMilli(toggle_duration);
+                SatellitePower::RestorePowerToFlightSystems();
+                break;
 
-        case kToggleOnFlightSystems:
-            SatellitePower::RestorePowerToFlightSystems();
-            break;
+            case kToggleOnFlightSystems:
+                SatellitePower::RestorePowerToFlightSystems();
+                break;
 
-        case kToggleOffFlightSystems:
-            SatellitePower::CutPowerToFlightSystems();
-            break;
+            case kToggleOffFlightSystems:
+                SatellitePower::CutPowerToFlightSystems();
+                break;
 
-        case kToggleOffOnTelecomms:
-            SatellitePower::CutPowerToTelecoms();
-            TaskUtils::SleepMilli(toggle_duration);
-            SatellitePower::RestorePowerToTelecoms();
-            break;
+            case kToggleOffOnTelecomms:
+                SatellitePower::CutPowerToTelecoms();
+                TaskUtils::SleepMilli(toggle_duration);
+                SatellitePower::RestorePowerToTelecoms();
+                break;
 
-        case kToggleOnTelecomms:
-            SatellitePower::RestorePowerToTelecoms();
-            break;
+            case kToggleOnTelecomms:
+                SatellitePower::RestorePowerToTelecoms();
+                break;
 
-        case kToggleOffTelecomms:
-            SatellitePower::CutPowerToTelecoms();
-            break;
+            case kToggleOffTelecomms:
+                SatellitePower::CutPowerToTelecoms();
+                break;
 
-        case kToggleOffOnPanels:
-            SatellitePower::CutPowerFromPanels();
-            TaskUtils::SleepMilli(toggle_duration);
-            SatellitePower::RestorePowerFromPanels();
-            break;
+            case kToggleOffOnPanels:
+                SatellitePower::CutPowerFromPanels();
+                TaskUtils::SleepMilli(toggle_duration);
+                SatellitePower::RestorePowerFromPanels();
+                break;
 
-        case kToggleOnPanels:
-            SatellitePower::RestorePowerFromPanels();
-            break;
+            case kToggleOnPanels:
+                SatellitePower::RestorePowerFromPanels();
+                break;
 
-        case kToggleOffPanels:
-            SatellitePower::CutPowerFromPanels();
-            break;
+            case kToggleOffPanels:
+                SatellitePower::CutPowerFromPanels();
+                break;
 
-        default:
-            // TODO(dingbenjamin): Include invalid toggle type in exception
-            throw etl::exception(
-                "Invalid toggle type for IoExpanderToggleUplink", __FILE__,
-                __LINE__);
+            default:
+                // TODO(dingbenjamin): Include invalid toggle type in exception
+                throw etl::exception(
+                    "Invalid toggle type for IoExpanderToggleUplink", __FILE__,
+                    __LINE__);
+        }
+    } catch (etl::exception& e) {
+        SatellitePower::Unlock(key);
+        throw;
     }
+
+    SatellitePower::Unlock(key);
     return true;
 }

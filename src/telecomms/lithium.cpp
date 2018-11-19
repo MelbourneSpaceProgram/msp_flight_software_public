@@ -26,6 +26,7 @@ Lithium* Lithium::instance = NULL;
 uint8_t Lithium::tx_count = 0;
 uint8_t Lithium::rx_count = 0;
 uint8_t Lithium::command_success_count = 0;
+IArg Lithium::power_key = 0;
 bool Lithium::currently_transmitting = false;
 
 Lithium::Lithium()
@@ -73,6 +74,7 @@ Lithium::Lithium()
 void Lithium::PreTransmit() {
     // Turn off flight systems before every transmission to avoid booting with
     // flight systems on in the case of a brownout.
+    power_key = SatellitePower::Lock();
     try {
         SatellitePower::CutPowerToFlightSystems();
     } catch (etl::exception& e) {
@@ -103,6 +105,7 @@ void Lithium::PostTransmit() {
     } catch (etl::exception& e) {
         MspException::LogException(e);
     }
+    SatellitePower::Unlock(power_key);
 }
 
 bool Lithium::Transmit(TransmitPayload* transmit_payload) {

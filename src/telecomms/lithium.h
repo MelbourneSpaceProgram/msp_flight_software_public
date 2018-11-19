@@ -2,6 +2,7 @@
 #define SRC_TELECOMMS_LITHIUM_H_
 
 #include <src/board/uart/uart.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
 class TransmitPayload;
@@ -94,11 +95,12 @@ class Lithium {
     static uint8_t tx_count;
     static uint8_t rx_count;
     static uint8_t command_success_count;
+    static IArg power_key;
 
     Uart uart;
     bool lithium_transmit_enabled;
-    uint8_t lock;
     kLithiumState state;
+    uint8_t lock;
 
     Mailbox_Params uplink_mailbox_params;
     Mailbox_Handle uplink_mailbox_handle;

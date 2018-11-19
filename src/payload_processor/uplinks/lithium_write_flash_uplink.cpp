@@ -3,9 +3,11 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 
 LithiumWriteFlashUplink::LithiumWriteFlashUplink(byte* payload)
     : Uplink(kLithiumWriteFlashUplinkArgumentLength),
@@ -15,9 +17,15 @@ bool LithiumWriteFlashUplink::ExecuteUplink() {
     WriteFlashCommand command(&md5);
     bool success = Lithium::GetInstance()->DoCommand(&command);
 
-    SatellitePower::CutPowerToTelecoms();
-    TaskUtils::SleepMilli(1000);
-    SatellitePower::RestorePowerToTelecoms();
+    IArg key = SatellitePower::Lock();
+    try {
+        SatellitePower::CutPowerToTelecoms();
+        TaskUtils::SleepMilli(1000);
+        SatellitePower::RestorePowerToTelecoms();
+    } catch (etl::exception& e) {
+        MspException::LogException(e);
+    }
+    SatellitePower::Unlock(key);
 
     NoOpCommand no_op;
     success = success && Lithium::GetInstance()->DoCommand(&no_op);

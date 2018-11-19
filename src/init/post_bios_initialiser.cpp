@@ -35,6 +35,7 @@
 #include <src/util/system_watchdog.h>
 #include <src/util/task_utils.h>
 #include <string.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <xdc/runtime/Log.h>
 
@@ -170,9 +171,16 @@ void PostBiosInitialiser::InitHardware() {
             new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
         SatellitePower::Initialize(bms_bus_d, bms_bus_c);
         TaskUtils::SleepMilli(1000);
-        SatellitePower::RestorePowerToFlightSystems();
-        TaskUtils::SleepMilli(1000);
-        SatellitePower::RestorePowerToTelecoms();
+        IArg key = SatellitePower::Lock();
+        try {
+            SatellitePower::RestorePowerToFlightSystems();
+            TaskUtils::SleepMilli(1000);
+            SatellitePower::RestorePowerToTelecoms();
+        } catch (etl::exception& e) {
+            SatellitePower::Unlock(key);
+            throw;
+        }
+        SatellitePower::Unlock(key);
     } catch (etl::exception& e) {
         MspException::LogException(e);
     }

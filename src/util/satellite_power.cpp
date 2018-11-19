@@ -7,11 +7,21 @@
 
 Bms* SatellitePower::bms_d;
 Bms* SatellitePower::bms_c;
+GateMutexPri_Params SatellitePower::mutex_params = {NULL};
+GateMutexPri_Handle SatellitePower::power_mutex = NULL;
 
 void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
     bms_d = bms_bus_d;
     bms_c = bms_bus_c;
 
+    GateMutexPri_Params_init(&mutex_params);
+    power_mutex = GateMutexPri_create(&mutex_params, NULL);
+    if (power_mutex == NULL) {
+        throw etl::exception("Failed to create SatellitePower mutex", __FILE__,
+                             __LINE__);
+    }
+
+    IArg key = Lock();
     CutPowerToTelecoms();
 
     const IoExpander* io_expander_bms = IoExpander::GetIoExpander(0);
@@ -38,6 +48,13 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
         MspException::LogException(e);
         Log_error0("BMS IO expander failed to initialise properly");
     }
+    Unlock(key);
+}
+
+IArg SatellitePower::Lock() { return GateMutexPri_enter(power_mutex); }
+
+void SatellitePower::Unlock(IArg key) {
+    return GateMutexPri_leave(power_mutex, key);
 }
 
 void SatellitePower::CutPowerFromPanels() {

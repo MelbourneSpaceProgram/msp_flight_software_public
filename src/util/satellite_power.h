@@ -5,6 +5,7 @@
 #include <src/board/i2c/bms/bms.h>
 #include <src/board/i2c/io_expander/io_expander.h>
 #include <src/util/data_types.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 
 class SatellitePower {
    public:
@@ -17,6 +18,8 @@ class SatellitePower {
     static void RestorePowerToTelecoms();
     static bool ConfigureBmsBusD();
     static bool ConfigureBmsBusC();
+    static IArg Lock();
+    static void Unlock(IArg key);
     static Bms* GetBmsBusD();
     static Bms* GetBmsBusC();
 
@@ -33,6 +36,9 @@ class SatellitePower {
         IoExpander::kIoPin4;
     static Bms* bms_d;
     static Bms* bms_c;
+
+    static GateMutexPri_Params mutex_params;
+    static GateMutexPri_Handle power_mutex;
 };
 
 #endif  // SRC_UTIL_SATELLITE_POWER_H_
