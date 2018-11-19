@@ -7,6 +7,7 @@
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/util/matrix.h>
+#include <ti/sysbios/gates/GateMutexPri.h>
 
 class I2cMultiplexer;
 class I2c;
@@ -63,16 +64,21 @@ class MeasurableManager {
                 earliest_acceptable_ms = 0;
             }
 
-            uint64_t cache_time_ms =
-                nanopb_measurable->GetReading().timestamp_ms;
-            if (nanopb_measurable->first_reading ||
-                (!always_use_cached &&
-                 (cache_time_ms <= earliest_acceptable_ms))) {
-                // TODO(dingbenjamin): Lock the relevant bus/sensor with a
-                // semaphore
-                nanopb_measurable->TakeReading();
-                nanopb_measurable->first_reading = false;
+            IArg key = GateMutexPri_enter(manager_mutex);
+            try {
+                uint64_t cache_time_ms =
+                    nanopb_measurable->GetReading().timestamp_ms;
+                if (nanopb_measurable->first_reading ||
+                    (!always_use_cached &&
+                     (cache_time_ms <= earliest_acceptable_ms))) {
+                    nanopb_measurable->TakeReading();
+                    nanopb_measurable->first_reading = false;
+                }
+            } catch (etl::exception &e) {
+                GateMutexPri_leave(manager_mutex, key);
+                throw;
             }
+            GateMutexPri_leave(manager_mutex, key);
             return nanopb_measurable->GetReading();
         } catch (etl::exception &e) {
             return nanopb_measurable->failure_reading;
@@ -119,6 +125,9 @@ class MeasurableManager {
 
     static MeasurableManager *instance;
     static constexpr uint16_t kMaxMeasurables = 400;
+
+    GateMutexPri_Params mutex_params;
+    GateMutexPri_Handle manager_mutex;
 
     const I2c *bus_a;
     const I2c *bus_b;

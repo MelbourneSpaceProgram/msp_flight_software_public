@@ -31,7 +31,10 @@ MeasurableManager *MeasurableManager::GetInstance() {
     return instance;
 }
 
-MeasurableManager::MeasurableManager() { measurables.fill(NULL); }
+MeasurableManager::MeasurableManager()
+    : mutex_params({NULL}), manager_mutex(NULL) {
+    measurables.fill(NULL);
+}
 
 void MeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
                              const I2c *bus_c, const I2c *bus_d) {
@@ -39,6 +42,12 @@ void MeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
     this->bus_b = bus_b;
     this->bus_c = bus_c;
     this->bus_d = bus_d;
+    GateMutexPri_Params_init(&mutex_params);
+    manager_mutex = GateMutexPri_create(&mutex_params, NULL);
+    if (manager_mutex == NULL) {
+        throw etl::exception("Failed to create MeasurableManager mutex",
+                             __FILE__, __LINE__);
+    }
 
     I2cMultiplexer *mux_a = new I2cMultiplexer(bus_a, 0x76);
     I2cMultiplexer *mux_c = new I2cMultiplexer(bus_c, 0x71);
@@ -107,8 +116,8 @@ void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {
     Mcp9808 *power_temp_2 =
         new Mcp9808(bus_a, 0x19, mux_a, I2cMultiplexer::kMuxChannel2);
 
-    Bms* bms_bus_d = SatellitePower::GetBmsBusD();
-    Bms* bms_bus_c = SatellitePower::GetBmsBusC();
+    Bms *bms_bus_d = SatellitePower::GetBmsBusD();
+    Bms *bms_bus_c = SatellitePower::GetBmsBusC();
 
     // TODO(hugorilla): Remove redundant BMS measurables here
     AddTemperature(kEpsT1, power_temp_1);
