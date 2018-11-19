@@ -14,8 +14,7 @@ LithiumWriteFlashUplink::LithiumWriteFlashUplink(byte* payload)
       md5(NanopbDecode(LithiumMd5Payload)(payload)) {}
 
 bool LithiumWriteFlashUplink::ExecuteUplink() {
-    WriteFlashCommand command(&md5);
-    bool success = Lithium::GetInstance()->DoCommand(&command);
+    bool success = Lithium::GetInstance()->DoWriteFlash(md5);
 
     IArg key = SatellitePower::Lock();
     try {
@@ -28,7 +27,6 @@ bool LithiumWriteFlashUplink::ExecuteUplink() {
     }
     SatellitePower::Unlock(key);
 
-    NoOpCommand no_op;
-    success = success && Lithium::GetInstance()->DoCommand(&no_op);
+    success = success && Lithium::GetInstance()->DoNoOp();
     return success;
 }

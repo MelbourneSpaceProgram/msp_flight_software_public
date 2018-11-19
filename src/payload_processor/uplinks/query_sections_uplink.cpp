@@ -14,10 +14,8 @@ bool QuerySectionsUplink::ExecuteUplink() {
     if (queried.queried) {
         PayloadSectionManager* section_manager =
             payload_processor->GetPayloadSectionManager();
-        Lithium* lithium = Lithium::GetInstance();
         QuerySectionsDownlinkPayload query(section_manager->GetBufferStatus());
-        TransmitCommand section_buffer_query(&query);
-        return lithium->DoCommand(&section_buffer_query);
+        return Lithium::GetInstance()->Transmit(&query);
     }
     return false;
 }

@@ -68,8 +68,7 @@ void PostBiosInitialiser::RunUnitTests(uint16_t stack_size) {
 }
 
 void PostBiosInitialiser::InitBeacon(uint16_t stack_size, bool limp_mode) {
-    FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
-    if (!Lithium::GetInstance()->DoCommand(&fast_pa_command)) {
+    if (!Lithium::GetInstance()->DoFastPa(kNominalLithiumPowerLevel)) {
         Log_error0("Failed to initialise Lithium power amplifier setting");
     }
 

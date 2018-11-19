@@ -12,10 +12,7 @@ LithiumSetPaUplink::LithiumSetPaUplink(byte* payload)
       pa_level(NanopbDecode(LithiumFastPaUplinkPayload)(payload)) {}
 
 bool LithiumSetPaUplink::ExecuteUplink() {
-    Lithium* lithium = Lithium::GetInstance();
-    FastPaCommand command = FastPaCommand(pa_level.pa_level);
-
-    if (lithium->DoCommand(&command)) {
+    if (Lithium::GetInstance()->DoFastPa(pa_level.pa_level)) {
         return true;
     } else {
         Log_error0("Lithium power amplifier level could not be set.");

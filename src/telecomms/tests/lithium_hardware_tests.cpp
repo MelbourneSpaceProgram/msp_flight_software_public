@@ -2,15 +2,6 @@
 #include <external/etl/array.h>
 #include <src/config/unit_tests.h>
 #include <src/telecomms/lithium.h>
-#include <src/telecomms/lithium_commands/fast_pa_command.h>
-#include <src/telecomms/lithium_commands/get_configuration_command.h>
-#include <src/telecomms/lithium_commands/lithium_command.h>
-#include <src/telecomms/lithium_commands/no_op_command.h>
-#include <src/telecomms/lithium_commands/reset_system_command.h>
-#include <src/telecomms/lithium_commands/set_configuration_command.h>
-#include <src/telecomms/lithium_commands/telemetry_query_command.h>
-#include <src/telecomms/lithium_commands/transmit_command.h>
-#include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/lithium_md5.h>
 #include <src/telecomms/lithium_telemetry.h>
@@ -25,11 +16,8 @@ TEST_GROUP(Lithium) {
     };
 };
 
-// RunnableLithiumListener MUST be initialised to pass these
-TEST(Lithium, TestNoOpHardware) {
-    NoOpCommand test_command;
-    CHECK(Lithium::GetInstance()->DoCommand(&test_command));
-}
+// RunnableLithiumListener MUST be initialised to pass th::ese
+TEST(Lithium, TestNoOpHardware) { CHECK(Lithium::GetInstance()->DoNoOp()); }
 
 TEST(Lithium, TestGetSetConfigHardware) {
     LithiumConfiguration lithium_config;
@@ -58,13 +46,10 @@ TEST(Lithium, TestGetSetConfigHardware) {
     lithium_config.function_config = 0x7001;
     lithium_config.function_config2 = 0x000;
 
-    SetConfigurationCommand set_configuration_command(lithium_config);
-    CHECK(Lithium::GetInstance()->DoCommand(&set_configuration_command));
+    CHECK(Lithium::GetInstance()->DoSetConfiguration(lithium_config));
 
-    GetConfigurationCommand config_command;
-    CHECK(Lithium::GetInstance()->DoCommand(&config_command));
-    LithiumConfiguration received_configuration =
-        config_command.GetParsedResponse();
+    LithiumConfiguration received_configuration;
+    CHECK(Lithium::GetInstance()->DoGetConfiguration(received_configuration));
 
     CHECK(lithium_config.interface_baud_rate ==
           received_configuration.interface_baud_rate);
@@ -119,22 +104,17 @@ TEST(Lithium, TestWriteFlashHardware) {
         0x9b, 0x20, 0x4f, 0xc6, 0x5f, 0x0f, 0x1e, 0x60,
         0x7f, 0xc1, 0x82, 0x89, 0x6d, 0x81, 0xc1, 0x12};
     LithiumMd5 md5_message(&md5_bytes);
-    WriteFlashCommand flash_command(&md5_message);
-    CHECK(Lithium::GetInstance()->DoCommand(&flash_command));
+    CHECK(Lithium::GetInstance()->DoWriteFlash(md5_message));
 }
 
 TEST(Lithium, TestFastPaHardware) {
-    uint8_t pa_level = 0x04;
-    FastPaCommand fast_pa_command(pa_level);
-    CHECK(Lithium::GetInstance()->DoCommand(&fast_pa_command));
-    GetConfigurationCommand config_command;
-    Lithium::GetInstance()->DoCommand(&config_command);
-    LithiumConfiguration received_configuration =
-        config_command.GetParsedResponse();
-    CHECK_EQUAL(received_configuration.tx_power_amp_level, pa_level);
+    LithiumConfiguration received_configuration;
+    Lithium::GetInstance()->DoFastPa(0x04);
+    CHECK(Lithium::GetInstance()->DoGetConfiguration(received_configuration));
+    CHECK_EQUAL(received_configuration.tx_power_amp_level, 0x04);
 }
 
 TEST(Lithium, TestTelemetryQueryHardware) {
-    LithiumTelemetry telemetry = Lithium::GetInstance()->ReadLithiumTelemetry();
-    CHECK(TelemetryQueryCommand::CheckValidTelemetry(telemetry));
+    LithiumTelemetry telemetry;
+    CHECK(Lithium::GetInstance()->DoTelemetryQuery(telemetry));
 }

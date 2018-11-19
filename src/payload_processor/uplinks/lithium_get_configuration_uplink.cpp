@@ -7,12 +7,13 @@
 LithiumGetConfigurationUplink::LithiumGetConfigurationUplink() : Uplink(0) {}
 
 bool LithiumGetConfigurationUplink::ExecuteUplink() {
+    LithiumConfiguration config;
     GetConfigurationCommand get_config_command;
-    if (!Lithium::GetInstance()->DoCommand(&get_config_command)) {
+    if (!Lithium::GetInstance()->DoGetConfiguration(config)) {
         Log_error0("Unable to retrieve config from Lithium");
         return false;
     }
 
-    LithiumGetConfigurationUplinkPayload payload(get_config_command.GetParsedResponse());
+    LithiumGetConfigurationUplinkPayload payload(config);
     return Lithium::GetInstance()->Transmit(&payload);
 }

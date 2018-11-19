@@ -317,10 +317,8 @@ TEST(PayloadProcessor, TestLithumGetSetConfigUplink) {
     CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
     // Check the configuration has been set correctly
-    GetConfigurationCommand hardware_get_config;
-    CHECK(Lithium::GetInstance()->DoCommand(&hardware_get_config));
-    LithiumConfiguration received_configuration =
-        hardware_get_config.GetParsedResponse();
+    LithiumConfiguration received_configuration;
+    CHECK(Lithium::GetInstance()->DoGetConfiguration(received_configuration));
 
     CHECK_EQUAL('T', received_configuration.destination[0]);
     CHECK_EQUAL('E', received_configuration.destination[1]);

@@ -4,15 +4,19 @@
 #include <src/messages/serialised_message.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
+#include <src/telecomms/lithium_commands/fast_pa_command.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_commands/lithium_command.h>
 #include <src/telecomms/lithium_commands/lithium_command_codes.h>
 #include <src/telecomms/lithium_commands/no_op_command.h>
 #include <src/telecomms/lithium_commands/reset_system_command.h>
+#include <src/telecomms/lithium_commands/set_configuration_command.h>
 #include <src/telecomms/lithium_commands/telemetry_query_command.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_commands/write_flash_command.h>
 #include <src/telecomms/lithium_configuration.h>
+#include <src/telecomms/lithium_md5.h>
+#include <src/telecomms/lithium_telemetry.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>
 #include <src/util/msp_exception.h>
@@ -196,35 +200,55 @@ uint8_t Lithium::GetCommandSuccessCounter() {
     return Lithium::command_success_count;
 }
 
-LithiumTelemetry Lithium::ReadLithiumTelemetry() const {
-    LithiumTelemetry invalid_telemetry = {0, 0, {0, 0, 0}, 0, 0, 0};
+bool Lithium::DoTelemetryQuery(LithiumTelemetry& returned_telemetry) const {
     TelemetryQueryCommand query;
 
-    if (!DoCommand(&query)) return invalid_telemetry;
-
-    // Sometimes the Lithium returns a telemetry packet filled with
-    // zeroes, if this is the case we should query again
-    if (!TelemetryQueryCommand::CheckValidTelemetry(
-            query.GetParsedResponse())) {
-        // Try again if we get an invalid telemetry
-        if (!DoCommand(&query)) return invalid_telemetry;
+    if (!DoCommand(&query))
+        // Sometimes the Lithium returns a telemetry packet filled with
+        // zeroes, if this is the case we should query again
         if (!TelemetryQueryCommand::CheckValidTelemetry(
-                query.GetParsedResponse()))
-            return invalid_telemetry;
-    }
+                query.GetParsedResponse())) {
+            // Try again if we get an invalid telemetry
+            if (!DoCommand(&query)) return false;
+            if (!TelemetryQueryCommand::CheckValidTelemetry(
+                    query.GetParsedResponse()))
+                return false;
+        }
     // We have received a valid telemetry
-    return query.GetParsedResponse();
+    returned_telemetry = query.GetParsedResponse();
+    return true;
 }
 
-LithiumConfiguration Lithium::ReadLithiumConfiguration() const {
-    LithiumConfiguration invalid_configuration = {
-        0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0},
-        0, 0, 0, 0};
-    GetConfigurationCommand config_command;
+bool Lithium::DoGetConfiguration(
+    LithiumConfiguration& returned_configuration) const {
+    GetConfigurationCommand get_config_command;
+    if (!DoCommand(&get_config_command)) {
+        Log_error0("Unable to retrieve config from Lithium");
+        return false;
+    }
 
-    if (!DoCommand(&config_command)) return invalid_configuration;
+    returned_configuration = get_config_command.GetParsedResponse();
+    return true;
+}
 
-    return config_command.GetParsedResponse();
+bool Lithium::DoSetConfiguration(LithiumConfiguration config) const {
+    SetConfigurationCommand set_config_command(config);
+    return DoCommand(&set_config_command);
+}
+
+bool Lithium::DoWriteFlash(LithiumMd5 md5) const {
+    WriteFlashCommand flash_command(&md5);
+    return DoCommand(&flash_command);
+}
+
+bool Lithium::DoFastPa(uint8_t pa_level) const {
+    FastPaCommand fast_pa_command(pa_level);
+    return DoCommand(&fast_pa_command);
+}
+
+bool Lithium::DoNoOp() const {
+    NoOpCommand no_op;
+    return DoCommand(&no_op);
 }
 
 void Lithium::UnlockState(LithiumShutoffCondition condition) {

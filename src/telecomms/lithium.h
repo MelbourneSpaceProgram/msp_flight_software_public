@@ -2,6 +2,7 @@
 #define SRC_TELECOMMS_LITHIUM_H_
 
 #include <src/board/uart/uart.h>
+#include <src/telecomms/lithium_md5.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
@@ -66,11 +67,7 @@ class Lithium {
     Mailbox_Handle GetHeaderMailbox() const;
     Mailbox_Handle GetCommandResponseMailbox() const;
     Mailbox_Handle GetReceiveMailbox() const;
-    LithiumTelemetry ReadLithiumTelemetry() const;
-    LithiumConfiguration ReadLithiumConfiguration() const;
     bool IsTransmitEnabled();
-    bool Transmit(TransmitPayload* transmit_payload);
-    bool DoCommand(LithiumCommand* command) const;
     // TODO(dingbenjamin): Make this function private if possible, friend unit
     // tests
     void SetTransmitEnabled(bool lithium_enabled);
@@ -80,6 +77,14 @@ class Lithium {
     void UnlockState(LithiumShutoffCondition condition);
     bool IsStateLocked(LithiumShutoffCondition condition);
     void ForceUnlock();
+
+    bool DoTelemetryQuery(LithiumTelemetry& returned_telemetry) const;
+    bool DoGetConfiguration(LithiumConfiguration& returned_configuration) const;
+    bool DoSetConfiguration(LithiumConfiguration config) const;
+    bool DoWriteFlash(LithiumMd5 md5) const;
+    bool DoNoOp() const;
+    bool DoFastPa(uint8_t pa_level) const;
+    bool Transmit(TransmitPayload* transmit_payload);
 
     static bool IsTransmitting();
 
@@ -117,6 +122,7 @@ class Lithium {
 
     Lithium();
     Uart* GetUart();
+    bool DoCommand(LithiumCommand* command) const;
 };
 
 #endif  // SRC_TELECOMMS_LITHIUM_H_

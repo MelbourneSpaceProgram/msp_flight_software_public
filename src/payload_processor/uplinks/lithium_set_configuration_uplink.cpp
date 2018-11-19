@@ -39,6 +39,5 @@ bool LithiumSetConfigurationUplink::ExecuteUplink() {
     lithium_config.function_config2 =
         decoded_payload.function_config2_16 % 65536;
 
-    SetConfigurationCommand set_configuration_command(lithium_config);
-    return Lithium::GetInstance()->DoCommand(&set_configuration_command);
+    return Lithium::GetInstance()->DoSetConfiguration(lithium_config);
 }
