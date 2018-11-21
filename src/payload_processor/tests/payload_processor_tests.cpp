@@ -12,6 +12,7 @@
 #include <src/messages/EraseFlashUplinkPayload.pb.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
 #include <src/messages/LithiumConfigurationPayload.pb.h>
+#include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/payload_processor.h>
@@ -35,6 +36,7 @@
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
+#include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 #include <stdio.h>
@@ -215,76 +217,56 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
 TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
     byte buffer_off[Lithium::kMaxReceivedUplinkSize] = {0};
 
+    const IoExpander* bms_io_expander =
+        IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
+    MagnetometerReading magnetometer_reading;
+
     MockUplinkBuilder builder_off(buffer_off, Lithium::kMaxReceivedUplinkSize);
     // Set nanopb message
-    // Toggle comms regulators expander
-    IoExpanderToggleUplinkPayload en_1_off = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn1),
-        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
-    IoExpanderToggleUplinkPayload en_3_off = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn3),
-        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
-    IoExpanderToggleUplinkPayload en_4_off = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn4),
-        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
-    IoExpanderToggleUplinkPayload en_5_off = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
+    // Toggle Flight Systems regulators expander
+    IoExpanderToggleUplinkPayload en_off = {
+        static_cast<uint32_t>(IoExpander::kEpsIoExpander),
+        static_cast<uint32_t>(SatellitePower::kIoExpanderPinFSEn),
         static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOff), 1000};
 
     builder_off.AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_1_off)
-        .AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_3_off)
-        .AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_4_off)
-        .AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_5_off);
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_off);
 
     PayloadProcessor payload_processor;
     CHECK(payload_processor.ParseAndExecuteUplinks(builder_off.Build()));
 
-    // Check Lithium is now unable to transmit
+    // Check Flight Systems is off by reading from IMU
     TaskUtils::SleepMilli(2000);
-    TestOnesPayload ones;
-    CHECK_FALSE(Lithium::GetInstance()->Transmit(&ones));
+    magnetometer_reading =
+        measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+            kFsImuMagno2, 0);
+    CHECK_EQUAL(magnetometer_reading.x, kInvalidDouble);
+    CHECK_EQUAL(magnetometer_reading.y, kInvalidDouble);
+    CHECK_EQUAL(magnetometer_reading.z, kInvalidDouble);
 
     // Turn back on
-    IoExpanderToggleUplinkPayload en_1_on = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn1),
-        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
-    IoExpanderToggleUplinkPayload en_3_on = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn3),
-        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
-    IoExpanderToggleUplinkPayload en_4_on = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn4),
-        static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
-    IoExpanderToggleUplinkPayload en_5_on = {
-        static_cast<uint32_t>(IoExpander::kCommsIoExpander),
-        static_cast<uint32_t>(IoExpander::kIoExpanderPinTelecomsEn5),
+    IoExpanderToggleUplinkPayload en_on = {
+        static_cast<uint32_t>(IoExpander::kEpsIoExpander),
+        static_cast<uint32_t>(SatellitePower::kIoExpanderPinFSEn),
         static_cast<uint32_t>(IoExpanderToggleUplink::kToggleOn), 1000};
 
     byte buffer_on[Lithium::kMaxReceivedUplinkSize] = {0};
     MockUplinkBuilder builder_on(buffer_on, Lithium::kMaxReceivedUplinkSize);
 
     builder_on.AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_1_on)
-        .AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_3_on)
-        .AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_4_on)
-        .AddUplinkCode(kIoExpanderToggleUplink)
-        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_5_on);
+        .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_on);
 
     CHECK(payload_processor.ParseAndExecuteUplinks(builder_on.Build()));
     TaskUtils::SleepMilli(2000);
-    CHECK(Lithium::GetInstance()->Transmit(&ones));
+
+    magnetometer_reading =
+        measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+            kFsImuMagno2, 0);
+
+    CHECK(magnetometer_reading.x != kInvalidDouble);
+    CHECK(magnetometer_reading.y != kInvalidDouble);
+    CHECK(magnetometer_reading.z != kInvalidDouble);
 }
 
 TEST(PayloadProcessor, TestEraseFlashUplink) {

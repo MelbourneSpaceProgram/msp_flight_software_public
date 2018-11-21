@@ -31,7 +31,6 @@ class SatellitePower {
     static bool ConfigureBms(BmsId bms_id);
     static bool ConfigureBmsICharge(BmsId bms_id);
 
-   private:
     static constexpr IoExpander::IoPin kIoExpanderPinBms1En =
         IoExpander::kIoPin0;
     static constexpr IoExpander::IoPin kIoExpanderPinBms2En =
@@ -42,6 +41,8 @@ class SatellitePower {
         IoExpander::kIoPin1;
     static constexpr IoExpander::IoPin kIoExpanderPinTelecomsEn4 =
         IoExpander::kIoPin4;
+
+   private:
     static GateMutexPri_Params mutex_params;
     static GateMutexPri_Handle power_mutex;
     static Bms* bms[2];
