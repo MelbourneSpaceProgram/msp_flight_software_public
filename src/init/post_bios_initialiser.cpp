@@ -55,50 +55,48 @@ Uart* PostBiosInitialiser::InitDebugUart() {
     return debug_uart;
 }
 
-void PostBiosInitialiser::InitRadioListener() {
-    TaskHolder* radio_listener =
-        new TaskHolder(kRadioListenerStackSize, "RadioListener", 12,
-                       new RunnableLithiumListener());
+void PostBiosInitialiser::InitRadioListener(uint16_t stack_size) {
+    TaskHolder* radio_listener = new TaskHolder(stack_size, "RadioListener", 12,
+                                                new RunnableLithiumListener());
     radio_listener->Start();
     Log_info0("Radio receiver started");
 }
 
-void PostBiosInitialiser::InitContinuousTransmitShutoff() {
+void PostBiosInitialiser::InitContinuousTransmitShutoff(uint16_t stack_size) {
     TaskHolder* transmit_shutoff =
-        new TaskHolder(kTransmitShutoffStackSize, "Transmit Shutoff", 11,
+        new TaskHolder(stack_size, "Transmit Shutoff", 11,
                        new RunnableContinuousTransmitShutoff());
     transmit_shutoff->Start();
     Log_info0("Lithium failsafe started");
 }
 
-void PostBiosInitialiser::RunUnitTests() {
-    TaskHolder* test_task = new TaskHolder(kUnitTestsStackSize, "Unit Tests", 3,
+void PostBiosInitialiser::RunUnitTests(uint16_t stack_size) {
+    TaskHolder* test_task = new TaskHolder(stack_size, "Unit Tests", 3,
                                            TestInitialiser::GetInstance());
     test_task->Start();
 }
 
-void PostBiosInitialiser::InitBeacon() {
+void PostBiosInitialiser::InitBeacon(uint16_t stack_size) {
     FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
     if (!Lithium::GetInstance()->DoCommand(&fast_pa_command)) {
         Log_error0("Failed to initialise Lithium power amplifier setting");
     }
 
     TaskHolder* beacon_task =
-        new TaskHolder(kBeaconStackSize, "Beacon", 8, new RunnableBeacon());
+        new TaskHolder(stack_size, "Beacon", 8, new RunnableBeacon());
     beacon_task->Start();
     Log_info0("Beacon started");
 }
 
-void PostBiosInitialiser::InitPayloadProcessor() {
-    TaskHolder* payload_processor_task =
-        new TaskHolder(kPayloadProcessorStackSize, "PayloadProcessor", 6,
-                       new RunnablePayloadProcessor());
+void PostBiosInitialiser::InitPayloadProcessor(uint16_t stack_size) {
+    TaskHolder* payload_processor_task = new TaskHolder(
+        stack_size, "PayloadProcessor", 6, new RunnablePayloadProcessor());
 
     payload_processor_task->Start();
     Log_info0("Payload processor started");
 }
 
-void PostBiosInitialiser::InitOrientationControl() {
+void PostBiosInitialiser::InitOrientationControl(uint16_t stack_size) {
     if (kRunMagnetorquersAtConstantPower) {
         // Rather than start orientation control, just blast the
         // magnetorquers
@@ -115,8 +113,8 @@ void PostBiosInitialiser::InitOrientationControl() {
 
         // TODO(rskew) review priority
         TaskHolder* orientation_control_task =
-            new TaskHolder(kOrientationControlStackSize, "OrientationControl",
-                           7, new RunnableOrientationControl());
+            new TaskHolder(stack_size, "OrientationControl", 7,
+                           new RunnableOrientationControl());
         Mailbox_Params_init(
             &LocationEstimator::tle_update_uplink_mailbox_params);
         Mailbox_Handle tle_update_uplink_mailbox_handle = Mailbox_create(
@@ -136,10 +134,9 @@ void PostBiosInitialiser::InitOrientationControl() {
     }
 }
 
-void PostBiosInitialiser::InitSystemHealthCheck() {
-    TaskHolder* system_health_check_task =
-        new TaskHolder(kSystemHealthCheckStackSize, "SystemHealthCheck", 5,
-                       new RunnableSystemHealthCheck());
+void PostBiosInitialiser::InitSystemHealthCheck(uint16_t stack_size) {
+    TaskHolder* system_health_check_task = new TaskHolder(
+        stack_size, "SystemHealthCheck", 5, new RunnableSystemHealthCheck());
     system_health_check_task->Start();
     Log_info0("System healthcheck started");
 }
@@ -238,23 +235,23 @@ void PostBiosInitialiser::InitHardware() {
     }
 }
 
-void PostBiosInitialiser::InitMemoryLogger() {
+void PostBiosInitialiser::InitMemoryLogger(uint16_t stack_size) {
     if (kDitlMode) {
-        TaskHolder* memory_logger_task =
-            new TaskHolder(kMemoryLoggerStackSize, "MemoryLogger", 11,
-                           new RunnableMemoryLogger());
+        TaskHolder* memory_logger_task = new TaskHolder(
+            stack_size, "MemoryLogger", 11, new RunnableMemoryLogger());
         memory_logger_task->Start();
         Log_info0("Memory logger started");
     }
 }
 
-void PostBiosInitialiser::InitTimeSource() {
-    TaskHolder* time_source_task = new TaskHolder(
-        kTimeSourceStackSize, "TimeSource", 10, new RunnableTimeSource());
+void PostBiosInitialiser::InitTimeSource(uint16_t stack_size) {
+    TaskHolder* time_source_task =
+        new TaskHolder(stack_size, "TimeSource", 10, new RunnableTimeSource());
     time_source_task->Start();
 }
 
-void PostBiosInitialiser::InitConsoleUart() {
+void PostBiosInitialiser::InitConsoleUart(uint16_t logger_stack_size,
+                                          uint16_t listener_stack_size) {
     Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
     debug_uart->SetBaudRate(Uart::kBaud115200)
         ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
@@ -262,23 +259,22 @@ void PostBiosInitialiser::InitConsoleUart() {
         ->Open();
 
     TaskHolder* console_uart_logger_task =
-        new TaskHolder(kConsoleLoggerStackSize, "UartLogger", 7,
+        new TaskHolder(logger_stack_size, "UartLogger", 7,
                        new RunnableConsoleLogger(debug_uart));
     console_uart_logger_task->Start();
     Log_info0("Umbilical UART logger started");
 
     TaskHolder* console_uart_listener_task =
-        new TaskHolder(kConsoleListenerStackSize, "UartListener", 12,
+        new TaskHolder(listener_stack_size, "UartListener", 12,
                        new RunnableConsoleListener(debug_uart));
     console_uart_listener_task->Start();
     Log_info0("Umbilical UART listener started");
 }
 
-void PostBiosInitialiser::InitAntennaBurner() {
+void PostBiosInitialiser::InitAntennaBurner(uint16_t stack_size) {
     // TODO (rskew) review priority
-    TaskHolder* antenna_burner_task =
-        new TaskHolder(kAntennaBurnerStackSize, "AntennaBurner", 6,
-                       new RunnableAntennaBurner());
+    TaskHolder* antenna_burner_task = new TaskHolder(
+        stack_size, "AntennaBurner", 6, new RunnableAntennaBurner());
     antenna_burner_task->Start();
 }
 
@@ -292,10 +288,10 @@ void PostBiosInitialiser::EjectionWait() {
 
 void PostBiosInitialiser::BeaconWait() { TaskUtils::SleepMilli(kBeaconWaitMs); }
 
-void PostBiosInitialiser::InitPowerManager() {
+void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
     // TODO (rskew) review priority
     TaskHolder* power_manager_task = new TaskHolder(
-        kPowerManagerStackSize, "PowerManager", 8, new RunnablePowerManager());
+        stack_size, "PowerManager", 8, new RunnablePowerManager());
     power_manager_task->Start();
 }
 
