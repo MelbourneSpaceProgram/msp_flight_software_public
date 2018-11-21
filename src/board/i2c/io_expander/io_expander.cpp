@@ -34,6 +34,12 @@ IoExpander::IoExpander(const I2c* bus, byte address,
                        I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {}
 
+void IoExpander::InitialiseOutputPin(const IoExpander* expander,
+                                     IoExpander::IoPin pin) {
+    expander->SetDirection(pin, IoExpander::kIoOutput);
+    expander->SetPolarity(pin, IoExpander::kIoActiveHigh);
+}
+
 IoExpander::IoDirection IoExpander::GetDirection(IoExpander::IoPin pin) const {
     // 1 = Input
     // 0 = Output

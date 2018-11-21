@@ -28,18 +28,25 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
 
     try {
         switch (toggle_type) {
+                // Initialisation happens after setting pin value so that as
+                // soon as the pin is set to output, it will be the correct
+                // intended value without a period of potentially being the
+                // incorrect value.
             case kToggleOffOn:
                 expander->SetPin(pin, false);
+                IoExpander::InitialiseOutputPin(expander, pin);
                 TaskUtils::SleepMilli(toggle_duration);
                 expander->SetPin(pin, true);
                 break;
 
             case kToggleOn:
                 expander->SetPin(pin, true);
+                IoExpander::InitialiseOutputPin(expander, pin);
                 break;
 
             case kToggleOff:
                 expander->SetPin(pin, false);
+                IoExpander::InitialiseOutputPin(expander, pin);
                 break;
 
             case kToggleOffOnFlightSystems:

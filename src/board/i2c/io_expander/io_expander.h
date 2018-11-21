@@ -32,7 +32,7 @@ class IoExpander : public I2cDevice {
         kIoPin13 = 0x0B,
         kIoPin14 = 0x0C,
         kIoPin15 = 0x0D,
-		kNumIoExpanderPins
+        kNumIoExpanderPins
     };
 
     enum IoExpanderIds {
@@ -47,6 +47,7 @@ class IoExpander : public I2cDevice {
 
     static void Init(I2c* bus_d);
     static const IoExpander* GetIoExpander(uint8_t index);
+    static void InitialiseOutputPin(const IoExpander* expander, IoPin pin);
 
     // TODO(dingbenjamin): Make constructor private after friending unit test
     IoExpander(
