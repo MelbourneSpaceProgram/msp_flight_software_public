@@ -226,8 +226,8 @@ void SdCard::Dump() {
                 FileDump(src, fpath);
                 FileClose(src);
             } catch (SdException &e) {
-                MspException::LogException(e);
-                return;
+                if (src != NULL) FileClose(src);
+                throw;
             }
         }
     }
