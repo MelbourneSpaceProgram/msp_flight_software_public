@@ -42,7 +42,6 @@ class PostBiosInitialiser : public Runnable {
     static void RunUnitTests(uint16_t stack_size = kUnitTestsStackSize);
 
     static void InitSingletons(I2c* bus_a, I2c* bus_b, I2c* bus_c, I2c* bus_d);
-    static Uart* InitDebugUart();
     static void InitHardware();
     static void EjectionWait();
     static void BeaconWait();

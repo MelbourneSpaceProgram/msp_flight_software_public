@@ -46,15 +46,6 @@ fnptr PostBiosInitialiser::GetRunnablePointer() {
     return &PostBiosInitialiser::PostBiosInit;
 }
 
-Uart* PostBiosInitialiser::InitDebugUart() {
-    Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
-    debug_uart->SetBaudRate(Uart::kBaud115200)
-        ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
-        ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
-        ->Open();
-    return debug_uart;
-}
-
 void PostBiosInitialiser::InitRadioListener(uint16_t stack_size) {
     TaskHolder* radio_listener = new TaskHolder(stack_size, "RadioListener", 12,
                                                 new RunnableLithiumListener());
