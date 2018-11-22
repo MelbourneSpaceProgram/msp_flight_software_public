@@ -13,8 +13,8 @@ TEST(BDotController, SaturationInEachAxis) {
 
     BDotController::ComputeControl(b_dot, signed_pwm);
 
-    DOUBLES_EQUAL(0.25, signed_pwm.Get(0, 0), 0.01);
-    DOUBLES_EQUAL(0.25, signed_pwm.Get(1, 0), 0.01);
+    DOUBLES_EQUAL(1, signed_pwm.Get(0, 0), 0.01);
+    DOUBLES_EQUAL(1, signed_pwm.Get(1, 0), 0.01);
     DOUBLES_EQUAL(1, signed_pwm.Get(2, 0), 0.01);
 }
 
@@ -63,7 +63,6 @@ TEST(BDotController, InvalidInputSize) {
     NewStackMatrixMacro(signed_pwm, 3, 1);
     NewStackMatrixMacro(m32, 3, 2);
 
-    CHECK_THROWS(MspException,
-                 BDotController::ComputeControl(m32, signed_pwm));
+    CHECK_THROWS(MspException, BDotController::ComputeControl(m32, signed_pwm));
     CHECK_THROWS(MspException, BDotController::ComputeControl(b_dot, m32));
 }
