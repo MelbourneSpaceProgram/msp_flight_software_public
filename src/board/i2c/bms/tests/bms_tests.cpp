@@ -233,15 +233,12 @@ TEST(Bms, TestBmsSettingsRead) {
             kEpsBmsSettingsReading2, 1);
 
     // BMS 1 tests
-    CHECK_FALSE(bms_settings_reading_1.v_charge_setting ==
-                BmsSettingsReading_v_charge_setting_default);
-    CHECK(bms_settings_reading_1.v_charge_setting ==
-          Bms::kVchargeSettingAllJeitaRegionsValue);
 
-    CHECK_FALSE(bms_settings_reading_1.i_charge_target ==
-                BmsSettingsReading_i_charge_target_default);
-    CHECK(bms_settings_reading_1.i_charge_target ==
-          Bms::kIChargeTargetAllJeitaRegionsValue);
+    // TODO(dingbenjamin): Add a test that checks the Jeita reigon i charge/v
+    // charge is being set properly
+
+    // Page 22 in datasheet mentions that Jeita temperature controlled charging
+    // does not use VCHARGE_SETTING or ICHARGE_TARGET for setting target values
 
     CHECK_FALSE(bms_settings_reading_1.v_in_uvcl_setting ==
                 BmsSettingsReading_v_in_uvcl_setting_default);
@@ -264,20 +261,12 @@ TEST(Bms, TestBmsSettingsRead) {
                 BmsSettingsReading_timestamp_ms_default);
 
     // BMS 2 tests
-    CHECK_FALSE(bms_settings_reading_2.v_charge_setting ==
-                BmsSettingsReading_v_charge_setting_default);
-    CHECK(bms_settings_reading_2.v_charge_setting ==
-          Bms::kVchargeSettingAllJeitaRegionsValue);
 
-    CHECK_FALSE(bms_settings_reading_2.i_charge_target ==
-                BmsSettingsReading_i_charge_target_default);
-    // TODO(hugorilla): Work out why this is failing
-    /* i_charge_target has a value of 1 both before and after
-     * the configuration write to this register, despite the fact
-     * that the I2C transaction is successful (by returning 'true'
-     */
-    CHECK(bms_settings_reading_2.i_charge_target ==
-          Bms::kIChargeTargetAllJeitaRegionsValue);
+    // TODO(dingbenjamin): Add a test that checks the Jeita reigon i charge/v
+    // charge is being set properly
+
+    // Page 22 in datasheet mentions that Jeita temperature controlled charging
+    // does not use VCHARGE_SETTING or ICHARGE_TARGET for setting target values
 
     CHECK_FALSE(bms_settings_reading_2.v_in_uvcl_setting ==
                 BmsSettingsReading_v_in_uvcl_setting_default);
