@@ -17,7 +17,8 @@ class RunnableContinuousTransmitShutoff : public Runnable {
     static void IncrementBucketCount();
     static uint16_t GetBucketCount();
     static bool TransmissionRateUnderThreshold();
-    static void ClearBuckets();  // TODO(naverill) remove
+    static void ClearBuckets();
+
    private:
     static void StartCounter();
     static uint16_t bucket_count;

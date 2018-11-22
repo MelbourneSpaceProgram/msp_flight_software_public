@@ -1,3 +1,4 @@
+#include <src/config/unit_tests.h>
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_utils.h>
@@ -28,16 +29,24 @@ void RunnableContinuousTransmitShutoff::StartCounter() {
 
         if (!TransmissionRateUnderThreshold() &&
             !lithium->IsStateLocked(Lithium::kContinuousTransmitCondition)) {
-            // TODO(dingbenjamin): Unlock after timer
             lithium->LockState(Lithium::kContinuousTransmitCondition);
             Log_info0(
                 "Continuous Transmission Detected: Shutting off Lithium "
                 "Transmission");
-            ClearBuckets();
-            TaskUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
-            lithium->UnlockState(Lithium::kContinuousTransmitCondition);
-        }
 
+#ifndef TEST_CONFIGURATION
+            // Do not automatically re-enable the Lithium in the test
+            // configuration This is so that the unit test has enough time to
+            // perform checks on the state of the Lithium state without having
+            // to race another task
+
+            // TODO(dingbenjamin): Find a better way to test where this logic
+            // can also be tested
+            TaskUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
+            ClearBuckets();
+            lithium->UnlockState(Lithium::kContinuousTransmitCondition);
+#endif
+        }
         bucket_count = 0;
         rolling_index = (rolling_index + 1) % kNumBuckets;
     }
