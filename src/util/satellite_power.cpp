@@ -1,5 +1,6 @@
 #include <src/board/MSP432E.h>
 #include <src/config/satellite.h>
+#include <src/config/unit_tests.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/util/msp_exception.h>
@@ -64,7 +65,7 @@ void SatellitePower::Unlock(IArg key) {
 }
 
 void SatellitePower::CutPowerFromPanels() {
-    Log_info0("Cutting power from solar panels");
+    if (kVerboseUnitTests) Log_info0("Cutting power from solar panels");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinBms1En, false);
@@ -72,7 +73,7 @@ void SatellitePower::CutPowerFromPanels() {
 }
 
 void SatellitePower::RestorePowerFromPanels() {
-    Log_info0("Restoring power from solar panels");
+    if (kVerboseUnitTests) Log_info0("Restoring power from solar panels");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
@@ -80,26 +81,26 @@ void SatellitePower::RestorePowerFromPanels() {
 }
 
 void SatellitePower::CutPowerToFlightSystems() {
-    Log_info0("Cutting power to Flight Systems");
+    if (kVerboseUnitTests) Log_info0("Cutting power to Flight Systems");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinFSEn, false);
 }
 
 void SatellitePower::RestorePowerToFlightSystems() {
-    Log_info0("Restoring power to Flight Systems");
+    if (kVerboseUnitTests) Log_info0("Restoring power to Flight Systems");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
 }
 
 void SatellitePower::CutPowerToTelecoms() {
-    Log_info0("Cutting power to Telecoms");
+    if (kVerboseUnitTests) Log_info0("Cutting power to Telecoms");
     GPIO_write(nCOMMS_RST, 0);
 }
 
 void SatellitePower::RestorePowerToTelecoms() {
-    Log_info0("Restoring power to Telecoms");
+    if (kVerboseUnitTests) Log_info0("Restoring power to Telecoms");
     GPIO_write(nCOMMS_RST, 1);
 }
 
@@ -108,8 +109,9 @@ bool SatellitePower::ConfigureBms(BmsId bms_id) {
 }
 
 bool SatellitePower::ConfigureBmsICharge(BmsId bms_id) {
-    Log_info2("Re-configuring BMS bus %d with I-charge index: %d", bms_id,
-              i_charge_index[bms_id]);
+    if (kVerboseUnitTests)
+        Log_info2("Re-configuring BMS bus %d with I-charge index: %d", bms_id,
+                  i_charge_index[bms_id]);
     bool success = bms[bms_id]->SetICharge(i_charge_index[bms_id]);
     return success;
 }
