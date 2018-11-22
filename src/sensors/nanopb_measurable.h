@@ -1,7 +1,7 @@
 #ifndef SRC_SENSORS_I2C_SENSORS_MEASURABLES_NANOPB_MEASURABLE_H_
 #define SRC_SENSORS_I2C_SENSORS_MEASURABLES_NANOPB_MEASURABLE_H_
 
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/sensors/generic_measurable.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_time_source.h>

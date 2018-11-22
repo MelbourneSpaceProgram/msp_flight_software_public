@@ -7,7 +7,7 @@
 TEST_GROUP(FlashMemory){};
 
 TEST(FlashMemory, ResetCounter) {
-    if (kResetUnitTestEnabled) {
+    if (kResetCounterTestEnabled) {
         ResetInfoContainer *reset_info_container =
             ResetInfoContainer::GetInstance();
         switch (reset_info_container->GetMostRecentResetMessage()) {

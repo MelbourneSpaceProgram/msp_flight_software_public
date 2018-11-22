@@ -3,7 +3,6 @@
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/satellite.h>
-#include <src/config/unit_tests.h>
 #include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>

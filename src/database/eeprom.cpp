@@ -1,5 +1,5 @@
 #include <src/board/spi/spi.h>
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/database/eeprom.h>
 #include <src/database/hamming_coder.h>
 #include <src/util/msp_exception.h>

@@ -1,4 +1,4 @@
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/msp_exception.h>
 #include <cstdio>

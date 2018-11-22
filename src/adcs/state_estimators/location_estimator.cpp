@@ -4,7 +4,7 @@
 #include <math.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/debug_interface/debug_stream.h>
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/messages/LocationReading.pb.h>
 #include <src/util/message_codes.h>
 #include <src/util/physical_constants.h>

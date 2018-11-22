@@ -65,7 +65,7 @@ TEST(PayloadProcessor, TestPayloadProcessor) {
 }
 
 TEST(PayloadProcessor, TestForceResetUplink) {
-    if (!kForceResetCommandEnabled) {
+    if (!kForceResetTestEnabled) {
         TEST_EXIT
     }
 

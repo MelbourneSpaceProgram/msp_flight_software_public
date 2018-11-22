@@ -1,7 +1,6 @@
 #include <src/board/board.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
-#include <src/config/unit_tests.h>
 #include <src/util/msp_exception.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>

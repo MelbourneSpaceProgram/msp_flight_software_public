@@ -1,4 +1,4 @@
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
 #include <src/telecomms/lithium_utils.h>

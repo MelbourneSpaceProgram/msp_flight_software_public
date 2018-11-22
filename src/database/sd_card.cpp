@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <src/board/board.h>
 #include <src/config/satellite.h>
-#include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <src/database/sd_exception.h>
 #include <src/sensors/measurable_id.h>
@@ -207,7 +206,7 @@ void SdCard::Dump() {
         const char *file_path = fpath;
 
         File *src;
-        if (kVerboseUnitTests)
+        if (kVerboseLogging)
             Log_info1("Dump: Opening file %s", (IArg)file_path);
         try {
             src = SdCard::GetInstance()->FileOpen(file_path,

@@ -1,5 +1,5 @@
 #include <src/board/debug_interface/debug_stream.h>
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/util/message_codes.h>

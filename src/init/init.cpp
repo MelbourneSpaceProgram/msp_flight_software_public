@@ -2,7 +2,6 @@
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
-#include <src/config/unit_tests.h>
 #include <src/database/flash_memory/flash_storables/reset_info_container.h>
 #include <src/init/init.h>
 #include <src/init/post_bios_initialiser.h>

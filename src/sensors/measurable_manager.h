@@ -1,7 +1,7 @@
 #ifndef SRC_SENSORS_NANOPB_MEASURABLE_MANAGER_H_
 #define SRC_SENSORS_NANOPB_MEASURABLE_MANAGER_H_
 
-#include <src/config/unit_tests.h>
+#include <src/config/satellite.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
@@ -80,7 +80,7 @@ class MeasurableManager {
             }
             GateMutexPri_leave(manager_mutex, key);
             return nanopb_measurable->GetReading();
-        } catch (MspException& e) {
+        } catch (MspException &e) {
             MspException::LogException(e, kMeasurableManagerCatch);
             return nanopb_measurable->failure_reading;
         }

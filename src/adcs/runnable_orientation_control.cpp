@@ -9,7 +9,6 @@
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
-#include <src/config/unit_tests.h>
 #include <src/init/init.h>
 #include <src/messages/BDotEstimate.pb.h>
 #include <src/messages/LocationReading.pb.h>
