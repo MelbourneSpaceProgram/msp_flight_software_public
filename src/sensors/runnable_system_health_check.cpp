@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/board/uart/uart.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>

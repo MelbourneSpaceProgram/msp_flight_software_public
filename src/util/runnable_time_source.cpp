@@ -21,8 +21,8 @@ void RunnableTimeSource::UpdateSatelliteTime() {
         RTime time;
         try {
             time = rtc.GetTime();
-        } catch (etl::exception e) {
-            MspException::LogException(e);
+        } catch (MspException& e) {
+            MspException::LogException(e, kUpdateSatelliteTimeCatch);
             Log_error0("Unable to retrieve time from RTC");
             TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
             continue;

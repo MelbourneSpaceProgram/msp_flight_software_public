@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/util/data_types.h>
 

@@ -1,10 +1,9 @@
 #ifndef SRC_MESSAGES_MOCK_UPLINK_BUILDER_H_
 #define SRC_MESSAGES_MOCK_UPLINK_BUILDER_H_
 
-#include <external/etl/exception.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/util/data_types.h>
-#include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <string.h>
 
@@ -26,9 +25,9 @@ class MockUplinkBuilder {
     template <class T>
     MockUplinkBuilder& AddData(const T data) {
         if (sizeof(T) > buffer_size - serialised_length) {
-            etl::exception e("Message builder buffer size overflow", __FILE__,
-                             __LINE__);
-            throw e;
+            throw MspException("Message builder buffer size overflow",
+                               kMockUplinkBuilderOverflowFail, __FILE__,
+                               __LINE__);
         } else {
             memcpy(uplink_buffer + serialised_length, &data, sizeof(T));
             serialised_length += sizeof(T);
@@ -40,9 +39,9 @@ class MockUplinkBuilder {
               const pb_field_t* NanopbMessageType_fields>
     MockUplinkBuilder& AddNanopb(const NanopbMessageType data) {
         if (NanopbMessageType_size > buffer_size - serialised_length) {
-            etl::exception e("Message builder buffer size overflow", __FILE__,
-                             __LINE__);
-            throw e;
+            throw MspException("Message builder buffer size overflow",
+                               kMockUplinkBuilderOverflow2Fail, __FILE__,
+                               __LINE__);
         } else {
             NanopbUtils::Encode<NanopbMessageType, NanopbMessageType_size,
                                 NanopbMessageType_fields>(

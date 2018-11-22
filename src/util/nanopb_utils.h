@@ -1,9 +1,9 @@
 #ifndef SRC_UTIL_NANOPB_UTILS_H_
 #define SRC_UTIL_NANOPB_UTILS_H_
 
-#include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
+#include <src/util/msp_exception.h>
 
 #define NanopbEncode(NanopbMessageType)                              \
     NanopbUtils::Encode<NanopbMessageType, NanopbMessageType##_size, \
@@ -22,7 +22,8 @@ class NanopbUtils {
             pb_ostream_from_buffer(buffer, NanopbMessageType_size);
         // TODO(dingbenjamin): Say which nanopb message failed to encode
         if (!pb_encode(&stream, NanopbMessageType_fields, &message)) {
-            throw etl::exception("pb_encode failed", __FILE__, __LINE__);
+            throw MspException("pb_encode failed", kPbEncodeFail, __FILE__,
+                               __LINE__);
         }
     }
 
@@ -34,7 +35,8 @@ class NanopbUtils {
         NanopbMessageType message_struct;
         // TODO(dingbenjamin): Say which nanopb message failed to decode
         if (!pb_decode(&stream, NanopbMessageType_fields, &message_struct)) {
-            throw etl::exception("pb_decode failed", __FILE__, __LINE__);
+            throw MspException("pb_decode failed", kPbDecodeFail, __FILE__,
+                               __LINE__);
         }
         return message_struct;
     }

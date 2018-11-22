@@ -2,11 +2,11 @@
 #define SRC_MESSAGES_SERIALISED_MESSAGE_BUILDER_H_
 
 #include <external/etl/array.h>
-#include <external/etl/exception.h>
 #include <src/messages/message.h>
 #include <src/messages/serialised_message.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 #include <string.h>
 
 class SerialisedMessageBuilder {
@@ -25,9 +25,9 @@ class SerialisedMessageBuilder {
     template <class T>
     SerialisedMessageBuilder& AddData(const T data) {
         if (sizeof(T) > buffer_size - serialised_length) {
-            etl::exception e("Message builder buffer size overflow", __FILE__,
-                             __LINE__);
-            throw e;
+            throw MspException("Message builder buffer size overflow",
+                               kSerialisedMessageBuilderOverflowFail, __FILE__,
+                               __LINE__);
         } else {
             memcpy(serialised_message_buffer + serialised_length, &data,
                    sizeof(T));

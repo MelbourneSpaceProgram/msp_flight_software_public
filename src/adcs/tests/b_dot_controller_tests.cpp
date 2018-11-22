@@ -63,7 +63,7 @@ TEST(BDotController, InvalidInputSize) {
     NewStackMatrixMacro(signed_pwm, 3, 1);
     NewStackMatrixMacro(m32, 3, 2);
 
-    CHECK_THROWS(etl::exception,
+    CHECK_THROWS(MspException,
                  BDotController::ComputeControl(m32, signed_pwm));
-    CHECK_THROWS(etl::exception, BDotController::ComputeControl(b_dot, m32));
+    CHECK_THROWS(MspException, BDotController::ComputeControl(b_dot, m32));
 }

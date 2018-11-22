@@ -1,8 +1,8 @@
-#include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
+#include <src/util/msp_exception.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
@@ -28,7 +28,8 @@ void I2c::InitBusses() {
     GateMutexPri_Params_init(&mutex_params);
     i2c_mutex = GateMutexPri_create(&mutex_params, NULL);
     if (i2c_mutex == NULL) {
-        throw etl::exception("Failed to create mutex.", __FILE__, __LINE__);
+        throw MspException("Failed to create mutex.", kI2cMutexFail, __FILE__,
+                           __LINE__);
     }
 
     // Ensure the multiplexer is power cycled to clear it out of any error
@@ -51,9 +52,9 @@ void I2c::InitBusses() {
 
             I2c_busses[i] = I2C_open(i, &I2c_params[i]);
             if (I2c_busses[i] == NULL) {
-                throw etl::exception(
+                throw MspException(
                     "Failed to open I2C bus, possibly already in-use.",
-                    __FILE__, __LINE__);
+                    kI2cOpenFail, __FILE__, __LINE__);
             }
         }
     }
@@ -92,8 +93,8 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     Mailbox_Handle i2c_mailbox =
         Mailbox_create(sizeof(bool), 1, &mailbox_params, NULL);
     if (i2c_mailbox == NULL) {
-        throw etl::exception("Failed to create I2C bus timeout mailbox.",
-                             __FILE__, __LINE__);
+        throw MspException("Failed to create I2C bus timeout mailbox.",
+                           kI2cMailboxFail, __FILE__, __LINE__);
     }
 
     i2c_transaction.slaveAddress = address;
@@ -110,7 +111,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     bool transfer_outcome = false;
     bool timed_out =
         !Mailbox_pend(i2c_mailbox, &transfer_outcome,
-                     TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
+                      TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
     Mailbox_delete(&i2c_mailbox);
 
     if (kLogI2c) {

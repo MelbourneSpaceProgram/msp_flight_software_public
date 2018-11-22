@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/sgp4/sgp4.h>
 #include <external/sgp4/sgp4_utils.h>

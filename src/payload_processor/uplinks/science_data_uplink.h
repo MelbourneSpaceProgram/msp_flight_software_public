@@ -52,7 +52,7 @@ class ScienceDataUplink : public Uplink {
                            NanopbMessageType_fields>
                 science_payload(result);
             payload = &science_payload;
-        } catch (etl::exception& e) {
+        } catch (MspException& e) {
             // TODO(dingbejamin): Be able to differentiate different exceptions
             // to determine cause of failure
             return false;

@@ -5,15 +5,10 @@ ClearExceptionsUplink::ClearExceptionsUplink(byte* payload)
     : Uplink(kClearExceptionsUplinkArgumentLength), error_id(*payload) {}
 
 bool ClearExceptionsUplink::ExecuteUplink() {
-    try {
-        if (error_id == kClearAll) {
-            MspException::ClearAll();
-        } else {
-            MspException::ClearType(error_id);
-        }
-        return true;
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
-        return false;
+    if (error_id == kClearAll) {
+        MspException::ClearAll();
+    } else {
+        MspException::ClearType(error_id);
     }
+    return true;
 }

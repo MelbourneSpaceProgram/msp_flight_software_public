@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/messages/Tle.pb.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/util/nanopb_utils.h>

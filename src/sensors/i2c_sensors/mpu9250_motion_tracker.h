@@ -2,7 +2,6 @@
 #define SRC_SENSORS_I2C_SENSORS_MPU9250_MOTION_TRACKER_H
 
 #include <external/etl/array.h>
-#include <external/etl/exception.h>
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>

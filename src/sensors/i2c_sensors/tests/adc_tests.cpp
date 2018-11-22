@@ -4,6 +4,7 @@
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/adc.h>
+#include <src/util/msp_exception.h>
 
 // Address value must be changed for each ADC.
 static constexpr byte test_adc_address = 0x48;
@@ -20,7 +21,8 @@ TEST_GROUP(Adc) {
 TEST(Adc, TestADC) {
     I2c test_i2c_bus(I2C_BUS_A);
     I2cMultiplexer multiplexer(&test_i2c_bus, kMultiplexerAddress);
-    Adc adc(&test_i2c_bus, test_adc_address, &multiplexer, I2cMultiplexer::kMuxChannel2);
+    Adc adc(&test_i2c_bus, test_adc_address, &multiplexer,
+            I2cMultiplexer::kMuxChannel2);
 
     adc.SetOperationalStatus(kAdcConversion);
     adc.SetOperatingMode(kAdcContinuousConversion);
@@ -28,7 +30,7 @@ TEST(Adc, TestADC) {
 
     try {
         read_voltage = adc.TakeI2cReading();
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         FAIL("Exception occurred in TakeI2cReading");
     }
 

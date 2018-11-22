@@ -23,8 +23,8 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
     GateMutexPri_Params_init(&mutex_params);
     power_mutex = GateMutexPri_create(&mutex_params, NULL);
     if (power_mutex == NULL) {
-        throw etl::exception("Failed to create SatellitePower mutex", __FILE__,
-                             __LINE__);
+        throw MspException("Failed to create SatellitePower mutex",
+                           kSatellitePowerMutexFail, __FILE__, __LINE__);
     }
 
     IArg key = Lock();
@@ -50,8 +50,8 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
                                       IoExpander::kIoOutput);
         io_expander_bms->SetPolarity(kIoExpanderPinFSEn,
                                      IoExpander::kIoActiveHigh);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kSatellitePowerInitCatch);
         Log_error0("BMS IO expander failed to initialise properly");
     }
     Unlock(key);
@@ -153,8 +153,7 @@ bool SatellitePower::BatteryIsCharging(BmsId bms_id) {
             .battery_current) {
         return false;
     }
-    return bms_currents.battery_current >
-           Bms::kBatteryChargeCurrentLowerBoundA;
+    return bms_currents.battery_current > Bms::kBatteryChargeCurrentLowerBoundA;
 }
 
 uint8_t SatellitePower::GetIChargeIndex(BmsId bms_id) {

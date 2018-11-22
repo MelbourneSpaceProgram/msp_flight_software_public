@@ -1,10 +1,10 @@
 #ifndef SRC_MESSAGES_REBUILDABLE_MESSAGE_FIELD_ITERATOR_H_
 #define SRC_MESSAGES_REBUILDABLE_MESSAGE_FIELD_ITERATOR_H_
 
-#include <external/etl/exception.h>
 #include <src/messages/message.h>
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 
 class RebuildableMessageFieldIterator {
    public:
@@ -18,10 +18,9 @@ class RebuildableMessageFieldIterator {
 
         if (sizeof(T) > serialised_length) {
             // Attempting to read more bytes than are present in the message
-            etl::exception e(
-                "Rebuildable message iterator buffer size overflow", __FILE__,
-                __LINE__);
-            throw e;
+            throw MspException(
+                "Rebuildable message iterator buffer size overflow",
+                kRebuildableMessageFieldIteratorOverflow, __FILE__, __LINE__);
         }
 
         serialised_length -= sizeof(T);

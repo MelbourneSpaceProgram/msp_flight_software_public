@@ -1,13 +1,13 @@
 #ifndef SRC_DATABASE_CIRCULAR_BUFFER_NANOPB_H_
 #define SRC_DATABASE_CIRCULAR_BUFFER_NANOPB_H_
 
-#include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <external/nanopb/pb_encode.h>
 #include <src/database/hamming_coder.h>
 #include <src/database/sd_card.h>
 #include <src/messages/pb.h>
 #include <src/util/data_types.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 
 /*
@@ -71,7 +71,7 @@ class CircularBufferNanopb {
 
             // If the file already exists, do nothing
             sd->FileClose(file_handle);
-        } catch (etl::exception &e) {
+        } catch (MspException &e) {
             sd->FileClose(file_handle);
             throw;
         }
@@ -114,7 +114,7 @@ class CircularBufferNanopb {
             SetWriteIndex(file_handle, write_index_bytes);
 
             sd->FileClose(file_handle);
-        } catch (etl::exception &e) {
+        } catch (MspException &e) {
             sd->FileClose(file_handle);
             throw;
         }
@@ -157,9 +157,9 @@ class CircularBufferNanopb {
                 hamming_encoded_buffer, 2 * NanopbMessageType_size);
             for (uint16_t i = 0; i < NanopbMessageType_size; i++) {
                 if (valid_decodings[i] == false) {
-                    etl::exception e("Failed to decode hamming encoded message",
-                                     __FILE__, __LINE__);
-                    throw e;
+                    throw MspException(
+                        "Failed to decode hamming encoded message",
+                        kCircularBufferHammingDecodeFail, __FILE__, __LINE__);
                 }
             }
 
@@ -169,7 +169,7 @@ class CircularBufferNanopb {
 
             sd->FileClose(file_handle);
             return message_struct;
-        } catch (etl::exception &e) {
+        } catch (MspException &e) {
             sd->FileClose(file_handle);
             throw;
         }
@@ -185,7 +185,7 @@ class CircularBufferNanopb {
                 GetCountMessagesWritten(file_handle);
             sd->FileClose(file_handle);
             return count_messages_written;
-        } catch (etl::exception &e) {
+        } catch (MspException &e) {
             sd->FileClose(file_handle);
             throw;
         }
@@ -208,7 +208,7 @@ class CircularBufferNanopb {
                                            count_messages_written, write_index,
                                            read_index};
             return header;
-        } catch (etl::exception &e) {
+        } catch (MspException &e) {
             sd->FileClose(file_handle);
             throw;
         }
@@ -224,9 +224,9 @@ class CircularBufferNanopb {
             uint32_t saved_read_index = GetReadIndex(file_handle);
             uint32_t messages_written = GetCountMessagesWritten(file_handle);
             if (messages_written == 0) {
-                throw etl::exception(
+                throw MspException(
                     "No messages in the circular buffer being searched",
-                    __FILE__, __LINE__);
+                    kCircularBufferEmptySearchFail, __FILE__, __LINE__);
             }
 
             SetReadIndex(file_handle, kEncodedHeaderSize);
@@ -252,7 +252,7 @@ class CircularBufferNanopb {
             SetReadIndex(file_handle, saved_read_index);
             sd->FileClose(file_handle);
             return reading;
-        } catch (etl::exception &e) {
+        } catch (MspException &e) {
             sd->FileClose(file_handle);
             throw;
         }
@@ -332,9 +332,9 @@ class CircularBufferNanopb {
             hamming_encoded_byte_array, 2 * sizeof(uint32_t));
         for (uint16_t i = 0; i < sizeof(uint32_t); i++) {
             if (valid_decodings[i] == false) {
-                etl::exception e("Failed to decode hamming encoded message",
-                                 __FILE__, __LINE__);
-                throw e;
+                throw MspException("Failed to decode hamming encoded message",
+                                   kCircularBufferHammingDecode2Fail, __FILE__,
+                                   __LINE__);
             }
         }
         return ByteArrayToUint32_t(byte_array);

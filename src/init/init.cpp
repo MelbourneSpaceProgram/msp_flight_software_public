@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
@@ -11,9 +10,10 @@
 #include <src/tasks/task_holder.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/telecomms/runnable_lithium_listener.h>
+#include <src/util/msp_exception.h>
+#include <src/util/reset_management.h>
 #include <src/util/runnable_console_listener.h>
 #include <src/util/runnable_console_logger.h>
-#include <src/util/reset_management.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 #include <ti/drivers/GPIO.h>
@@ -71,11 +71,14 @@ void PreBiosInit() {
                 case kUnexpectedReset:
                     break;
                 default:
-                    throw etl::exception("Invalid reset flag", __FILE__,
-                                         __LINE__);
+                    throw MspException("Invalid reset flag",
+                                       kInvalidResetFlagFail, __FILE__,
+                                       __LINE__);
             }
         }
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
+		// TODO(dingbenjamin): Save this somehow when MspException is not yet initialised
+		MspException::LogException(e, kBootResetInfoCatch);
         EnterLimpMode();
     }
 
@@ -131,7 +134,7 @@ void EnterLimpMode() {
     reset_info_container->InitialiseValues();
     reset_info_container->StoreInFlash();
 
-        Log_info0("Started hardware peripherals");
+    Log_info0("Started hardware peripherals");
 
     // TODO(akremor): Use the GPIO to force burn the antenna (not over I2C)
 

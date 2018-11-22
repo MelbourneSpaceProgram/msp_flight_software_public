@@ -1,8 +1,8 @@
-#include <external/etl/exception.h>
 #include <src/board/spi/spi.h>
 #include <src/config/unit_tests.h>
 #include <src/database/eeprom.h>
 #include <src/database/hamming_coder.h>
+#include <src/util/msp_exception.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Task.h>
@@ -19,8 +19,8 @@ void Eeprom::Init() {
     Semaphore_Params_init(&semaphore_params);
     eeprom_in_use = Semaphore_create(1, &semaphore_params, NULL);
     if (eeprom_in_use == NULL) {
-        etl::exception e("Failed to create Semaphore", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Failed to create Semaphore", kEepromSemaphoreFail,
+                           __FILE__, __LINE__);
     }
 }
 
@@ -74,9 +74,9 @@ bool Eeprom::ReadData(uint16_t address, byte *read_buffer,
         (real_address < address) ||
         (real_read_buffer_length < read_buffer_length) ||
         (read_buffer_length != valid_buffer_length)) {
-        etl::exception e("Buffer overflow. Bad address", __FILE__, __LINE__);
         Semaphore_post(eeprom_in_use);
-        throw e;
+        throw MspException("Buffer overflow. Bad address",
+                           kEepromBufferOverflowFail, __FILE__, __LINE__);
     }
 
     bool status = true;
@@ -117,9 +117,9 @@ bool Eeprom::WriteData(uint16_t address, byte *write_buffer,
     if (((uint16_t)(real_address + real_write_buffer_length) < real_address) ||
         (real_address < address) ||
         (real_write_buffer_length < write_buffer_length)) {
-        etl::exception e("Buffer overflow. Bad address", __FILE__, __LINE__);
         Semaphore_post(eeprom_in_use);
-        throw e;
+        throw MspException("Buffer overflow. Bad address",
+                           kEepromBufferOverflow2Fail, __FILE__, __LINE__);
     }
 
     bool status = true;

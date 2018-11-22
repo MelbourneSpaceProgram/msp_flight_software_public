@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>

@@ -1,6 +1,6 @@
-#include <external/etl/exception.h>
 #include <src/adcs/state_estimators/b_dot_estimator.h>
 #include <src/util/matrix.h>
+#include <src/util/msp_exception.h>
 #include <src/util/physical_constants.h>
 
 BDotEstimator::BDotEstimator(uint16_t sample_period_millis,
@@ -17,9 +17,8 @@ void BDotEstimator::Estimate(const Matrix &magnetometer_reading,
     if (!estimate_output.SameSize(magnetometer_reading) ||
         estimate_output.GetNRows() != geomagnetic_field_vector_nrows ||
         estimate_output.GetNColumns() != geomagnetic_field_vector_ncolumns) {
-        etl::exception e("BDotEstimator::Estimate arguments not 3x1", __FILE__,
-                         __LINE__);
-        throw e;
+        throw MspException("BDotEstimator::Estimate arguments not 3x1",
+                           kBdotEstimatorArgumentFail, __FILE__, __LINE__);
     }
     estimate_output.Set(0, 0,
                         differentiator_x.ProcessSample(smoother_x.ProcessSample(

@@ -1,4 +1,4 @@
-#include <external/etl/exception.h>
+#include <src/util/msp_exception.h>
 #include <src/board/uart/uart.h>
 #include <ti/drivers/UART.h>
 
@@ -15,9 +15,8 @@ void Uart::Open() {
     // Get a handle to the UART bus.
     this->handle = UART_open(this->bus_index, &uart_params);
     if (this->handle == NULL) {
-        etl::exception e("Unable to open UART, possibly in-use", __FILE__,
+        throw MspException("Unable to open UART, possibly in-use", kUartOpenFail, __FILE__,
                          __LINE__);
-        throw e;
     }
 }
 

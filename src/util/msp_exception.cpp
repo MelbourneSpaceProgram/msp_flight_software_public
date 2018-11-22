@@ -9,15 +9,15 @@ uint8_t* MspException::log_circle_index = NULL;
 bool MspException::initialised = false;
 
 void MspException::Init() {
-    exception_log = new SerialisedException*[MspException::kNumExceptionTypes];
-    for (uint8_t i = 0; i < MspException::kNumExceptionTypes; i++) {
+    exception_log = new SerialisedException*[kNumExceptionTypes];
+    for (uint8_t i = 0; i < kNumExceptionTypes; i++) {
         exception_log[i] =
-            new SerialisedException[MspException::kNumEachException];
+            new SerialisedException[kNumEachException];
     }
 
-    num_exceptions = new uint8_t[MspException::kNumExceptionTypes];
-    log_circle_index = new uint8_t[MspException::kNumExceptionTypes];
-    for (uint8_t i = 0; i < MspException::kNumExceptionTypes; i++) {
+    num_exceptions = new uint8_t[kNumExceptionTypes];
+    log_circle_index = new uint8_t[kNumExceptionTypes];
+    for (uint8_t i = 0; i < kNumExceptionTypes; i++) {
         num_exceptions[i] = 0;
         log_circle_index[i] = 0;
     }
@@ -25,15 +25,15 @@ void MspException::Init() {
     initialised = true;
 }
 
-MspException::MspException(string_type reason, uint8_t error_id,
+MspException::MspException(string_type reason, ErrorId error_id,
                            string_type file, numeric_type line,
                            uint8_t exception_param_1, uint8_t exception_param_2)
     : exception(reason, file, line) {
     Task_Stat task_stat;
     Task_stat(Task_self(), &task_stat);
-    serialised_exception =
-        SerialisedException(error_id, static_cast<uint8_t>(kUncaught),
-                            task_stat, exception_param_1, exception_param_2);
+    serialised_exception = SerialisedException(
+        static_cast<uint8_t>(error_id), static_cast<uint8_t>(kUncaught),
+        task_stat, exception_param_1, exception_param_2);
 }
 
 void MspException::LogException(MspException& e, CatchId catch_id,
@@ -80,8 +80,9 @@ void MspException::ClearType(uint8_t error_id) {
         num_exceptions[error_id] = 0;
         log_circle_index[kNumExceptionTypes] = 0;
     } else {
-        throw etl::exception("Invalid exception index to clear", __FILE__,
-                             __LINE__);
+        throw MspException("Invalid exception index to clear",
+                           kMspExceptionInvalidClearIndexFail, __FILE__,
+                           __LINE__);
     }
 }
 

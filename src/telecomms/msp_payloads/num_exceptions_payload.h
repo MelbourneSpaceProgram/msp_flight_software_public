@@ -14,7 +14,7 @@ class NumExceptionsPayload : public TransmitPayload {
 
    private:
     static constexpr uint16_t kSerialisedSize =
-        sizeof(uint8_t) * MspException::kNumExceptionTypes;
+        sizeof(uint8_t) * kNumExceptionTypes;
 };
 
 #endif  // SRC_TELECOMMS_MSP_PAYLOADS_NUM_EXCEPTIONS_PAYLOAD_H_

@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_utils.h>
 #include <src/util/data_types.h>

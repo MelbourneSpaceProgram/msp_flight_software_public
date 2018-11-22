@@ -1,11 +1,12 @@
 #ifndef SRC_UTIL_MATRIX_H_
 #define SRC_UTIL_MATRIX_H_
 
-#include <external/etl/exception.h>
 #include <src/util/data_types.h>
+#include <src/util/msp_exception.h>
 
 #define NewStackMatrixMacro(name, n_rows, n_cols) \
-    double name##_data[n_rows][n_cols]; Matrix name(name##_data);
+    double name##_data[n_rows][n_cols];           \
+    Matrix name(name##_data);
 
 class Matrix {
    public:
@@ -30,17 +31,15 @@ class Matrix {
     template <uint8_t rows, uint8_t columns>
     Matrix(const Matrix &A, double (&init_data)[rows][columns] = NULL) {
         if (init_data == NULL) {
-            etl::exception e(
+            throw MspException(
                 "Matrix::Matrix(const Matrix &A ...) must pass in data matrix",
-                __FILE__, __LINE__);
-            throw e;
+                kMatrixDataNullFail, __FILE__, __LINE__);
         }
         if (rows != A.GetNRows() || columns != A.GetNColumns()) {
-            etl::exception e(
+            throw MspException(
                 "Matrix::Matrix(const Matrix &A ...) arguments sizes don't "
                 "match",
-                __FILE__, __LINE__);
-            throw e;
+                kMatrixConstructSizeMismatchFail, __FILE__, __LINE__);
         }
         nrows = A.GetNRows();
         ncolumns = A.GetNColumns();
@@ -53,7 +52,7 @@ class Matrix {
     }
 
     void CopySlice(uint8_t row_start, uint8_t row_end, uint8_t column_start,
-               uint8_t column_end, const Matrix &A);
+                   uint8_t column_end, const Matrix &A);
 
     uint8_t GetNRows() const;
     uint8_t GetNColumns() const;
@@ -94,7 +93,7 @@ class Matrix {
 
     template <uint8_t size>
     void InvertMatrix(const Matrix &A) {
-        NewStackMatrixMacro(augmented, size, 2*size);
+        NewStackMatrixMacro(augmented, size, 2 * size);
         augmented.CopyInto(0, 0, A);
 
         NewStackMatrixMacro(identity, size, size);

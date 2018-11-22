@@ -7,11 +7,6 @@ QueryNumExceptionsUplink::QueryNumExceptionsUplink(byte* payload)
     : Uplink(kQueryNumExceptionsUplinkArgumentLength) {}
 
 bool QueryNumExceptionsUplink::ExecuteUplink() {
-    try {
-        NumExceptionsPayload payload;
-        return Lithium::GetInstance()->Transmit(&payload);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
-        return false;
-    }
+    NumExceptionsPayload payload;
+    return Lithium::GetInstance()->Transmit(&payload);
 }

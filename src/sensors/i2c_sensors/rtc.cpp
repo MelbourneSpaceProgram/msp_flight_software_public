@@ -1,5 +1,6 @@
 #include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/rtc.h>
+#include <src/util/msp_exception.h>
 
 Rtc::Rtc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
          I2cMultiplexer::MuxChannel channel)
@@ -34,8 +35,7 @@ RTime Rtc::GetTime() {
     if (ValidTime(real_time)) {
         return real_time;
     } else {
-        etl::exception e("Failed RTC Reading", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Failed RTC Reading", kRtcFail, __FILE__, __LINE__);
     }
 }
 

@@ -1,9 +1,9 @@
 #ifndef SRC_SENSORS_I2C_SENSORS_MEASURABLES_NANOPB_MEASURABLE_H_
 #define SRC_SENSORS_I2C_SENSORS_MEASURABLES_NANOPB_MEASURABLE_H_
 
-#include <external/etl/exception.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/generic_measurable.h>
+#include <src/util/msp_exception.h>
 #include <src/util/satellite_time_source.h>
 #include <xdc/runtime/Log.h>
 #include <string>
@@ -30,11 +30,12 @@ class NanopbMeasurable : public GenericMeasurable<TimestampedNanopbType> {
             }
 
             return true;
-        } catch (etl::exception e) {
+        } catch (MspException& e) {
             this->last_reading = failure_reading;
             this->last_reading.timestamp_ms =
                 SatelliteTimeSource::GetTime().timestamp_ms;
             // TODO (rskew) stop lots of logs when kI2cAvailable == false
+            MspException::LogException(e, kFailedMeasurableReadingCatch);
             Log_error1("Failed to read from %s",
                        (xdc_IArg)(GetInfoString().c_str()));
             return false;

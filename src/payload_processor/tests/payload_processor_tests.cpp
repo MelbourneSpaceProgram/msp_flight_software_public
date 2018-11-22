@@ -101,9 +101,7 @@ TEST(PayloadProcessor, TestTleUpdateUplink) {
         sizeof(Tle), 1, &LocationEstimator::tle_update_uplink_mailbox_params,
         NULL);
     if (tle_update_uplink_mailbox_handle == NULL) {
-        etl::exception e("Unable to create TLE update command mailbox",
-                         __FILE__, __LINE__);
-        throw e;
+        FAIL("Unable to create TLE update command mailbox");
     }
     TleUpdateUplink::SetTleUpdateUplinkMailboxHandle(
         tle_update_uplink_mailbox_handle);
@@ -207,7 +205,7 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
         CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
 
         SdCard::GetInstance()->FileDelete(filename);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         MspException::LogException(e);
         FAIL("Uncaught exception in test");
     }
@@ -339,7 +337,8 @@ TEST(PayloadProcessor, TestExceptionUplinks) {
     MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
 
     try {
-        throw MspException("This is a test", 5, __FILE__, __LINE__, 2, 3);
+        throw MspException("This is a test", static_cast<ErrorId>(5), __FILE__,
+                           __LINE__, 2, 3);
     } catch (MspException& e) {
         MspException::LogException(e, true);
     }

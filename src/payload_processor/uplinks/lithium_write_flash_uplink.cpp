@@ -22,8 +22,9 @@ bool LithiumWriteFlashUplink::ExecuteUplink() {
         SatellitePower::CutPowerToTelecoms();
         TaskUtils::SleepMilli(1000);
         SatellitePower::RestorePowerToTelecoms();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+		SatellitePower::Unlock(key);
+		throw;
     }
     SatellitePower::Unlock(key);
 

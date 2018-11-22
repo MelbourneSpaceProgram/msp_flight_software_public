@@ -1,6 +1,6 @@
-#include <external/etl/exception.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
 #include <src/payload_processor/uplinks/io_expander_toggle_uplink.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
 #include <src/util/task_utils.h>
@@ -18,9 +18,12 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
     // TODO(dingbenjamin): Include invalid value
     // in exception
     if (pin >= IoExpander::kNumIoExpanderPins) {
-        throw etl::exception("Invalid pin number", __FILE__, __LINE__);
+        throw MspException("Invalid pin number",
+                           kIoExpanderUplinkInvalidPinFail, __FILE__, __LINE__);
     } else if (io_expander_id >= IoExpander::kNumIoExpanders) {
-        throw etl::exception("Invalid IO expander ID", __FILE__, __LINE__);
+        throw MspException("Invalid IO expander ID",
+                             kIoExpanderUplinkInvalidIndexFail, __FILE__,
+                             __LINE__);
     }
 
     const IoExpander* expander = IoExpander::GetIoExpander(io_expander_id);
@@ -93,11 +96,11 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
 
             default:
                 // TODO(dingbenjamin): Include invalid toggle type in exception
-                throw etl::exception(
-                    "Invalid toggle type for IoExpanderToggleUplink", __FILE__,
-                    __LINE__);
+                throw MspException(
+                    "Invalid toggle type for IoExpanderToggleUplink",
+                    kIoExpanderUplinkInvalidToggleTypeFail, __FILE__, __LINE__);
         }
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         SatellitePower::Unlock(key);
         throw;
     }

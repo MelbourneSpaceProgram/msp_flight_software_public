@@ -1,10 +1,10 @@
-#include <external/etl/exception.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/sensors/runnable_system_health_check.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/message_codes.h>
-#include <src/util/runnable_console_logger.h>
+#include <src/util/msp_exception.h>
 #include <src/util/runnable_console_listener.h>
+#include <src/util/runnable_console_logger.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
@@ -15,10 +15,10 @@ RunnableConsoleListener::RunnableConsoleListener(Uart* debug_uart) {
         // WARNING: This task should only ever READ from the debug UART
         RunnableConsoleListener::debug_uart = debug_uart;
     } else {
-        throw etl::exception(
+        throw MspException(
             "Only one instance of RunnableConsoleListener should ever be "
             "instantiated",
-            __FILE__, __LINE__);
+            kConsoleListenerMultipleFail, __FILE__, __LINE__);
     }
 }
 

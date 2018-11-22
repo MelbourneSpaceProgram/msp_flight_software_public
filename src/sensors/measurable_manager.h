@@ -7,6 +7,7 @@
 #include <src/sensors/i2c_sensors/measurables/i2c_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/util/matrix.h>
+#include <src/util/msp_exception.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
 
 class I2cMultiplexer;
@@ -31,9 +32,8 @@ class MeasurableManager {
             dynamic_cast<NanopbMeasurable<TimestampedNanopbType> *>(
                 measurables.at(id));
         if (nanopb_measurable == NULL) {
-            etl::exception e("Cannot cast to specified measurable type",
-                             __FILE__, __LINE__);
-            throw e;
+            throw MspException("Cannot cast to specified measurable type",
+                               kMeasurableManagerCastFail, __FILE__, __LINE__);
         }
         return nanopb_measurable;
     }
@@ -46,8 +46,8 @@ class MeasurableManager {
         NanopbMeasurable<TimestampedNanopbType> *nanopb_measurable =
             dynamic_cast<NanopbMeasurable<TimestampedNanopbType> *>(measurable);
         if (nanopb_measurable == NULL) {
-            throw etl::exception("Cannot cast to specified measurable type",
-                                 __FILE__, __LINE__);
+            throw MspException("Cannot cast to specified measurable type",
+                               kMeasurableManagerCast2Fail, __FILE__, __LINE__);
         }
 
         try {
@@ -74,13 +74,14 @@ class MeasurableManager {
                     nanopb_measurable->TakeReading();
                     nanopb_measurable->first_reading = false;
                 }
-            } catch (etl::exception &e) {
+            } catch (MspException &e) {
                 GateMutexPri_leave(manager_mutex, key);
                 throw;
             }
             GateMutexPri_leave(manager_mutex, key);
             return nanopb_measurable->GetReading();
-        } catch (etl::exception &e) {
+        } catch (MspException& e) {
+            MspException::LogException(e, kMeasurableManagerCatch);
             return nanopb_measurable->failure_reading;
         }
     }

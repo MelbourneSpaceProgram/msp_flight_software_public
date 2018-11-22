@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/lithium_command_codes.h>

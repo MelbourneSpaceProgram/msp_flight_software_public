@@ -1,5 +1,5 @@
-#include <external/etl/exception.h>
 #include <src/database/flash_memory/flash_storables/reset_info_container.h>
+#include <src/util/msp_exception.h>
 
 ResetInfoContainer* ResetInfoContainer::instance = NULL;
 

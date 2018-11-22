@@ -1,5 +1,4 @@
 #include <CppUTest/TestHarness.h>
-#include <external/etl/exception.h>
 #include <src/config/unit_tests.h>
 #include <src/database/sd_card.h>
 #include <src/util/msp_exception.h>
@@ -124,7 +123,7 @@ TEST(SdCard, FatFsReadWrite) {
         dst = NULL;
         sd->FileDelete(input_file);
         sd->FileDelete(output_file);
-    } catch (etl::exception &e) {
+    } catch (MspException &e) {
         MspException::LogException(e);
         FAIL("Uncaught exception in test");
     }
@@ -147,7 +146,7 @@ TEST(SdCard, SdDump) {
         test_2 = NULL;
 
         sd->Dump();
-    } catch (etl::exception &e) {
+    } catch (MspException &e) {
         // Likely SD card missing
         std::string error(e.what());
         FAIL(("Exception in SdDump " + error).c_str());

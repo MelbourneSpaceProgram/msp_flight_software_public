@@ -22,12 +22,11 @@ bool FormatSdUplink::ExecuteUplink() {
         TaskUtils::SleepMilli(
             kHealthCheckPeriodMs * 10);
         SdCard::GetInstance()->Format();
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         Log_info0("Re-enabling data logger");
         RunnableSystemHealthCheck::EnableDatalogger(true);
-        MspException::LogException(e);
         Log_error0("Format SD failed");
-        return false;
+		throw;
     }
     Log_info0("Re-enabling data logger");
     RunnableSystemHealthCheck::EnableDatalogger(true);

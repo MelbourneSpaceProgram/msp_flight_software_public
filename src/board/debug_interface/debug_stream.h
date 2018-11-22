@@ -3,6 +3,7 @@
 
 #include <src/board/uart/uart.h>
 #include <src/util/data_types.h>
+#include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
@@ -43,9 +44,9 @@ class DebugStream {
         bool success = RequestMessageFromSimulator(
             message_code, response_buffer, encoded_response_size);
         if (success != 1) {
-            etl::exception e("Failed to request message from simulator",
-                             __FILE__, __LINE__);
-            throw e;
+            throw MspException("Failed to request message from simulator",
+                               kDebugStreamSimulatorRequestFail, __FILE__,
+                               __LINE__);
         }
         return NanopbDecode(NanopbMessageType)(response_buffer);
     }

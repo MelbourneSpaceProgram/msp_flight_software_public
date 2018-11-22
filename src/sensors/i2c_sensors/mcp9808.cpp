@@ -1,6 +1,6 @@
-#include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
+#include <src/util/msp_exception.h>
 
 Mcp9808::Mcp9808(const I2c* bus, uint8_t address,
                  const I2cMultiplexer* multiplexer,
@@ -14,8 +14,8 @@ double Mcp9808::TakeI2cReading() {
     write_buffer[0] = kTempRegister;
 
     if (!PerformTransaction(address, read_buffer, 2, write_buffer, 1)) {
-        etl::exception e("Failed MCP9808 Reading", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Failed MCP9808 Reading", kTemperatureSensorFail,
+                           __FILE__, __LINE__);
     }
 
     // See MCP9808 datasheet for conversion logic

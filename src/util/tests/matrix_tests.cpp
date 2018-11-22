@@ -1,8 +1,8 @@
 #include <CppUTest/TestHarness.h>
-#include <external/etl/exception.h>
 #include <math.h>
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
+#include <src/util/msp_exception.h>
 
 TEST_GROUP(Matrix){};
 
@@ -60,7 +60,7 @@ TEST(Matrix, TestCopyConstructor) {
     CHECK(m22_A.IsEqual(m22_B));
 
     // TODO
-    // CHECK_THROWS(etl::exception, Matrix m32(m22_A, m32_data));
+    // CHECK_THROWS(MspException, Matrix m32(m22_A, m32_data));
 }
 
 TEST(Matrix, TestSlice) {
@@ -77,7 +77,7 @@ TEST(Matrix, TestSlice) {
 
     CHECK(m22_expected.IsEqual(m22_slice));
 
-    CHECK_THROWS(etl::exception, m22_slice.Get(2, 2));
+    CHECK_THROWS(MspException, m22_slice.Get(2, 2));
 }
 
 TEST(Matrix, TestGetNRows) {
@@ -109,7 +109,7 @@ TEST(Matrix, TestGet) {
     DOUBLES_EQUAL(1.234E100, m22.Get(1, 0), 0.001);
     DOUBLES_EQUAL(4, m22.Get(1, 1), 0.001);
 
-    CHECK_THROWS(etl::exception, m22.Get(255, 111));
+    CHECK_THROWS(MspException, m22.Get(255, 111));
 }
 
 TEST(Matrix, TestSet) {
@@ -126,7 +126,7 @@ TEST(Matrix, TestSet) {
     DOUBLES_EQUAL(1.234E100, m22.Get(1, 0), 0.001);
     DOUBLES_EQUAL(4, m22.Get(1, 1), 0.001);
 
-    CHECK_THROWS(etl::exception, m22.Set(255, 111, 0));
+    CHECK_THROWS(MspException, m22.Set(255, 111, 0));
 }
 
 TEST(Matrix, TestDoubleIsEqual) {
@@ -137,7 +137,7 @@ TEST(Matrix, TestDoubleIsEqual) {
     CHECK_FALSE(Matrix::DoubleIsEqual(-1, 1 + 1E-7));
     CHECK(Matrix::DoubleIsEqual(-1, -1 + 1E-7));
 
-    CHECK_THROWS(etl::exception, Matrix::DoubleIsEqual(NAN, 0));
+    CHECK_THROWS(MspException, Matrix::DoubleIsEqual(NAN, 0));
 }
 
 TEST(Matrix, TestIsEqual) {
@@ -152,7 +152,7 @@ TEST(Matrix, TestIsEqual) {
     CHECK_FALSE(m22.IsEqual(m22_3));
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.IsEqual(m22));
+    CHECK_THROWS(MspException, m33.IsEqual(m22));
 }
 
 TEST(Matrix, TestSameSize) {
@@ -191,7 +191,7 @@ TEST(Matrix, TestTranspose) {
     m22_2.Transpose(m22);
     CHECK(m22_2.IsEqual(m22_expected));
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.Transpose(m22));
+    CHECK_THROWS(MspException, m33.Transpose(m22));
 }
 
 TEST(Matrix, TestVectorNorm) {
@@ -201,7 +201,7 @@ TEST(Matrix, TestVectorNorm) {
     DOUBLES_EQUAL(5.47722557505, Matrix::VectorNorm(m41), 0.001);
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, Matrix::VectorNorm(m33));
+    CHECK_THROWS(MspException, Matrix::VectorNorm(m33));
 }
 
 TEST(Matrix, TestAdd) {
@@ -218,7 +218,7 @@ TEST(Matrix, TestAdd) {
     CHECK(m22.IsEqual(m22_expected));
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.Add(m22, m22_2));
+    CHECK_THROWS(MspException, m33.Add(m22, m22_2));
 }
 
 TEST(Matrix, TestSubtract) {
@@ -235,7 +235,7 @@ TEST(Matrix, TestSubtract) {
     CHECK(m22.IsEqual(m22_expected));
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.Subtract(m22, m22_2));
+    CHECK_THROWS(MspException, m33.Subtract(m22, m22_2));
 }
 
 TEST(Matrix, TestMultiply) {
@@ -252,7 +252,7 @@ TEST(Matrix, TestMultiply) {
 
     CHECK(m33.IsEqual(m33_expected));
 
-    CHECK_THROWS(etl::exception, m33.Multiply(m32, m32));
+    CHECK_THROWS(MspException, m33.Multiply(m32, m32));
 }
 
 TEST(Matrix, TestMultiplyScalar) {
@@ -268,7 +268,7 @@ TEST(Matrix, TestMultiplyScalar) {
     CHECK(m22.IsEqual(m22_expected));
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.MultiplyScalar(m22, 0));
+    CHECK_THROWS(MspException, m33.MultiplyScalar(m22, 0));
 }
 
 TEST(Matrix, TestCrossProduct) {
@@ -285,7 +285,7 @@ TEST(Matrix, TestCrossProduct) {
     CHECK(m31_expected.IsEqual(m31_result));
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.CrossProduct(m31_A, m31_B));
+    CHECK_THROWS(MspException, m33.CrossProduct(m31_A, m31_B));
 }
 
 TEST(Matrix, TestFill) {
@@ -314,9 +314,9 @@ TEST(Matrix, TestCopyInto) {
     DOUBLES_EQUAL(m44.Get(3, 3), 0, 0.001);
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.CopyInto(0, 212, m44));
+    CHECK_THROWS(MspException, m33.CopyInto(0, 212, m44));
 
-    CHECK_THROWS(etl::exception, m33.CopyInto(0, 1, m44));
+    CHECK_THROWS(MspException, m33.CopyInto(0, 1, m44));
 }
 
 TEST(Matrix, TestIdentity) {
@@ -329,7 +329,7 @@ TEST(Matrix, TestIdentity) {
     CHECK(m33_expected.IsEqual(m33_identity));
 
     NewStackMatrixMacro(m34_identity, 3, 4);
-    CHECK_THROWS(etl::exception, m34_identity.Identity());
+    CHECK_THROWS(MspException, m34_identity.Identity());
 }
 
 TEST(Matrix, TestQuaternionNormalise) {
@@ -345,9 +345,9 @@ TEST(Matrix, TestQuaternionNormalise) {
     CHECK(q_normalised.IsEqual(q_normalised_expected));
 
     NewStackMatrixMacro(m33, 3, 3);
-    CHECK_THROWS(etl::exception, m33.QuaternionNormalise(q));
+    CHECK_THROWS(MspException, m33.QuaternionNormalise(q));
 
-    CHECK_THROWS(etl::exception, q.QuaternionNormalise(m33));
+    CHECK_THROWS(MspException, q.QuaternionNormalise(m33));
 }
 
 TEST(Matrix, TestRotationMatrixFromQuaternion) {
@@ -369,8 +369,8 @@ TEST(Matrix, TestRotationMatrixFromQuaternion) {
     CHECK(rotation_matrix_expected.IsEqual(rotation_matrix));
 
     NewStackMatrixMacro(m34, 3, 4);
-    CHECK_THROWS(etl::exception, m34.RotationMatrixFromQuaternion(q));
-    CHECK_THROWS(etl::exception,
+    CHECK_THROWS(MspException, m34.RotationMatrixFromQuaternion(q));
+    CHECK_THROWS(MspException,
                  rotation_matrix.RotationMatrixFromQuaternion(m34));
 }
 
@@ -397,9 +397,9 @@ TEST(Matrix, TestSkewSymmetricFill) {
     CHECK(m31_expected.IsEqual(m31_result));
 
     NewStackMatrixMacro(m34, 3, 4);
-    CHECK_THROWS(etl::exception, m34.SkewSymmetricFill(m31_input1));
+    CHECK_THROWS(MspException, m34.SkewSymmetricFill(m31_input1));
 
-    CHECK_THROWS(etl::exception, m33_skew_symmetric.SkewSymmetricFill(m34));
+    CHECK_THROWS(MspException, m33_skew_symmetric.SkewSymmetricFill(m34));
 }
 
 TEST(Matrix, TestConcatenateHorizontally) {
@@ -416,8 +416,8 @@ TEST(Matrix, TestConcatenateHorizontally) {
     CHECK(m25.IsEqual(m25_expected));
 
     NewStackMatrixMacro(m34, 3, 4);
-    CHECK_THROWS(etl::exception, m34.ConcatenateHorizontally(m22, m23));
-    CHECK_THROWS(etl::exception, m25.ConcatenateHorizontally(m23, m34));
+    CHECK_THROWS(MspException, m34.ConcatenateHorizontally(m22, m23));
+    CHECK_THROWS(MspException, m25.ConcatenateHorizontally(m23, m34));
 }
 
 TEST(Matrix, TestConcatenateVertically) {
@@ -435,9 +435,9 @@ TEST(Matrix, TestConcatenateVertically) {
 
     NewStackMatrixMacro(m34, 3, 4);
 
-    CHECK_THROWS(etl::exception, m34.ConcatenateVertically(m32, m52));
+    CHECK_THROWS(MspException, m34.ConcatenateVertically(m32, m52));
 
-    CHECK_THROWS(etl::exception, m52.ConcatenateVertically(m34, m32));
+    CHECK_THROWS(MspException, m52.ConcatenateVertically(m34, m32));
 }
 
 TEST(Matrix, TestAddRows) {
@@ -452,9 +452,9 @@ TEST(Matrix, TestAddRows) {
 
     CHECK(m22.IsEqual(m22_expected));
 
-    CHECK_THROWS(etl::exception, m22.AddRows(2, 100, 0));
+    CHECK_THROWS(MspException, m22.AddRows(2, 100, 0));
 
-    CHECK_THROWS(etl::exception, m22.AddRows(255, 0, 0));
+    CHECK_THROWS(MspException, m22.AddRows(255, 0, 0));
 }
 
 TEST(Matrix, TestMultiplyRow) {
@@ -468,7 +468,7 @@ TEST(Matrix, TestMultiplyRow) {
 
     CHECK(m22.IsEqual(m22_expected));
 
-    CHECK_THROWS(etl::exception, m22.MultiplyRow(100, 0));
+    CHECK_THROWS(MspException, m22.MultiplyRow(100, 0));
 }
 
 TEST(Matrix, TestSwitchRows) {
@@ -482,8 +482,8 @@ TEST(Matrix, TestSwitchRows) {
 
     CHECK(m22.IsEqual(m22_expected));
 
-    CHECK_THROWS(etl::exception, m22.SwitchRows(2, 100));
-    CHECK_THROWS(etl::exception, m22.SwitchRows(255, 1));
+    CHECK_THROWS(MspException, m22.SwitchRows(2, 100));
+    CHECK_THROWS(MspException, m22.SwitchRows(255, 1));
 }
 
 TEST(Matrix, TestRowReduce) {

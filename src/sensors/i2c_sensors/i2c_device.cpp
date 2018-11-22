@@ -1,5 +1,6 @@
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
+#include <src/util/msp_exception.h>
 #include <cstdio>
 
 GateMutexPri_Params mutex_params = {NULL};
@@ -17,7 +18,8 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
         GateMutexPri_Params_init(&mutex_params);
         i2c_mutex = GateMutexPri_create(&mutex_params, NULL);
         if (i2c_mutex == NULL) {
-            throw etl::exception("Failed to create mutex.", __FILE__, __LINE__);
+            throw MspException("Failed to create mutex.", kI2cDeviceMutexFail,
+                               __FILE__, __LINE__);
         }
     }
 

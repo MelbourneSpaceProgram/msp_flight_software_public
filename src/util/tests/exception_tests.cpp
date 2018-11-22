@@ -10,16 +10,17 @@ TEST_GROUP(MspException) {
 };
 
 TEST(MspException, TestExceptionLog) {
-    for (uint8_t i = 0; i < MspException::kNumExceptionTypes; ++i) {
+    for (uint8_t i = 0; i < kNumExceptionTypes; ++i) {
         try {
-            throw MspException("This is a test", i, __FILE__, __LINE__, 2, 3);
+            throw MspException("This is a test", static_cast<ErrorId>(i),
+                               __FILE__, __LINE__, 2, 3);
         } catch (MspException& e) {
             MspException::LogException(e, true);
         }
     }
 
     const uint8_t* num_exceptions = MspException::GetNumAll();
-    for (uint8_t i = 0; i < MspException::kNumExceptionTypes; ++i) {
+    for (uint8_t i = 0; i < kNumExceptionTypes; ++i) {
         CHECK_EQUAL(1, num_exceptions[i]);
     }
 

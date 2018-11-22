@@ -1,9 +1,9 @@
-#include <external/etl/exception.h>
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/util/matrix.h>
+#include <src/util/msp_exception.h>
 #include <src/util/physical_constants.h>
 #include <algorithm>
 
@@ -12,9 +12,8 @@ void BDotController::ComputeControl(const Matrix &b_dot,
     if (!b_dot.SameSize(signed_pwm_output) ||
         b_dot.GetNRows() != geomagnetic_field_vector_nrows ||
         b_dot.GetNColumns() != geomagnetic_field_vector_ncolumns) {
-        etl::exception e("BDotController::Control arguments not 3x1", __FILE__,
-                         __LINE__);
-        throw e;
+        throw MspException("BDotController::Control arguments not 3x1",
+                           kBdotControllerArgumentFail, __FILE__, __LINE__);
     }
 
     /* Tuning Parameters - estimated and optimised via simulation and testing.

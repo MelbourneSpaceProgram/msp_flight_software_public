@@ -41,6 +41,6 @@ TEST(BDotEstimator, TestBDotEstimator) {
     // test failure on wrong sized args
     NewStackMatrixMacro(m32, 3, 2);
 
-    CHECK_THROWS(etl::exception, b_dot_estimator.Estimate(m32, output));
-    CHECK_THROWS(etl::exception, b_dot_estimator.Estimate(input, m32));
+    CHECK_THROWS(MspException, b_dot_estimator.Estimate(m32, output));
+    CHECK_THROWS(MspException, b_dot_estimator.Estimate(input, m32));
 }

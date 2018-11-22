@@ -20,6 +20,7 @@
 #include <src/sensors/measurable_manager.h>
 #include <src/util/matrix.h>
 #include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
@@ -54,8 +55,9 @@ void RunnableOrientationControl::SetupControlLoopTimer() {
         Board_TIMER2, RunnableOrientationControl::OrientationControlTimerISR,
         &orientation_control_timer_params, NULL);
     if (orientation_control_timer == NULL) {
-        etl::exception e("Timer create failed", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Timer create failed",
+                           kRunnableOrientationControlTimerFail, __FILE__,
+                           __LINE__);
     }
 }
 
@@ -65,9 +67,8 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 }
 
 void RunnableOrientationControl::ControlOrientation() {
-    BDotEstimator b_dot_estimator(
-        kOrientationControlLoopPeriodMicros * 1e-3,
-        kBDotEstimatorTimeConstantMillis);
+    BDotEstimator b_dot_estimator(kOrientationControlLoopPeriodMicros * 1e-3,
+                                  kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 

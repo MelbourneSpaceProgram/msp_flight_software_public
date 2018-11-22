@@ -123,9 +123,8 @@ void PostBiosInitialiser::InitOrientationControl() {
             sizeof(Tle), 1,
             &LocationEstimator::tle_update_uplink_mailbox_params, NULL);
         if (tle_update_uplink_mailbox_handle == NULL) {
-            etl::exception e("Unable to create TLE update command mailbox",
-                             __FILE__, __LINE__);
-            throw e;
+            throw MspException("Unable to create TLE update command mailbox",
+                               kTleUpdateMailboxFail, __FILE__, __LINE__);
         }
         LocationEstimator::SetTleUpdateUplinkMailboxHandle(
             tle_update_uplink_mailbox_handle);
@@ -150,8 +149,8 @@ void PostBiosInitialiser::InitHardware() {
 
     try {
         I2c::InitBusses();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kI2cInitCatch);
     }
 
     I2c* bus_a = new I2c(I2C_BUS_A);
@@ -161,8 +160,8 @@ void PostBiosInitialiser::InitHardware() {
 
     try {
         IoExpander::Init(bus_d);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kIoExpanderInitCatch);
     }
 
     try {
@@ -177,25 +176,25 @@ void PostBiosInitialiser::InitHardware() {
             SatellitePower::RestorePowerToFlightSystems();
             TaskUtils::SleepMilli(1000);
             SatellitePower::RestorePowerToTelecoms();
-        } catch (etl::exception& e) {
+        } catch (MspException& e) {
             SatellitePower::Unlock(key);
             throw;
         }
         SatellitePower::Unlock(key);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kSatellitePowerInitCatch);
     }
 
     try {
         Eeprom::Init();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kEepromInitCatch);
     }
 
     try {
         MagnetorquerControl::Initialize();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kMagnetorquerControlInitCatch);
     }
 
     try {
@@ -204,38 +203,38 @@ void PostBiosInitialiser::InitHardware() {
         if (kFormatSdOnStartup) {
             sd->Format();
         }
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kSdInitCatch);
     }
 
     try {
         Antenna::GetAntenna()->InitAntenna(bus_d);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kAntennaInitCatch);
     }
 
     try {
         Lithium::GetInstance();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kLithiumInitCatch);
     }
 
     try {
         DebugStream::GetInstance();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kDebugStreamInitCatch);
     }
 
     try {
         MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         // TODO(akremor): Possible failure mode needs to be handled
         // Pass exceptions up so that an incompletely initialised
         // measurable manager isn't used.
         // If a hardware sensor fails to be initialised, it should be
         // caught by the driver. Only exceptions from measurables, which should
         // be software problems, should get to here.
-        MspException::LogException(e);
+        MspException::LogException(e, kMeasurableManagerInitCatch);
     }
 }
 
@@ -334,8 +333,8 @@ void PostBiosInitialiser::PostBiosInit() {
         InitBeacon();
         Log_info0("System start up complete");
 #endif
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kPostBiosInitCatch);
         Log_error0("System start up failed");
         System_flush();
     }

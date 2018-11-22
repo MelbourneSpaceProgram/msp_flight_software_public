@@ -45,8 +45,8 @@ void MeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
     GateMutexPri_Params_init(&mutex_params);
     manager_mutex = GateMutexPri_create(&mutex_params, NULL);
     if (manager_mutex == NULL) {
-        throw etl::exception("Failed to create MeasurableManager mutex",
-                             __FILE__, __LINE__);
+        throw MspException("Failed to create MeasurableManager mutex",
+                           kMeasurableManagerMutexFail, __FILE__, __LINE__);
     }
 
     I2cMultiplexer *mux_a = new I2cMultiplexer(bus_a, 0x76);
@@ -433,10 +433,10 @@ BmsBatteryTemperatureMeasurable *MeasurableManager::AddBmsBatteryTempMeasurable(
 
 void MeasurableManager::CheckValidId(MeasurableId id) {
     if (id >= kMeasurableIdEnd) {
-        etl::exception e("Measurable ID outside max size", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Measurable ID outside max size",
+                           kMeasurableManagerIdSizeFail, __FILE__, __LINE__);
     } else if (measurables.at(id) != NULL) {
-        etl::exception e("ID already used", __FILE__, __LINE__);
-        throw e;
+        throw MspException("ID already used", kMeasurableManagerIdUsedFail,
+                           __FILE__, __LINE__);
     }
 }

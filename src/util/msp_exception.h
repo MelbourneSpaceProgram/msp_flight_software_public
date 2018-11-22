@@ -43,7 +43,6 @@ typedef struct SerialisedException {
 
 class MspException : public etl::exception {
    public:
-    static constexpr uint8_t kNumExceptionTypes = 75;
     static constexpr uint8_t kNumEachException = 5;
 
     // TODO(dingbenjamin): Haven't been able to perform static compile time
@@ -60,7 +59,7 @@ class MspException : public etl::exception {
     static const uint8_t* GetNumAll();
     static const SerialisedException* GetExceptions(uint8_t error_id);
 
-    MspException(string_type reason, uint8_t error_id, string_type file,
+    MspException(string_type reason, ErrorId error_id, string_type file,
                  numeric_type line, uint8_t exception_param_1 = 0,
                  uint8_t exception_param_2 = 0);
     const SerialisedException& GetSerialisedException() const;

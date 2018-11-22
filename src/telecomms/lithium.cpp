@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <src/board/board.h>
 #include <src/config/satellite.h>
 #include <src/messages/TemperatureReading.pb.h>
@@ -46,18 +45,17 @@ Lithium::Lithium()
         Mailbox_create(kMaxReceivedLithiumResponseSize, 1,
                        &command_response_mailbox_params, NULL);
     if (command_response_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium command response mailbox",
-                         __FILE__, __LINE__);
-        throw e;
+        throw MspException("Unable to create Lithium command response mailbox",
+                           kLithiumCommandResponseMailboxFail, __FILE__,
+                           __LINE__);
     }
 
     Mailbox_Params_init(&header_mailbox_params);
     header_mailbox_handle =
         Mailbox_create(kLithiumHeaderSize, 1, &header_mailbox_params, NULL);
     if (header_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium header mailbox", __FILE__,
-                         __LINE__);
-        throw e;
+        throw MspException("Unable to create Lithium header mailbox",
+                           kLithiumHeaderMailboxFail, __FILE__, __LINE__);
     }
 
     Mailbox_Params_init(&uplink_mailbox_params);
@@ -65,9 +63,8 @@ Lithium::Lithium()
         Mailbox_create(kMaxReceivedUplinkSize, kMaxNumberOfPayloads,
                        &uplink_mailbox_params, NULL);
     if (uplink_mailbox_handle == NULL) {
-        etl::exception e("Unable to create Lithium uplink mailbox", __FILE__,
-                         __LINE__);
-        throw e;
+        throw MspException("Unable to create Lithium uplink mailbox",
+                           kLithiumUplinkMailboxFail, __FILE__, __LINE__);
     }
 }
 
@@ -77,16 +74,16 @@ void Lithium::PreTransmit() {
     power_key = SatellitePower::Lock();
     try {
         SatellitePower::CutPowerToFlightSystems();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kLithiumPreTransmitCatch);
     }
 }
 
 void Lithium::PostTransmit() {
     try {
         SatellitePower::RestorePowerToFlightSystems();
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kLithiumPostTransmit1Catch);
     }
 
     // Re-write the configuration to the BMSs in the event that
@@ -102,8 +99,8 @@ void Lithium::PostTransmit() {
         if (!SatellitePower::ConfigureBms(SatellitePower::kBmsBusC)) {
             Log_error0("Failure to configure BMS on bus C");
         }
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kLithiumPostTransmit2Catch);
     }
     SatellitePower::Unlock(power_key);
 }

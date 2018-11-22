@@ -1,4 +1,5 @@
 #include <src/messages/serialised_message_builder.h>
+#include <src/util/msp_exception.h>
 #include <stdint.h>
 
 SerialisedMessageBuilder::SerialisedMessageBuilder(byte* serial_buffer,
@@ -23,9 +24,9 @@ SerialisedMessageBuilder& SerialisedMessageBuilder::AddMessage(
     const Message* message) {
     uint16_t message_size = message->GetSerialisedSize();
     if (message_size > buffer_size - serialised_length) {
-        etl::exception e("Message builder buffer size overflow", __FILE__,
-                         __LINE__);
-        throw e;
+        throw MspException("Message builder buffer size overflow",
+                           kSerialisedMessageBuilderOverflow2Fail, __FILE__,
+                           __LINE__);
     } else {
         // Serialise to the smallest unused sub-address of the buffer if the
         // condition is met that the serialised bytes will fit

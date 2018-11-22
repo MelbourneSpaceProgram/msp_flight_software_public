@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <external/nanopb/pb_decode.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/AccelerometerReading.pb.h>

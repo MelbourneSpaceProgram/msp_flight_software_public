@@ -1,4 +1,3 @@
-#include <external/etl/exception.h>
 #include <math.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
@@ -7,6 +6,7 @@
 #include <src/config/unit_tests.h>
 #include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
+#include <src/util/msp_exception.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/PWM.h>
 #include <ti/sysbios/BIOS.h>
@@ -91,17 +91,20 @@ void MagnetorquerControl::InitializePwm() {
     // Setup all PWMs
     pwm_handle_axis_a = PWM_open(kMagnetorquerPWMAxisA, &params);
     if (pwm_handle_axis_a == NULL) {
-        throw etl::exception("A Axis PWM did not open", __FILE__, __LINE__);
+        throw MspException("A Axis PWM did not open",
+                           kMagnetorquerControlPwmAFail, __FILE__, __LINE__);
     }
 
     pwm_handle_axis_b = PWM_open(kMagnetorquerPWMAxisB, &params);
     if (pwm_handle_axis_b == NULL) {
-        throw etl::exception("B Axis PWM did not open", __FILE__, __LINE__);
+        throw MspException("B Axis PWM did not open",
+                           kMagnetorquerControlPwmBFail, __FILE__, __LINE__);
     }
 
     pwm_handle_axis_c = PWM_open(kMagnetorquerPWMAxisC, &params);
     if (pwm_handle_axis_c == NULL) {
-        throw etl::exception("C Axis PWM did not open", __FILE__, __LINE__);
+        throw MspException("C Axis PWM did not open",
+                           kMagnetorquerControlPwmCFail, __FILE__, __LINE__);
     }
 
     // Start all PWMs
@@ -132,7 +135,8 @@ void MagnetorquerControl::SetPolarity(MagnetorquerAxis axis, bool positive) {
     } else if (axis == kMagnetorquerAxisC) {
         GPIO_write(kMagnetorquerPolarityGpioAxisC, polarity);
     } else {
-        throw etl::exception("Invalid axis", __FILE__, __LINE__);
+        throw MspException("Invalid axis", kMagnetorquerControlInvalidAxisFail,
+                           __FILE__, __LINE__);
     }
 }
 
@@ -153,7 +157,8 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
     } else if (axis == kMagnetorquerAxisC) {
         pwm_handle = pwm_handle_axis_c;
     } else {
-        throw etl::exception("Invalid axis", __FILE__, __LINE__);
+        throw MspException("Invalid axis", kMagnetorquerControlInvalidAxis2Fail,
+                           __FILE__, __LINE__);
     }
 
     // Set PWM duty.
@@ -213,7 +218,7 @@ void MagnetorquerControl::SetupDegaussingPolaritySwitchTimer() {
         Timer_create(Board_TIMER3, MagnetorquerControl::DegaussingTimerISR,
                      &degaussing_timer_params, NULL);
     if (degaussing_timer == NULL) {
-        etl::exception e("Timer create failed", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Timer create failed", kMagnetorquerControlTimerFail,
+                           __FILE__, __LINE__);
     }
 }

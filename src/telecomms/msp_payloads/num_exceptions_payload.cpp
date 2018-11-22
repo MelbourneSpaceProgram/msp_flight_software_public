@@ -10,7 +10,7 @@ SerialisedMessage NumExceptionsPayload::SerialiseTo(byte* serial_buffer) const {
     SerialisedMessageBuilder builder(serial_buffer, GetSerialisedSize());
 
     const uint8_t* retrieved = MspException::GetNumAll();
-    for (uint8_t i = 0; i < MspException::kNumExceptionTypes; ++i) {
+    for (uint8_t i = 0; i < kNumExceptionTypes; ++i) {
         builder.AddData<uint8_t>(retrieved[i]);
     }
     return builder.Build();

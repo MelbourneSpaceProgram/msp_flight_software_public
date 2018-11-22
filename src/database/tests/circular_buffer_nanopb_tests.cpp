@@ -18,7 +18,7 @@ TEST(CircularBuffer, WriteAndRead) {
 
     try {
         sd->FileDelete(file_name);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         // File didn't exist, this is fine
     }
     try {
@@ -26,7 +26,7 @@ TEST(CircularBuffer, WriteAndRead) {
         CircularBufferNanopb(MagnetometerReading)::Create(file_name,
                                                           n_messages);
         CircularBufferNanopb(MagnetometerReading)::ReadHeader(file_name);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         // Likely SD card missing
         FAIL("Uncaught exception in test");
     }

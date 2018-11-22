@@ -21,8 +21,8 @@ void TestInitialiser::RunUnitTests() {
 
     try {
         RUN_ALL_TESTS(num_test_args, test_args);
-    } catch (etl::exception& e) {
-        MspException::LogException(e);
+    } catch (MspException& e) {
+        MspException::LogException(e, kUnitTestCatch);
         Log_error0("Exception in unit tests, aborting");
     }
 }

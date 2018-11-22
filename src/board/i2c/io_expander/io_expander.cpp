@@ -17,14 +17,15 @@ void IoExpander::Init(I2c* bus_d) {
 const IoExpander* IoExpander::GetIoExpander(uint8_t index) {
     assert(initialised);
     if (!initialised) {
-        throw etl::exception("IO expanders uninitialised", __FILE__, __LINE__);
+        throw MspException("IO expanders uninitialised",
+                           kIoExpanderUninitialisedFail, __FILE__, __LINE__);
     } else if (index >= kNumIoExpanders) {
         // TODO(dingbenjamin): Include index in exceptions
-        throw etl::exception("IO expander index out of range", __FILE__,
-                             __LINE__);
+        throw MspException("IO expander index out of range",
+                           kIoExpanderIndexFail, __FILE__, __LINE__);
     } else if (io_expanders[index] == NULL) {
-        throw etl::exception("IO expander index contains NULL", __FILE__,
-                             __LINE__);
+        throw MspException("IO expander index contains NULL",
+                           kIoExpanderNullFail, __FILE__, __LINE__);
     }
     return io_expanders[index];
 }
@@ -64,7 +65,8 @@ void IoExpander::SetDirection(IoExpander::IoPin pin,
     } else if (direction == kIoOutput) {
         value = false;
     } else {
-        throw etl::exception("Invalid direction", __FILE__, __LINE__);
+        throw MspException("Invalid direction", kIoExpanderInvalidDirectionFail,
+                           __FILE__, __LINE__);
     }
 
     SetBitForPin(pin, kConfigurationPort0, kConfigurationPort1, value);
@@ -111,7 +113,8 @@ void IoExpander::SetPolarity(IoExpander::IoPin pin,
     } else if (polarity == kIoActiveHigh) {
         value = false;
     } else {
-        throw etl::exception("Invalid polarity", __FILE__, __LINE__);
+        throw MspException("Invalid polarity", kIoExpanderInvalidPolarityFail,
+                           __FILE__, __LINE__);
     }
 
     SetBitForPin(pin, kPolarityInversionPort0, kPolarityInversionPort1, value);
@@ -120,11 +123,11 @@ void IoExpander::SetPolarity(IoExpander::IoPin pin,
 uint8_t IoExpander::ReadFromRegister(byte register_address) const {
     uint8_t current_value = 0x00;
     if (!PerformWriteTransaction(address, &register_address, 1))
-        throw etl::exception("Failed to write to address on IO expander",
-                             __FILE__, __LINE__);
+        throw MspException("Failed to write to address on IO expander",
+                           kIoExpanderWriteFail, __FILE__, __LINE__);
     if (!PerformReadTransaction(address, &current_value, 1))
-        throw etl::exception("Failed to read from address on IO expander",
-                             __FILE__, __LINE__);
+        throw MspException("Failed to read from address on IO expander",
+                           kIoExpanderReadFail, __FILE__, __LINE__);
     return current_value;
 }
 
@@ -133,8 +136,8 @@ void IoExpander::WriteToRegister(byte register_address, byte value) const {
     bytes[0] = register_address;
     bytes[1] = value;
     if (!PerformWriteTransaction(address, bytes, 2)) {
-        throw etl::exception("Failed to write to address on IO expander",
-                             __FILE__, __LINE__);
+        throw MspException("Failed to write to address on IO expander",
+                             kIoExpanderWrite2Fail, __FILE__, __LINE__);
     }
 }
 

@@ -1,5 +1,5 @@
-#include <external/etl/exception.h>
 #include <src/database/hamming_coder.h>
+#include <src/util/msp_exception.h>
 
 HammingEncodedByte HammingCoder::Encode(byte data) {
     HammingEncodedByte hamming_encoded_byte;
@@ -20,9 +20,8 @@ HammingEncodedByte HammingCoder::Encode(byte data) {
 void HammingCoder::EncodeByteArray(byte *output, uint32_t output_length,
                                    byte *input, uint32_t input_length) {
     if (output_length != input_length * 2) {
-        etl::exception e("HammingCoder::EncodeByteArray invalid arguments",
-                         __FILE__, __LINE__);
-        throw e;
+        throw MspException("HammingCoder::EncodeByteArray invalid arguments",
+                             kHammingEncodeInvalidArgFail, __FILE__, __LINE__);
     }
     for (uint32_t i = 0; i < input_length; i++) {
         HammingEncodedByte output_byte = Encode(input[i]);
@@ -77,9 +76,8 @@ void HammingCoder::DecodeByteArray(byte *output, uint32_t output_length,
                                    bool *valid_output, byte *input,
                                    uint32_t input_length) {
     if ((output_length * 2 != input_length)) {
-        etl::exception e("HammingCoder::DecodeByteArray invalid arguments",
-                         __FILE__, __LINE__);
-        throw e;
+        throw MspException("HammingCoder::DecodeByteArray invalid arguments",
+                           kHammingDecodeInvalidArgFail, __FILE__, __LINE__);
     }
     for (uint32_t i = 0; i < output_length; i++) {
         HammingEncodedByte input_byte;

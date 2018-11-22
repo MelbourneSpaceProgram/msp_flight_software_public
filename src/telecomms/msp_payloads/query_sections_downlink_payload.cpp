@@ -17,7 +17,8 @@ SerialisedMessage QuerySectionsDownlinkPayload::SerialiseTo(
             builder.AddData<uint16_t>(empty_locations[i].first);
             builder.AddData<uint16_t>(empty_locations[i].second);
         }
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
+		MspException::LogException(e, kQuerySectionDownlinkCatch);
         Log_error0(
             "Builder overflow in uplink section query, likely to be too many "
             "non-contiguous empty locations");

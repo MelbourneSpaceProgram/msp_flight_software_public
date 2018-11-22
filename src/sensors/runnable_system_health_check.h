@@ -1,7 +1,6 @@
 #ifndef SRC_SYSTEM_RUNNABLE_SYSTEM_HEALTH_CHECK_H_
 #define SRC_SYSTEM_RUNNABLE_SYSTEM_HEALTH_CHECK_H_
 
-#include <external/etl/exception.h>
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/database/circular_buffer_nanopb.h>
@@ -56,8 +55,8 @@ class RunnableSystemHealthCheck : public Runnable {
                     NanopbMessageType, NanopbMessageType_size,
                     NanopbMessageType_fields>::WriteMessage(file_name,
                                                             pb_reading);
-            } catch (etl::exception& e) {
-                MspException::LogException(e);
+            } catch (MspException& e) {
+                MspException::LogException(e, kLogMeasurableSdCatch);
                 Log_error1("CircularBuffer failure for measurable id %d", id);
             }
         };
@@ -67,8 +66,8 @@ class RunnableSystemHealthCheck : public Runnable {
             byte buffer[255];
             try {
                 NanopbEncode(NanopbMessageType)(buffer, pb_reading);
-            } catch (etl::exception& e) {
-                MspException::LogException(e);
+            } catch (MspException& e) {
+                MspException::LogException(e, kLogMeasurableUartCatch);
                 Log_error1("Nanopb encode failed for measurable id %d", id);
             }
             RunnableConsoleLogger::WriteToDataLogger(id, buffer, size);

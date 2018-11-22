@@ -1,5 +1,6 @@
 #include <src/sensors/i2c_sensors/adc.h>
 #include <src/util/task_utils.h>
+#include <src/util/msp_exception.h>
 
 const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage6v144, kAdcVoltage4v096, kAdcVoltage2v048,
@@ -20,7 +21,8 @@ Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
     try {
         SetAdcGainAmplifierFullScaleRange();
         SetConfiguration();
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
+		MspException::LogException(e, kAdcCatch);
         // TODO(dingbenjamin): Not sure what we can really do about this
     }
 }
@@ -83,8 +85,7 @@ double Adc::TakeI2cReading(void) {
     if (reading_successful) {
         return ConvertReadingToVoltage(read_buffer);
     } else {
-        etl::exception e("Failed ADC Reading", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Failed ADC Reading", kAdcFail, __FILE__, __LINE__);
     }
 }
 

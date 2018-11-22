@@ -24,6 +24,8 @@
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/payload_processor/uplinks/uplink.h>
 #include <src/telecomms/lithium.h>
+#include <src/util/msp_exception.h>
+#include <stdint.h>
 #include <xdc/runtime/Log.h>
 #include <memory>
 #include <utility>
@@ -102,10 +104,10 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
         case kEraseFlashUplink:
             return new EraseFlashUplink(payload);
         default:
-            // TODO(dingbenjamin): Put erroneous command ID in exception
-            etl::exception e("Could not parse command code", __FILE__,
-                             __LINE__);
-            throw e;
+            throw MspException("Could not parse command code",
+                               kPayloadProcessorCommandCodeFail, __FILE__,
+                               __LINE__, command_code % UINT8_MAX,
+                               command_code << 8);
     }
 }
 
@@ -120,9 +122,9 @@ bool PayloadProcessor::ParseNextUplinkAndExecute(uint8_t& index,
         std::unique_ptr<Uplink> command(CreateUplink(command_code, payload));
         command_execution_successful = command->ExecuteUplink();
         index += command->GetUplinkArgumentLength() + kUplinkCodeLength;
-    } catch (etl::exception& e) {
-        // TODO(dingbenjamin): Figure out xdc_IArg
-        Log_error1("Exception in payload processor: %s\n", (xdc_IArg)e.what());
+    } catch (MspException& e) {
+        Log_error0("Exception in payload processor:");
+		MspException::LogException(e, kPayloadProcessorCatch);
     }
     return command_execution_successful;
 }

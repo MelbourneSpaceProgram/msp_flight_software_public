@@ -5,6 +5,7 @@
 #include <src/config/unit_tests.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
+#include <src/util/msp_exception.h>
 #include <xdc/runtime/Log.h>
 
 static constexpr uint8_t mpu9250_address = 0x68;
@@ -45,7 +46,7 @@ TEST(MotionTracker, TestGyroRead) {
         if (kVerboseUnitTests)
             Log_info3("Gyro: x: %f | y: %f | z: %f", gyroscope_reading.x,
                       gyroscope_reading.y, gyroscope_reading.z);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         FAIL("Uncaught exception in test");
     }
 }
@@ -76,7 +77,7 @@ TEST(MotionTracker, TestMagnoRead) {
         if (kVerboseUnitTests)
             Log_info3("Magno: x: %f | y: %f | z: %f", magnetometer_reading.x,
                       magnetometer_reading.y, magnetometer_reading.z);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         FAIL("Uncaught exception in test");
     }
 }
@@ -96,7 +97,7 @@ TEST(MotionTracker, TestTempRead) {
         temperature_reading = test_imu.TakeTemperatureReading();
         DOUBLES_EQUAL(avg_room_temperature, temperature_reading,
                       temp_tolerance);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         FAIL("Uncaught exception in test");
     }
 }
@@ -127,7 +128,7 @@ TEST(MotionTracker, TestAccelRead) {
         if (kVerboseUnitTests)
             Log_info3("Magno: x: %f | y: %f | z: %f", accelerometer_reading.x,
                       accelerometer_reading.y, accelerometer_reading.z);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
         FAIL("Uncaught exception in test");
     }
 }

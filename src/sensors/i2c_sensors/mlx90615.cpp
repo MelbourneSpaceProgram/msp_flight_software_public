@@ -1,5 +1,5 @@
-#include <external/etl/exception.h>
 #include <src/sensors/i2c_sensors/mlx90615.h>
+#include <src/util/msp_exception.h>
 
 Mlx90615::Mlx90615(const I2c* bus, int address,
                    const I2cMultiplexer* multiplexer,
@@ -25,7 +25,7 @@ float Mlx90615::ReadRegister(uint8_t Mlx90615Register) {
     if (reading_successful) {
         return infrared;
     } else {
-        etl::exception e("Failed MLX90615 Reading", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Failed MLX90615 Reading", kIrSensorFail, __FILE__,
+                           __LINE__);
     }
 }

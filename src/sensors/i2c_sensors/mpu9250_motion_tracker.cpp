@@ -1,10 +1,10 @@
-#include <external/etl/exception.h>
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/messages/AccelerometerReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
+#include <src/util/msp_exception.h>
 #include <ti/sysbios/knl/Task.h>
 
 double kImuAToBodyFrameTransform_dummy_data[3][3];
@@ -43,7 +43,8 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
         SelectMagnetometerRegister(kMagnoAdjustX);
         ReadMagnetometerAdjustmentValues();
         SetBypassMode(kBypassModeDisable);
-    } catch (etl::exception& e) {
+    } catch (MspException& e) {
+		MspException::LogException(e, kImuCatch);
         // TODO(dingbenjamin): Not sure what we can really do
     }
 }
@@ -110,8 +111,8 @@ MagnetometerReading MPU9250MotionTracker::TakeMagnetometerReading() {
     etl::array<byte, 7> magno_data = ReadSevenBytesFromMagnoRegister();
 
     if (magno_data.at(6) & kMagnetometerOverflowBitMask) {
-        etl::exception e("Magnetometer overflow", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Magnetometer overflow",
+                           kImuMagnetometerOverflowFail, __FILE__, __LINE__);
     }
 
     // data is stored in Little Endian format
@@ -152,9 +153,8 @@ void MPU9250MotionTracker::ReadMagnetometerAdjustmentValues() {
         magno_y_adjust = magno_data_adjust_values[1];
         magno_z_adjust = magno_data_adjust_values[2];
     } else {
-        etl::exception e("Unable to read fuse ROM registers", __FILE__,
-                         __LINE__);
-        throw e;
+        throw MspException("Unable to read fuse ROM registers",
+                           kImuFuseRomRegisterReadFail, __FILE__, __LINE__);
     }
 
     // revert to continuous measurement mode
@@ -177,8 +177,8 @@ etl::array<byte, 7> MPU9250MotionTracker::ReadSevenBytesFromMagnoRegister() {
             read_buffer.at(i) = i2c_buffer[i];
         }
     } else {
-        etl::exception e("Unable to read from register", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Unable to read from register", kImuRegisterReadFail,
+                           __FILE__, __LINE__);
     }
     return read_buffer;
 }
@@ -192,8 +192,8 @@ etl::array<byte, 6> MPU9250MotionTracker::ReadSixBytesFromCurrentRegister() {
             read_buffer[i] = i2c_buffer[i];
         }
     } else {
-        etl::exception e("Unable to read from register", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Unable to read from register",
+                           kImuRegisterRead2Fail, __FILE__, __LINE__);
     }
     return read_buffer;
 }
@@ -207,8 +207,8 @@ etl::array<byte, 2> MPU9250MotionTracker::ReadTwoBytesFromCurrentRegister() {
             read_buffer[i] = i2c_buffer[i];
         }
     } else {
-        etl::exception e("Unable to read from register", __FILE__, __LINE__);
-        throw e;
+        throw MspException("Unable to read from register",
+                           kImuRegisterRead3Fail, __FILE__, __LINE__);
     }
     return read_buffer;
 }

@@ -4,6 +4,7 @@
 #include <src/board/i2c/multiplexers/i2c_multiplexer.h>
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/mlx90615.h>
+#include <src/util/msp_exception.h>
 
 static constexpr uint8_t test_mlx_address = 0x5b;
 static constexpr byte panel_mux_address = 0x71;
@@ -32,7 +33,7 @@ TEST(IrSensor, TestIrRead) {
 
         CHECK(-50 < read_ir && read_ir < 150.0);
         CHECK(-50 < read_dev_temp && read_dev_temp < 150.0);
-    } catch (etl::exception &e) {
+    } catch (MspException &e) {
         FAIL("Uncaught exception in test");
     }
 }

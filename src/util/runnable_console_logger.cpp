@@ -2,6 +2,7 @@
 #include <src/board/uart/uart.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/runnable_system_health_check.h>
+#include <src/util/msp_exception.h>
 #include <src/util/runnable_console_logger.h>
 #include <src/util/task_utils.h>
 #include <stdio.h>
@@ -27,7 +28,8 @@ RunnableConsoleLogger::RunnableConsoleLogger(Uart* debug_uart) {
     GateMutexPri_Params_init(&console_uart_mutex_params);
     console_uart_mutex = GateMutexPri_create(&console_uart_mutex_params, NULL);
     if (console_uart_mutex == NULL) {
-        throw etl::exception("Failed to create mutex.", __FILE__, __LINE__);
+        throw MspException("Failed to create mutex.", kConsoleUartMutexFail,
+                           __FILE__, __LINE__);
     }
     initialised = true;
 }
