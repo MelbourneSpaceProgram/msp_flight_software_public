@@ -36,11 +36,15 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                 antenna_burner_info->StoreInFlash();
                 // Hold transmission and other power tasks until after the burn.
                 power_key = SatellitePower::Lock();
-                if (Antenna::GetAntenna()->DeployAntenna()) {
-                    antenna_burner_info->burn_interval_ms *=
-                        kAntennaBurnIntervalMultiplier;
-                    antenna_burner_info->StoreInFlash();
-                }
+
+                Antenna::GetAntenna()->DeployAntenna();
+
+                // If the code has made it to this line, assume success even if
+                // IsDoorsOpen() returns false (which could be possible if the
+                // I2c bus is down)
+                antenna_burner_info->burn_interval_ms *=
+                    kAntennaBurnIntervalMultiplier;
+                antenna_burner_info->StoreInFlash();
                 SatellitePower::Unlock(power_key);
                 antenna_burner_info->StoreInFlash();
             }
