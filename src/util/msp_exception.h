@@ -50,8 +50,8 @@ class MspException : public etl::exception {
     // remove need for Init() function
     static void Init();
     static void LogException(MspException& e, CatchId catch_id,
-                             bool store_only = true);
-    static void LogException(const MspException& e, bool store_only = true);
+                             bool store_only = false);
+    static void LogException(const MspException& e, bool store_only = false);
     static void LogException(etl::exception& e);
     static void ClearType(uint8_t error_id);
     static void ClearAll();
