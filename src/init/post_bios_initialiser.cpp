@@ -287,7 +287,6 @@ void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
 }
 
 void PostBiosInitialiser::PostBiosInit() {
-    TaskUtils::SleepMilli(1000);  // Externally activated hibernation window
     Log_info0("System has started");
 
     if (kDitlMode) {

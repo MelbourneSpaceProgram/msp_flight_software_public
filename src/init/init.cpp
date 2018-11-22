@@ -43,6 +43,8 @@ void PreBiosInit() {
         EnterLowPowerMode();
     }
 
+    SysCtlDelay(20E6);  // Externally activated hibernation window
+
     initGeneral();
     GPIO_init();
     UART_init();
