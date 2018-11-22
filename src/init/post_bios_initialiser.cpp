@@ -67,14 +67,14 @@ void PostBiosInitialiser::RunUnitTests(uint16_t stack_size) {
     test_task->Start();
 }
 
-void PostBiosInitialiser::InitBeacon(uint16_t stack_size) {
+void PostBiosInitialiser::InitBeacon(uint16_t stack_size, bool limp_mode) {
     FastPaCommand fast_pa_command(kNominalLithiumPowerLevel);
     if (!Lithium::GetInstance()->DoCommand(&fast_pa_command)) {
         Log_error0("Failed to initialise Lithium power amplifier setting");
     }
 
     TaskHolder* beacon_task =
-        new TaskHolder(stack_size, "Beacon", 8, new RunnableBeacon());
+        new TaskHolder(stack_size, "Beacon", 8, new RunnableBeacon(limp_mode));
     beacon_task->Start();
     Log_info0("Beacon started");
 }

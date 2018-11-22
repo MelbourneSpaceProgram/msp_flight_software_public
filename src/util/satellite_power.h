@@ -45,6 +45,7 @@ class SatellitePower {
    private:
     static GateMutexPri_Params mutex_params;
     static GateMutexPri_Handle power_mutex;
+	static bool initialised;
     static Bms* bms[2];
     static uint8_t i_charge_index[2];
 

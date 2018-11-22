@@ -11,7 +11,7 @@ class I2c;
 class Uart;
 
 class PostBiosInitialiser : public Runnable {
-    friend void EnterLimpMode();
+    friend class LimpModeInitialiser;
 
    public:
     PostBiosInitialiser();
@@ -31,7 +31,8 @@ class PostBiosInitialiser : public Runnable {
         uint16_t stack_size = kOrientationControlStackSize);
     static void InitSystemHealthCheck(
         uint16_t stack_size = kSystemHealthCheckStackSize);
-    static void InitBeacon(uint16_t stack_size = kBeaconStackSize);
+    static void InitBeacon(uint16_t stack_size = kBeaconStackSize,
+                           bool limp_mode = false);
     static void InitAntennaBurner(
         uint16_t stack_size = kAntennaBurnerStackSize);
     static void InitMemoryLogger(uint16_t stack_size = kMemoryLoggerStackSize);

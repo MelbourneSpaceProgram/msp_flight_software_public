@@ -249,63 +249,71 @@ bool Lithium::IsStateLocked(LithiumShutoffCondition condition) {
 void Lithium::ForceUnlock() { lock = kLithiumOnCondition; }
 
 void Lithium::UpdateState() {
-    // TODO(dingbenjamin): Use the Lithium internal temperature sensor
-    float telecomms_1_temp =
-        MeasurableManager::GetInstance()
-            ->ReadNanopbMeasurable<TemperatureReading>(kComT1, 10000)
-            .temp;
-    float telecomms_2_temp =
-        MeasurableManager::GetInstance()
-            ->ReadNanopbMeasurable<TemperatureReading>(kComT2, 10000)
-            .temp;
+    try {
+        // TODO(dingbenjamin): Use the Lithium internal temperature sensor
+        float telecomms_1_temp =
+            MeasurableManager::GetInstance()
+                ->ReadNanopbMeasurable<TemperatureReading>(kComT1, 10000)
+                .temp;
+        float telecomms_2_temp =
+            MeasurableManager::GetInstance()
+                ->ReadNanopbMeasurable<TemperatureReading>(kComT2, 10000)
+                .temp;
 
-    // Disregard invalid sensor readings
-    if (telecomms_1_temp == kInvalidDouble)
-        telecomms_1_temp = kLithiumTempOperationalNominal;
-    if (telecomms_2_temp == kInvalidDouble)
-        telecomms_2_temp = kLithiumTempOperationalNominal;
+        // Disregard invalid sensor readings
+        if (telecomms_1_temp == kInvalidDouble)
+            telecomms_1_temp = kLithiumTempOperationalNominal;
+        if (telecomms_2_temp == kInvalidDouble)
+            telecomms_2_temp = kLithiumTempOperationalNominal;
 
-    switch (state) {
-        case kLithiumTempCriticalLow:
-            if ((telecomms_1_temp > kLithiumTempOperationalMin) &&
-                (telecomms_2_temp > kLithiumTempOperationalMin)) {
-                Log_info0(
-                    "Telecomms temperature nominal: turning on "
-                    "Lithium");
-                Lithium::GetInstance()->UnlockState(
-                    Lithium::kCriticalTempCondition);
-            }
-            break;
-        case kLithiumTempNominal:
-            if ((telecomms_1_temp > kLithiumTempOperationalMax + kHysteresis) ||
-                (telecomms_2_temp > kLithiumTempOperationalMax + kHysteresis)) {
-                Log_info0(
-                    "Telecomms temperature critical high: Shutting off "
-                    "Lithium");
-                Lithium::GetInstance()->LockState(
-                    Lithium::kCriticalTempCondition);
+        switch (state) {
+            case kLithiumTempCriticalLow:
+                if ((telecomms_1_temp > kLithiumTempOperationalMin) &&
+                    (telecomms_2_temp > kLithiumTempOperationalMin)) {
+                    Log_info0(
+                        "Telecomms temperature nominal: turning on "
+                        "Lithium");
+                    Lithium::GetInstance()->UnlockState(
+                        Lithium::kCriticalTempCondition);
+                }
+                break;
+            case kLithiumTempNominal:
+                if ((telecomms_1_temp >
+                     kLithiumTempOperationalMax + kHysteresis) ||
+                    (telecomms_2_temp >
+                     kLithiumTempOperationalMax + kHysteresis)) {
+                    Log_info0(
+                        "Telecomms temperature critical high: Shutting off "
+                        "Lithium");
+                    Lithium::GetInstance()->LockState(
+                        Lithium::kCriticalTempCondition);
 
-            } else if ((telecomms_1_temp <
-                        kLithiumTempOperationalMin - kHysteresis) ||
-                       (telecomms_1_temp <
-                        kLithiumTempOperationalMin - kHysteresis)) {
-                Log_info0(
-                    "Telecomms temperature critical low: Shutting off "
-                    "Lithium");
-                Lithium::GetInstance()->LockState(
-                    Lithium::kCriticalTempCondition);
-            }
-            break;
-        case kLithiumTempCriticalHigh:
-            if ((telecomms_1_temp < kLithiumTempOperationalMax) &&
-                (telecomms_2_temp < kLithiumTempOperationalMax)) {
-                Log_info0(
-                    "Telecomms temperature nominal: turning on "
-                    "Lithium");
-                Lithium::GetInstance()->UnlockState(
-                    Lithium::kCriticalTempCondition);
-            }
-            break;
+                } else if ((telecomms_1_temp <
+                            kLithiumTempOperationalMin - kHysteresis) ||
+                           (telecomms_1_temp <
+                            kLithiumTempOperationalMin - kHysteresis)) {
+                    Log_info0(
+                        "Telecomms temperature critical low: Shutting off "
+                        "Lithium");
+                    Lithium::GetInstance()->LockState(
+                        Lithium::kCriticalTempCondition);
+                }
+                break;
+            case kLithiumTempCriticalHigh:
+                if ((telecomms_1_temp < kLithiumTempOperationalMax) &&
+                    (telecomms_2_temp < kLithiumTempOperationalMax)) {
+                    Log_info0(
+                        "Telecomms temperature nominal: turning on "
+                        "Lithium");
+                    Lithium::GetInstance()->UnlockState(
+                        Lithium::kCriticalTempCondition);
+                }
+                break;
+        }
+    } catch (MspException& e) {
+        MspException::LogException(e, kLithiumUpdateStateCatch);
+        Log_info0("Failed to update lithium state, ensuring it is turned on");
+        Lithium::GetInstance()->UnlockState(Lithium::kCriticalTempCondition);
     }
 }
 

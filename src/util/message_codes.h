@@ -48,6 +48,7 @@ enum PayloadType {
     kQuerySectionsPayloadCode = 9,
     kExceptionsPayloadCode = 10,
     kNumExceptionsPayloadCode = 11,
+	kLimpModeBeaconPayloadCode = 12,
 };
 
 enum Uplinks {
@@ -226,6 +227,7 @@ enum CatchId {
 	kQuerySectionDownlinkCatch,
 	kAdcCatch,
 	kImuCatch,
+	kLithiumUpdateStateCatch,
     kTopLevelCatch,
 };
 

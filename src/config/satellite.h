@@ -5,6 +5,7 @@
 #include <src/util/matrix.h>
 
 //////////////////// HARDWARE ////////////////////
+
 static constexpr bool kEpsBoardAvailable = true;
 static constexpr bool kCdhBoardAvailable = true;
 static constexpr bool kFsBoardAvailable = true;
@@ -30,7 +31,7 @@ static constexpr bool kEepromAvailable = false;
 //////////////////// BOOT ////////////////////
 
 static constexpr bool kEnterDeepSleepOnStartup = false;
-static constexpr bool kLimpModeEnabled = false;
+static constexpr bool kEnterLimpModeOnStartup = false;
 static constexpr bool kDeployAntenna =
     false;  // DO NOT TURN ON UNTIL AFTER LAUNCH
 
