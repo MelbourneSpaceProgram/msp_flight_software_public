@@ -25,38 +25,46 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
     IArg power_key;
     while (1) {
         try {
-            Time current_time = SatelliteTimeSource::GetTime();
-            if (current_time.is_valid) {
-                if (current_time.timestamp_ms >
-                    antenna_burner_info->last_burn_attempt_timestamp_ms +
-                        antenna_burner_info->burn_interval_ms) {
-                    antenna_burner_info->last_burn_attempt_timestamp_ms =
-                        current_time.timestamp_ms;
-                    // Store the record of the attempt before the burn
-                    // in case the burn kills the power.
-                    antenna_burner_info->StoreInFlash();
-                    // Hold transmission and other power tasks until after the
-                    // burn.
-                    power_key = SatellitePower::Lock();
+            if (antenna_burner_info->GetAttemptBurnSetting()) {
+                Time current_time = SatelliteTimeSource::GetTime();
+                if (current_time.is_valid) {
+                    if (current_time.timestamp_ms >
+                        antenna_burner_info->last_burn_attempt_timestamp_ms +
+                            antenna_burner_info->burn_interval_ms) {
+                        antenna_burner_info->last_burn_attempt_timestamp_ms =
+                            current_time.timestamp_ms;
+                        // Store the record of the attempt before the burn
+                        // in case the burn kills the power.
+                        antenna_burner_info->StoreInFlash();
+                        // Hold transmission and other power tasks until after
+                        // the burn.
+                        power_key = SatellitePower::Lock();
 
+                        Antenna::GetAntenna()->DeployAntenna();
+
+                        // If the code has made it to this line, assume success
+                        //  even if IsDoorsOpen() returns false (which could be
+                        // possible if the I2c bus is down)
+                        antenna_burner_info->burn_interval_ms *=
+                            kAntennaBurnIntervalMultiplier;
+                        antenna_burner_info->StoreInFlash();
+                        SatellitePower::Unlock(power_key);
+                        antenna_burner_info->StoreInFlash();
+                    }
+                    TaskUtils::SleepMilli(kAntennaBurnCheckIntervalMs);
+                } else {
+                    TaskUtils::SleepMilli(kBackupAntennaBurnIntervalMs);
                     Antenna::GetAntenna()->DeployAntenna();
-
-                    // If the code has made it to this line, assume success even
-                    // if IsDoorsOpen() returns false (which could be possible
-                    // if the I2c bus is down)
-                    antenna_burner_info->burn_interval_ms *=
-                        kAntennaBurnIntervalMultiplier;
-                    antenna_burner_info->StoreInFlash();
-                    SatellitePower::Unlock(power_key);
-                    antenna_burner_info->StoreInFlash();
                 }
-                TaskUtils::SleepMilli(kAntennaBurnCheckIntervalMs);
             } else {
-                TaskUtils::SleepMilli(kBackupAntennaBurnIntervalMs);
-                Antenna::GetAntenna()->DeployAntenna();
+                TaskUtils::SleepMilli(kAntennaBurnDisableWait);
             }
         } catch (MspException& e) {
             MspException::LogTopLevelException(e, kRunnableAntennaBurnerCatch);
         }
     }
+}
+
+AntennaBurnerInfo *RunnableAntennaBurner::GetAntennaBurnerInfo() {
+    return antenna_burner_info;
 }

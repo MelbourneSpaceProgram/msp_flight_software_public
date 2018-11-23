@@ -15,6 +15,7 @@
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
+#include <src/messages/TerminateAntennaBurnPayload.pb.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/payload_processor/tests/mock_uplink_builder.h>
@@ -26,6 +27,7 @@
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
+#include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
@@ -41,11 +43,18 @@
 #include <src/util/task_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
+#include <src/telecomms/runnable_antenna_burner.h>
+#include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
 
 TEST_GROUP(PayloadProcessor) {
     void setup() { MspException::ClearAll(); };
 
-    void teardown() { MspException::ClearAll(); }
+    void teardown() {
+        MspException::ClearAll();
+        AntennaBurnerInfo* antenna_burner_info =
+            RunnableAntennaBurner::GetAntennaBurnerInfo();
+        antenna_burner_info->SetAntennaBurnSetting(true);
+    }
 };
 
 TEST(PayloadProcessor, TestPayloadProcessor) {
@@ -431,4 +440,24 @@ TEST(PayloadProcessor, TestSequence) {
     RunnablePayloadProcessor::check_hmac = kCheckHmacDefault;
     RunnablePayloadProcessor::use_fec = kUseFecDefault;
     RunnablePayloadProcessor::sequence = 0;
+}
+
+TEST(PayloadProcessor, TestTerminateAntennaBurnUplink) {
+    byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+    MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+
+    TerminateAntennaBurnPayload nanopb_payload;
+    nanopb_payload.terminate_burn =
+        TerminateAntennaBurnUplink::kTerminateAntennaBurnDisableKey;
+
+    builder.AddUplinkCode(kTerminateAntennaBurnUplink);
+    builder.AddNanopbMacro(TerminateAntennaBurnPayload)(nanopb_payload);
+
+    PayloadProcessor payload_processor;
+    CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
+
+    AntennaBurnerInfo* antenna_burner_info =
+        RunnableAntennaBurner::GetAntennaBurnerInfo();
+
+    CHECK_FALSE(antenna_burner_info->GetAttemptBurnSetting());
 }

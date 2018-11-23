@@ -1,4 +1,5 @@
 #include <src/payload_processor/payload_processor.h>
+#include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
 #include <src/payload_processor/uplinks/clear_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/clear_sections_uplink.h>
 #include <src/payload_processor/uplinks/deploy_antenna_uplink.h>
@@ -103,6 +104,8 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new QueryNumExceptionsUplink(payload);
         case kEraseFlashUplink:
             return new EraseFlashUplink(payload);
+        case kTerminateAntennaBurnUplink:
+            return new TerminateAntennaBurnUplink(payload);
         default:
             throw MspException("Could not parse command code",
                                kPayloadProcessorCommandCodeFail, __FILE__,

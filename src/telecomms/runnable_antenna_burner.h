@@ -8,9 +8,11 @@
 class RunnableAntennaBurner : public Runnable {
    public:
     fnptr GetRunnablePointer();
+    static AntennaBurnerInfo *GetAntennaBurnerInfo();
 
    private:
     static void PeriodicAntennaBurner();
+    static constexpr uint16_t kAntennaBurnDisableWait = 10*1000;
 
     static AntennaBurnerInfo *antenna_burner_info;
 };

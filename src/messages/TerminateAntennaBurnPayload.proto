@@ -1,0 +1,3 @@
+message TerminateAntennaBurnPayload {
+  required fixed32 terminate_burn = 1 [default = 0];
+}
