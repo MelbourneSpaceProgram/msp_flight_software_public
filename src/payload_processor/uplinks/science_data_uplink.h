@@ -19,7 +19,7 @@
 
 class ScienceDataUplink : public Uplink {
    public:
-    ScienceDataUplink(byte* payload);
+    explicit ScienceDataUplink(byte* payload);
     bool ExecuteUplink();
 
    private:
@@ -34,7 +34,7 @@ class ScienceDataUplink : public Uplink {
         char filename[4];
         snprintf(filename, sizeof(filename), "%03d", requested_id);
 
-        TransmitPayload* payload;
+        TransmitPayload* payload = nullptr;
 
         try {
             NanopbMessageType result;
@@ -48,13 +48,14 @@ class ScienceDataUplink : public Uplink {
                 result = CircularBufferNanopb(NanopbMessageType)::Search(
                     filename, requested_time.timestamp_ms);
             }
-            SciencePayload<NanopbMessageType, NanopbMessageType_size,
-                           NanopbMessageType_fields>
-                science_payload(result);
-            payload = &science_payload;
+            payload =
+                new SciencePayload<NanopbMessageType, NanopbMessageType_size,
+                                   NanopbMessageType_fields>(result);
         } catch (MspException& e) {
             // TODO(dingbejamin): Be able to differentiate different exceptions
             // to determine cause of failure
+            delete payload;
+			payload = nullptr;
             return false;
         }
 
@@ -62,6 +63,8 @@ class ScienceDataUplink : public Uplink {
             Log_error0("Failed to transmit science payload");
             return false;
         }
+        delete payload;
+		payload = nullptr;
         return true;
     }
 

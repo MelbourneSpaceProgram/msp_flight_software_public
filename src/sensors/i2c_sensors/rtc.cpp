@@ -74,7 +74,6 @@ bool Rtc::ValidTime(RTime time) {
     if (!(1 <= d && d <= 31)) return false;
     if ((d == 30) && (m == Feb || m == Apr || m == Jun || m == Sep || m == Nov))
         return false;
-    if ((d == 30) && (m == Feb)) return false;
     if ((m == Feb) && (d == 29) && (y % 4 != 0)) return false;
     if ((m == Feb) && (d == 29) && (y % 400 == 0)) return true;
     if ((m == Feb) && (d == 29) && (y % 100 == 0)) return false;

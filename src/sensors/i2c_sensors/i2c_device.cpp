@@ -13,7 +13,7 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
       bus(bus),
       multiplexer(multiplexer),
       channel(channel),
-      info_string("", kInfoStringLength) {
+      info_string(kInfoStringLength, ' ') {
     if (i2c_mutex == NULL) {
         GateMutexPri_Params_init(&mutex_params);
         i2c_mutex = GateMutexPri_create(&mutex_params, NULL);

@@ -44,11 +44,11 @@ TEST(Database, Hamming) {
     byte encoded_byte_array[4], decoded_byte_array[2];
     bool invalid_bytes[2];
 
-    CHECK_THROWS(MspException, HammingCoder::EncodeByteArray(encoded_byte_array,
-                                                             2, byte_array, 4));
+    CHECK_THROWS(MspException, HammingCoder::EncodeByteArray(
+                                   byte_array, 2, encoded_byte_array, 4));
     CHECK_THROWS(MspException, HammingCoder::DecodeByteArray(
-                                   decoded_byte_array, 4, invalid_bytes,
-                                   encoded_byte_array, 2));
+                                   encoded_byte_array, 4, invalid_bytes,
+                                   decoded_byte_array, 2));
 
     HammingCoder::EncodeByteArray(encoded_byte_array, 4, byte_array, 2);
     HammingCoder::DecodeByteArray(decoded_byte_array, 2, invalid_bytes,

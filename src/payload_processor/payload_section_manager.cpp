@@ -80,16 +80,10 @@ bool PayloadSectionManager::AddSectionToBuffer(uint16_t command_code,
         // Update the empty locations
         if (write_start_index == empty_start_index &&
             write_end_index == empty_end_index) {
-            // TODO(dingbenjamin): Is decrementing an iterator like this legal?
-            // Furthermore, not sure if we have taken a 'copy' of the iterator
-            // which still contains the old element, worth investigating to make
-            // sure we don't infinite loop.
-
             // The empty location represented by the pair at the current
             // iterator has been written to entirely
-            empty_locations.erase(it);
-            // Account for the deleted position in the vector
-            --it;
+            it = empty_locations.erase(it);
+            if (!empty_locations.empty()) --it;
             continue;
         } else if (write_start_index > empty_start_index &&
                    write_end_index < empty_end_index) {
@@ -111,8 +105,8 @@ bool PayloadSectionManager::AddSectionToBuffer(uint16_t command_code,
         }
 
         if (it->first > it->second) {
-            empty_locations.erase(it);
-            --it;
+            it = empty_locations.erase(it);
+            if (!empty_locations.empty()) --it;
         }
     }
     return true;

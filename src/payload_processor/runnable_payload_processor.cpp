@@ -63,13 +63,14 @@ bool RunnablePayloadProcessor::ProcessPayload(byte command[],
 
     int16_t msp_packet_length;
     byte* msp_packet;
+    byte msp_packet_buffer[kDataLength];
+
     if (use_fec) {
         if (!DecodeFec(decode_block)) return false;
         msp_packet = &decode_block[kDecodeDataIndex];
     } else {
         // TODO(dingbenjamin): Find a better way to do this with the memcpy
         // removed and without constness removal
-        byte msp_packet_buffer[kDataLength];
         msp_packet = msp_packet_buffer;
         memcpy(msp_packet, &uplink_payload[kUplinkDataIndex],
                kDataLength * sizeof(byte));

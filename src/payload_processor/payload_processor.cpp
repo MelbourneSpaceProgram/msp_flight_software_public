@@ -35,7 +35,7 @@
 PayloadProcessor::PayloadProcessor() : payload_section_manager() {}
 
 bool PayloadProcessor::ParseAndExecuteUplinks(byte* payload) {
-    byte current_index = 0;
+    uint16_t current_index = 0;
 
     while (current_index < Lithium::kMaxReceivedUplinkSize &&
            !(payload[current_index] == kEndTerminator &&
@@ -117,7 +117,7 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
     }
 }
 
-bool PayloadProcessor::ParseNextUplinkAndExecute(uint8_t& index,
+bool PayloadProcessor::ParseNextUplinkAndExecute(uint16_t& index,
                                                  byte* payload) {
     uint16_t command_code = static_cast<uint16_t>(payload[index]) |
                             (static_cast<uint16_t>(payload[index + 1]) << 8);

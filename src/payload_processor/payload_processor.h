@@ -20,7 +20,7 @@ class PayloadProcessor {
     static byte GetEndTerminator();
 
    private:
-    bool ParseNextUplinkAndExecute(byte& index, byte* payload);
+    bool ParseNextUplinkAndExecute(uint16_t& index, byte* payload);
     PayloadSectionManager* GetPayloadSectionManager();
     PayloadSectionManager payload_section_manager;
     Uplink* CreateUplink(uint16_t command_code, byte* payload);

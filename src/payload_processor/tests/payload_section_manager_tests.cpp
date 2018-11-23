@@ -122,7 +122,7 @@ TEST(PayloadSectionManager, TestAddSectionToBuffer) {
 
     // Fill the buffer
     uint16_t section_7_start_index = 129;
-    uint16_t section_7_end_index = payload_size;
+    uint16_t section_7_end_index = payload_size - 1;
     uint16_t section_7_size = section_7_end_index - section_7_start_index + 1;
     byte section_7[section_7_size];
     CopySectionFromPayload(section_7_start_index, section_7_end_index,

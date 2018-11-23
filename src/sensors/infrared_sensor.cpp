@@ -1,5 +1,6 @@
 #include <math.h>
 #include <src/sensors/infrared_sensor.h>
+#include <src/util/data_types.h>
 
 const double InfraredSensor::kSensorAPolyCoeffs[10] = {
     -2.362272825932358e+03, 1.164697776531066e+04,  -2.457026272978545e+04,
@@ -8,7 +9,9 @@ const double InfraredSensor::kSensorAPolyCoeffs[10] = {
     2.973281695942479};
 
 InfraredSensor::InfraredSensor(Matrix &side_normal_matrix)
-    : side_normal(side_normal_matrix, side_normal_data) {}
+    : side_normal(side_normal_matrix, side_normal_data),
+	  infrared_reading(kInvalidDouble),
+      angle_to_nadir(kInvalidDouble) {}
 
 void InfraredSensor::InfraredToAngle() {
     double x = infrared_reading;

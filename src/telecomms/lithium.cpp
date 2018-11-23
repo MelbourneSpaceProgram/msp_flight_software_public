@@ -345,7 +345,7 @@ void Lithium::UpdateState() {
 
                 } else if ((telecomms_1_temp <
                             kLithiumTempOperationalMin - kHysteresis) ||
-                           (telecomms_1_temp <
+                           (telecomms_2_temp <
                             kLithiumTempOperationalMin - kHysteresis)) {
                     Log_info0(
                         "Telecomms temperature critical low: Shutting off "
