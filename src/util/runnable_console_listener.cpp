@@ -32,54 +32,58 @@ bool RunnableConsoleListener::ReadUart(byte* read_buffer, uint8_t size) {
 
 void RunnableConsoleListener::Listen() {
     while (1) {
-        byte header_buffer[5];
-        byte payload_buffer[Lithium::kMaxReceivedUplinkSize -
-                            RunnablePayloadProcessor::kUplinkAx25Length];
+        try {
+            byte header_buffer[5];
+            byte payload_buffer[Lithium::kMaxReceivedUplinkSize -
+                                RunnablePayloadProcessor::kUplinkAx25Length];
 
-        // Grab sync characters (first two bytes of header/packet) one char at
-        // a time. Not two at a time so we can 'burn off' additional characters
-        // and regain sync
-        if (!ReadUart(header_buffer, 1)) continue;
+            // Grab sync characters (first two bytes of header/packet) one char
+            // at a time. Not two at a time so we can 'burn off' additional
+            // characters and regain sync
+            if (!ReadUart(header_buffer, 1)) continue;
 
-        if (header_buffer[0] !=
-            RunnableConsoleLogger::kMeasurableLoggerSyncChar1) {
-            continue;
-        }
+            if (header_buffer[0] !=
+                RunnableConsoleLogger::kMeasurableLoggerSyncChar1) {
+                continue;
+            }
 
-        if (!ReadUart(header_buffer + 1, 1)) continue;
+            if (!ReadUart(header_buffer + 1, 1)) continue;
 
-        if (header_buffer[1] !=
-            RunnableConsoleLogger::kMeasurableLoggerSyncChar2) {
-            continue;
-        }
+            if (header_buffer[1] !=
+                RunnableConsoleLogger::kMeasurableLoggerSyncChar2) {
+                continue;
+            }
 
-        if (!ReadUart(header_buffer + 2, 1)) continue;  // size
-        if (header_buffer[2] == 0) continue;
+            if (!ReadUart(header_buffer + 2, 1)) continue;  // size
+            if (header_buffer[2] == 0) continue;
 
-        if (!ReadUart(header_buffer + 3, 1)) continue;  // id
+            if (!ReadUart(header_buffer + 3, 1)) continue;  // id
 
-        if (!ReadUart(header_buffer + 4, 1))
-            continue;  // TODO(dingbenjamin): Implement checksum
-        if (!ReadUart(payload_buffer, header_buffer[2])) continue;
+            if (!ReadUart(header_buffer + 4, 1))
+                continue;  // TODO(dingbenjamin): Implement checksum
+            if (!ReadUart(payload_buffer, header_buffer[2])) continue;
 
-        uint8_t size = header_buffer[2];
+            uint8_t size = header_buffer[2];
 
-        switch (header_buffer[3]) {
-            case kPayloadProcessorInjection:
-                // Create fake AX.25 bytes for the payload processor to throw
-                // away
-                byte fake_ax25_payload
-                    [sizeof(payload_buffer) +
-                     RunnablePayloadProcessor::kUplinkAx25Length];
-                memset(fake_ax25_payload, 0x00,
-                       RunnablePayloadProcessor::kUplinkAx25Length);
-                memcpy(fake_ax25_payload +
-                           RunnablePayloadProcessor::kUplinkAx25Length,
-                       payload_buffer,
-                       Lithium::kMaxReceivedUplinkSize -
+            switch (header_buffer[3]) {
+                case kPayloadProcessorInjection:
+                    // Create fake AX.25 bytes for the payload processor to
+                    // throw away
+                    byte fake_ax25_payload
+                        [sizeof(payload_buffer) +
+                         RunnablePayloadProcessor::kUplinkAx25Length];
+                    memset(fake_ax25_payload, 0x00,
                            RunnablePayloadProcessor::kUplinkAx25Length);
-                Mailbox_post(Lithium::GetInstance()->GetUplinkMailbox(),
-                             fake_ax25_payload, BIOS_WAIT_FOREVER);
+                    memcpy(fake_ax25_payload +
+                               RunnablePayloadProcessor::kUplinkAx25Length,
+                           payload_buffer,
+                           Lithium::kMaxReceivedUplinkSize -
+                               RunnablePayloadProcessor::kUplinkAx25Length);
+                    Mailbox_post(Lithium::GetInstance()->GetUplinkMailbox(),
+                                 fake_ax25_payload, BIOS_WAIT_FOREVER);
+            }
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(e, kRunnableConsoleLoggerCatch);
         }
     }
 }

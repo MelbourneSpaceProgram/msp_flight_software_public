@@ -5,6 +5,7 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
+#include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
 
@@ -52,7 +53,8 @@ class MspException : public etl::exception {
     static void LogException(MspException& e, CatchId catch_id,
                              bool store_only = false);
     static void LogException(const MspException& e, bool store_only = false);
-    static void LogException(etl::exception& e);
+    static void LogTopLevelException(MspException& e, CatchId catch_id,
+                                     bool store_only = false);
     static void ClearType(uint8_t error_id);
     static void ClearAll();
     static uint8_t GetNumType(uint8_t error_id);

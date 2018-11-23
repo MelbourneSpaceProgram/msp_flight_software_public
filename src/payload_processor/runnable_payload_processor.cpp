@@ -33,15 +33,20 @@ void RunnablePayloadProcessor::ExecuteUplinksInLithiumPayload() {
         Lithium::GetInstance()->GetUplinkMailbox();
 
     while (1) {
-        Mailbox_pend(payload_mailbox_handle, &lithium_payload,
-                     BIOS_WAIT_FOREVER);
+        try {
+            Mailbox_pend(payload_mailbox_handle, &lithium_payload,
+                         BIOS_WAIT_FOREVER);
 
-        byte command[kMspUplinkMaxLength] = {0};
-        if (ProcessPayload(command, lithium_payload)) {
-            payload_processor.ParseAndExecuteUplinks(command);
-        } else {
-            // Payload failed on FEC or HMAC
-            continue;
+            byte command[kMspUplinkMaxLength] = {0};
+            if (ProcessPayload(command, lithium_payload)) {
+                payload_processor.ParseAndExecuteUplinks(command);
+            } else {
+                // Payload failed on FEC or HMAC
+                continue;
+            }
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(e,
+                                               kRunnablePayloadProcessorCatch);
         }
     }
 }
@@ -137,7 +142,8 @@ bool RunnablePayloadProcessor::CheckHmac(const byte msp_packet[],
         // TODO(crozone): Print signature difference
         Log_error0("Signature does not match hash");
         // Log_error2("Signature does not match hash: sig = %s - hash = %s",
-        //           (xdc_IArg)msp_signature.c_str(), (xdc_IArg)hash.c_str());
+        //           (xdc_IArg)msp_signature.c_str(),
+        //           (xdc_IArg)hash.c_str());
         return false;
     }
 }

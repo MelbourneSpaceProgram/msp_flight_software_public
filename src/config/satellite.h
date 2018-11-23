@@ -61,6 +61,7 @@ static constexpr bool kLogToSd = true;
 static constexpr bool kHilAvailable = false;
 static constexpr bool kDitlMode = false;
 static constexpr bool kVerboseLogging = false;
+static constexpr bool kRebootOnTopLevelException = true;
 
 //////////////////// TASK CONSTANTS ////////////////////
 

@@ -1,4 +1,5 @@
 #include <src/tasks/runnable.h>
+#include <src/util/msp_exception.h>
 #include <src/util/runnable_memory_logger.h>
 #include <src/util/task_utils.h>
 #include <ti/sysbios/BIOS.h>
@@ -17,28 +18,33 @@ void RunnableMemoryLogger::LogMemoryStats() {
     Memory_Stats mem_stats;
     Task_Object* task;
     while (1) {
-        HeapMem_getStats(HeapMem_Handle_downCast(Memory_defaultHeapInstance),
-                         &mem_stats);
-        Log_info3("Heap memory: %d free, %d total, %d largest free (bytes)",
-                  mem_stats.totalFreeSize, mem_stats.totalSize,
-                  mem_stats.largestFreeSize);
+        try {
+            HeapMem_getStats(
+                HeapMem_Handle_downCast(Memory_defaultHeapInstance),
+                &mem_stats);
+            Log_info3("Heap memory: %d free, %d total, %d largest free (bytes)",
+                      mem_stats.totalFreeSize, mem_stats.totalSize,
+                      mem_stats.largestFreeSize);
 
-        // Now report on stacks
-        // https://e2e.ti.com/support/embedded/tirtos/f/355/t/259653#pi317008=2
-        // Statically created tasks
-        for (int i = 0; i < Task_Object_count(); i++) {
-            task = Task_Object_get(NULL, i);
-            PrintTaskInfo(task);
+            // Now report on stacks
+            // https://e2e.ti.com/support/embedded/tirtos/f/355/t/259653#pi317008=2
+            // Statically created tasks
+            for (int i = 0; i < Task_Object_count(); i++) {
+                task = Task_Object_get(NULL, i);
+                PrintTaskInfo(task);
+            }
+
+            // Dynamically created tasks
+            task = Task_Object_first();
+            while (task) {
+                PrintTaskInfo(task);
+                task = Task_Object_next(task);
+            }
+
+            Task_sleep(TaskUtils::MilliToCycles(kMemoryLoggerRunPeriod));
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(e, kRunnableMemoryLoggerCatch);
         }
-
-        // Dynamically created tasks
-        task = Task_Object_first();
-        while (task) {
-            PrintTaskInfo(task);
-            task = Task_Object_next(task);
-        }
-
-        Task_sleep(TaskUtils::MilliToCycles(kMemoryLoggerRunPeriod));
     }
 }
 

@@ -72,71 +72,80 @@ void RunnableOrientationControl::ControlOrientation() {
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
     while (1) {
-        Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+        try {
+            Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
-        // TODO(dingbenjamin): Check if we should turn orientation control off
+            // TODO(dingbenjamin): Check if we should turn orientation control
+            // off
 
-        // TODO(rskew) switch algorithms based on AdcsStateMachine state
+            // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
-        MagnetorquerControl::Degauss();
+            MagnetorquerControl::Degauss();
 
-        // Read Magnetometer
-        // TODO (rskew) fuse readings from both magnetometers giving redundancy
-        // TODO(rskew) handle exception from magnetometer overflow
-        MagnetometerReading magnetometer_reading =
-            measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-                kFsImuMagno2, 0);
+            // Read Magnetometer
+            // TODO (rskew) fuse readings from both magnetometers giving
+            // redundancy
+            // TODO(rskew) handle exception from magnetometer overflow
+            MagnetometerReading magnetometer_reading =
+                measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+                    kFsImuMagno2, 0);
 
-        if (kHilAvailable) {
-            // Echo magnetometer reading to DebugClient
-            PostNanopbToSimMacro(MagnetometerReading, kMagnetometerReadingCode,
-                                 magnetometer_reading);
+            if (kHilAvailable) {
+                // Echo magnetometer reading to DebugClient
+                PostNanopbToSimMacro(MagnetometerReading,
+                                     kMagnetometerReadingCode,
+                                     magnetometer_reading);
+            }
+
+            // Run estimator
+
+            NewStackMatrixMacro(geomag, 3, 1);
+            geomag.Set(0, 0, magnetometer_reading.x);
+            geomag.Set(1, 0, magnetometer_reading.y);
+            geomag.Set(2, 0, magnetometer_reading.z);
+            NewStackMatrixMacro(b_dot_estimate, 3, 1);
+            BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
+
+            // Failed readings return a value of (-9999.0,-9999.0,-9999.0) which
+            // winds up the BDotEstimator.
+            if (geomag.Get(0, 0) !=
+                measurable_manager
+                    ->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
+                    ->GetFailureReading()
+                    .x) {
+                b_dot_estimator.Estimate(geomag, b_dot_estimate);
+                b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
+                b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
+                b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
+            }
+
+            if (kHilAvailable) {
+                PostNanopbToSimMacro(BDotEstimate, kBDotEstimateCode,
+                                     b_dot_estimate_pb);
+            }
+
+            // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
+
+            // Run controller
+            NewStackMatrixMacro(signed_pwm_output, 3, 1);
+            BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
+
+            // Scale actuation strength for power budgeting
+            for (uint8_t i = 0; i < 3; i++) {
+                signed_pwm_output.Set(i, 0,
+                                      signed_pwm_output.Get(i, 0) *
+                                          kOrientationControlPowerLevel);
+            }
+
+            // Use magnetorquer driver to set magnetorquer power.
+            // Driver input power range should be [-1, 1]
+
+            MagnetorquerControl::SetMagnetorquersPowerFraction(
+                signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
+                signed_pwm_output.Get(2, 0));
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(
+                e, kRunnableOrientationControlCatch);
         }
-
-        // Run estimator
-
-        NewStackMatrixMacro(geomag, 3, 1);
-        geomag.Set(0, 0, magnetometer_reading.x);
-        geomag.Set(1, 0, magnetometer_reading.y);
-        geomag.Set(2, 0, magnetometer_reading.z);
-        NewStackMatrixMacro(b_dot_estimate, 3, 1);
-        BDotEstimate b_dot_estimate_pb = BDotEstimate_init_zero;
-
-        // Failed readings return a value of (-9999.0,-9999.0,-9999.0) which
-        // winds up the BDotEstimator.
-        if (geomag.Get(0, 0) !=
-            measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
-                ->GetFailureReading()
-                .x) {
-            b_dot_estimator.Estimate(geomag, b_dot_estimate);
-            b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
-            b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
-            b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
-        }
-
-        if (kHilAvailable) {
-            PostNanopbToSimMacro(BDotEstimate, kBDotEstimateCode,
-                                 b_dot_estimate_pb);
-        }
-
-        // TODO(rskew) tell DetumbledStateMachine about Bdot (or omega?)
-
-        // Run controller
-        NewStackMatrixMacro(signed_pwm_output, 3, 1);
-        BDotController::ComputeControl(b_dot_estimate, signed_pwm_output);
-
-        // Scale actuation strength for power budgeting
-        for (uint8_t i = 0; i < 3; i++) {
-            signed_pwm_output.Set(
-                i, 0,
-                signed_pwm_output.Get(i, 0) * kOrientationControlPowerLevel);
-        }
-
-        // Use magnetorquer driver to set magnetorquer power.
-        // Driver input power range should be [-1, 1]
-
-        MagnetorquerControl::SetMagnetorquersPowerFraction(
-            signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
-            signed_pwm_output.Get(2, 0));
     }
 }

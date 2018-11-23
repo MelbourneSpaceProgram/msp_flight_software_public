@@ -26,36 +26,41 @@ void RunnableBeacon::Beacon() {
     Lithium* lithium = Lithium::GetInstance();
 
     while (1) {
-        // TODO(dingbenjamin): Implement remaining beacon fields
+        try {
+            // TODO(dingbenjamin): Implement remaining beacon fields
 
-        TaskUtils::SleepMilli(beacon_period_ms - kSolarPowerRecoveryTimeMs);
+            TaskUtils::SleepMilli(beacon_period_ms - kSolarPowerRecoveryTimeMs);
 
-        // Avoid building the packet if transmit is disabled
-        if (lithium->IsTransmitEnabled()) {
-            if (Antenna::GetAntenna()->IsBurning()) {
-                Log_info0("Aborting beacon while antenna is burning");
-                continue;
-            }
-
-            TransmitPayload* beacon = NULL;
-            try {
-                if (!limp_mode_beacon) {
-                    beacon = new BeaconPayload;
-                } else {
-                    beacon = new LimpModeBeaconPayload;
+            // Avoid building the packet if transmit is disabled
+            if (lithium->IsTransmitEnabled()) {
+                if (Antenna::GetAntenna()->IsBurning()) {
+                    Log_info0("Aborting beacon while antenna is burning");
+                    continue;
                 }
 
-                if (lithium->Transmit(beacon)) {
-                    Log_info0("Beacon transmission succeeded");
-                } else {
-                    Log_error0("Beacon transmission failed");
+                TransmitPayload* beacon = NULL;
+                try {
+                    if (!limp_mode_beacon) {
+                        beacon = new BeaconPayload;
+                    } else {
+                        beacon = new LimpModeBeaconPayload;
+                    }
+
+                    if (lithium->Transmit(beacon)) {
+                        Log_info0("Beacon transmission succeeded");
+                    } else {
+                        Log_error0("Beacon transmission failed");
+                    }
+                } catch (etl::exception& e) {
+                    if (beacon != NULL) delete beacon;
+                    throw;
                 }
-            } catch (etl::exception& e) {
-                MspException::LogException(e);
+                if (beacon != NULL) delete beacon;
+            } else {
+                Log_info0("Beacon is disabled, did not transmit");
             }
-            if (beacon != NULL) delete beacon;
-        } else {
-            Log_info0("Beacon is disabled, did not transmit");
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(e, kRunnableBeaconCatch);
         }
     }
 }

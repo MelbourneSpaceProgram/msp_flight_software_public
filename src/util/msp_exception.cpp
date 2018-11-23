@@ -1,3 +1,4 @@
+#include <src/config/satellite.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_time_source.h>
 #include <algorithm>
@@ -11,8 +12,7 @@ bool MspException::initialised = false;
 void MspException::Init() {
     exception_log = new SerialisedException*[kNumExceptionTypes];
     for (uint8_t i = 0; i < kNumExceptionTypes; i++) {
-        exception_log[i] =
-            new SerialisedException[kNumEachException];
+        exception_log[i] = new SerialisedException[kNumEachException];
     }
 
     num_exceptions = new uint8_t[kNumExceptionTypes];
@@ -63,10 +63,12 @@ void MspException::LogException(const MspException& e, bool store_only) {
                    e.line_number());
 }
 
-void MspException::LogException(etl::exception& e) {
-    Log_error3("Exception Occurred: %s\n File: %s, Line %d",
-               CharToIarg(e.what()), CharToIarg(e.file_name()),
-               e.line_number());
+void MspException::LogTopLevelException(MspException& e, CatchId catch_id,
+                                        bool store_only) {
+    MspException::LogException(e, catch_id, store_only);
+    if (kRebootOnTopLevelException) throw;
+    TaskUtils::SleepMilli(
+        10000);  // Allow a backoff period before trying the task again
 }
 
 void MspException::ClearType(uint8_t error_id) {

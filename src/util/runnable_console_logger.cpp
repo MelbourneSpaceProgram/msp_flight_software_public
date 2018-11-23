@@ -40,10 +40,14 @@ fnptr RunnableConsoleLogger::GetRunnablePointer() { return &LogToConsole; }
 
 void RunnableConsoleLogger::LogToConsole() {
     while (1) {
-        UartFlush();
-        if (wait) {
-            TaskUtils::SleepMilli(RunnableConsoleLogger::kWaitTimeMs);
-            wait = false;
+        try {
+            UartFlush();
+            if (wait) {
+                TaskUtils::SleepMilli(RunnableConsoleLogger::kWaitTimeMs);
+                wait = false;
+            }
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(e, kRunnableConsoleLoggerCatch);
         }
     }
 }

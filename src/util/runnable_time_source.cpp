@@ -18,20 +18,24 @@ void RunnableTimeSource::UpdateSatelliteTime() {
     I2cMultiplexer multiplexer(&bus, kMuxAddress);
     Rtc rtc(&bus, kRtcAddress, &multiplexer, I2cMultiplexer::kMuxChannel0);
     while (1) {
-        RTime time;
         try {
-            time = rtc.GetTime();
-        } catch (MspException& e) {
-            MspException::LogException(e, kUpdateSatelliteTimeCatch);
-            Log_error0("Unable to retrieve time from RTC");
+            RTime time;
+            try {
+                time = rtc.GetTime();
+            } catch (MspException& e) {
+                MspException::LogException(e, kUpdateSatelliteTimeCatch);
+                Log_error0("Unable to retrieve time from RTC");
+                TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
+                continue;
+            }
+
+            if (rtc.ValidTime(time)) {
+                SatelliteTimeSource::SetTime(time);
+            }
+
             TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
-            continue;
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(e, kRunnableTimeSourceCatch);
         }
-
-        if (rtc.ValidTime(time)) {
-            SatelliteTimeSource::SetTime(time);
-        }
-
-        TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
     }
 }

@@ -228,7 +228,18 @@ enum CatchId {
 	kAdcCatch,
 	kImuCatch,
 	kLithiumUpdateStateCatch,
-    kTopLevelCatch,
+	kRunnableMemoryLoggerCatch,
+	kRunnableConsoleLoggerCatch,
+	kRunnableConsoleListenerCatch,
+	kRunnableTimeSourceCatch,
+	kRunnableLithiumListenerCatch,
+	kRunnablePayloadProcessorCatch,
+	kRunnableContinuousTransmitShutoffCatch,
+	kRunnableSystemHealthCheckCatch,
+	kRunnablePowerManagerCatch,
+	kRunnableOrientationControlCatch,
+	kRunnableAntennaBurnerCatch,
+	kRunnableBeaconCatch,
 };
 
 #endif  // SRC_UTIL_MESSAGE_CODES_H_

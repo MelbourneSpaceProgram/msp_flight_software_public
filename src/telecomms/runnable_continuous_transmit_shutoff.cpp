@@ -22,33 +22,39 @@ RunnableContinuousTransmitShutoff::RunnableContinuousTransmitShutoff() {
 void RunnableContinuousTransmitShutoff::StartCounter() {
     int rolling_index = 0;
     while (1) {
-        TaskUtils::SleepMilli(kBucketSeconds * kMillisecondsInSecond);
+        try {
+            TaskUtils::SleepMilli(kBucketSeconds * kMillisecondsInSecond);
 
-        transmission_buckets[rolling_index] = bucket_count;
-        Lithium *lithium = Lithium::GetInstance();
+            transmission_buckets[rolling_index] = bucket_count;
+            Lithium* lithium = Lithium::GetInstance();
 
-        if (!TransmissionRateUnderThreshold() &&
-            !lithium->IsStateLocked(Lithium::kContinuousTransmitCondition)) {
-            lithium->LockState(Lithium::kContinuousTransmitCondition);
-            Log_info0(
-                "Continuous Transmission Detected: Shutting off Lithium "
-                "Transmission");
+            if (!TransmissionRateUnderThreshold() &&
+                !lithium->IsStateLocked(
+                    Lithium::kContinuousTransmitCondition)) {
+                lithium->LockState(Lithium::kContinuousTransmitCondition);
+                Log_info0(
+                    "Continuous Transmission Detected: Shutting off Lithium "
+                    "Transmission");
 
 #ifndef TEST_CONFIGURATION
-            // Do not automatically re-enable the Lithium in the test
-            // configuration This is so that the unit test has enough time to
-            // perform checks on the state of the Lithium state without having
-            // to race another task
+                // Do not automatically re-enable the Lithium in the test
+                // configuration This is so that the unit test has enough time
+                // to perform checks on the state of the Lithium state without
+                // having to race another task
 
-            // TODO(dingbenjamin): Find a better way to test where this logic
-            // can also be tested
-            TaskUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
-            ClearBuckets();
-            lithium->UnlockState(Lithium::kContinuousTransmitCondition);
+                // TODO(dingbenjamin): Find a better way to test where this
+                // logic can also be tested
+                TaskUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
+                ClearBuckets();
+                lithium->UnlockState(Lithium::kContinuousTransmitCondition);
 #endif
+            }
+            bucket_count = 0;
+            rolling_index = (rolling_index + 1) % kNumBuckets;
+        } catch (MspException& e) {
+            MspException::LogTopLevelException(
+                e, kRunnableContinuousTransmitShutoffCatch);
         }
-        bucket_count = 0;
-        rolling_index = (rolling_index + 1) % kNumBuckets;
     }
 }
 
