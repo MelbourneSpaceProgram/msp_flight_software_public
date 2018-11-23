@@ -78,6 +78,7 @@ enum Uplinks {
     kEraseFlashUplink = 23,
     kTerminateAntennaBurnUplink = 24,
     kSetBootStateUplink = 25,
+    kSetIChargeUplink = 26,
     kUplinksLength
 };
 

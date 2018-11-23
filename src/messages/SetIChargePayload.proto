@@ -1,0 +1,4 @@
+message SetIChargePayload {
+  required fixed32 bms_id = 1 [default = 0];
+  required fixed32 i_charge_index = 2 [default = 0];
+}

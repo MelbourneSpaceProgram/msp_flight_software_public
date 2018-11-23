@@ -46,6 +46,10 @@
 #include <src/util/task_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
+#include <src/telecomms/runnable_antenna_burner.h>
+#include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
+#include <src/payload_processor/uplinks/set_icharge_uplink.h>
+#include <src/board/i2c/bms/bms.h>
 
 TEST_GROUP(PayloadProcessor) {
     void setup() { MspException::ClearAll(); };
@@ -479,4 +483,23 @@ TEST(PayloadProcessor, TestSetBootStateUplink) {
 
     // After reset confirm that the most recent reset message in the reset info
     // container is equal to the message set in this test
+}
+
+TEST(PayloadProcessor, TestSetIChargeUplink) {
+    if (kBmsAvailable) {
+        byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+        MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+
+        SetIChargePayload nanopb_payload;
+        nanopb_payload.bms_id = SatellitePower::kBmsBusC;
+        nanopb_payload.i_charge_index = 0x01;
+
+        builder.AddUplinkCode(kSetIChargeUplink);
+        builder.AddNanopbMacro(SetIChargePayload)(nanopb_payload);
+
+        PayloadProcessor payload_processor;
+        CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
+        CHECK_EQUAL(SatellitePower::GetIChargeIndex(SatellitePower::kBmsBusC),
+                    nanopb_payload.i_charge_index);
+    }
 }

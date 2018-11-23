@@ -24,6 +24,7 @@
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/payload_processor/uplinks/set_boot_state_uplink.h>
+#include <src/payload_processor/uplinks/set_icharge_uplink.h>
 #include <src/payload_processor/uplinks/uplink.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/msp_exception.h>
@@ -109,6 +110,8 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new TerminateAntennaBurnUplink(payload);
         case kSetBootStateUplink:
             return new SetBootStateUplink(payload);
+        case kSetIChargeUplink:
+            return new SetIChargeUplink(payload);
         default:
             throw MspException("Could not parse command code",
                                kPayloadProcessorCommandCodeFail, __FILE__,

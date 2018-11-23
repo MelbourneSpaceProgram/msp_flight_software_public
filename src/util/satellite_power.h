@@ -13,6 +13,7 @@ class SatellitePower {
     enum BmsId {
         kBmsBusD = 0,
         kBmsBusC = 1,
+        kNumBms,
     };
     static void Initialize(Bms* bms1, Bms* bms2);
     static void CutPowerFromPanels();
