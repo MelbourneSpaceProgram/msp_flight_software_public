@@ -12,11 +12,11 @@ constexpr bool kFsBoardAvailable = true;
 constexpr bool kTcomBoardAvailable = true;
 constexpr bool kUtilitiesBoardAvailable = true;
 
-constexpr bool kXPosAvailable = true;
+constexpr bool kXPosAvailable = false;
 constexpr bool kXNegAvailable = true;
-constexpr bool kYPosAvailable = true;
+constexpr bool kYPosAvailable = false;
 constexpr bool kYNegAvailable = true;
-constexpr bool kZPosAvailable = true;
+constexpr bool kZPosAvailable = false;
 constexpr bool kZNegAvailable = true;
 
 constexpr bool kI2cAvailable = true;

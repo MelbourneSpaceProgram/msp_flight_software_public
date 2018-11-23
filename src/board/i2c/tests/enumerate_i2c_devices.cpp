@@ -143,7 +143,7 @@ TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCXPos) {
+IGNORE_TEST(I2cDeviceEnumeration, CheckBusCXPos) {
     if (!kXPosAvailable) {
         TEST_EXIT;
     }
@@ -156,7 +156,7 @@ TEST(I2cDeviceEnumeration, CheckBusCXPos) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCYPos) {
+IGNORE_TEST(I2cDeviceEnumeration, CheckBusCYPos) {
     if (!kYPosAvailable) {
         TEST_EXIT;
     }
@@ -208,7 +208,7 @@ TEST(I2cDeviceEnumeration, CheckBusCZNeg) {
                     expected_addresses, sizeof(expected_addresses));
 };
 
-TEST(I2cDeviceEnumeration, CheckBusCZPos) {
+IGNORE_TEST(I2cDeviceEnumeration, CheckBusCZPos) {
     if (!kZPosAvailable) {
         TEST_EXIT;
     }

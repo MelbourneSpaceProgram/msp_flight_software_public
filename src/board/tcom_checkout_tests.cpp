@@ -13,8 +13,7 @@ TEST_GROUP(TcomCheckout) {
     };
 };
 
-static MeasurableManager* measurable_manager =
-    MeasurableManager::GetInstance();
+static MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
 TEST(TcomCheckout, CanSenseCommsTemp1) {
     double temp =
@@ -79,7 +78,7 @@ TEST(TcomCheckout, CanSenseCommsRegulator2InputCurrent) {
     DOUBLES_EQUAL(1.5, current, 1.5);
 }
 
-TEST(TcomCheckout, CanSenseCommsRegulator2OutputCurrent) {
+IGNORE_TEST(TcomCheckout, CanSenseCommsRegulator2OutputCurrent) {
     double current =
         measurable_manager->ReadNanopbMeasurable<CurrentReading>(kComOutI2, 0)
             .current;
