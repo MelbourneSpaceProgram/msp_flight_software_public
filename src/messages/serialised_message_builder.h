@@ -24,7 +24,8 @@ class SerialisedMessageBuilder {
 
     template <class T>
     SerialisedMessageBuilder& AddData(const T data) {
-        if (sizeof(T) > buffer_size - serialised_length) {
+        if (static_cast<uint16_t>(sizeof(T)) >
+            buffer_size - serialised_length) {
             throw MspException("Message builder buffer size overflow",
                                kSerialisedMessageBuilderOverflowFail, __FILE__,
                                __LINE__);

@@ -3,14 +3,14 @@
 #include <src/util/msp_exception.h>
 #include <cstdio>
 
-GateMutexPri_Params mutex_params = {NULL};
+GateMutexPri_Params mutex_params;
 GateMutexPri_Handle i2c_mutex = NULL;
 
 I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
                      const I2cMultiplexer* multiplexer,
                      I2cMultiplexer::MuxChannel channel)
-    : bus(bus),
-      address(address),
+    : address(address),
+      bus(bus),
       multiplexer(multiplexer),
       channel(channel),
       info_string("", kInfoStringLength) {

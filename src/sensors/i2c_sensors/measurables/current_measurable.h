@@ -12,9 +12,9 @@ class CurrentMeasurable : public I2cMeasurable<CurrentReading> {
     CurrentReading TakeDirectI2cReading();
 
    private:
+    AdcMuxMode adc_line;
     float scaling_factor;
     float zero_bias_point;
-    AdcMuxMode adc_line;
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_CURRENT_MEASURABLE_H_

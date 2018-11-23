@@ -12,8 +12,8 @@ template <typename TimestampedNanopbType>
 class I2cMeasurable : public NanopbMeasurable<TimestampedNanopbType> {
    public:
     I2cMeasurable(I2cDevice* sensor, TimestampedNanopbType failure_reading)
-        : sensor(sensor),
-          NanopbMeasurable<TimestampedNanopbType>(failure_reading) {}
+        : NanopbMeasurable<TimestampedNanopbType>(failure_reading),
+          sensor(sensor) {}
 
     TimestampedNanopbType TakeDirectNanopbReading() {
         return TakeDirectI2cReading();

@@ -63,7 +63,8 @@ void RunnableConsoleListener::Listen() {
                 continue;  // TODO(dingbenjamin): Implement checksum
             if (!ReadUart(payload_buffer, header_buffer[2])) continue;
 
-            uint8_t size = header_buffer[2];
+            // TODO(dingbenjamin): Do something with the size byte:
+            // header_buffer[2]
 
             switch (header_buffer[3]) {
                 case kPayloadProcessorInjection:

@@ -142,7 +142,7 @@ bool Lithium::DoCommand(LithiumCommand* command) const {
         return false;
     }
 
-    byte ack_buffer[kLithiumHeaderSize] = {NULL};
+    byte ack_buffer[kLithiumHeaderSize] = {0};
     if (!Mailbox_pend(header_mailbox_handle, &ack_buffer,
                       TaskUtils::MilliToCycles(kWaitForAckMilli))) {
         // Timed out waiting for a response

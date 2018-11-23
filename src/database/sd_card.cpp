@@ -90,7 +90,7 @@ File *SdCard::FileOpen(const char *path, byte mode) {
 uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
                            uint32_t num_bytes) const {
     // Don't need a lock check as the file handle itself is the key
-    uint32_t bytes_written;
+    unsigned int bytes_written;
     FResult result = f_write(f, write_buffer, num_bytes, &bytes_written);
     if (result != FR_OK) {
         throw SdException("Error writing to file", kFileWriteFail, __FILE__,
@@ -102,7 +102,7 @@ uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
 uint32_t SdCard::FileRead(File *f, void *read_buffer,
                           uint32_t num_bytes) const {
     // Don't need a lock check as the file handle itself is the key
-    uint32_t bytes_read;
+    unsigned int bytes_read;
     FResult result = f_read(f, read_buffer, num_bytes, &bytes_read);
     if (result != FR_OK) {
         throw SdException("Error reading from file", kFileReadFail, __FILE__,
@@ -195,7 +195,7 @@ void SdCard::Unlock() {
     }
     is_locked = false;
     GateMutexPri_leave(sd_mutex, key);
-    key = NULL;
+    key = -1;
 }
 
 void SdCard::Dump() {

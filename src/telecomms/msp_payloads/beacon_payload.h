@@ -90,8 +90,8 @@ class BeaconPayload : public TransmitPayload {
     uint16_t sw_cdh_memory_available;
     uint16_t sw_cdh_mcu1;
     uint16_t sw_mcu_reset_count1;
-	uint16_t sw_sequence;
-    char* comms_outreach;  // TODO(dingbenjamin): Convert to etl::string
+    uint16_t sw_sequence;
+    const char* comms_outreach;  // TODO(dingbenjamin): Convert to etl::string
 
     static constexpr uint8_t kFsHealthFlagByteCount = 20;
     static constexpr uint8_t kFsFsAttitudeFlagByteCount = 2;

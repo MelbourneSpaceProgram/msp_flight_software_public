@@ -4,8 +4,8 @@
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 
 TransmitCommand::TransmitCommand(TransmitPayload *transmit_payload)
-    : transmit_packet(transmit_payload),
-      LithiumCommand(kTransmitCommandCode, &transmit_packet) {
+    : LithiumCommand(kTransmitCommandCode, &transmit_packet),
+      transmit_packet(transmit_payload) {
     RunnableContinuousTransmitShutoff::IncrementBucketCount();
 }
 

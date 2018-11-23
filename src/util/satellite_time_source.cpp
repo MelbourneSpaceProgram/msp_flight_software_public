@@ -32,7 +32,7 @@ void SatelliteTimeSource::SetTime(RTime time) {
         }
     } else {
         Log_error0("Unable to convert from RTime -> tm");
-        satellite_time.timestamp_ms = NULL;
+        satellite_time.timestamp_ms = 0;
         satellite_time.is_valid = false;
     }
 }

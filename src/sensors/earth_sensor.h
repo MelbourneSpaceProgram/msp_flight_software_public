@@ -26,13 +26,13 @@ class EarthSensor {
     Matrix neg_x_side_normal;
     Matrix neg_y_side_normal;
     Matrix neg_z_side_normal;
-    Matrix nadir_vector;
     InfraredSensor pos_x_sensor;
     InfraredSensor pos_y_sensor;
     InfraredSensor neg_x_sensor;
     InfraredSensor neg_y_sensor;
     InfraredSensor neg_z_a_sensor;
     InfraredSensor neg_z_b_sensor;
+    Matrix nadir_vector;
 };
 
 #endif /* SRC_SENSORS_EARTH_SENSOR_H_ */

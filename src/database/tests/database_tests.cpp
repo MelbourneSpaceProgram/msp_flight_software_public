@@ -5,7 +5,7 @@
 #include <src/util/data_types.h>
 #include <src/util/msp_exception.h>
 
-TEST_GROUP(Database) {};
+TEST_GROUP(Database){};
 
 TEST(Database, Hamming) {
     HammingEncodedByte hamming_encoded_byte;
@@ -94,7 +94,7 @@ IGNORE_TEST(Database, ReadWriteData) {
 
     Eeprom::ReadData(address, read_buffer, 345 - offset, valid_buffer,
                      345 - offset);
-    for (uint32_t i = 0; i < 345 - offset; i++) {
+    for (uint32_t i = 0; i < 345u - offset; i++) {
         CHECK_EQUAL(write_buffer[i + offset], read_buffer[i]);
         CHECK(valid_buffer[i]);
     }

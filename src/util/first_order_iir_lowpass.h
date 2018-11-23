@@ -11,8 +11,8 @@ class FirstOrderIirLowpass {
     double ProcessSample(double new_sample);
 
    private:
-    double alpha;
     double state;
+    double alpha;
 };
 
 #endif  // SRC_UTIL_FIRST_ORDER_IIR_LOWPASS_H_

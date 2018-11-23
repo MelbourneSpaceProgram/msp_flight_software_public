@@ -59,9 +59,6 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
 }
 
 MagnetometerReading ImuMagnetometerMeasurable::TakeSimulationReading() {
-    uint8_t buffer[MagnetometerReading_size];
-    MagnetometerReading simulation_reading = RequestNanopbFromSimMacro(
-        MagnetometerReading, kMagnetometerReadingRequestCode);
-
-    return simulation_reading;
+    return RequestNanopbFromSimMacro(MagnetometerReading,
+                                     kMagnetometerReadingRequestCode);
 }

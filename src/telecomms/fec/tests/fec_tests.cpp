@@ -4,8 +4,8 @@
 #include <src/telecomms/fec/rs8.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <xdc/runtime/Log.h>
 #include <xdc/runtime/System.h>
 
@@ -31,7 +31,7 @@ TEST(Fec, ReedSolomon) {
                 "Testing packet with %d%% chance of corruption %d times ... ",
                 i, kFecIterations);
 
-        for (int32_t j = 0; j < kFecIterations; j++) {
+        for (uint32_t j = 0; j < kFecIterations; j++) {
             DoTest(i);
         }
     }
@@ -75,7 +75,7 @@ void DoTest(int32_t error_chance) {
     if (kVerboseLogging) PrintArray(corrupt_payload, Rs8::kBlockLength);
 
     // Count the number of errors that were created
-    uint32_t corrupt_count =
+    int32_t corrupt_count =
         CompareArrays(test_payload, corrupt_payload, Rs8::kBlockLength);
 
     // Print the corrupted copy
@@ -106,14 +106,16 @@ void DoTest(int32_t error_chance) {
                          "Corrupt count not 0 after decode");
     } else if (corrected_count < 0) {
         CHECK_TEXT(
-            corrupt_count > Rs8::kParityLength / 2,
+            static_cast<uint8_t>(corrupt_count) > Rs8::kParityLength / 2u,
             "Decoder failed, but number of errors was not above threshold")
     } else {
         char fail_string[200];
         snprintf(fail_string, sizeof(fail_string),
                  "Corrupt count (%d) and corrected count (%d) are not equal. "
                  "Errors remaining in packet: %d",
-                 corrupt_count, corrected_count, corrupt_count_after_decode);
+                 static_cast<int16_t>(corrupt_count),
+                 static_cast<int16_t>(corrected_count),
+                 static_cast<int16_t>(corrupt_count_after_decode));
         FAIL(fail_string);
     }
 }

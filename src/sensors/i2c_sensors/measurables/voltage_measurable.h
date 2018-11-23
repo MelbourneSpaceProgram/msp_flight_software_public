@@ -11,8 +11,8 @@ class VoltageMeasurable : public I2cMeasurable<VoltageReading> {
     VoltageReading TakeDirectI2cReading();
 
    private:
-    float scaling_factor;
     AdcMuxMode adc_line;
+    float scaling_factor;
 };
 
 #endif  // SRC_SENSORS_I2C_SENSORS_MEASURABLES_VOLTAGE_MEASURABLE_H_

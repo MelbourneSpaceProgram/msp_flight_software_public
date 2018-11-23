@@ -36,7 +36,7 @@ void ResetInfoContainer::ConvertToFlashStorableStruct(
     reset_info_container_struct->num_resets = num_resets;
     reset_info_container_struct->most_recent_reset_cause =
         most_recent_reset_cause;
-    for (int16_t i = 0; i < kNumResetCauses; i++) {
+    for (uint16_t i = 0; i < kNumResetCauses; i++) {
         reset_info_container_struct->num_resets_of_cause[i] =
             num_resets_of_cause[i];
     }
@@ -56,7 +56,7 @@ void ResetInfoContainer::UpdateFromFlashStorableStruct(
         num_resets = reset_info_container_struct->num_resets;
         num_resets++;
         most_recent_reset_cause = GetMostRecentResetCauseFromFlash();
-        for (int16_t i = 0; i < kNumResetCauses; i++) {
+        for (uint16_t i = 0; i < kNumResetCauses; i++) {
             num_resets_of_cause[i] =
                 reset_info_container_struct->num_resets_of_cause[i];
         }
@@ -96,10 +96,10 @@ void ResetInfoContainer::InitialiseValues() {
     most_recent_reset_cause = kNoResetCause;
     most_recent_reset_message = kNoResetMessage;
     num_resets = 0;
-    for (int16_t i = 0; i < kNumResetCauses; i++) {
+    for (uint16_t i = 0; i < kNumResetCauses; i++) {
         num_resets_of_cause[i] = 0;
     }
-    for (int16_t i = 0; i < kNumResetMessages; i++) {
+    for (uint16_t i = 0; i < kNumResetMessages; i++) {
         num_resets_with_message[i] = 0;
     }
     first_wakeup = kNotFirstWakeup;

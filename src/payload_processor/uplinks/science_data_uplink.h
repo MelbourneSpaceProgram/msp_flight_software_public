@@ -3,6 +3,7 @@
 
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/Time.pb.h>
+#include <src/payload_processor/uplinks/uplink.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
@@ -11,7 +12,6 @@
 #include <src/util/nanopb_utils.h>
 #include <stdio.h>
 #include <xdc/runtime/Log.h>
-#include <src/payload_processor/uplinks/uplink.h>
 
 #define RetrieveAndSendDataMacro(NanopbMessageType)                  \
     RetrieveAndSendData<NanopbMessageType, NanopbMessageType##_size, \
@@ -65,8 +65,8 @@ class ScienceDataUplink : public Uplink {
         return true;
     }
 
-    Time requested_time;
     uint16_t requested_id;
+    Time requested_time;
 };
 
 #endif  // SRC_PAYLOAD_PROCESSOR_COMMANDS_SCIENCE_DATA_UPLINK_H_

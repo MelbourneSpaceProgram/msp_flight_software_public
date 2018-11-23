@@ -168,8 +168,8 @@ float geodetic_to_spherical_coords(float alt, float oalt, float glat,
     return ct;
 }
 
-static void E0000(int IENTRY, int *maxdeg, float alt, float glat, float glon,
-                  float time, float *dec, float *dip, float *ti, float *gv) {
+void E0000(int IENTRY, int *maxdeg, float alt, float glat, float glon,
+           float time, float *dec, float *dip, float *ti, float *gv) {
     static int maxord, n, m, j, D1, D2, D3, D4;
     static float c[13][13], cd[13][13], tc[13][13], dp[13][13], snorm[169],
         sp[13], cp[13], fn[13], fm[13], pp[13], k[13][13], pi, dtr, a, b, re,

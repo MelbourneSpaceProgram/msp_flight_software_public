@@ -13,10 +13,10 @@ class TransmitPacket : public Message {
 
    private:
     static constexpr uint8_t kMspHeaderSize = 4;
-    TransmitPayload *transmit_payload;
     uint8_t tx_count;
     uint8_t rx_count;
     uint8_t command_success_count;
+    TransmitPayload *transmit_payload;
 };
 
 #endif  // SRC_TELECOMMS_MSP_PAYLOADS_TRANSMIT_PACKET_H_

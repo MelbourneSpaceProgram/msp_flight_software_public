@@ -32,10 +32,9 @@ class I2cDevice {
     uint8_t address;
 
    private:
+    const I2c* bus;
     const I2cMultiplexer* multiplexer;
     I2cMultiplexer::MuxChannel channel;
-    bool failed;
-    const I2c* bus;
     void MuxSelect() const;
     void MuxDeselect() const;
     std::string info_string;

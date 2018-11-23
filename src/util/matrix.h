@@ -30,11 +30,6 @@ class Matrix {
 
     template <uint8_t rows, uint8_t columns>
     Matrix(const Matrix &A, double (&init_data)[rows][columns] = NULL) {
-        if (init_data == NULL) {
-            throw MspException(
-                "Matrix::Matrix(const Matrix &A ...) must pass in data matrix",
-                kMatrixDataNullFail, __FILE__, __LINE__);
-        }
         if (rows != A.GetNRows() || columns != A.GetNColumns()) {
             throw MspException(
                 "Matrix::Matrix(const Matrix &A ...) arguments sizes don't "

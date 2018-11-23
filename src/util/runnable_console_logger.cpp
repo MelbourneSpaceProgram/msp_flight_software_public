@@ -17,7 +17,7 @@ bool wait = false;
 
 Uart* RunnableConsoleLogger::debug_uart = NULL;
 bool RunnableConsoleLogger::initialised = false;
-GateMutexPri_Params RunnableConsoleLogger::console_uart_mutex_params = {NULL};
+GateMutexPri_Params RunnableConsoleLogger::console_uart_mutex_params;
 GateMutexPri_Handle RunnableConsoleLogger::console_uart_mutex = NULL;
 
 RunnableConsoleLogger::RunnableConsoleLogger(Uart* debug_uart) {
@@ -55,7 +55,7 @@ void RunnableConsoleLogger::LogToConsole() {
 void RunnableConsoleLogger::WriteToDataLogger(uint8_t measurable_id,
                                               byte encoded_message[],
                                               uint8_t message_size) {
-    byte packet[5] = {NULL};
+    byte packet[5] = {0};
     packet[0] = kMeasurableLoggerSyncChar1;
     packet[1] = kMeasurableLoggerSyncChar2;
     packet[2] = message_size;  // Length of packet except header
@@ -69,15 +69,15 @@ void RunnableConsoleLogger::WriteToDataLogger(uint8_t measurable_id,
 }
 
 void UartPutch(char ch) {
-    if (RunnableConsoleLogger::IsInitialised)
+    if (RunnableConsoleLogger::IsInitialised())
         RingBuf_put(&console_logger_ring_buffer, ch);
 }
 
 void UartFlush() {
-    if (RunnableConsoleLogger::IsInitialised) {
+    if (RunnableConsoleLogger::IsInitialised()) {
         byte encoded_message[RunnableConsoleLogger::kMaxEncodedMessageLength];
 
-        int bytes_available = RingBuf_getCount(&console_logger_ring_buffer);
+        int16_t bytes_available = RingBuf_getCount(&console_logger_ring_buffer);
         if (bytes_available == -1 || bytes_available == 0) {
             wait = true;
             return;
@@ -85,7 +85,7 @@ void UartFlush() {
 
         uint32_t byte_counter = 0;
         while (byte_counter < RunnableConsoleLogger::kMaxEncodedMessageLength &&
-               byte_counter < bytes_available) {
+               static_cast<int32_t>(byte_counter) < bytes_available) {
             RingBuf_get(&console_logger_ring_buffer,
                         encoded_message + byte_counter);
             byte_counter++;

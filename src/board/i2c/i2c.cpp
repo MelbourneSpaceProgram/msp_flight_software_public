@@ -15,7 +15,7 @@ I2C_Params I2c::I2c_params[] = {{I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_100kHz, NULL},
                                 {I2C_MODE_CALLBACK, NULL, I2C_400kHz, NULL}};
 
-GateMutexPri_Params I2c::mutex_params = {NULL};
+GateMutexPri_Params I2c::mutex_params;
 GateMutexPri_Handle I2c::i2c_mutex = NULL;
 
 void I2c::InitBusses() {

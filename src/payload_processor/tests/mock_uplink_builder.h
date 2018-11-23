@@ -24,7 +24,8 @@ class MockUplinkBuilder {
 
     template <class T>
     MockUplinkBuilder& AddData(const T data) {
-        if (sizeof(T) > buffer_size - serialised_length) {
+        if (static_cast<uint16_t>(sizeof(T)) >
+            buffer_size - serialised_length) {
             throw MspException("Message builder buffer size overflow",
                                kMockUplinkBuilderOverflowFail, __FILE__,
                                __LINE__);
