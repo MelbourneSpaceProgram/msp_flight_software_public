@@ -12,10 +12,10 @@ class FlashStorable : GenericFlashStorable {
         : GenericFlashStorable(flash_address, sizeof(FlashStorableStruct)) {}
 
     void StoreInFlash() {
-        FlashStorableStruct* flash_storable_struct = new FlashStorableStruct();
-        ConvertToFlashStorableStruct(flash_storable_struct);
+        FlashStorableStruct flash_storable_struct;
+        ConvertToFlashStorableStruct(&flash_storable_struct);
         uint32_t* flash_storable_struct_byte_ptr = reinterpret_cast<uint32_t*>(
-            flash_storable_struct);  // read the struct as an array of uint32_ts
+            &flash_storable_struct);  // read the struct as an array of uint32_ts
                                      // (which is fine because the compiler
                                      // packs structs in 4-byte words)
         FlashMemoryManagement::WriteToFlashMemory(
