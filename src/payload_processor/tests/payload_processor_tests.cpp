@@ -7,15 +7,16 @@
 #include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/database/flash_memory/flash_memory_management.h>
+#include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
 #include <src/database/sd_card.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/EraseFlashUplinkPayload.pb.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
 #include <src/messages/LithiumConfigurationPayload.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/TerminateAntennaBurnPayload.pb.h>
 #include <src/messages/Time.pb.h>
 #include <src/messages/Tle.pb.h>
-#include <src/messages/TerminateAntennaBurnPayload.pb.h>
 #include <src/payload_processor/payload_processor.h>
 #include <src/payload_processor/runnable_payload_processor.h>
 #include <src/payload_processor/tests/mock_uplink_builder.h>
@@ -25,15 +26,17 @@
 #include <src/payload_processor/uplinks/query_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/query_num_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
+#include <src/payload_processor/uplinks/set_boot_state_uplink.h>
+#include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
-#include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_configuration.h>
 #include <src/telecomms/msp_payloads/test_ones_payload.h>
+#include <src/telecomms/runnable_antenna_burner.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
@@ -43,8 +46,6 @@
 #include <src/util/task_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
-#include <src/telecomms/runnable_antenna_burner.h>
-#include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
 
 TEST_GROUP(PayloadProcessor) {
     void setup() { MspException::ClearAll(); };
@@ -458,4 +459,24 @@ TEST(PayloadProcessor, TestTerminateAntennaBurnUplink) {
         RunnableAntennaBurner::GetAntennaBurnerInfo();
 
     CHECK_FALSE(antenna_burner_info->GetAttemptBurnSetting());
+}
+
+TEST(PayloadProcessor, TestSetBootStateUplink) {
+    if (kTestSetBootStateUplink) {
+        byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
+        MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
+
+        SetBootStatePayload nanopb_payload;
+        nanopb_payload.boot_state =
+            ResetMessage::kUnexpectedReset;
+
+        builder.AddUplinkCode(kSetBootStateUplink);
+        builder.AddNanopbMacro(SetBootStatePayload)(nanopb_payload);
+
+        PayloadProcessor payload_processor;
+        CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
+    }
+
+    // After reset confirm that the most recent reset message in the reset info
+    // container is equal to the message set in this test
 }

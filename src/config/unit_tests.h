@@ -18,6 +18,9 @@ static constexpr bool kResetCounterTestEnabled = false;
 // Erases the flash memory
 static constexpr bool kEraseFlashTestEnabled = false;
 
+// Resets the satellite
+static constexpr bool kTestSetBootStateUplink = false;
+
 // See CppUTest Guide.md in top folder for how-to. The below examples can be
 // chained together to run all but some tests, or to only run a certain set
 // of tests. A test that has been bypassed due to a configuration in

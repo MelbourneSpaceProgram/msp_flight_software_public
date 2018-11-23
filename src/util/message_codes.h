@@ -77,6 +77,7 @@ enum Uplinks {
     kQueryNumExceptionsUplink = 22,
     kEraseFlashUplink = 23,
     kTerminateAntennaBurnUplink = 24,
+    kSetBootStateUplink = 25,
     kUplinksLength
 };
 

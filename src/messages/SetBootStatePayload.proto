@@ -1,0 +1,3 @@
+message SetBootStatePayload {
+  required fixed32 boot_state = 1 [default = 0];
+}
