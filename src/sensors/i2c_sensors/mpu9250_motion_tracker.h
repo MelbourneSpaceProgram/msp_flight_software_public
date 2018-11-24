@@ -115,12 +115,14 @@ class MPU9250MotionTracker : public I2cDevice {
     // temperature sensor constants from data sheet
     static constexpr int16_t kMaxOperatingTemp = 85;
     static constexpr int16_t kMinOperatingTemp = -40;
-    static constexpr double kTempSensitivity = 333.87;  // LSBs per degree Celsius
+    static constexpr double kTempSensitivity =
+        333.87;  // LSBs per degree Celsius
     static constexpr byte kRoomTempOffset = 21;
 
     // magnetometer constants
     static constexpr byte kInternalMagnetometerAddress = 0x0C;
     static constexpr byte kMagnetometerOverflowBitMask = 0x08;
+    static constexpr byte kMagnetometerControlRegister = 0x0A;
 
     // register locations of the gyroscope and accelerometer configuration
     static constexpr byte kGyroConfigRegister = 0x1b;
