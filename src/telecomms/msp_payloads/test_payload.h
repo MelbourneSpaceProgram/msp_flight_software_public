@@ -11,7 +11,6 @@ class TestPayload : public TransmitPayload {
     uint16_t GetSerialisedSize() const;
     uint8_t GetPayloadCode() const;
 
-   private:
     static const char* kTestMessage;
     // Padding is not implemented for the test message so that results can be
     // directly replicated using the Lithium Configuration Tool GUI and checksum

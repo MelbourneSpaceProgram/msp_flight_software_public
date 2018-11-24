@@ -200,6 +200,8 @@ enum ErrorId {
     kI2cMailboxFail,
     kLithiumMutexFail,
     kNumExceptionTypes,
+    kFecBufferTooSmall,
+    kPayloadExceedsFecBuffer,
 };
 
 enum CatchId {
@@ -246,6 +248,8 @@ enum CatchId {
     kRunnableOrientationControlCatch,
     kRunnableAntennaBurnerCatch,
     kRunnableBeaconCatch,
+    kTopLevelCatch,
+    kTransmitPacketBuild,
 };
 
 #endif  // SRC_UTIL_MESSAGE_CODES_H_

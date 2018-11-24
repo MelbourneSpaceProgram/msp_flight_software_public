@@ -4,12 +4,15 @@
 #include <src/messages/message.h>
 
 class TransmitPayload;
+class SerialisedMessageBuilder;
 
 class TransmitPacket : public Message {
    public:
-    TransmitPacket(TransmitPayload *transmit_payload);
+    explicit TransmitPacket(TransmitPayload *transmit_payload);
     SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
+    void EncodeWithFec(byte* buffer,
+                       SerialisedMessageBuilder* builder) const;
 
    private:
     static constexpr uint8_t kMspHeaderSize = 4;

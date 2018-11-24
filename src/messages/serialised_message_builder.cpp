@@ -1,5 +1,4 @@
 #include <src/messages/serialised_message_builder.h>
-#include <src/util/msp_exception.h>
 #include <stdint.h>
 
 SerialisedMessageBuilder::SerialisedMessageBuilder(byte* serial_buffer,
@@ -54,6 +53,10 @@ uint16_t SerialisedMessageBuilder::GetSerialisedLength() const {
 
 byte* SerialisedMessageBuilder::GetSerialisedMessageBuffer() const {
     return serialised_message_buffer;
+}
+
+uint16_t SerialisedMessageBuilder::GetSerialisedMessageBufferSize() const{
+    return buffer_size;
 }
 
 SerialisedMessage SerialisedMessageBuilder::Build() {

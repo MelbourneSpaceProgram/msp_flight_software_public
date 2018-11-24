@@ -41,6 +41,7 @@ constexpr bool kFormatSdOnStartup = false;
 constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
 constexpr uint32_t kEjectionWaitMs = 30 * 60 * 1000;
 constexpr uint64_t kTimeSourceDeployMs = 0;
+static constexpr bool kDownlinkFecEnabled = false;
 
 //////////////////// TELECOMMS ////////////////////
 

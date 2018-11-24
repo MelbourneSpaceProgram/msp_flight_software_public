@@ -17,6 +17,7 @@ class SerialisedMessageBuilder {
                              DebugMessageVersion version);
     uint16_t GetSerialisedLength() const;
     byte* GetSerialisedMessageBuffer() const;
+    uint16_t GetSerialisedMessageBufferSize() const;
     SerialisedMessage Build();
     SerialisedMessageBuilder& AddMessage(const Message* message);
     void PadZeroes();
