@@ -10,7 +10,6 @@
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
-#include <src/messages/StateMachineStateReading.pb.h>
 #include <src/messages/TemperatureReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/messages/VoltageReading.pb.h>
@@ -53,7 +52,7 @@ bool ScienceDataUplink::ExecuteUplink() {
     if (RetrieveAndSendDataMacro(BmsTemperatureReading)(requested_id))
         return true;
     if (RetrieveAndSendDataMacro(BmsVoltagesReading)(requested_id)) return true;
-    if (RetrieveAndSendDataMacro(StateMachineStateReading)(requested_id))
+	
         return true;
 
     Log_error1(

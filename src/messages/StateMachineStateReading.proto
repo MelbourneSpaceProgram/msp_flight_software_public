@@ -1,4 +1,0 @@
-message StateMachineStateReading {
-    required int32 state = 1 [default = -9999];
-    required fixed64 timestamp_ms = 2 [default = 0];
-}
