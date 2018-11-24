@@ -37,7 +37,8 @@ Lithium::Lithium()
       state(kLithiumTempNominal),
       consecutive_serial_failures(0),
       mutex_params(),
-      lithium_mutex(NULL) {
+      lithium_mutex(NULL),
+      num_lithium_resets(0) {
     // Ensure Lithium is not in reset
     GPIO_write(nCOMMS_RST, 1);
 
@@ -396,6 +397,7 @@ void Lithium::FailSerial() {
             "%d consecutive failures communicating with Lithium, resetting",
             consecutive_serial_failures);
         consecutive_serial_failures = 0;
+        num_lithium_resets++;
 
         SatellitePower::CutPowerToTelecoms();
         TirtosUtils::SleepMilli(kResetWaitMs);
@@ -406,3 +408,7 @@ void Lithium::FailSerial() {
 }
 
 void Lithium::SuccessSerial() { consecutive_serial_failures = 0; }
+
+uint8_t Lithium::GetNumResets() {
+	return num_lithium_resets;
+}

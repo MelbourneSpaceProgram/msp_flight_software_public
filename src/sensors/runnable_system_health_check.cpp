@@ -45,12 +45,6 @@ void RunnableSystemHealthCheck::EnableDatalogger(bool enable_logger) {
 void RunnableSystemHealthCheck::SystemHealthCheck() {
     while (1) {
         try {
-            Load_Stat stat;
-            Task_Handle idlTskHandle = Task_getIdleTaskHandle(0);
-            Load_getTaskLoad(idlTskHandle, &stat);
-            uint32_t idle_load = Load_calculateLoad(&stat);
-            uint32_t cpu_load = Load_getCPULoad();
-
             if (datalogger_enabled) {
                 if (kTcomBoardAvailable) {
                     LogMeasurableMacro(VoltageReading)(kComInV1);

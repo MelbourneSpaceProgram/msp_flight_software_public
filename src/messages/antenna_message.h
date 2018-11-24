@@ -7,9 +7,7 @@
 
 class AntennaMessage : public Message {
    public:
-    AntennaMessage(bool door_one_open, bool door_two_open, bool door_three_open,
-                   bool door_four_open, bool heaters_on, byte antenna_state,
-                   byte active_heaters, byte seconds_elapsed);
+	explicit AntennaMessage(byte i2c_raw[3]);
     SerialisedMessage SerialiseTo(byte *serial_buffer) const;
     uint16_t GetSerialisedSize() const;
 
@@ -23,7 +21,10 @@ class AntennaMessage : public Message {
     bool IsHeatersOn() const;
 
    private:
-    static constexpr uint16_t kSerialisedSize = 8;
+    AntennaMessage(bool door_one_open, bool door_two_open, bool door_three_open,
+                   bool door_four_open, bool heaters_on, byte antenna_state,
+                   byte active_heaters, byte seconds_elapsed);
+    static constexpr uint16_t kSerialisedSize = 3;
 
     bool door_one_open;
     bool door_two_open;
@@ -33,6 +34,7 @@ class AntennaMessage : public Message {
     byte antenna_state;
     byte active_heaters;
     byte seconds_elapsed;
+	byte raw[3];
 };
 
 #endif  // SRC_MESSAGES_ANTENNA_MESSAGE_H_

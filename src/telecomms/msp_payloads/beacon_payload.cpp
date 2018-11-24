@@ -9,6 +9,9 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
+#include <stdint.h>
+#include <ti/sysbios/utils/Load.h>
+#include <numeric>
 
 BeaconPayload::BeaconPayload()
     : com_out_i1(ReadCachedCurrent(kComOutI1)),
@@ -16,6 +19,8 @@ BeaconPayload::BeaconPayload()
       com_out_i2(ReadCachedCurrent(kComOutI2)),
       com_out_v2(ReadCachedVoltage(kComOutV2)),
       com_t2(ReadCachedTemperature(kComT2)),
+      com_antenna_status(Antenna::GetInstance()->GetStatus),
+
       eps_adc_bat_v1(ReadCachedVoltage(kEpsAdcBatV1)),
       eps_load_i1(ReadCachedCurrent(kEpsLoadI1)),
       eps_adc_bat_v2(ReadCachedVoltage(kEpsAdcBatV2)),
@@ -26,10 +31,10 @@ BeaconPayload::BeaconPayload()
       eps_top_panel_i(ReadCachedCurrent(kEpsTopPanelI)),
       eps_t1(ReadCachedTemperature(kEpsT1)),
       eps_t2(ReadCachedTemperature(kEpsT2)),
+
       x_pos_v(ReadCachedVoltage(kXPosV)),
       x_pos_i(ReadCachedCurrent(kXPosI)),
       x_pos_t1(ReadCachedTemperature(kXPosT1)),
-      x_pos_rad(kInvalidPositiveInteger),
       y_pos_v(ReadCachedVoltage(kYPosV)),
       y_pos_i(ReadCachedCurrent(kYPosI)),
       y_pos_t1(ReadCachedTemperature(kYPosT1)),
@@ -43,51 +48,60 @@ BeaconPayload::BeaconPayload()
       z_neg_i(ReadCachedCurrent(kZNegI)),
       z_neg_t1(ReadCachedTemperature(kZNegT1)),
       z_pos_t(ReadCachedTemperature(kZPosT)),
-      util_ntc_v1(kInvalidNegativeInteger),
-      util_ntc_v2(kInvalidNegativeInteger),
-      util_heat_v(kInvalidNegativeInteger),
-      util_t(kInvalidNegativeInteger),
-      fs_torquer_xi(kInvalidDouble),
-      fs_torquer_yi(kInvalidDouble),
-      fs_torquer_zi(kInvalidDouble),
-      fs_hb_xt(kInvalidDouble),
-      fs_hb_yt(kInvalidDouble),
-      fs_hb_zt(kInvalidDouble),
+
+      util_t(ReadCachedTemperature(kUtilT)),
+
+      fs_torquer_xi(ReadCachedCurrent(kFsTorquerXI)),
+      fs_torquer_yi(ReadCachedCurrent(kFsTorquerYI)),
+      fs_torquer_zi(ReadCachedCurrent(kFsTorquerZI)),
+      fs_hb_xt(ReadCachedTemperature(kFsHbXT)),
+      fs_hb_yt(ReadCachedTemperature(kFsHbYT)),
+      fs_hb_zt(ReadCachedTemperature(kFsHbZT)),
       fs_rad1(kInvalidPositiveInteger),
+      fs_angular_velocity1(ReadCachedMeasurable<GyroscopeReading>(kFsImuGyro1).x),
+      fs_angular_velocity2(ReadCachedMeasurable<GyroscopeReading>(kFsImuGyro1).y),
+      fs_angular_velocity3(ReadCachedMeasurable<GyroscopeReading>(kFsImuGyro1).z),
+	  fs_magno1(ReadCachedMeasurable<MagnetometerReading>(kFsImuMagno1).x),
+	  fs_magno2(ReadCachedMeasurable<MagnetometerReading>(kFsImuMagno1).y),
+	  fs_magno3(ReadCachedMeasurable<MagnetometerReading>(kFsImuMagno1).z),
+      fs_attitude_cov(kInvalidNegativeInteger),
+      fs_attitude_quaternion1(kInvalidNegativeInteger),
+      fs_attitude_quaternion2(kInvalidNegativeInteger),
+      fs_attitude_quaternion3(kInvalidNegativeInteger),
+      fs_attitude_quaternion4(kInvalidNegativeInteger),
+      fs_flags(0),
+
       cdh_time(SatelliteTimeSource::GetTime()),
       cdh_t(ReadCachedTemperature(kCdhT)),
-      com_rx_bytes(kInvalidPositiveInteger),
-      com_tx_bytes(kInvalidPositiveInteger),
-      com_antenna_flags(0),
-      com_lithium_ops(kInvalidPositiveInteger),
-      com_lithium_rssi(0),
-      com_lithium_t(kInvalidNegativeInteger),
-      com_lithium_time({0, false}),
-      sw_fs_angular_velocity1(kInvalidNegativeInteger),
-      sw_fs_angular_velocity2(kInvalidNegativeInteger),
-      sw_fs_angular_velocity3(kInvalidNegativeInteger),
-      sw_fs_attitude_cov(kInvalidNegativeInteger),
-      sw_fs_attitude_distance(kInvalidNegativeInteger),
-      sw_fs_attitude_quaternion1(kInvalidNegativeInteger),
-      sw_fs_attitude_quaternion2(kInvalidNegativeInteger),
-      sw_fs_attitude_quaternion3(kInvalidNegativeInteger),
-      sw_fs_attitude_quaternion4(kInvalidNegativeInteger),
-      sw_fs_control1(kInvalidNegativeInteger),
-      sw_fs_control2(kInvalidNegativeInteger),
-      sw_fs_control3(kInvalidNegativeInteger),
-      sw_fs_health_flags(0),
-      sw_fs_attitude_flags(0),
-      sw_fs_flags(0),
-      sw_fs_location(kInvalidPositiveInteger),
-      sw_fs_ir(kInvalidPositiveInteger),
-      sw_cdh_last_reboot(SatelliteTimeSource::GetInitialTime()),
-      sw_cdh_memory(kInvalidPositiveInteger),
-      sw_cdh_memory_available(kInvalidPositiveInteger),
-      sw_cdh_mcu1(kInvalidPositiveInteger),
-      sw_mcu_reset_count1(kInvalidPositiveInteger),
+
       sw_sequence(RunnablePayloadProcessor::GetSequence()),
-      comms_outreach("Hello from Melbourne     ") {
-    // TODO(dingbenjamin): Replace the invalid initializers
+      sw_last_reboot(SatelliteTimeSource::GetInitialTime()),
+      sw_num_resets(ResetInfoContainer::GetInstance()->GetNumResets()),
+      last_reset_cause(
+          (static_cast<uint32_t>(
+              ResetInfoContainer::GetInstance()->GetMostRecentResetCause())) %
+          UINT8_MAX),
+      last_reset_message(static_cast<uint8_t>(
+          ResetInfoContainer::GetInstance()->GetMostRecentResetCause())),
+      num_exceptions(
+          std::accumulate(MspException::GetNumAll(),
+                          MspException::GetNumAll() + kNumExceptionTypes, 0)),
+	  sw_flags(0)
+      sw_outreach("Hello from Melbourne     ") {
+    // TODO(dingbenjamin): Make this a measurable and pack it smaller
+    LithiumTelemetry telemetry;
+    if (!Lithium::GetInstance()->DoTelemetryQuery(telemetry)) {
+        telemetry = {0}:
+    }
+    com_lithium_rssi = telemetry.rssi;
+    com_lithium_t = ScaleTemp(telemetry.msp430_temp);
+
+    // TODO(dingbenjamin): Make this a measurable and pack it smaller
+    Load_Stat stat;
+    Task_Handle idlTskHandle = Task_getIdleTaskHandle(0);
+    Load_getTaskLoad(idlTskHandle, &stat);
+    sw_idle_load = static_cast<uint8_t>(Load_calculateLoad(&stat));
+    sw_cpu_load = static_cast<uint8_t>(Load_getCPULoad());
 }
 
 SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
@@ -111,7 +125,6 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<int16_t>(ScaleVoltage(x_pos_v))
         .AddData<int16_t>(ScaleCurrent(x_pos_i))
         .AddData<int16_t>(ScaleTemp(x_pos_t1))
-        .AddData<uint16_t>(x_pos_rad)
         .AddData<int16_t>(ScaleVoltage(y_pos_v))
         .AddData<int16_t>(ScaleCurrent(y_pos_i))
         .AddData<int16_t>(ScaleTemp(y_pos_t1))
@@ -125,9 +138,6 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<int16_t>(ScaleCurrent(z_neg_i))
         .AddData<int16_t>(ScaleTemp(z_neg_t1))
         .AddData<int16_t>(ScaleTemp(z_pos_t))
-        .AddData<int16_t>(util_ntc_v1)
-        .AddData<int16_t>(util_ntc_v2)
-        .AddData<int16_t>(util_heat_v)
         .AddData<int16_t>(ScaleTemp(util_t))
         .AddData<int16_t>(ScaleCurrent(fs_torquer_xi))
         .AddData<int16_t>(ScaleCurrent(fs_torquer_yi))
@@ -140,34 +150,37 @@ SerialisedMessage BeaconPayload::SerialiseTo(byte* serial_buffer) const {
         .AddData<uint16_t>(cdh_t)
         .AddData<uint32_t>(com_rx_bytes)
         .AddData<uint32_t>(com_tx_bytes)
-        .AddData<uint8_t>(com_antenna_flags)
-        .AddData<uint16_t>(com_lithium_ops)
+        .AddData<byte>(com_antenna_status.Serialise().GetBuffer[0])
+        .AddData<byte>(com_antenna_status.Serialise().GetBuffer[1])
+        .AddData<byte>(com_antenna_status.Serialise().GetBuffer[2])
         .AddData<uint8_t>(com_lithium_rssi)
         .AddData<int16_t>(ScaleTemp(com_lithium_t))
         .AddData<uint64_t>(com_lithium_time.timestamp_ms)
-        .AddData<int16_t>(sw_fs_angular_velocity1)
-        .AddData<int16_t>(sw_fs_angular_velocity2)
-        .AddData<int16_t>(sw_fs_angular_velocity3)
-        .AddData<int16_t>(sw_fs_attitude_cov)
-        .AddData<int16_t>(sw_fs_attitude_distance)
-        .AddData<int16_t>(sw_fs_attitude_quaternion1)
-        .AddData<int16_t>(sw_fs_attitude_quaternion2)
-        .AddData<int16_t>(sw_fs_attitude_quaternion3)
-        .AddData<int16_t>(sw_fs_attitude_quaternion4)
-        .AddData<int16_t>(sw_fs_control1)
-        .AddData<int16_t>(sw_fs_control2)
-        .AddData<int16_t>(sw_fs_control3)
-        .AddData<uint16_t>(sw_fs_health_flags)
-        .AddData<uint16_t>(sw_fs_attitude_flags)
-        .AddData<uint16_t>(sw_fs_flags)
-        .AddData<uint16_t>(sw_fs_location)
-        .AddData<int16_t>(sw_fs_ir)
-        .AddData<uint64_t>(sw_cdh_last_reboot.timestamp_ms)
-        .AddData<uint16_t>(sw_cdh_memory)
-        .AddData<uint16_t>(sw_cdh_memory_available)
-        .AddData<uint16_t>(sw_cdh_mcu1)
-        .AddData<uint16_t>(sw_mcu_reset_count1)
+        .AddData<int16_t>(fs_angular_velocity1)
+        .AddData<int16_t>(fs_angular_velocity2)
+        .AddData<int16_t>(fs_angular_velocity3)
+        .AddData<int16_t>(fs_attitude_cov)
+        .AddData<int16_t>(fs_attitude_distance)
+        .AddData<int16_t>(fs_attitude_quaternion1)
+        .AddData<int16_t>(fs_attitude_quaternion2)
+        .AddData<int16_t>(fs_attitude_quaternion3)
+        .AddData<int16_t>(fs_attitude_quaternion4)
+        .AddData<int16_t>(fs_control1)
+        .AddData<int16_t>(fs_control2)
+        .AddData<int16_t>(fs_control3)
+        .AddData<uint16_t>(fs_health_flags)
+        .AddData<uint16_t>(fs_attitude_flags)
+        .AddData<uint16_t>(fs_flags)
+        .AddData<uint16_t>(fs_location)
+        .AddData<int16_t>(fs_ir)
+        .AddData<uint64_t>(sw_last_reboot.timestamp_ms)
         .AddData<uint16_t>(sw_sequence);
+		.AddData<uint8_t>(sw_idle_load);
+		.AddData<uint8_t>(sw_cpu_load);
+        .AddData<uint16_t>(num_resets)
+        .AddData<byte>(last_reset_cause)
+        .AddData<byte>(last_reset_message)
+        .AddData<uint16_t>(num_exceptions)
 
     for (uint8_t i = 0; i < kOutreachMessageSize; i++) {
         builder.AddData<char>(comms_outreach[i]);
@@ -208,6 +221,14 @@ int16_t BeaconPayload::ScaleVoltage(float data) {
 
 int16_t BeaconPayload::ScaleTemp(float data) {
     return ScaleArbitraryInt16(data, kTempUpperBound);
+}
+
+int16_t BeaconPayload::ScaleGyro(float data) {
+    return ScaleArbitraryInt16(data, kGyroUpperBound);
+}
+
+int16_t BeaconPayload::ScaleMagno(float data) {
+    return ScaleArbitraryInt16(data, kMagnoUpperBound);
 }
 
 double BeaconPayload::ReadCachedTemperature(uint16_t measurable_id) {

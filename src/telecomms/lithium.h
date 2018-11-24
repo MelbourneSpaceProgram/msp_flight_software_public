@@ -77,6 +77,7 @@ class Lithium {
     void UnlockState(LithiumShutoffCondition condition);
     bool IsStateLocked(LithiumShutoffCondition condition);
     void ForceUnlock();
+	uint8_t GetNumResets();
 
     bool DoTelemetryQuery(LithiumTelemetry& returned_telemetry);
     bool DoGetConfiguration(LithiumConfiguration& returned_configuration);
@@ -108,6 +109,7 @@ class Lithium {
     uint8_t consecutive_serial_failures;
     GateMutexPri_Params mutex_params;
     GateMutexPri_Handle lithium_mutex;
+	uint8_t num_lithium_resets;
 
     void FailSerial();
     void SuccessSerial();

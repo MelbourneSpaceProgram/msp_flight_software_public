@@ -3,6 +3,18 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
+AntennaMessage::AntennaMessage(byte i2c_raw[3])
+    : door_one_open(kDoorOneMask & i2c_raw[0]),
+      door_two_open(kDoorTwoMask & i2c_raw[0]),
+      door_three_open(kDoorThreeMask & i2c_raw[0]),
+      door_four_open(kDoorFourMask & i2c_raw[0]),
+      heaters_on(i2c_raw[1] > 0),
+      antenna_state(kStateMask & i2c_raw[0]),
+      active_heater(i2c_raw[1]),
+      seconds_elapsed(i2c_raw[2]) {
+    raw = memcpy(raw, i2c_raw, 3);
+}
+
 AntennaMessage::AntennaMessage(bool door_one_open, bool door_two_open,
                                bool door_three_open, bool door_four_open,
                                bool heaters_on, byte antenna_state,
@@ -17,34 +29,11 @@ AntennaMessage::AntennaMessage(bool door_one_open, bool door_two_open,
       seconds_elapsed(seconds_elapsed) {}
 
 SerialisedMessage AntennaMessage::SerialiseTo(byte *serial_buffer) const {
-    SerialisedMessageBuilder builder(serial_buffer, kSerialisedSize, kAntenna,
-                                     kV1);
-    // bool is not well defined in the C++ standard, but the conversion from
-    // bool to int is well defined as true -> 1 and false -> 0
-    // Therefore to be platform independent convert the bool into an int first
+    SerialisedMessageBuilder builder(serial_buffer, kSerialisedSize);
 
-    int int_door_one = door_one_open;
-    int int_door_two = door_two_open;
-    int int_door_three = door_three_open;
-    int int_door_four = door_four_open;
-    int int_heaters_on = heaters_on;
-
-    // Typecast to uint8_t (int to uint8_t is well defined)
-
-    uint8_t uint_door_one = int_door_one;
-    uint8_t uint_door_two = int_door_two;
-    uint8_t uint_door_three = int_door_three;
-    uint8_t uint_door_four = int_door_four;
-    uint8_t uint_heaters_on = int_heaters_on;
-
-    builder.AddData<uint8_t>(uint_door_one)
-        .AddData<uint8_t>(uint_door_two)
-        .AddData<uint8_t>(uint_door_three)
-        .AddData<uint8_t>(uint_door_four)
-        .AddData<uint8_t>(uint_heaters_on)
-        .AddData<byte>(antenna_state)
-        .AddData<byte>(active_heaters)
-        .AddData<byte>(seconds_elapsed);
+    builder.AddData<byte>(raw[1])
+        .AddData<byte>(raw[2])
+        .AddData<byte>(raw[3]);
 
     return builder.Build();
 }

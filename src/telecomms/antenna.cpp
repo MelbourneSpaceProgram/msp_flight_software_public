@@ -96,11 +96,7 @@ AntennaMessage Antenna::GetStatus() const {
     bus->PerformReadTransaction(kAddress, read_buffer, 3);
     // Bits at the door masks should be 1 when doors opened, 0 otherwise
     // Byte 2 shows active heaters, if 0 then all heaters off
-    AntennaMessage status(
-        kDoorOneMask & read_buffer[0], kDoorTwoMask & read_buffer[0],
-        kDoorThreeMask & read_buffer[0], kDoorFourMask & read_buffer[0],
-        read_buffer[1] > 0, kStateMask & read_buffer[0], read_buffer[1],
-        read_buffer[2]);
+    AntennaMessage status(read_buffer);
 
     return status;
 }
