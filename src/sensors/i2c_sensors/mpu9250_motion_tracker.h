@@ -46,6 +46,8 @@ class MPU9250MotionTracker : public I2cDevice {
         const I2c* bus, uint8_t address,
         const I2cMultiplexer* multiplexer = NULL,
         I2cMultiplexer::MuxChannel channel = I2cMultiplexer::kMuxNoChannel);
+
+    void InitialiseImu();
     GyroscopeReading TakeGyroscopeReading();
     AccelerometerReading TakeAccelerometerReading();
     double TakeTemperatureReading();

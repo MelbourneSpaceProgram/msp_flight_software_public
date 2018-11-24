@@ -14,6 +14,7 @@ class ImuMagnetometerMeasurable : public I2cMeasurable<MagnetometerReading> {
                                        const Matrix &initial_scale_factors);
     MagnetometerReading TakeDirectI2cReading();
     MagnetometerReading TakeSimulationReading();
+    void InitialiseImu();
 
    private:
     const Matrix magnetometer_to_body_frame_transform;

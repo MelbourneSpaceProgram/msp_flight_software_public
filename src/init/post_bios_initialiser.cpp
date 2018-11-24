@@ -152,27 +152,6 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        Bms* bms_bus_d =
-            new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
-        Bms* bms_bus_c =
-            new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
-        SatellitePower::Initialize(bms_bus_d, bms_bus_c);
-        TaskUtils::SleepMilli(1000);
-        IArg key = SatellitePower::Lock();
-        try {
-            SatellitePower::RestorePowerToFlightSystems();
-            TaskUtils::SleepMilli(1000);
-            SatellitePower::RestorePowerToTelecoms();
-        } catch (MspException& e) {
-            SatellitePower::Unlock(key);
-            throw;
-        }
-        SatellitePower::Unlock(key);
-    } catch (MspException& e) {
-        MspException::LogException(e, kSatellitePowerInitCatch);
-    }
-
-    try {
         Eeprom::Init();
     } catch (MspException& e) {
         MspException::LogException(e, kEepromInitCatch);
@@ -213,6 +192,16 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
+        Bms* bms_bus_d =
+            new Bms(bus_d, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+        Bms* bms_bus_c =
+            new Bms(bus_c, 0x68, NULL, I2cMultiplexer::kMuxNoChannel);
+        SatellitePower::Initialize(bms_bus_d, bms_bus_c);
+    } catch (MspException& e) {
+        MspException::LogException(e, kSatellitePowerInitCatch);
+    }
+
+    try {
         MeasurableManager::GetInstance()->Init(bus_a, bus_b, bus_c, bus_d);
     } catch (MspException& e) {
         // TODO(akremor): Possible failure mode needs to be handled
@@ -222,6 +211,20 @@ void PostBiosInitialiser::InitHardware() {
         // caught by the driver. Only exceptions from measurables, which should
         // be software problems, should get to here.
         MspException::LogException(e, kMeasurableManagerInitCatch);
+    }
+
+    InitTimeSource();
+
+    try {
+        try {
+            SatellitePower::RestorePowerToTelecoms();
+            TaskUtils::SleepMilli(1000);
+            SatellitePower::RestorePowerToFlightSystems();
+        } catch (etl::exception& e) {
+            throw;
+        }
+    } catch (MspException& e) {
+        MspException::LogException(e, kSatellitePowerPoweronCatch);
     }
 }
 
@@ -321,7 +324,6 @@ void PostBiosInitialiser::PostBiosInit() {
         InitMemoryLogger();
         MspException::Init();
         InitHardware();
-        InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
         InitRadioListener();
         InitPayloadProcessor();
         InitContinuousTransmitShutoff();

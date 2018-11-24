@@ -12,6 +12,10 @@ ImuMagnetometerMeasurable::ImuMagnetometerMeasurable(
       magnetometer_to_body_frame_transform(frame_mapping),
       magnetometer_calibration(initial_biases, initial_scale_factors) {}
 
+void ImuMagnetometerMeasurable::InitialiseImu() {
+  static_cast<MPU9250MotionTracker*>(I2cMeasurable::sensor)->InitialiseImu();
+}
+
 // Get readings from the hardware magnetometer and the simulation.
 // Fuse the hardware and simulation readings for the controller, and
 // echo readings to the DebugClient.

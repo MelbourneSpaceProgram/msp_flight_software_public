@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <src/board/MSP432E.h>
 #include <src/config/satellite.h>
+#include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/util/msp_exception.h>
@@ -103,6 +104,18 @@ void SatellitePower::RestorePowerToFlightSystems() {
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
+
+    // Give the Flight Systems board time to wake up
+    TaskUtils::SleepMilli(10);
+
+    MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
+    dynamic_cast<ImuMagnetometerMeasurable*>(
+        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno1))
+        ->InitialiseImu();
+
+    dynamic_cast<ImuMagnetometerMeasurable*>(
+        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2))
+        ->InitialiseImu();
 }
 
 void SatellitePower::CutPowerToTelecoms() {

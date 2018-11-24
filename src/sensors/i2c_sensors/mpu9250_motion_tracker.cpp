@@ -31,21 +31,23 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
     }
 
     try {
-        // default settings for the gyroscope/accelerometer
-        SetGyroFullScaleSetting(kGyro250dps);
-        SetAccelFullScaleSetting(kAccel2g);
-
-        // default settings for the magnetometer
-        SetBypassMode(kBypassModeEnable);
-        SetMagnetometerOperationMode(kMagnoContinuousMeasurement1);
-        SetMagnetometerOutputBitSetting(k14BitOutput);
-        SelectMagnetometerRegister(kMagnoAdjustX);
-        ReadMagnetometerAdjustmentValues();
-        SetBypassMode(kBypassModeDisable);
+        InitialiseImu();
     } catch (MspException& e) {
-		MspException::LogException(e, kImuCatch);
-        // TODO(dingbenjamin): Not sure what we can really do
+        MspException::LogException(e, kImuCatch);
     }
+}
+
+void MPU9250MotionTracker::InitialiseImu() {
+    // default settings for the gyroscope/accelerometer
+    SetGyroFullScaleSetting(kGyro250dps);
+    SetAccelFullScaleSetting(kAccel2g);
+    // default settings for the magnetometer
+    SetBypassMode(kBypassModeEnable);
+    SetMagnetometerOperationMode(kMagnoContinuousMeasurement1);
+    SetMagnetometerOutputBitSetting(k14BitOutput);
+    SelectMagnetometerRegister(kMagnoAdjustX);
+    ReadMagnetometerAdjustmentValues();
+    SetBypassMode(kBypassModeDisable);
 }
 
 GyroscopeReading MPU9250MotionTracker::TakeGyroscopeReading() {
