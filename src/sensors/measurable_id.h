@@ -197,7 +197,6 @@ enum MeasurableId {
     kTestCurrent = 190,
     kLithiumTelemetry = 191,
     kAntennaBurnerInfo = 192,
-    kResetInfoContainer = 193,
     // Add new measurables below this line only
     kMeasurableIdEnd
 };

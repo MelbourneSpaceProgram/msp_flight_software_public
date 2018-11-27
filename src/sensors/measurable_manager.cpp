@@ -22,7 +22,6 @@
 #include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
-#include <src/sensors/software_measurables/reset_info_container_measurable.h>
 #include <src/util/satellite_power.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
@@ -229,10 +228,6 @@ void MeasurableManager::InitSoftware() {
     AntennaBurnerInfoMeasurable *antenna_burner_info =
         new AntennaBurnerInfoMeasurable();
     measurables[kAntennaBurnerInfo] = antenna_burner_info;
-
-    ResetInfoContainerMeasurable *reset_info =
-        new ResetInfoContainerMeasurable();
-    measurables[kResetInfoContainer] = reset_info;
 }
 
 void MeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {

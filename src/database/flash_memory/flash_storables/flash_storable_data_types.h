@@ -23,7 +23,6 @@ enum ResetCauses {
     kUnknownResetCause = 0x0000CCCC // arbitrary value
 };
 static constexpr uint32_t kNumResetCauses = 11;
-// Must update ResetInfoContainerReading.options if changing the above parameter
 
 // reset messages defined by us to control satellite mode after reset
 enum ResetMessage {
@@ -34,8 +33,6 @@ enum ResetMessage {
     kResetUnitTestMessage2,
     kUnexpectedReset,
     kNumResetMessages,
-    // Must update ResetInfoContainerReading.options if changing the above
-    // parameter
 };
 
 struct ResetInfoContainerStruct {
