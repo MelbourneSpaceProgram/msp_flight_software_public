@@ -16,7 +16,6 @@
 #include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
-#include <src/sensors/software_measurables/antenna_burner_info_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
@@ -59,7 +58,6 @@ void MeasurableManager::Init(const I2c *bus_a, const I2c *bus_b,
     InitCdh(mux_a);
     InitUtilities(mux_c);
     InitSolarPanels(mux_c);
-    InitSoftware();
 }
 
 void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
@@ -217,12 +215,6 @@ void MeasurableManager::InitUtilities(const I2cMultiplexer *mux_c) {
     Mcp9808 *util_temp =
         new Mcp9808(bus_c, 0x1C, mux_c, I2cMultiplexer::kMuxChannel1);
     AddTemperature(kUtilT, util_temp);
-}
-
-void MeasurableManager::InitSoftware() {
-    AntennaBurnerInfoMeasurable *antenna_burner_info =
-        new AntennaBurnerInfoMeasurable();
-    measurables[kAntennaBurnerInfo] = antenna_burner_info;
 }
 
 void MeasurableManager::InitCdh(const I2cMultiplexer *mux_a) {

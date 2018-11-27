@@ -1,6 +1,0 @@
-message AntennaBurnerInfoReading {
-	required fixed64 last_burn_attempt_timestamp_ms = 1 [default = 0];
-	required fixed64 burn_interval_ms = 2 [default = 0];
-	required bool attempt_antenna_burn = 3 [default = false];
-	required fixed64 timestamp_ms = 7 [default = 0];
-} 
