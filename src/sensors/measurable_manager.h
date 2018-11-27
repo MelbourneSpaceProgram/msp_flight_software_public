@@ -95,7 +95,7 @@ class MeasurableManager {
     void InitUtilities(const I2cMultiplexer *mux_c);
     void InitCdh(const I2cMultiplexer *mux_a);
     void InitSolarPanels(const I2cMultiplexer *mux_c);
-
+    void InitSoftware();
     void AddVoltage(MeasurableId id, Adc *adc, AdcMuxMode line,
                     float scaling_factor);
     void AddCurrent(MeasurableId id, Adc *adc, AdcMuxMode line,
