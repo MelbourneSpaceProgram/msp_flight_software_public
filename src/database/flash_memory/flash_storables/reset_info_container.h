@@ -28,6 +28,7 @@ class ResetInfoContainer : public FlashStorable<ResetInfoContainerStruct> {
     uint32_t GetNumResets() const;
     uint32_t GetNumResetsOfCause(ResetCauses reset_type) const;
     uint32_t GetNumResetsWithMessage(ResetMessage reset_message) const;
+    ResetInfoContainerStruct GetResetInfoContainerStruct();
 
    private:
     ResetCauses most_recent_reset_cause;

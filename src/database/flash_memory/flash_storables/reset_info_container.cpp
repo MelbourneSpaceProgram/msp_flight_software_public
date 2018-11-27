@@ -144,3 +144,9 @@ bool ResetInfoContainer::IsValidResetCause(uint32_t reset_cause) {
            reset_cause == kUnknownResetCause;
     // these values must match the values in the ResetCauses enum
 }
+
+ResetInfoContainerStruct ResetInfoContainer::GetResetInfoContainerStruct() {
+    ResetInfoContainerStruct reset_info_container_struct;
+    ConvertToFlashStorableStruct(&reset_info_container_struct);
+    return reset_info_container_struct;
+}
