@@ -195,7 +195,8 @@ enum MeasurableId {
     kEpsBmsTemperatureReading2 = 188,
     kEpsBmsVoltagesReading2 = 189,
     kTestCurrent = 190,
-    kAntennaBurnerInfo = 193,
+    kLithiumTelemetry = 191,
+    kAntennaBurnerInfo = 192,
     // Add new measurables below this line only
     kMeasurableIdEnd
 };

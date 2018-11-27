@@ -16,6 +16,7 @@
 #include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
+#include <src/sensors/software_measurables/lithium_telemetry_measurable.h>
 #include <src/sensors/software_measurables/antenna_burner_info_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/magnetometer_calibration.h>
@@ -87,6 +88,10 @@ void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
 
     AddTemperature(kComT1, comms_temp_1);
     AddTemperature(kComT2, comms_temp_2);
+
+    LithiumTelemetryMeasurable *telemetry =
+        new LithiumTelemetryMeasurable();
+    measurables[kLithiumTelemetry] = telemetry;
 }
 
 void MeasurableManager::InitPower(const I2cMultiplexer *mux_a) {

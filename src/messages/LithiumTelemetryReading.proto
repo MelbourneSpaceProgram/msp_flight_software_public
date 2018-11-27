@@ -1,0 +1,10 @@
+message LithiumTelemetryReading {
+	required fixed32 op_counter = 1 [default = 0];
+	required fixed32 msp430_temp = 2 [default = 0];
+	required bytes time_count = 3 [default = ''];
+	required fixed32 rssi = 4 [default = 0];
+	required fixed32 bytes_received = 5 [default = 0];
+	required fixed32 bytes_transmitted = 6 [default = 0];
+	required fixed64 timestamp_ms = 7 [default = 0];
+}
+	
