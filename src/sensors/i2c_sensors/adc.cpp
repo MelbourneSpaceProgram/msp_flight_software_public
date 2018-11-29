@@ -1,6 +1,6 @@
 #include <src/sensors/i2c_sensors/adc.h>
-#include <src/util/task_utils.h>
 #include <src/util/msp_exception.h>
+#include <src/util/tirtos_utils.h>
 
 const double Adc::AdcGainAmplifierFullScaleRangeVoltages[6] = {
     kAdcVoltage6v144, kAdcVoltage4v096, kAdcVoltage2v048,
@@ -55,7 +55,7 @@ bool Adc::SetConfiguration() {
 
 bool Adc::ReadConversionRegister(etl::array<byte, 2>& read_buffer) {
     SelectRegister(kAdcConversionRegisterLocation);
-    TaskUtils::SleepMilli(
+    TirtosUtils::SleepMilli(
         10);  // Ensure we give the ADC sufficient time to sample
     return ReadFromCurrentRegister(read_buffer);
 }

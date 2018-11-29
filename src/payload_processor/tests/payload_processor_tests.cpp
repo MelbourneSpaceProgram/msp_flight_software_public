@@ -43,13 +43,13 @@
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
 #include <src/telecomms/runnable_antenna_burner.h>
 #include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
 #include <src/payload_processor/uplinks/set_icharge_uplink.h>
 #include <src/board/i2c/bms/bms.h>
+#include <src/util/tirtos_utils.h>
 
 TEST_GROUP(PayloadProcessor) {
     void setup() { MspException::ClearAll(); };
@@ -249,7 +249,7 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
     CHECK(payload_processor.ParseAndExecuteUplinks(builder_off.Build()));
 
     // Check Flight Systems is off by reading from IMU
-    TaskUtils::SleepMilli(2000);
+    TirtosUtils::SleepMilli(2000);
     magnetometer_reading =
         measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
             kFsImuMagno2, 0);
@@ -270,7 +270,7 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
         .AddNanopbMacro(IoExpanderToggleUplinkPayload)(en_on);
 
     CHECK(payload_processor.ParseAndExecuteUplinks(builder_on.Build()));
-    TaskUtils::SleepMilli(2000);
+    TirtosUtils::SleepMilli(2000);
 
     magnetometer_reading =
         measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(

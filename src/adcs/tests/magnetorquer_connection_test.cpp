@@ -5,7 +5,7 @@
 #include <src/messages/CurrentReading.pb.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/sensors/measurable_id.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 
 TEST_GROUP(Magnetorquer){};
 
@@ -19,7 +19,7 @@ TEST(Magnetorquer, MagnetorquerConnectivity) {
 
     // Wait a few milliseconds for the current to rise through the magnetorquers
     // (they are basically big inductors, slowing changes in current).
-    TaskUtils::SleepMilli(MagnetorquerControl::kDegaussingSwitchPeriodMicros /
+    TirtosUtils::SleepMilli(MagnetorquerControl::kDegaussingSwitchPeriodMicros /
                           1000);
 
     // Use current sensors to demonstrate that current is flowing through

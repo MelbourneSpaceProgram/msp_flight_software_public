@@ -16,7 +16,7 @@
 #include <src/util/runnable_console_logger.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
 #include <ti/drivers/PWM.h>

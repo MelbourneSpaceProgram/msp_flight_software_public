@@ -7,7 +7,7 @@
 #include <src/telecomms/msp_payloads/limp_mode_beacon_payload.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/msp_exception.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <xdc/runtime/Log.h>
 
 uint32_t RunnableBeacon::beacon_period_ms = kNominalBeaconPeriodMs;
@@ -29,7 +29,7 @@ void RunnableBeacon::Beacon() {
         try {
             // TODO(dingbenjamin): Implement remaining beacon fields
 
-            TaskUtils::SleepMilli(beacon_period_ms - kSolarPowerRecoveryTimeMs);
+            TirtosUtils::SleepMilli(beacon_period_ms - kSolarPowerRecoveryTimeMs);
 
             // Avoid building the packet if transmit is disabled
             if (lithium->IsTransmitEnabled()) {

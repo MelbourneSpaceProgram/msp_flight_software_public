@@ -3,7 +3,7 @@
 #include <src/sensors/runnable_system_health_check.h>
 #include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 
 FormatSdUplink::FormatSdUplink(byte* payload)
     : Uplink(FormatSdUplinkPayload_size),
@@ -19,7 +19,7 @@ bool FormatSdUplink::ExecuteUplink() {
         Log_info0("Disabling data logger temporarily");
         RunnableSystemHealthCheck::EnableDatalogger(false);
         // Wait for the datalogger to finish an iteration
-        TaskUtils::SleepMilli(
+        TirtosUtils::SleepMilli(
             kHealthCheckPeriodMs * 10);
         SdCard::GetInstance()->Format();
     } catch (MspException& e) {

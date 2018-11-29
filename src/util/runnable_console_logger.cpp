@@ -4,7 +4,7 @@
 #include <src/sensors/runnable_system_health_check.h>
 #include <src/util/msp_exception.h>
 #include <src/util/runnable_console_logger.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <stdio.h>
 #include <ti/drivers/utils/RingBuf.h>
 
@@ -43,7 +43,7 @@ void RunnableConsoleLogger::LogToConsole() {
         try {
             UartFlush();
             if (wait) {
-                TaskUtils::SleepMilli(RunnableConsoleLogger::kWaitTimeMs);
+                TirtosUtils::SleepMilli(RunnableConsoleLogger::kWaitTimeMs);
                 wait = false;
             }
         } catch (MspException& e) {
