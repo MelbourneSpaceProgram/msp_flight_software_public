@@ -6,7 +6,7 @@
 #include <src/util/msp_exception.h>
 #include <src/util/runnable_time_source.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <xdc/runtime/Log.h>
 
 fnptr RunnableTimeSource::GetRunnablePointer() {
@@ -25,7 +25,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
             } catch (MspException& e) {
                 MspException::LogException(e, kUpdateSatelliteTimeCatch);
                 Log_error0("Unable to retrieve time from RTC");
-                TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
+                TirtosUtils::SleepMilli(kTimeUpdatePeriodMs);
                 continue;
             }
 
@@ -33,7 +33,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
                 SatelliteTimeSource::SetTime(time);
             }
 
-            TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
+            TirtosUtils::SleepMilli(kTimeUpdatePeriodMs);
         } catch (MspException& e) {
             MspException::LogTopLevelException(e, kRunnableTimeSourceCatch);
         }

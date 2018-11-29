@@ -4,7 +4,7 @@
 #include <src/messages/test_message.h>
 #include <src/util/message_codes.h>
 #include <src/util/nanopb_utils.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
@@ -12,8 +12,8 @@ DebugStream *DebugStream::instance = NULL;
 
 DebugStream::DebugStream() : debug_uart(UMBILICAL_SIM) {
     debug_uart.SetBaudRate(Uart::kBaud115200)
-        ->SetReadTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))
-        ->SetWriteTimeout(TaskUtils::MilliToCycles(kTimeoutMillis))
+        ->SetReadTimeout(TirtosUtils::MilliToCycles(kTimeoutMillis))
+        ->SetWriteTimeout(TirtosUtils::MilliToCycles(kTimeoutMillis))
         ->Open();
 
     Semaphore_Params_init(&bus_available_params);

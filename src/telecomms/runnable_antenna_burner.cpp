@@ -5,7 +5,7 @@
 #include <src/telecomms/runnable_antenna_burner.h>
 #include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 
 AntennaBurnerInfo* RunnableAntennaBurner::antenna_burner_info =
     new AntennaBurnerInfo();
@@ -51,13 +51,13 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                         SatellitePower::Unlock(power_key);
                         antenna_burner_info->StoreInFlash();
                     }
-                    TaskUtils::SleepMilli(kAntennaBurnCheckIntervalMs);
+                    TirtosUtils::SleepMilli(kAntennaBurnCheckIntervalMs);
                 } else {
-                    TaskUtils::SleepMilli(kBackupAntennaBurnIntervalMs);
+                    TirtosUtils::SleepMilli(kBackupAntennaBurnIntervalMs);
                     Antenna::GetAntenna()->DeployAntenna();
                 }
             } else {
-                TaskUtils::SleepMilli(kAntennaBurnDisableWait);
+                TirtosUtils::SleepMilli(kAntennaBurnDisableWait);
             }
         } catch (MspException& e) {
             MspException::LogTopLevelException(e, kRunnableAntennaBurnerCatch);

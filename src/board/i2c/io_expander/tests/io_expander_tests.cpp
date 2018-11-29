@@ -8,7 +8,7 @@
 #include <src/sensors/measurable_manager.h>
 #include <src/util/data_types.h>
 #include <src/util/satellite_power.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 
 TEST_GROUP(IoExpander) {
     void setup() {
@@ -25,7 +25,7 @@ TEST(IoExpander, TestIoExpander) {
     MagnetometerReading magnetometer_reading;
 
     bms_io_expander->SetPin(SatellitePower::kIoExpanderPinFSEn, false);
-    TaskUtils::SleepMilli(2000);
+    TirtosUtils::SleepMilli(2000);
 
     magnetometer_reading =
         measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
@@ -35,7 +35,7 @@ TEST(IoExpander, TestIoExpander) {
     CHECK_EQUAL(magnetometer_reading.z, kInvalidDouble);
 
     bms_io_expander->SetPin(SatellitePower::kIoExpanderPinFSEn, true);
-    TaskUtils::SleepMilli(2000);
+    TirtosUtils::SleepMilli(2000);
 
     magnetometer_reading =
         measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(

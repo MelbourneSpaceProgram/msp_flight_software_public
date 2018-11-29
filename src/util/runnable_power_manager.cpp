@@ -3,7 +3,7 @@
 #include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/runnable_power_manager.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <xdc/runtime/Log.h>
 
 SatellitePower::BmsId RunnablePowerManager::current_bms_id =
@@ -75,7 +75,7 @@ void RunnablePowerManager::ManagePower() {
                     } else if (millis_since_hold_start < kIChargeHoldTimeMs) {
                         // ICharge is in the optimal state (as of the start of
                         // the hold), keep holding.
-                        TaskUtils::SleepMilli(kIChargeHoldPollMs);
+                        TirtosUtils::SleepMilli(kIChargeHoldPollMs);
                         millis_since_hold_start += kIChargeHoldPollMs;
                     } else {
                         state = ICHARGE_INCREASING;

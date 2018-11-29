@@ -6,7 +6,7 @@
 #include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
 
 LithiumWriteFlashUplink::LithiumWriteFlashUplink(byte* payload)
@@ -19,7 +19,7 @@ bool LithiumWriteFlashUplink::ExecuteUplink() {
     IArg key = SatellitePower::Lock();
     try {
         SatellitePower::CutPowerToTelecoms();
-        TaskUtils::SleepMilli(1000);
+        TirtosUtils::SleepMilli(1000);
         SatellitePower::RestorePowerToTelecoms();
     } catch (MspException& e) {
 		SatellitePower::Unlock(key);

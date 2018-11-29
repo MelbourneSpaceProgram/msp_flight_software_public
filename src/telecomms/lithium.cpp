@@ -21,7 +21,7 @@
 #include <src/util/data_types.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_power.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 
@@ -46,8 +46,8 @@ Lithium::Lithium()
     uart.SetBaudRate(Uart::kBaud9600)
         ->SetReadMode(UART_MODE_BLOCKING)
         ->SetWriteMode(UART_MODE_BLOCKING)
-        ->SetWriteTimeout(TaskUtils::MilliToCycles(kUartWriteTimeoutMilli))
-        ->SetReadTimeout(TaskUtils::MilliToCycles(kUartReadTimeoutMilli))
+        ->SetWriteTimeout(TirtosUtils::MilliToCycles(kUartWriteTimeoutMilli))
+        ->SetReadTimeout(TirtosUtils::MilliToCycles(kUartReadTimeoutMilli))
         ->Open();
 
     Mailbox_Params_init(&command_response_mailbox_params);
@@ -109,7 +109,7 @@ void Lithium::PostTransmit() {
     // and use the unsupportable charging current from its hardware settings
     // until re-configured.
     try {
-        TaskUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
+        TirtosUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
         if (!SatellitePower::ConfigureBms(SatellitePower::kBmsBusD)) {
             Log_error0("Failure to configure BMS on bus D");
         }
@@ -165,13 +165,13 @@ bool Lithium::DoCommand(LithiumCommand* command) {
 
         byte ack_buffer[kLithiumHeaderSize] = {0};
         if (!Mailbox_pend(header_mailbox_handle, &ack_buffer,
-                          TaskUtils::MilliToCycles(kWaitForAckMilli))) {
+                          TirtosUtils::MilliToCycles(kWaitForAckMilli))) {
             // Timed out waiting for a response
             FailSerial(key);
             return false;
         }
         // TODO(dingbenjamin): Figure out why this is needed
-        TaskUtils::SleepMilli(kInterCommandTimeMilli);
+        TirtosUtils::SleepMilli(kInterCommandTimeMilli);
 
         if ((!LithiumUtils::IsValidHeader(ack_buffer)) ||
             (LithiumUtils::GetCommandCode(ack_buffer) !=
@@ -402,7 +402,7 @@ void Lithium::FailSerial(IArg key) {
         consecutive_serial_failures = 0;
 
         SatellitePower::CutPowerToTelecoms();
-        TaskUtils::SleepMilli(kResetWaitMs);
+        TirtosUtils::SleepMilli(kResetWaitMs);
         SatellitePower::RestorePowerToTelecoms();
     } else {
         consecutive_serial_failures++;

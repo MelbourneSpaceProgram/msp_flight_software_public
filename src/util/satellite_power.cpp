@@ -6,7 +6,7 @@
 #include <src/sensors/measurable_manager.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_power.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 #include <algorithm>
@@ -106,7 +106,7 @@ void SatellitePower::RestorePowerToFlightSystems() {
     io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
 
     // Give the Flight Systems board time to wake up
-    TaskUtils::SleepMilli(10);
+    TirtosUtils::SleepMilli(10);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
     dynamic_cast<ImuMagnetometerMeasurable*>(
@@ -155,14 +155,14 @@ void SatellitePower::IncrementBmsICharge(BmsId bms_id) {
         i_charge_index[bms_id] = Bms::kIChargeIndexMax - 1;
     }
     ConfigureBmsICharge(bms_id);
-    TaskUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
+    TirtosUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
 }
 
 void SatellitePower::DecrementBmsICharge(BmsId bms_id) {
     if (!initialised) return;
     i_charge_index[bms_id] = std::max(i_charge_index[bms_id] - 1, 0);
     ConfigureBmsICharge(bms_id);
-    TaskUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
+    TirtosUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
 }
 
 bool SatellitePower::BatteryIsCharging(BmsId bms_id) {

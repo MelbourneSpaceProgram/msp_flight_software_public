@@ -19,7 +19,7 @@
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/utils/RingBuf.h>
 #include <ti/sysbios/knl/Task.h>
@@ -196,7 +196,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             }
             SystemWatchdog::ResetTimer();
             GPIO_toggle(SYS_LED);
-            TaskUtils::SleepMilli(kHealthCheckPeriodMs);
+            TirtosUtils::SleepMilli(kHealthCheckPeriodMs);
         } catch (MspException& e) {
             MspException::LogTopLevelException(e,
                                                kRunnableSystemHealthCheckCatch);

@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-class TaskUtils {
+class TirtosUtils {
    public:
     static void SleepMilli(uint32_t milliseconds);
     static uint32_t MilliToCycles(uint32_t milliseconds);
 
    private:
-    TaskUtils();
+    TirtosUtils();
 };
 
 #endif  // SRC_UTIL_TASK_UTILS_H_

@@ -3,7 +3,7 @@
 #include <src/config/satellite.h>
 #include <src/messages/antenna_message.h>
 #include <src/telecomms/antenna.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <xdc/runtime/Log.h>
 
@@ -36,12 +36,12 @@ bool Antenna::SafeDeploy() const {
 
 bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
     WriteCommand(command);
-    TaskUtils::SleepMilli(kWaitTime);
+    TirtosUtils::SleepMilli(kWaitTime);
 
     uint8_t iterations = 0;
 
     while (IsHeatersOn() && (iterations < kMaxNumberOfIterations)) {
-        TaskUtils::SleepMilli(kWaitTime);
+        TirtosUtils::SleepMilli(kWaitTime);
         iterations++;
     }
 
@@ -55,7 +55,7 @@ bool Antenna::ForceDeploy() const {
 
     Log_info0("Trying override pin 1");
     GPIO_write(ANT_OVERRIDE_1, 1);
-    TaskUtils::SleepMilli(kWaitTimeManualOverride);
+    TirtosUtils::SleepMilli(kWaitTimeManualOverride);
     GPIO_write(ANT_OVERRIDE_1, 0);
     if (IsDoorsOpen()) {
         Log_info0("Force deploy successful");
@@ -64,7 +64,7 @@ bool Antenna::ForceDeploy() const {
 
     Log_info0("Trying override pin 2");
     GPIO_write(ANT_OVERRIDE_2, 1);
-    TaskUtils::SleepMilli(kWaitTimeManualOverride);
+    TirtosUtils::SleepMilli(kWaitTimeManualOverride);
     GPIO_write(ANT_OVERRIDE_2, 0);
     if (IsDoorsOpen()) {
         Log_info0("Force deploy successful");
