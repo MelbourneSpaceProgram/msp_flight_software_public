@@ -65,7 +65,7 @@ constexpr bool kRebootOnTopLevelException = true;
 //////////////////// TASK CONSTANTS ////////////////////
 
 constexpr uint32_t kNominalBeaconPeriodMs = 10000;
-constexpr uint32_t kOrientationControlLoopPeriodMicros = 1000000;
+constexpr uint32_t kOrientationControlLoopPeriodMicros = 200000;
 constexpr uint32_t kHealthCheckPeriodMs = 1100;
 constexpr uint64_t kAntennaBurnCheckIntervalMs = 60 * 1000;
 constexpr uint32_t kTimeUpdatePeriodMs = 1000;
@@ -89,7 +89,7 @@ constexpr float kAntennaBurnIntervalMultiplier = 2.5;
 //////////////////// MAGNETORQUERS ////////////////////
 
 // Will disable orientation control if true, must be FALSE until launch
-constexpr bool kRunMagnetorquersAtConstantPower = true;
+constexpr bool kRunMagnetorquersAtConstantPower = false;
 
 // float value in range [-1, 1]
 constexpr float kMagnetorquerPowerFractionX = 0.2;
@@ -100,7 +100,7 @@ constexpr float kMagnetorquerPowerFractionZ = 0.2;
 constexpr double kMaxMagnetorquerDipole[3] = {0.2, 0.2, 0.2};
 
 // Scale the actuation strength for power budgeting
-constexpr double kOrientationControlPowerLevel = 0.2;
+constexpr double kOrientationControlPowerLevel = 1.0;
 
 // Mapping from magnetometer frames to satellite body frame
 // TODO (rskew) verify these for the final build

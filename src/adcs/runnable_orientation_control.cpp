@@ -66,14 +66,17 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 }
 
 void RunnableOrientationControl::ControlOrientation() {
-    BDotEstimator b_dot_estimator(kOrientationControlLoopPeriodMicros * 1e-3,
-                                  kBDotEstimatorTimeConstantMillis);
+    BDotEstimator b_dot_estimator(
+        10 * kOrientationControlLoopPeriodMicros * 1e-3,
+        kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
     while (1) {
         try {
             Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
+
+            Log_info0("Entering orientation control loop");
 
             // TODO(dingbenjamin): Check if we should turn orientation control
             // off

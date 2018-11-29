@@ -10,7 +10,6 @@
 #include <ti/drivers/PWM.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
-#include <xdc/runtime/Log.h>
 
 // Compute the exponential decay multiplier from the time constant
 // and sample period:

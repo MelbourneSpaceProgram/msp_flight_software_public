@@ -5,10 +5,10 @@
 #include <src/util/matrix.h>
 #include <src/util/msp_exception.h>
 #include <src/util/physical_constants.h>
-#include <algorithm>
 
 void BDotController::ComputeControl(const Matrix &b_dot,
                                     Matrix &signed_pwm_output) {
+    // Check input dimensions
     if (!b_dot.SameSize(signed_pwm_output) ||
         b_dot.GetNRows() != geomagnetic_field_vector_nrows ||
         b_dot.GetNColumns() != geomagnetic_field_vector_ncolumns) {
@@ -16,33 +16,40 @@ void BDotController::ComputeControl(const Matrix &b_dot,
                            kBdotControllerArgumentFail, __FILE__, __LINE__);
     }
 
-    /* Tuning Parameters - estimated and optimised via simulation and testing.
-     */
-
-    double result[3];
-    double result_abs[3];
+    double control_pwm[3];
+    double control_pwm_abs[3];
     for (uint8_t i = 0; i < 3; i++) {
-        result[i] = -1 * kBDotControllerGains[i] * b_dot.Get(i, 0) /
-                    kMaxMagnetorquerDipole[i];
-        result_abs[i] = fabs(result[i]);
+        control_pwm[i] = -1 * kBDotControllerGains[i] * b_dot.Get(i, 0) /
+                         kMaxMagnetorquerDipole[i];
+        control_pwm_abs[i] = fabs(control_pwm[i]);
     }
-    if (result_abs[0] > 1 || result_abs[1] > 1 || result_abs[2] > 1) {
-        // proportional control needs to be scaled to preserve dipole direction
 
-        /*Returns the index of the largest value of the array*/
+    double largest_pwm_abs = Maximum(control_pwm_abs, 3);
+    // Bang-bang-ify for Helmholtz test
+    // if (largest_pwm > 1) {
+    // Control vector needs to be clipped to preserve dipole direction.
+    // Scale the control vector by the largest PWM value to bring it back
+    // inside the box of realisable control outputs.
 
-        double max = *std::max_element(
-            result_abs, result_abs + sizeof(result_abs) / sizeof(double));
+    for (int i = 0; i < 3; i++) {
+        signed_pwm_output.Set(i, 0, control_pwm[i] / largest_pwm_abs);
+    }
+    return;
+    //} else {
+    //    // Normal proportional control
+    //    signed_pwm_output.Set(0, 0, control_pwm[0]);
+    //    signed_pwm_output.Set(1, 0, control_pwm[1]);
+    //    signed_pwm_output.Set(2, 0, control_pwm[2]);
+    //    return;
+    //}
+}
 
-        for (int i = 0; i < 3; i++) {
-            signed_pwm_output.Set(i, 0, result[i] / max);
+double BDotController::Maximum(double arr[], uint16_t size) {
+    double max = arr[0];
+    for (uint16_t i = 1; i < size; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
         }
-        return;
-    } else {
-        // normal proportional control
-        signed_pwm_output.Set(0, 0, result[0]);
-        signed_pwm_output.Set(1, 0, result[1]);
-        signed_pwm_output.Set(2, 0, result[2]);
-        return;
     }
+    return max;
 }
