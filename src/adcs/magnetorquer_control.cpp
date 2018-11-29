@@ -1,4 +1,5 @@
 #include <math.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
@@ -37,18 +38,16 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
         PushDebugMessage(x, y, z);
     }
 
-    // Map from the body frame to the magnetorquer 'frame'.
-    // Note: the magnetorquers may be orientated arbitrarily, and so the
-    //   'a', 'b' and 'c' components may not make a right-handed coordinate
-    //   system. Therefore, the transformation from the body frame to the
-    //   magnetorquer 'frame' may not be a pure rotation.
+    // Map from body frame x,y,z to the magnetorquers they are connected to,
+    // compensating for arbitrary wiring.
     NewStackMatrixMacro(magnetorquer_power_body_frame, 3, 1);
     magnetorquer_power_body_frame.Set(0, 0, x);
     magnetorquer_power_body_frame.Set(1, 0, y);
     magnetorquer_power_body_frame.Set(2, 0, z);
-    double magnetorquer_power_magnetorquer_frame_data[3][1];
-    Matrix magnetorquer_power_magnetorquer_frame(
-        magnetorquer_power_magnetorquer_frame_data);
+    //double magnetorquer_power_magnetorquer_frame_data[3][1];
+    //Matrix magnetorquer_power_magnetorquer_frame(
+    //    magnetorquer_power_magnetorquer_frame_data);
+    NewStackMatrixMacro(magnetorquer_power_magnetorquer_frame, 3, 1);
     magnetorquer_power_magnetorquer_frame.Multiply(
         kBodyToMagnetorquerFrameTransform, magnetorquer_power_body_frame);
     float a = magnetorquer_power_magnetorquer_frame.Get(0, 0);
@@ -60,10 +59,9 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
               (int)(y*100),
               (int)(z*100));
     Log_info3("To %d %d %d",
-              (int)(magnetorquer_power_magnetorquer_frame.Get(0,0)*100),
-              (int)(magnetorquer_power_magnetorquer_frame.Get(1,0)*100),
-              (int)(magnetorquer_power_magnetorquer_frame.Get(2,0)*100)
-              );
+              (int)(a*100),
+              (int)(b*100),
+              (int)(c*100));
 
     // Set A axis
     SetPolarity(kMagnetorquerAxisA, a >= 0);

@@ -1,4 +1,5 @@
 #include <src/board/i2c/bms/bms.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>

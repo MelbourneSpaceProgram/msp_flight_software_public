@@ -66,9 +66,8 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 }
 
 void RunnableOrientationControl::ControlOrientation() {
-    BDotEstimator b_dot_estimator(
-        kOrientationControlLoopPeriodMicros * 1e-3,
-        kBDotEstimatorTimeConstantMillis);
+    BDotEstimator b_dot_estimator(kOrientationControlLoopPeriodMicros * 1e-3,
+                                  kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
 
@@ -143,9 +142,11 @@ void RunnableOrientationControl::ControlOrientation() {
             // Use magnetorquer driver to set magnetorquer power.
             // Driver input power range should be [-1, 1]
 
+            //MagnetorquerControl::SetMagnetorquersPowerFraction(
+            //    signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
+            //    signed_pwm_output.Get(2, 0));
             MagnetorquerControl::SetMagnetorquersPowerFraction(
-                signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
-                signed_pwm_output.Get(2, 0));
+               signed_pwm_output.Get(0, 0), 0, 0);
         } catch (MspException& e) {
             MspException::LogTopLevelException(
                 e, kRunnableOrientationControlCatch);
