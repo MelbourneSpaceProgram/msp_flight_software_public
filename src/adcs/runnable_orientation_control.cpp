@@ -91,7 +91,7 @@ void RunnableOrientationControl::ControlOrientation() {
             // TODO(rskew) handle exception from magnetometer overflow
             MagnetometerReading magnetometer_reading =
                 measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-                    kFsImuMagno2, 0);
+                    kFsImuMagnoB, 0);
 
             if (kHilAvailable) {
                 // Echo magnetometer reading to DebugClient
@@ -113,7 +113,7 @@ void RunnableOrientationControl::ControlOrientation() {
             // winds up the BDotEstimator.
             if (geomag.Get(0, 0) !=
                 measurable_manager
-                    ->GetMeasurable<MagnetometerReading>(kFsImuMagno2)
+                    ->GetMeasurable<MagnetometerReading>(kFsImuMagnoB)
                     ->GetFailureReading()
                     .x) {
                 b_dot_estimator.Estimate(geomag, b_dot_estimate);

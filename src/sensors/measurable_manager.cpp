@@ -179,12 +179,12 @@ void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
     AddTemperature(kFsHbYT, fs_hb_yt);
     AddTemperature(kFsHbZT, fs_hb_zt);
 
-    MPU9250MotionTracker *fs_imu_1 = new MPU9250MotionTracker(
+    MPU9250MotionTracker *fs_imu_a = new MPU9250MotionTracker(
         bus_a, 0x68, mux_a, I2cMultiplexer::kMuxChannel1);
 
-    AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_1);
-    AddImuAccelerometerMeasurable(kFsImuAccel1, fs_imu_1);
-    AddImuTemperatureMeasurable(kFsImuT1, fs_imu_1);
+    AddImuGyrometerMeasurable(kFsImuGyro1, fs_imu_a);
+    AddImuAccelerometerMeasurable(kFsImuAccel1, fs_imu_a);
+    AddImuTemperatureMeasurable(kFsImuT1, fs_imu_a);
     double initial_biases_bus_a_data[3][1];
     const Matrix initial_biases_bus_a(
         kPreFlightMagnetometerCalibrationBiasesImuBusA,
@@ -195,14 +195,14 @@ void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         initial_scale_factors_bus_a_data);
 
     AddImuMagnetometerMeasurable(
-        kFsImuMagno1, fs_imu_1, kImuAToBodyFrameTransform, initial_biases_bus_a,
+        kFsImuMagnoA, fs_imu_a, kImuAToBodyFrameTransform, initial_biases_bus_a,
         initial_scale_factors_bus_a);
 
-    MPU9250MotionTracker *fs_imu_2 = new MPU9250MotionTracker(bus_b, 0x68);
+    MPU9250MotionTracker *fs_imu_b = new MPU9250MotionTracker(bus_b, 0x68);
 
-    AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_2);
-    AddImuAccelerometerMeasurable(kFsImuAccel2, fs_imu_2);
-    AddImuTemperatureMeasurable(kFsImuT2, fs_imu_2);
+    AddImuGyrometerMeasurable(kFsImuGyro2, fs_imu_b);
+    AddImuAccelerometerMeasurable(kFsImuAccel2, fs_imu_b);
+    AddImuTemperatureMeasurable(kFsImuT2, fs_imu_b);
     double initial_biases_bus_b_data[3][1];
     const Matrix initial_biases_bus_b(
         kPreFlightMagnetometerCalibrationBiasesImuBusB,
@@ -212,7 +212,7 @@ void MeasurableManager::InitFlightSystems(const I2cMultiplexer *mux_a) {
         kPreFlightMagnetometerCalibrationScaleFactorsImuBusB,
         initial_scale_factors_bus_b_data);
     AddImuMagnetometerMeasurable(
-        kFsImuMagno2, fs_imu_2, kImuBToBodyFrameTransform, initial_biases_bus_b,
+        kFsImuMagnoB, fs_imu_b, kImuBToBodyFrameTransform, initial_biases_bus_b,
         initial_scale_factors_bus_b);
 }
 

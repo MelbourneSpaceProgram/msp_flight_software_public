@@ -252,7 +252,7 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
     TirtosUtils::SleepMilli(2000);
     magnetometer_reading =
         measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-            kFsImuMagno2, 0);
+            kFsImuMagnoB, 0);
     CHECK_EQUAL(magnetometer_reading.x, kInvalidDouble);
     CHECK_EQUAL(magnetometer_reading.y, kInvalidDouble);
     CHECK_EQUAL(magnetometer_reading.z, kInvalidDouble);
@@ -274,7 +274,7 @@ TEST(PayloadProcessor, TestIoExpanderToggleUplink) {
 
     magnetometer_reading =
         measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-            kFsImuMagno2, 0);
+            kFsImuMagnoB, 0);
 
     CHECK(magnetometer_reading.x != kInvalidDouble);
     CHECK(magnetometer_reading.y != kInvalidDouble);

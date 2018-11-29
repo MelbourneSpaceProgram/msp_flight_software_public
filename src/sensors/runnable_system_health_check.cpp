@@ -178,11 +178,11 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(GyroscopeReading)(kFsImuGyro1);
                     LogMeasurableMacro(AccelerometerReading)(kFsImuAccel1);
                     LogMeasurableMacro(TemperatureReading)(kFsImuT1);
-                    LogMeasurableMacro(MagnetometerReading)(kFsImuMagno1);
+                    LogMeasurableMacro(MagnetometerReading)(kFsImuMagnoA);
                     LogMeasurableMacro(GyroscopeReading)(kFsImuGyro2);
                     LogMeasurableMacro(AccelerometerReading)(kFsImuAccel2);
                     LogMeasurableMacro(TemperatureReading)(kFsImuT2);
-                    LogMeasurableMacro(MagnetometerReading)(kFsImuMagno2);
+                    LogMeasurableMacro(MagnetometerReading)(kFsImuMagnoB);
                 }
 
                 if (kCdhBoardAvailable) {
