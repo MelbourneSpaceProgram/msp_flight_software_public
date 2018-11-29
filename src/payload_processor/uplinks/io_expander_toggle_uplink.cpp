@@ -3,7 +3,7 @@
 #include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
 
 IoExpanderToggleUplink::IoExpanderToggleUplink(byte* payload)
@@ -38,7 +38,7 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
             case kToggleOffOn:
                 expander->SetPin(pin, false);
                 IoExpander::InitialiseOutputPin(expander, pin);
-                TaskUtils::SleepMilli(toggle_duration);
+                TirtosUtils::SleepMilli(toggle_duration);
                 expander->SetPin(pin, true);
                 break;
 
@@ -54,7 +54,7 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
 
             case kToggleOffOnFlightSystems:
                 SatellitePower::CutPowerToFlightSystems();
-                TaskUtils::SleepMilli(toggle_duration);
+                TirtosUtils::SleepMilli(toggle_duration);
                 SatellitePower::RestorePowerToFlightSystems();
                 break;
 
@@ -68,7 +68,7 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
 
             case kToggleOffOnTelecomms:
                 SatellitePower::CutPowerToTelecoms();
-                TaskUtils::SleepMilli(toggle_duration);
+                TirtosUtils::SleepMilli(toggle_duration);
                 SatellitePower::RestorePowerToTelecoms();
                 break;
 
@@ -82,7 +82,7 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
 
             case kToggleOffOnPanels:
                 SatellitePower::CutPowerFromPanels();
-                TaskUtils::SleepMilli(toggle_duration);
+                TirtosUtils::SleepMilli(toggle_duration);
                 SatellitePower::RestorePowerFromPanels();
                 break;
 

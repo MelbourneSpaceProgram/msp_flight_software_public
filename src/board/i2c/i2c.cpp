@@ -2,7 +2,7 @@
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
 #include <src/util/msp_exception.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
 #include <ti/sysbios/BIOS.h>
@@ -37,7 +37,7 @@ void I2c::InitBusses() {
     // datasheet
     Log_info0("I2c mux a power-down");
     GPIO_write(I2C_MUX_nRST, 0);
-    TaskUtils::SleepMilli(1);
+    TirtosUtils::SleepMilli(1);
     Log_info0("I2c mux a power-up");
     GPIO_write(I2C_MUX_nRST, 1);
 
@@ -110,7 +110,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     bool transfer_outcome = false;
     bool timed_out =
         !Mailbox_pend(i2c_mailbox, &transfer_outcome,
-                      TaskUtils::MilliToCycles(kTimeoutMilliSeconds));
+                      TirtosUtils::MilliToCycles(kTimeoutMilliSeconds));
     Mailbox_delete(&i2c_mailbox);
 
     if (kLogI2c) {

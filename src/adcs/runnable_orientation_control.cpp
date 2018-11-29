@@ -21,7 +21,7 @@
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>

@@ -3,7 +3,7 @@
 
 #include <src/tasks/runnable.h>
 #include <src/telecomms/lithium.h>
-#include <src/util/task_utils.h>
+#include "../util/tirtos_utils.h"
 
 class RunnableContinuousTransmitShutoff : public Runnable {
    public:

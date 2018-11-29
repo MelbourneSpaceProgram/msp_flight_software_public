@@ -34,7 +34,7 @@
 #include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <string.h>
 #include <ti/sysbios/gates/GateMutexPri.h>
 #include <ti/sysbios/knl/Semaphore.h>
@@ -218,7 +218,7 @@ void PostBiosInitialiser::InitHardware() {
     try {
         try {
             SatellitePower::RestorePowerToTelecoms();
-            TaskUtils::SleepMilli(1000);
+            TirtosUtils::SleepMilli(1000);
             SatellitePower::RestorePowerToFlightSystems();
         } catch (etl::exception& e) {
             throw;
@@ -247,8 +247,8 @@ void PostBiosInitialiser::InitConsoleUart(uint16_t logger_stack_size,
                                           uint16_t listener_stack_size) {
     Uart* debug_uart = new Uart(UMBILICAL_CONSOLE);
     debug_uart->SetBaudRate(Uart::kBaud115200)
-        ->SetReadTimeout(TaskUtils::MilliToCycles(kDebugUartReadTimeout))
-        ->SetWriteTimeout(TaskUtils::MilliToCycles(kDebugUartWriteTimeout))
+        ->SetReadTimeout(TirtosUtils::MilliToCycles(kDebugUartReadTimeout))
+        ->SetWriteTimeout(TirtosUtils::MilliToCycles(kDebugUartWriteTimeout))
         ->Open();
 
     TaskHolder* console_uart_logger_task =
@@ -280,21 +280,21 @@ void PostBiosInitialiser::EjectionWait() {
                     current_time.timestamp_ms - kTimeSourceDeployMs;
                 if (time_since_ejection_ms < kEjectionWaitMs) {
                     Log_info0("Post-deployment wait starting");
-                    TaskUtils::SleepMilli(kEjectionWaitMs -
+                    TirtosUtils::SleepMilli(kEjectionWaitMs -
                                           time_since_ejection_ms);
                     Log_info0("Post-deployment wait finished");
                 }
             } else {
                 Log_warning0("Invalid reading from RTC");
                 Log_info0("Post-deployment wait starting");
-                TaskUtils::SleepMilli(kEjectionWaitMs);
+                TirtosUtils::SleepMilli(kEjectionWaitMs);
                 Log_info0("Post-deployment wait finished");
             }
         } catch (MspException& e) {
             MspException::LogException(e, kEjectionWaitCatch);
             Log_error0("Unable to retrieve time from RTC");
             Log_info0("Post-deployment wait starting");
-            TaskUtils::SleepMilli(kEjectionWaitMs);
+            TirtosUtils::SleepMilli(kEjectionWaitMs);
             Log_info0("Post-deployment wait finished");
         }
     } else {
@@ -302,7 +302,7 @@ void PostBiosInitialiser::EjectionWait() {
     }
 }
 
-void PostBiosInitialiser::BeaconWait() { TaskUtils::SleepMilli(kBeaconWaitMs); }
+void PostBiosInitialiser::BeaconWait() { TirtosUtils::SleepMilli(kBeaconWaitMs); }
 
 void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
     // TODO (rskew) review priority

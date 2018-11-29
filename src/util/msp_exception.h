@@ -5,9 +5,9 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
+#include "tirtos_utils.h"
 
 typedef struct SerialisedException {
     SerialisedException(uint8_t error_id, uint8_t catch_id,

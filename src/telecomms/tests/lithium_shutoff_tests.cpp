@@ -33,7 +33,7 @@ TEST(LithiumShutoff, TestLithiumShutoff) {
     CHECK_EQUAL(RunnableContinuousTransmitShutoff::GetBucketCount(),
                 num_transmits);
 
-    TaskUtils::SleepMilli(
+    TirtosUtils::SleepMilli(
         RunnableContinuousTransmitShutoff::kBucketSeconds *
             RunnableContinuousTransmitShutoff::kMillisecondsInSecond +
         100);
@@ -55,7 +55,7 @@ TEST(LithiumShutoff, TestLithiumMultipleBuckets) {
         }
         CHECK_EQUAL(RunnableContinuousTransmitShutoff::GetBucketCount(),
                     num_transmits / num_buckets);
-        TaskUtils::SleepMilli(
+        TirtosUtils::SleepMilli(
             RunnableContinuousTransmitShutoff::kBucketSeconds *
                 RunnableContinuousTransmitShutoff::kMillisecondsInSecond +
             100);

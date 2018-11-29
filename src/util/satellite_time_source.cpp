@@ -2,7 +2,7 @@
 #include <src/config/unit_tests.h>
 #include <src/sensors/i2c_sensors/rtc.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <time.h>
 #include <xdc/runtime/Log.h>
 

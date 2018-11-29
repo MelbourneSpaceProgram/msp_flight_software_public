@@ -4,7 +4,7 @@
 #include <src/telecomms/lithium_utils.h>
 #include <src/telecomms/runnable_continuous_transmit_shutoff.h>
 #include <src/util/satellite_time_source.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <xdc/runtime/Log.h>
 
 uint16_t RunnableContinuousTransmitShutoff::bucket_count = 0;
@@ -23,7 +23,7 @@ void RunnableContinuousTransmitShutoff::StartCounter() {
     int rolling_index = 0;
     while (1) {
         try {
-            TaskUtils::SleepMilli(kBucketSeconds * kMillisecondsInSecond);
+            TirtosUtils::SleepMilli(kBucketSeconds * kMillisecondsInSecond);
 
             transmission_buckets[rolling_index] = bucket_count;
             Lithium* lithium = Lithium::GetInstance();
@@ -44,7 +44,7 @@ void RunnableContinuousTransmitShutoff::StartCounter() {
 
                 // TODO(dingbenjamin): Find a better way to test where this
                 // logic can also be tested
-                TaskUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
+                TirtosUtils::SleepMilli(kTotalSeconds * kMillisecondsInSecond);
                 ClearBuckets();
                 lithium->UnlockState(Lithium::kContinuousTransmitCondition);
 #endif

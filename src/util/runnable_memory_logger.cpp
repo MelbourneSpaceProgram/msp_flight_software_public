@@ -1,7 +1,7 @@
 #include <src/tasks/runnable.h>
 #include <src/util/msp_exception.h>
 #include <src/util/runnable_memory_logger.h>
-#include <src/util/task_utils.h>
+#include <src/util/tirtos_utils.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/Log.h>
@@ -41,7 +41,7 @@ void RunnableMemoryLogger::LogMemoryStats() {
                 task = Task_Object_next(task);
             }
 
-            Task_sleep(TaskUtils::MilliToCycles(kMemoryLoggerRunPeriod));
+            Task_sleep(TirtosUtils::MilliToCycles(kMemoryLoggerRunPeriod));
         } catch (MspException& e) {
             MspException::LogTopLevelException(e, kRunnableMemoryLoggerCatch);
         }
