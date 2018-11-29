@@ -333,7 +333,7 @@ void PostBiosInitialiser::PostBiosInit() {
 #endif
 
 #if defined ORBIT_CONFIGURATION
-        SystemWatchdog((uint32_t)SYS_WATCHDOG0);
+        //SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         //InitSystemHealthCheck();
         InitPowerManager();
         EjectionWait();

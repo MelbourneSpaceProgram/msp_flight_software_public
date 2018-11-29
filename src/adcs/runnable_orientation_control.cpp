@@ -67,7 +67,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 
 void RunnableOrientationControl::ControlOrientation() {
     BDotEstimator b_dot_estimator(
-        10 * kOrientationControlLoopPeriodMicros * 1e-3,
+        kOrientationControlLoopPeriodMicros * 1e-3,
         kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();

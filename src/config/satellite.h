@@ -121,7 +121,8 @@ const Matrix kImuBToBodyFrameTransform(kImuBToBodyFrameTransform_const_data,
 // TODO (rskew) update for final build
 // Mapping for the Helmholtz rig
 constexpr double kBodyToMagnetorquerFrameTransform_const_data[3][3] = {
-    {1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
+    //{1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
+    {-1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 extern double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
 const Matrix kBodyToMagnetorquerFrameTransform(
     kBodyToMagnetorquerFrameTransform_const_data,

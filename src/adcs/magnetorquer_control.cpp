@@ -10,6 +10,7 @@
 #include <ti/drivers/PWM.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
+#include <xdc/runtime/Log.h>
 
 // Compute the exponential decay multiplier from the time constant
 // and sample period:
@@ -53,6 +54,16 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
     float a = magnetorquer_power_magnetorquer_frame.Get(0, 0);
     float b = magnetorquer_power_magnetorquer_frame.Get(1, 0);
     float c = magnetorquer_power_magnetorquer_frame.Get(2, 0);
+
+    Log_info3("Converting %d %d %d",
+              (int)(x*100),
+              (int)(y*100),
+              (int)(z*100));
+    Log_info3("To %d %d %d",
+              (int)(magnetorquer_power_magnetorquer_frame.Get(0,0)*100),
+              (int)(magnetorquer_power_magnetorquer_frame.Get(1,0)*100),
+              (int)(magnetorquer_power_magnetorquer_frame.Get(2,0)*100)
+              );
 
     // Set A axis
     SetPolarity(kMagnetorquerAxisA, a >= 0);
