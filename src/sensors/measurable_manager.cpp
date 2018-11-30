@@ -1,4 +1,5 @@
 #include <src/board/i2c/bms/bms.h>
+#include <src/config/orientation_control_parameters.h>
 #include <src/config/satellite.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
@@ -20,8 +21,8 @@
 #include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
-#include <src/util/satellite_power.h>
 #include <src/sensors/software_sensor/simulation_magnetometer_measurable.h>
+#include <src/util/satellite_power.h>
 
 MeasurableManager *MeasurableManager::instance = NULL;
 

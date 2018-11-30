@@ -1,6 +1,6 @@
 #include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
-#include <src/config/orientation_control_tuning_parameters.h>
+#include <src/config/orientation_control_parameters.h>
 #include <src/config/satellite.h>
 #include <src/util/matrix.h>
 #include <src/util/msp_exception.h>
