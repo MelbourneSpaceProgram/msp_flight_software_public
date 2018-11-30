@@ -300,7 +300,13 @@ void PostBiosInitialiser::EjectionWait() {
     }
 }
 
-void PostBiosInitialiser::BeaconWait() { TaskUtils::SleepMilli(kBeaconWaitMs); }
+void PostBiosInitialiser::BeaconWait() {
+    if (!kInstantDeploymentWaits) {
+        TaskUtils::SleepMilli(kBeaconWaitMs);
+    } else {
+      Log_info0("Skipping beacon wait");
+    }
+}
 
 void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
     // TODO (rskew) review priority
