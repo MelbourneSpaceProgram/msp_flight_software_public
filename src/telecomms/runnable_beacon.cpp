@@ -51,9 +51,9 @@ void RunnableBeacon::Beacon() {
                     } else {
                         Log_error0("Beacon transmission failed");
                     }
-                } catch (etl::exception& e) {
+                } catch (MspException& e) {
                     if (beacon != NULL) delete beacon;
-                    throw;
+                    throw e;
                 }
                 if (beacon != NULL) delete beacon;
             } else {
