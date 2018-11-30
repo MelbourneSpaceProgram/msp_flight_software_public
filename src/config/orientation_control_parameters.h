@@ -9,7 +9,7 @@ const uint16_t kBDotEstimatorTimeConstantMillis = 4000;
 const double kBDotControllerGains[3] = {30000.0, 30000.0, 30000.0};
 
 // Will disable orientation control if true, must be FALSE until launch
-constexpr bool kRunMagnetorquersAtConstantPower = true;
+constexpr bool kRunMagnetorquersAtConstantPower = false;
 
 // float value in range [-1, 1]
 constexpr float kMagnetorquerPowerFractionX = 0.2;
