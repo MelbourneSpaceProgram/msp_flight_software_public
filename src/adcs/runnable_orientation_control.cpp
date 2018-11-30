@@ -1,29 +1,22 @@
-#include <external/nanopb/pb_decode.h>
 #include <external/wmm/worldMagneticModel.h>
-#include <math.h>
 #include <src/adcs/controllers/b_dot_controller.h>
 #include <src/adcs/controllers/nadir_controller.h>
 #include <src/adcs/magnetorquer_control.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/nadir_error_generator.h>
-#include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
-#include <src/init/init.h>
 #include <src/messages/BDotEstimate.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/sensors/i2c_sensors/measurables/imu_magnetometer_measurable.h>
-#include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
-#include <src/util/satellite_time_source.h>
 #include <src/util/task_utils.h>
-#include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/hal/Timer.h>
 #include <xdc/runtime/Log.h>
 
@@ -216,6 +209,7 @@ bool RunnableOrientationControl::PointToNadir(Matrix& gyro_reading,
 
     NewStackMatrixMacro(geomag_reading, 3, 1);
     geomag_reading.FromNanopbXYZ(magnetometer_reading);
+
     kalman_filter.Update(geomag_reading, nadir_reading);
 
     NewStackMatrixMacro(error_quaternion, 4, 1);
