@@ -210,15 +210,22 @@ TEST(Matrix, TestAdd) {
     Matrix m22_2(m22_2_data);
     double m22_3_data[2][2] = {{1, 2}, {3, 4}};
     Matrix m22_3(m22_3_data);
+    double m22_4_data[2][2] = {{9, 10}, {11, 12}};
+    Matrix m22_4(m22_4_data);
     double m22_expected_data[2][2] = {{6, 8}, {10, 12}};
     Matrix m22_expected(m22_expected_data);
+    double m22_expected_3_input_data[2][2] = {{15, 18}, {21, 24}};
+    Matrix m22_expected_3_input(m22_expected_3_input_data);
 
     m22.Add(m22_2, m22_3);
-
     CHECK(m22.IsEqual(m22_expected));
+
+    m22.Add(m22_2, m22_3, m22_4);
+    CHECK(m22.IsEqual(m22_expected_3_input));
 
     NewStackMatrixMacro(m33, 3, 3);
     CHECK_THROWS(MspException, m33.Add(m22, m22_2));
+    CHECK_THROWS(MspException, m33.Add(m22, m22, m22));
 }
 
 TEST(Matrix, TestSubtract) {

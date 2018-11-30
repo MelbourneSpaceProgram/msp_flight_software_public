@@ -38,8 +38,7 @@ TEST(EarthSensor, TestCalculateNadirVector) {
     earth_sensor.SetNegZASensorReading(0.097213969998926);
     earth_sensor.SetNegZBSensorReading(0.097213969998926);
 
-    earth_sensor.CalculateNadirVector();
-    nadir_vector = earth_sensor.GetNadirVector();
+    earth_sensor.CalculateNadirVector(nadir_vector);
     DOUBLES_EQUAL(nadir_expected_1.Get(0, 0), nadir_vector.Get(0, 0), 0.001);
     DOUBLES_EQUAL(nadir_expected_1.Get(1, 0), nadir_vector.Get(1, 0), 0.001);
     DOUBLES_EQUAL(nadir_expected_1.Get(2, 0), nadir_vector.Get(2, 0), 0.001);

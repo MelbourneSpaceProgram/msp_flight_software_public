@@ -8,14 +8,13 @@
 class EarthSensor {
    public:
     EarthSensor();
-    void CalculateNadirVector();
+    void CalculateNadirVector(Matrix &nadir);
     void SetPosXSensorReading(double value);
     void SetPosYSensorReading(double value);
     void SetNegXSensorReading(double value);
     void SetNegYSensorReading(double value);
     void SetNegZASensorReading(double value);
     void SetNegZBSensorReading(double value);
-    Matrix GetNadirVector() const;
 
    private:
     static const double kPosX[3][1], kPosY[3][1], kNegX[3][1], kNegY[3][1],

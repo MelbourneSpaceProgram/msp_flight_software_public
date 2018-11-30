@@ -5,8 +5,8 @@ class Matrix;
 
 class NadirController {
    public:
-    static void Control(const Matrix &nadir_error_quart, Matrix &omega,
-                        Matrix &dipole_ouput);
+    static void ComputeControl(Matrix &nadir_error_quart, Matrix &omega,
+                               Matrix &dipole_ouput);
 
    private:
     static const double max_achievable_dipole[3];

@@ -13,7 +13,7 @@ TEST(NadirController, NadirControl) {
     double cData[3][1];
 
     Matrix error_quat(error_quat_data), omega(omega_data), torque(cData);
-    NadirController::Control(error_quat, omega, torque);
+    NadirController::ComputeControl(error_quat, omega, torque);
 
     double quat1 = torque.Get(0, 0);
     double quat2 = torque.Get(1, 0);

@@ -86,7 +86,7 @@ constexpr uint64_t kInitialAntennaBurnIntervalMs = kHalfOrbitPeriodMs;
 constexpr uint64_t kBackupAntennaBurnIntervalMs = 3 * kHalfOrbitPeriodMs;
 constexpr float kAntennaBurnIntervalMultiplier = 2.5;
 
-//////////////////// MAGNETORQUERS ////////////////////
+//////////////////// ORIENTATION CONTROL //////////////
 
 // Will disable orientation control if true, must be FALSE until launch
 constexpr bool kRunMagnetorquersAtConstantPower = true;

@@ -1,7 +1,8 @@
 #include <math.h>
 #include <src/sensors/earth_sensor.h>
 
-// Defined surface normal (unit) vectors in all six sides of the satellite
+// Define surface normal (unit) vectors for all sides of the satellite with IR
+// sensors
 const double EarthSensor::kPosX[3][1] = {{1}, {0}, {0}},
              EarthSensor::kPosY[3][1] = {{0}, {1}, {0}},
              EarthSensor::kNegX[3][1] = {{-1}, {0}, {0}},
@@ -22,7 +23,7 @@ EarthSensor::EarthSensor()
       neg_z_b_sensor(neg_z_side_normal),
       nadir_vector(nadir_vector_data) {}
 
-void EarthSensor::CalculateNadirVector() {
+void EarthSensor::CalculateNadirVector(Matrix &nadir) {
     NewStackMatrixMacro(x_component, 3, 1);
     NewStackMatrixMacro(y_component, 3, 1);
     NewStackMatrixMacro(z_component, 3, 1);
@@ -84,5 +85,3 @@ void EarthSensor::SetNegZASensorReading(double value) {
 void EarthSensor::SetNegZBSensorReading(double value) {
     neg_z_b_sensor.SetInfraredReading(value);
 }
-
-Matrix EarthSensor::GetNadirVector() const { return nadir_vector; }

@@ -32,7 +32,8 @@ enum DebugMessageType {
     kPwmOutputReadingCode = 0x0E,
     kCalibratedMagnetometerReadingCode = 0x0F,
     kPayloadProcessorInjection = 0x10,
-    kBDotEstimateCode = 0x11
+    kBDotEstimateCode = 0x11,
+    kGyroscopeReadingCode = 0x12,
 };
 
 // This needs to be kept current with the Python decoder in the DebugClient

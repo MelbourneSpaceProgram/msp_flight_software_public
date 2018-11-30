@@ -5,11 +5,10 @@
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/config/satellite.h>
-#include <src/messages/LocationReading.pb.h>
 #include <src/util/message_codes.h>
 #include <src/util/physical_constants.h>
-#include <ti/sysbios/BIOS.h>
 #include <src/util/satellite_time_source.h>
+#include <ti/sysbios/BIOS.h>
 
 Mailbox_Handle LocationEstimator::tle_update_uplink_mailbox_handle;
 Mailbox_Params LocationEstimator::tle_update_uplink_mailbox_params;
@@ -19,9 +18,8 @@ LocationEstimator::LocationEstimator()
       lattitude_geodetic_degrees(0),
       longitude_degrees(0),
       altitude_above_ellipsoid_km(0),
-      tle_epoch_offset_ms(0),
-      tle_is_current(false) {
-  // TODO (rskew) read TLE from flash memory
+      tle_epoch_offset_ms(0) {
+    // TODO (rskew) read TLE from flash memory
 }
 
 void LocationEstimator::SetTleUpdateUplinkMailboxHandle(
@@ -48,27 +46,26 @@ void LocationEstimator::RequestTleFromDebugClient() {
 bool LocationEstimator::StoreTle(Tle tle) {
     Time current_time = SatelliteTimeSource::GetTime();
     if (current_time.is_valid) {
-      Sgp4::InitialisePropagator(tle, satrec);
-      tle_epoch_offset_ms = tle.time_since_epoch_ms - current_time.timestamp_ms;
-      // TODO (rskew) store TLE in flash, along with tle_epoch_time_ms
-      tle_is_current = true;
-      return true;
+        Sgp4::InitialisePropagator(tle, satrec);
+        tle_epoch_offset_ms =
+            tle.time_since_epoch_ms - current_time.timestamp_ms;
+        // TODO (rskew) store TLE in flash, along with tle_epoch_time_ms
+        return true;
     }
     return false;
 }
 
 bool LocationEstimator::UpdateLocation() {
+    CheckForUpdatedTle();
     Time current_time = SatelliteTimeSource::GetTime();
     if (!current_time.is_valid) {
         return false;
     }
     if (current_time.timestamp_ms + tle_epoch_offset_ms > kTleShelfLifeMs) {
-      tle_is_current = false;
+        return false;
     }
-    if (!tle_is_current) {
-      return false;
-    }
-    double tsince_millis = (double)(current_time.timestamp_ms + tle_epoch_offset_ms);
+    double tsince_millis =
+        (double)(current_time.timestamp_ms + tle_epoch_offset_ms);
     double position_true_equator_mean_equinox[3];
     double velocity_true_equator_mean_equinox[3];
     double tsince_minutes = tsince_millis / (1000 * 60);
@@ -102,18 +99,14 @@ bool LocationEstimator::UpdateLocation() {
                                 altitude_above_ellipsoid_km);
     lattitude_geodetic_degrees = lattitude_geodetic_radians * (180 / kPi);
     longitude_degrees = longitude_radians * (180 / kPi);
+    return true;
 }
 
-double LocationEstimator::GetLattitudeGeodeticDegrees() const {
-    return lattitude_geodetic_degrees;
-}
-
-double LocationEstimator::GetLongitudeDegrees() const {
-    return longitude_degrees;
-}
-
-double LocationEstimator::GetAltitudeAboveEllipsoidKm() const {
-    return altitude_above_ellipsoid_km;
+void LocationEstimator::GetLocationReading(
+    LocationReading &location_reading) const {
+    location_reading.lattitude_geodetic_degrees = lattitude_geodetic_degrees;
+    location_reading.longitude_degrees = longitude_degrees;
+    location_reading.altitude_above_ellipsoid_km = altitude_above_ellipsoid_km;
 }
 
 elsetrec LocationEstimator::GetSatrec() const { return satrec; }

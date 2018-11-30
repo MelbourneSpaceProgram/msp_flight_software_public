@@ -5,10 +5,12 @@
 
 class KalmanFilter {
    public:
-    KalmanFilter(uint16_t sample_time_millis, Matrix &r1, Matrix &r2,
-                 Matrix &Q0, Matrix &R0, Matrix &P0, Matrix &q0);
+    KalmanFilter(uint16_t sample_time_millis, const Matrix &Q0,
+                 const Matrix &R0, const Matrix &P0, const Matrix &q0);
     void Predict(const Matrix &omega);
-    void Update(const Matrix &y);
+    void Update(const Matrix &sensor1_reading, const Matrix &sensor2_reading);
+    void UpdateRef1(const Matrix &ref);
+    void UpdateRef2(const Matrix &ref);
 
     Matrix ref1;
     Matrix ref2;
@@ -18,8 +20,8 @@ class KalmanFilter {
     Matrix q_estimate;
 
    private:
-    void ComputeF(Matrix &F_out, const Matrix &omega);
-    void ComputeXi(Matrix &Xi_out, const Matrix &q);
+    static void ComputeF(Matrix &F_out, const Matrix &omega);
+    static void ComputeXi(Matrix &Xi_out, const Matrix &q);
     void Computeh(Matrix &h_out, const Matrix &q);
     void ComputeH(Matrix &H_out, const Matrix &q);
     void ComputeK(Matrix &K_out, const Matrix &H);

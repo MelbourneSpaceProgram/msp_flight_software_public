@@ -112,6 +112,18 @@ double Matrix::VectorNorm(const Matrix &A) {
     return sqrt(sum_of_squares);
 }
 
+void Matrix::Add(const Matrix &A, const Matrix &B, const Matrix &C) {
+    if (!SameSize(A) || !SameSize(B) || !SameSize(C)) {
+        MspException("Matrix::Add arguments' sizes don't match",
+                     kMatrixAddInvalidSizeFail, __FILE__, __LINE__);
+    }
+    for (uint8_t i = 0; i < nrows; i++) {
+        for (uint8_t j = 0; j < ncolumns; j++) {
+            Set(i, j, A.Get(i, j) + B.Get(i, j) + C.Get(i, j));
+        }
+    }
+}
+
 void Matrix::Add(const Matrix &A, const Matrix &B) {
     if (!SameSize(A) || !SameSize(B)) {
         MspException("Matrix::Add arguments' sizes don't match",

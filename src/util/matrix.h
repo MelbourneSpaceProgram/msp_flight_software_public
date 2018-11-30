@@ -8,6 +8,10 @@
     double name##_data[n_rows][n_cols];           \
     Matrix name(name##_data);
 
+#define NewConstStackMatrixMacro(name, n_rows, n_cols, const_data) \
+    double name##_dummy_data[n_rows][n_cols];                      \
+    const Matrix name(const_data, name##_dummy_data);
+
 class Matrix {
    public:
     template <uint8_t rows, uint8_t columns>
@@ -66,6 +70,7 @@ class Matrix {
     static double VectorNorm(const Matrix &A);
 
     void Add(const Matrix &A, const Matrix &B);
+    void Add(const Matrix &A, const Matrix &B, const Matrix &C);
     void Subtract(const Matrix &A, const Matrix &B);
     void Multiply(const Matrix &A, const Matrix &B);
     void MultiplyScalar(const Matrix &A, double scale);
@@ -105,6 +110,20 @@ class Matrix {
     void QuaternionConjugate();
     void QuaternionProductCross(Matrix &a, Matrix &b);
     void QuaternionProductDot(Matrix &a, Matrix &b);
+
+    template <class Nanopb3DVector>
+    void ToNanopbXYZ(Nanopb3DVector &nanopb_vector) {
+        nanopb_vector.x = this->Get(0, 0);
+        nanopb_vector.y = this->Get(1, 0);
+        nanopb_vector.z = this->Get(2, 0);
+    }
+
+    template <class Nanopb3DVector>
+    void FromNanopbXYZ(const Nanopb3DVector &nanopb_vector) {
+        this->Set(0, 0, nanopb_vector.x);
+        this->Set(1, 0, nanopb_vector.y);
+        this->Set(2, 0, nanopb_vector.z);
+    }
 
    private:
     double *data;

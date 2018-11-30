@@ -5,25 +5,25 @@
 TEST_GROUP(KalmanFilter){};
 
 TEST(KalmanFilter, PredictAndUpdate) {
-    double r1_data[3][1] = {{0.3554}, {0.0734}, {-0.9318}};
-    Matrix r1(r1_data);
-    double r2_data[3][1] = {{0}, {0}, {1}};
-    Matrix r2(r2_data);
-    double q0_data[4][1] = {{0}, {0}, {0}, {1}};
-    Matrix q0(q0_data);
-    NewStackMatrixMacro(P0, 3, 3);
-    P0.Fill(0);
-    NewStackMatrixMacro(Q0, 3, 3);
-    Q0.Identity();
-    Q0.MultiplyScalar(Q0, 0.1);
-    double R0_data[6][6];
+    const double r1_data[3][1] = {{0.3554}, {0.0734}, {-0.9318}};
+    NewConstStackMatrixMacro(r1, 3, 1, r1_data);
+    const double r2_data[3][1] = {{0}, {0}, {1}};
+    NewConstStackMatrixMacro(r2, 3, 1, r2_data);
+    const double q0_data[4][1] = {{0}, {0}, {0}, {1}};
+    NewConstStackMatrixMacro(q0, 4, 1, q0_data);
+    const double P0_data[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    NewConstStackMatrixMacro(P0, 3, 3, P0_data);
+    const double Q0_data[3][3] = {{0.1, 0, 0}, {0, 0.1, 0}, {0, 0, 0.1}};
+    NewConstStackMatrixMacro(Q0, 3, 3, Q0_data);
+    const double R0_data[6][6] = {{0.1, 0, 0, 0, 0, 0}, {0, 0.1, 0, 0, 0, 0},
+                                  {0, 0, 0.1, 0, 0, 0}, {0, 0, 0, 0.1, 0, 0},
+                                  {0, 0, 0, 0, 0.1, 0}, {0, 0, 0, 0, 0, 0.1}};
+    NewConstStackMatrixMacro(R0, 6, 6, R0_data);
 
-    Matrix R0(R0_data);
-    R0.Identity();
-    R0.MultiplyScalar(R0, 0.1);
-    double y_data[6][1] = {{-0.366}, {-0.5753}, {-0.7315},
-                           {0.5844}, {0.2708},  {0.7650}};
-    Matrix y(y_data);
+    double y1_data[3][1] = {{-0.366}, {-0.5753}, {-0.7315}};
+    Matrix y1(y1_data);
+    double y2_data[3][1] = {{0.5844}, {0.2708}, {0.7650}};
+    Matrix y2(y2_data);
     double omega_data[3][1] = {{0}, {0.4363}, {-0.0873}};
     Matrix omega(omega_data);
     double q_prior_estimate_expected_data[4][1] = {
@@ -41,7 +41,9 @@ TEST(KalmanFilter, PredictAndUpdate) {
         {-0.00008373, -0.00001576, 0.00496511}};
     Matrix P_posterior_expected(P_posterior_expected_data);
 
-    KalmanFilter kf(50, r1, r2, Q0, R0, P0, q0);
+    KalmanFilter kf(50, Q0, R0, P0, q0);
+    kf.UpdateRef1(r1);
+    kf.UpdateRef2(r2);
 
     kf.Predict(omega);
 
@@ -51,7 +53,7 @@ TEST(KalmanFilter, PredictAndUpdate) {
     // Test P prediction
     CHECK(P_prior_expected.IsEqual(kf.P));
 
-    kf.Update(y);
+    kf.Update(y1, y2);
 
     // Test q_estimate update
     CHECK(q_posterior_estimate_expected.IsEqual(kf.q_estimate));

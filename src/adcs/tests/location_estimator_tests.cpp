@@ -1,5 +1,6 @@
 #include <CppUTest/TestHarness.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/messages/LocationReading.pb.h>
 
 TEST_GROUP(LocationEstimator){};
 
@@ -26,21 +27,17 @@ TEST(LocationEstimator, UpdateLocation) {
 
     location_estimator.UpdateLocation();
 
-    double calculated_lattitude_geodetic_degrees =
-        location_estimator.GetLattitudeGeodeticDegrees();
-    double calculated_longitude_degrees =
-        location_estimator.GetLongitudeDegrees();
-    double calculated_altitude_above_ellipsoid_km =
-        location_estimator.GetAltitudeAboveEllipsoidKm();
+    LocationReading location_reading;
+    location_estimator.GetLocationReading(location_reading);
 
     double expected_altitude_above_ellipsoid_km = 2456.906192274563;  // km
     double expected_lattitude_geodetic_degrees = -23.705347061214;    // degrees
     double expected_longitude_degrees = -81.146765103690;             // degrees
 
-    DOUBLES_EQUAL(expected_longitude_degrees, calculated_longitude_degrees,
+    DOUBLES_EQUAL(expected_longitude_degrees, location_reading.longitude_degrees,
                   0.001);
     DOUBLES_EQUAL(expected_lattitude_geodetic_degrees,
-                  calculated_lattitude_geodetic_degrees, 0.001);
+                  location_reading.lattitude_geodetic_degrees, 0.001);
     DOUBLES_EQUAL(expected_altitude_above_ellipsoid_km,
-                  calculated_altitude_above_ellipsoid_km, 0.001);
+                  location_reading.altitude_above_ellipsoid_km, 0.001);
 }

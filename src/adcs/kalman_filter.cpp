@@ -1,10 +1,10 @@
 #include <math.h>
 #include <src/adcs/kalman_filter.h>
 
-KalmanFilter::KalmanFilter(uint16_t sample_time_millis, Matrix &r1, Matrix &r2,
-                           Matrix &Q0, Matrix &R0, Matrix &P0, Matrix &q0)
-    : ref1(r1, ref1_data),
-      ref2(r2, ref2_data),
+KalmanFilter::KalmanFilter(uint16_t sample_time_millis, const Matrix &Q0,
+                           const Matrix &R0, const Matrix &P0, const Matrix &q0)
+    : ref1(ref1_data),
+      ref2(ref2_data),
       Q(Q0, Q_data),
       R(R0, R_data),
       P(P0, P_data),
@@ -45,7 +45,15 @@ void KalmanFilter::Predict(const Matrix &omega) {
     P.Add(P, FP_PF_transpose_Q_deltat);
 }
 
-void KalmanFilter::Update(const Matrix &y) {
+void KalmanFilter::Update(const Matrix &sensor1_reading, const Matrix &sensor2_reading) {
+    NewStackMatrixMacro(y, 6, 1);
+    y.Set(0, 0, sensor1_reading.Get(0, 0));
+    y.Set(1, 0, sensor1_reading.Get(1, 0));
+    y.Set(2, 0, sensor1_reading.Get(2, 0));
+    y.Set(3, 0, sensor2_reading.Get(0, 0));
+    y.Set(4, 0, sensor2_reading.Get(1, 0));
+    y.Set(5, 0, sensor2_reading.Get(2, 0));
+
     NewStackMatrixMacro(H, 6, 3);
     ComputeH(H, q_estimate);
 
@@ -184,4 +192,16 @@ void KalmanFilter::Computedx(Matrix dx_out, const Matrix &K, const Matrix &y) {
     dy.Subtract(y, h);
 
     dx_out.Multiply(K, dy);
+}
+
+void KalmanFilter::UpdateRef1(const Matrix &ref) {
+    ref1.Set(0, 0, ref.Get(0, 0));
+    ref1.Set(1, 0, ref.Get(1, 0));
+    ref1.Set(2, 0, ref.Get(2, 0));
+}
+
+void KalmanFilter::UpdateRef2(const Matrix &ref) {
+    ref2.Set(0, 0, ref.Get(0, 0));
+    ref2.Set(1, 0, ref.Get(1, 0));
+    ref2.Set(2, 0, ref.Get(2, 0));
 }
