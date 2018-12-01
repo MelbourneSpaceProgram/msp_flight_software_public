@@ -2,8 +2,9 @@
 #include <src/payload_processor/uplinks/lithium_test_uplink.h>
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/transmit_command.h>
-#include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <xdc/runtime/Log.h>
+
+#include "../../telecomms/msp_payloads/pad_zeroes_payload.h"
 
 LithiumTestUplink::LithiumTestUplink()
     : Uplink(kLithiumTestUplinkArgumentLength) {}

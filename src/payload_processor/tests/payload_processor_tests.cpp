@@ -35,7 +35,6 @@
 #include <src/telecomms/lithium.h>
 #include <src/telecomms/lithium_commands/get_configuration_command.h>
 #include <src/telecomms/lithium_configuration.h>
-#include <src/telecomms/msp_payloads/test_ones_payload.h>
 #include <src/telecomms/runnable_antenna_burner.h>
 #include <src/telecomms/runnable_beacon.h>
 #include <src/util/message_codes.h>
@@ -50,6 +49,7 @@
 #include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
 #include <src/payload_processor/uplinks/set_icharge_uplink.h>
 #include <src/board/i2c/bms/bms.h>
+#include "../../telecomms/msp_payloads/pad_zeroes_payload.h"
 
 TEST_GROUP(PayloadProcessor) {
     void setup() { MspException::ClearAll(); };
