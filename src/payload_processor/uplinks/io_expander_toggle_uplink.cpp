@@ -22,89 +22,83 @@ bool IoExpanderToggleUplink::ExecuteUplink() {
                            kIoExpanderUplinkInvalidPinFail, __FILE__, __LINE__);
     } else if (io_expander_id >= IoExpander::kNumIoExpanders) {
         throw MspException("Invalid IO expander ID",
-                             kIoExpanderUplinkInvalidIndexFail, __FILE__,
-                             __LINE__);
+                           kIoExpanderUplinkInvalidIndexFail, __FILE__,
+                           __LINE__);
     }
 
     const IoExpander* expander = IoExpander::GetIoExpander(io_expander_id);
-    IArg key = SatellitePower::Lock();
+    MutexLocker locker(SatellitePower::GetMutex());
 
-    try {
-        switch (toggle_type) {
-                // Initialisation happens after setting pin value so that as
-                // soon as the pin is set to output, it will be the correct
-                // intended value without a period of potentially being the
-                // incorrect value.
-            case kToggleOffOn:
-                expander->SetPin(pin, false);
-                IoExpander::InitialiseOutputPin(expander, pin);
-                TirtosUtils::SleepMilli(toggle_duration);
-                expander->SetPin(pin, true);
-                break;
+    switch (toggle_type) {
+            // Initialisation happens after setting pin value so that as
+            // soon as the pin is set to output, it will be the correct
+            // intended value without a period of potentially being the
+            // incorrect value.
+        case kToggleOffOn:
+            expander->SetPin(pin, false);
+            IoExpander::InitialiseOutputPin(expander, pin);
+            TirtosUtils::SleepMilli(toggle_duration);
+            expander->SetPin(pin, true);
+            break;
 
-            case kToggleOn:
-                expander->SetPin(pin, true);
-                IoExpander::InitialiseOutputPin(expander, pin);
-                break;
+        case kToggleOn:
+            expander->SetPin(pin, true);
+            IoExpander::InitialiseOutputPin(expander, pin);
+            break;
 
-            case kToggleOff:
-                expander->SetPin(pin, false);
-                IoExpander::InitialiseOutputPin(expander, pin);
-                break;
+        case kToggleOff:
+            expander->SetPin(pin, false);
+            IoExpander::InitialiseOutputPin(expander, pin);
+            break;
 
-            case kToggleOffOnFlightSystems:
-                SatellitePower::CutPowerToFlightSystems();
-                TirtosUtils::SleepMilli(toggle_duration);
-                SatellitePower::RestorePowerToFlightSystems();
-                break;
+        case kToggleOffOnFlightSystems:
+            SatellitePower::CutPowerToFlightSystems();
+            TirtosUtils::SleepMilli(toggle_duration);
+            SatellitePower::RestorePowerToFlightSystems();
+            break;
 
-            case kToggleOnFlightSystems:
-                SatellitePower::RestorePowerToFlightSystems();
-                break;
+        case kToggleOnFlightSystems:
+            SatellitePower::RestorePowerToFlightSystems();
+            break;
 
-            case kToggleOffFlightSystems:
-                SatellitePower::CutPowerToFlightSystems();
-                break;
+        case kToggleOffFlightSystems:
+            SatellitePower::CutPowerToFlightSystems();
+            break;
 
-            case kToggleOffOnTelecomms:
-                SatellitePower::CutPowerToTelecoms();
-                TirtosUtils::SleepMilli(toggle_duration);
-                SatellitePower::RestorePowerToTelecoms();
-                break;
+        case kToggleOffOnTelecomms:
+            SatellitePower::CutPowerToTelecoms();
+            TirtosUtils::SleepMilli(toggle_duration);
+            SatellitePower::RestorePowerToTelecoms();
+            break;
 
-            case kToggleOnTelecomms:
-                SatellitePower::RestorePowerToTelecoms();
-                break;
+        case kToggleOnTelecomms:
+            SatellitePower::RestorePowerToTelecoms();
+            break;
 
-            case kToggleOffTelecomms:
-                SatellitePower::CutPowerToTelecoms();
-                break;
+        case kToggleOffTelecomms:
+            SatellitePower::CutPowerToTelecoms();
+            break;
 
-            case kToggleOffOnPanels:
-                SatellitePower::CutPowerFromPanels();
-                TirtosUtils::SleepMilli(toggle_duration);
-                SatellitePower::RestorePowerFromPanels();
-                break;
+        case kToggleOffOnPanels:
+            SatellitePower::CutPowerFromPanels();
+            TirtosUtils::SleepMilli(toggle_duration);
+            SatellitePower::RestorePowerFromPanels();
+            break;
 
-            case kToggleOnPanels:
-                SatellitePower::RestorePowerFromPanels();
-                break;
+        case kToggleOnPanels:
+            SatellitePower::RestorePowerFromPanels();
+            break;
 
-            case kToggleOffPanels:
-                SatellitePower::CutPowerFromPanels();
-                break;
+        case kToggleOffPanels:
+            SatellitePower::CutPowerFromPanels();
+            break;
 
-            default:
-                // TODO(dingbenjamin): Include invalid toggle type in exception
-                throw MspException(
-                    "Invalid toggle type for IoExpanderToggleUplink",
-                    kIoExpanderUplinkInvalidToggleTypeFail, __FILE__, __LINE__);
-        }
-    } catch (MspException& e) {
-        SatellitePower::Unlock(key);
-        throw;
+        default:
+            // TODO(dingbenjamin): Include invalid toggle type in exception
+            throw MspException("Invalid toggle type for IoExpanderToggleUplink",
+                               kIoExpanderUplinkInvalidToggleTypeFail, __FILE__,
+                               __LINE__);
     }
 
-    SatellitePower::Unlock(key);
     return true;
 }

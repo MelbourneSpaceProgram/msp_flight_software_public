@@ -64,21 +64,15 @@ class MeasurableManager {
                 earliest_acceptable_ms = 0;
             }
 
-            IArg key = GateMutexPri_enter(manager_mutex);
-            try {
-                uint64_t cache_time_ms =
-                    nanopb_measurable->GetReading().timestamp_ms;
-                if (nanopb_measurable->first_reading ||
-                    (!always_use_cached &&
-                     (cache_time_ms <= earliest_acceptable_ms))) {
-                    nanopb_measurable->TakeReading();
-                    nanopb_measurable->first_reading = false;
-                }
-            } catch (MspException &e) {
-                GateMutexPri_leave(manager_mutex, key);
-                throw;
+            MutexLocker locker(manager_mutex);
+            uint64_t cache_time_ms =
+                nanopb_measurable->GetReading().timestamp_ms;
+            if (nanopb_measurable->first_reading ||
+                (!always_use_cached &&
+                 (cache_time_ms <= earliest_acceptable_ms))) {
+                nanopb_measurable->TakeReading();
+                nanopb_measurable->first_reading = false;
             }
-            GateMutexPri_leave(manager_mutex, key);
             return nanopb_measurable->GetReading();
         } catch (MspException &e) {
             MspException::LogException(e, kMeasurableManagerCatch);

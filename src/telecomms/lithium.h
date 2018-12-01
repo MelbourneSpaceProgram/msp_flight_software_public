@@ -102,7 +102,6 @@ class Lithium {
     static uint8_t tx_count;
     static uint8_t rx_count;
     static uint8_t command_success_count;
-    static IArg power_key;
 
     Uart uart;
     bool lithium_transmit_enabled;
@@ -112,8 +111,8 @@ class Lithium {
     GateMutexPri_Params mutex_params;
     GateMutexPri_Handle lithium_mutex;
 
-    void FailSerial(IArg key);
-    void SuccessSerial(IArg key);
+    void FailSerial();
+    void SuccessSerial();
 
     Mailbox_Params uplink_mailbox_params;
     Mailbox_Handle uplink_mailbox_handle;
