@@ -66,10 +66,24 @@ void PreBiosInit() {
         } else {
             switch (reset_info_container->GetMostRecentResetMessage()) {
                 case kFirstWakeupMessage:
+                    if (kVerboseLogging)
+                        Log_info0("Reset Message: First Wakeup");
+                    break;
                 case kResetUnitTestMessage1:
+                    if (kVerboseLogging)
+                        Log_info0("Reset Message: Unit Test 1");
+                    break;
                 case kResetUnitTestMessage2:
+                    if (kVerboseLogging)
+                        Log_info0("Reset Message: Unit Test 2");
+                    break;
                 case kForceResetCommandExecuted:
+                    if (kVerboseLogging)
+                        Log_info0("Reset Message: Force Reset");
+                    break;
                 case kUnexpectedReset:
+                    if (kVerboseLogging)
+                        Log_info0("Reset Message: Unexpected Reset");
                     break;
                 default:
                     throw MspException("Invalid reset flag",
@@ -91,7 +105,7 @@ void PreBiosInit() {
         EnterLimpMode();
     }
 
-	// TODO(dingbenjamin): Log the reset counts for each type to console
+    // TODO(dingbenjamin): Log the reset counts for each type to console
 }
 
 /* Setup rtc pin pulsing interrupt and then enable */
