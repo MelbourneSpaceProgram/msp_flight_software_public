@@ -17,6 +17,18 @@
 
 SdCard *SdCard::instance = NULL;
 
+FileLocker::FileLocker(SdCard &sd_card, File *file_handle)
+    : sd(sd_card), file(file_handle) {
+    sd.Lock();
+}
+
+FileLocker::~FileLocker() {
+    sd.FileClose(file);
+    sd.Unlock();
+}
+
+File *FileLocker::GetFile() const { return file; }
+
 SdCard *SdCard::GetInstance() {
     if (instance == NULL) {
         instance = new SdCard();
@@ -50,7 +62,7 @@ SdHandle SdCard::SdOpen() {
         throw SdException("Error starting the SD card.", kSdOpenFail, __FILE__,
                           __LINE__);
     }
-    return handle;
+    return FileLocker{*this, handle};
 }
 
 void SdCard::SdClose(SdHandle handle) {
@@ -63,14 +75,13 @@ void SdCard::SdClose(SdHandle handle) {
 }
 
 // TODO(dingbenjamin): Print file name in exceptions
-File *SdCard::FileOpen(const char *path, byte mode) {
-    Lock();
+FileLocker SdCard::FileOpen(const char *path, byte mode) {
+    MutexLocker locker(sd_mutex);
     open_file = new File;
     FResult result = f_open(open_file, path, mode);
     if (result == FR_NO_FILE || result == FR_NO_PATH) {
         delete open_file;
-        open_file = NULL;
-        Unlock();
+        open_file = nullptr;
         throw SdException("Could not find file", kFileOpenNotFoundFail,
                           __FILE__, __LINE__, result);
     } else if (result == FR_EXIST) {
@@ -79,19 +90,21 @@ File *SdCard::FileOpen(const char *path, byte mode) {
                           __LINE__, result);
     } else if (result != FR_OK) {
         delete open_file;
-        open_file = NULL;
-        Unlock();
+        open_file = nullptr;
         throw SdException("Error opening file", kFileOpenFail, __FILE__,
                           __LINE__, result);
     }
-    return open_file;
+    // Rely on return value optimization here to avoid double construction
+    // TODO(dingbenjamin): Check if this does what it intends to
+    return FileLocker{*this, open_file};
 }
 
-uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
+uint32_t SdCard::FileWrite(FileLocker &locker, const void *write_buffer,
                            uint32_t num_bytes) const {
     // Don't need a lock check as the file handle itself is the key
     unsigned int bytes_written;
-    FResult result = f_write(f, write_buffer, num_bytes, &bytes_written);
+    FResult result =
+        f_write(locker.GetFile(), write_buffer, num_bytes, &bytes_written);
     if (result != FR_OK) {
         throw SdException("Error writing to file", kFileWriteFail, __FILE__,
                           __LINE__, result);
@@ -99,7 +112,7 @@ uint32_t SdCard::FileWrite(File *f, const void *write_buffer,
     return bytes_written;
 }
 
-uint32_t SdCard::FileRead(File *f, void *read_buffer,
+uint32_t SdCard::FileRead(FileLocker &f, void *read_buffer,
                           uint32_t num_bytes) const {
     // Don't need a lock check as the file handle itself is the key
     unsigned int bytes_read;
@@ -177,7 +190,6 @@ void SdCard::Format() {
 }
 
 void SdCard::Lock() {
-    key = GateMutexPri_enter(sd_mutex);
     assert(!is_locked);
     if (is_locked) {
         throw SdException(
@@ -194,8 +206,6 @@ void SdCard::Unlock() {
         return;
     }
     is_locked = false;
-    GateMutexPri_leave(sd_mutex, key);
-    key = -1;
 }
 
 void SdCard::Dump() {

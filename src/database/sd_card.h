@@ -13,6 +13,27 @@ typedef SDFatFS_Handle SdHandle;
 
 // Designed to have at most one file open at a given time, in at most one thread
 class SdCard {
+    friend class FileLocker;
+
+    class FileLocker() {
+       public:
+        explicit FileLocker(SdCard & sd, File * file);
+        ~FileLocker();
+
+        File *GetFile() const;
+
+        FileLocker(const FileLocker &) = delete;
+        FileLocker &operator=(const FileLocker &) = delete;
+        FileLocker(FileLocker &&) = delete;
+        FileLocker &operator=(FileLocker &&) = delete;
+
+       private:
+        SdCard &sd;
+        GateMutexPri_Handle &handle;
+        IArg key;
+        File *file;
+    }
+
    public:
     static constexpr byte kFileReadMode = 0x01;
     static constexpr byte kFileOpenExistingMode = 0x00;
@@ -27,8 +48,7 @@ class SdCard {
     static SdCard *GetInstance();
     SdHandle SdOpen();
     void SdClose(SdHandle handle);
-    File *FileOpen(const char *path, byte mode);
-    void FileClose(File *f);
+    FileLocker *FileOpen(const char *path, byte mode);
     uint32_t FileWrite(File *f, const void *write_buffer,
                        uint32_t num_bytes) const;
     uint32_t FileRead(File *f, void *read_buffer, uint32_t num_bytes) const;
@@ -41,6 +61,7 @@ class SdCard {
 
    private:
     SdCard();
+    void FileClose(File *f);
     static SdCard *instance;
     static constexpr uint8_t kDriveNum = 0;
     static constexpr uint16_t kMaxNumFiles = 1000;
@@ -50,7 +71,6 @@ class SdCard {
     // card
     GateMutexPri_Params mutex_params;
     GateMutexPri_Handle sd_mutex;
-    IArg key;
     bool is_locked;
     File *open_file;
     void Lock();
