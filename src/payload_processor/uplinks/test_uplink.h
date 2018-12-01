@@ -12,8 +12,8 @@ class TestUplink : public Uplink {
     static constexpr byte kTestValue2 = 0xA5;
 
    private:
-    static constexpr uint8_t kEchoUplinkArgumentLength = 2;
-    etl::array<byte, kEchoUplinkArgumentLength> command_arguments;
+    static constexpr uint8_t kTestUplinkArgumentLength = 2;
+    etl::array<byte, kTestUplinkArgumentLength> command_arguments;
 };
 
 #endif  //  SRC_PAYLOAD_PROCESSOR_COMMANDS_TEST_UPLINK_H_

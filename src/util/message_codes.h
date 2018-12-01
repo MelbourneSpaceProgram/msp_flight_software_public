@@ -49,6 +49,7 @@ enum PayloadType {
     kExceptionsPayloadCode = 10,
     kNumExceptionsPayloadCode = 11,
     kLimpModeBeaconPayloadCode = 12,
+    kEchoPayloadCode = 13
 };
 
 enum Uplinks {
@@ -79,6 +80,7 @@ enum Uplinks {
     kTerminateAntennaBurnUplink = 24,
     kSetBootStateUplink = 25,
     kSetIChargeUplink = 26,
+    kEchoUplink = 27,
     kUplinksLength
 };
 

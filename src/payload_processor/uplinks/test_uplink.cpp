@@ -1,6 +1,6 @@
 #include <src/payload_processor/uplinks/test_uplink.h>
 
-TestUplink::TestUplink(byte* payload) : Uplink(kEchoUplinkArgumentLength) {
+TestUplink::TestUplink(byte* payload) : Uplink(kTestUplinkArgumentLength) {
     command_arguments[0] = payload[0];
     command_arguments[1] = payload[1];
 }
