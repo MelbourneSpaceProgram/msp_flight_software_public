@@ -441,7 +441,7 @@ TEST(PayloadProcessor, TestSequence) {
     // TODO(dingbenjamin): Move this to teardown
     RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;
     RunnablePayloadProcessor::check_hmac = kCheckHmacDefault;
-    RunnablePayloadProcessor::use_fec = kUseFecDefault;
+    RunnablePayloadProcessor::use_fec = kDownlinkFecEnabled;
     RunnablePayloadProcessor::sequence = 0;
 }
 

@@ -41,14 +41,14 @@ constexpr bool kFormatSdOnStartup = false;
 constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
 constexpr uint32_t kEjectionWaitMs = 30 * 60 * 1000;
 constexpr uint64_t kTimeSourceDeployMs = 0;
-static constexpr bool kDownlinkFecEnabled = false;
 
 //////////////////// TELECOMMS ////////////////////
 
 constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 constexpr uint8_t kNominalLithiumPowerLevel = 140;  // Scaled between 0-255
 
-constexpr bool kUseFecDefault = true;
+constexpr bool kUplinkFecEnabled = true;
+constexpr bool kDownlinkFecEnabled = false;
 constexpr bool kCheckHmacDefault = true;
 constexpr bool kCheckSequenceDefault = false;
 

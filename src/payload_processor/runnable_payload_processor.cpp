@@ -15,7 +15,7 @@
 // TODO(daniel632): A proper key needs to be decided on.
 static const std::string kHmacKey = "SuperSecretKey";
 uint16_t RunnablePayloadProcessor::sequence = 0;
-bool RunnablePayloadProcessor::use_fec = kUseFecDefault;
+bool RunnablePayloadProcessor::use_fec = kUplinkFecEnabled;
 bool RunnablePayloadProcessor::check_hmac = kCheckHmacDefault;
 bool RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;
 
