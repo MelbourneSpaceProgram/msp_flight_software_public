@@ -29,7 +29,6 @@ Lithium* Lithium::instance = NULL;
 uint8_t Lithium::tx_count = 0;
 uint8_t Lithium::rx_count = 0;
 uint8_t Lithium::command_success_count = 0;
-IArg Lithium::power_key = 0;
 bool Lithium::currently_transmitting = false;
 
 Lithium::Lithium()
@@ -88,7 +87,6 @@ Lithium::Lithium()
 void Lithium::PreTransmit() {
     // Turn off flight systems before every transmission to avoid booting with
     // flight systems on in the case of a brownout.
-    power_key = SatellitePower::Lock();
     try {
         SatellitePower::CutPowerToFlightSystems();
     } catch (MspException& e) {
@@ -119,7 +117,6 @@ void Lithium::PostTransmit() {
     } catch (MspException& e) {
         MspException::LogException(e, kLithiumPostTransmit2Catch);
     }
-    SatellitePower::Unlock(power_key);
 }
 
 bool Lithium::Transmit(TransmitPayload* transmit_payload) {
@@ -130,13 +127,19 @@ bool Lithium::Transmit(TransmitPayload* transmit_payload) {
     }
 
     currently_transmitting = true;
-    PreTransmit();
+    bool transmit_successful = false;
 
-    TransmitCommand transmit_command(transmit_payload);
-    bool transmit_successful =
-        Lithium::GetInstance()->DoCommand(&transmit_command);
+    {
+        MutexLocker locker(SatellitePower::GetMutex());
+        PreTransmit();
 
-    PostTransmit();
+        TransmitCommand transmit_command(transmit_payload);
+        transmit_successful =
+            Lithium::GetInstance()->DoCommand(&transmit_command);
+
+        PostTransmit();
+    }
+
     currently_transmitting = false;
 
     if (transmit_successful) {
@@ -154,12 +157,12 @@ bool Lithium::DoCommand(LithiumCommand* command) {
     byte command_buffer[kMaxOutgoingCommandSize];
     SerialisedMessage serial_command = command->SerialiseTo(command_buffer);
 
-    IArg key = GateMutexPri_enter(lithium_mutex);
+    MutexLocker locker(lithium_mutex);
 
     try {
         if (!uart.PerformWriteTransaction(serial_command.GetBuffer(),
                                           serial_command.GetSize())) {
-            FailSerial(key);
+            FailSerial();
             return false;
         }
 
@@ -167,7 +170,7 @@ bool Lithium::DoCommand(LithiumCommand* command) {
         if (!Mailbox_pend(header_mailbox_handle, &ack_buffer,
                           TirtosUtils::MilliToCycles(kWaitForAckMilli))) {
             // Timed out waiting for a response
-            FailSerial(key);
+            FailSerial();
             return false;
         }
         // TODO(dingbenjamin): Figure out why this is needed
@@ -176,20 +179,20 @@ bool Lithium::DoCommand(LithiumCommand* command) {
         if ((!LithiumUtils::IsValidHeader(ack_buffer)) ||
             (LithiumUtils::GetCommandCode(ack_buffer) !=
              command->GetCommandCode())) {
-            FailSerial(key);
+            FailSerial();
             return false;
         }
 
         if (command->GetReplyPayloadSize() == 0) {
             // No response payload is expected
             if (LithiumUtils::IsAck(ack_buffer)) {
-                SuccessSerial(key);
+                SuccessSerial();
                 return true;
             } else if (LithiumUtils::IsNack(ack_buffer)) {
-                FailSerial(key);
+                FailSerial();
                 return false;
             } else {
-                FailSerial(key);
+                FailSerial();
                 return false;
             }
         } else {
@@ -199,20 +202,19 @@ bool Lithium::DoCommand(LithiumCommand* command) {
                 if (Mailbox_pend(command_response_mailbox_handle,
                                  command->GetReplyBuffer(),
                                  kWaitForReplyPayloadMilli)) {
-                    SuccessSerial(key);
+                    SuccessSerial();
                     return true;
                 } else {
-                    FailSerial(key);
+                    FailSerial();
                     return false;
                 }
             } else {
-                FailSerial(key);
+                FailSerial();
                 return false;
             }
         }
     } catch (MspException& e) {
         MspException::LogException(e, kLithiumDoCommandCatch);
-        GateMutexPri_leave(lithium_mutex, key);
         return false;
     }
 }
@@ -394,7 +396,7 @@ bool Lithium::IsTransmitEnabled() { return lithium_transmit_enabled; }
 
 bool Lithium::IsTransmitting() { return currently_transmitting; }
 
-void Lithium::FailSerial(IArg key) {
+void Lithium::FailSerial() {
     if (consecutive_serial_failures >= kFailsBeforeReset) {
         Log_warning1(
             "%d consecutive failures communicating with Lithium, resetting",
@@ -407,10 +409,6 @@ void Lithium::FailSerial(IArg key) {
     } else {
         consecutive_serial_failures++;
     }
-    GateMutexPri_leave(lithium_mutex, key);
 }
 
-void Lithium::SuccessSerial(IArg key) {
-    consecutive_serial_failures = 0;
-    GateMutexPri_leave(lithium_mutex, key);
-}
+void Lithium::SuccessSerial() { consecutive_serial_failures = 0; }

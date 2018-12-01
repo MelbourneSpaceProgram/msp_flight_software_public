@@ -16,16 +16,12 @@ LithiumWriteFlashUplink::LithiumWriteFlashUplink(byte* payload)
 bool LithiumWriteFlashUplink::ExecuteUplink() {
     bool success = Lithium::GetInstance()->DoWriteFlash(md5);
 
-    IArg key = SatellitePower::Lock();
-    try {
+    {
+        MutexLocker locker(SatellitePower::GetMutex());
         SatellitePower::CutPowerToTelecoms();
         TirtosUtils::SleepMilli(1000);
         SatellitePower::RestorePowerToTelecoms();
-    } catch (MspException& e) {
-		SatellitePower::Unlock(key);
-		throw;
     }
-    SatellitePower::Unlock(key);
 
     success = success && Lithium::GetInstance()->DoNoOp();
     return success;

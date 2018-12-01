@@ -22,7 +22,6 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
         antenna_burner_info->burn_interval_ms = kInitialAntennaBurnIntervalMs;
     }
 
-    IArg power_key;
     while (1) {
         try {
             if (antenna_burner_info->GetAttemptBurnSetting()) {
@@ -38,7 +37,7 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                         antenna_burner_info->StoreInFlash();
                         // Hold transmission and other power tasks until after
                         // the burn.
-                        power_key = SatellitePower::Lock();
+						MutexLocker locker(SatellitePower::GetMutex());
 
                         Antenna::GetAntenna()->DeployAntenna();
 
@@ -47,8 +46,6 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                         // possible if the I2c bus is down)
                         antenna_burner_info->burn_interval_ms *=
                             kAntennaBurnIntervalMultiplier;
-                        antenna_burner_info->StoreInFlash();
-                        SatellitePower::Unlock(power_key);
                         antenna_burner_info->StoreInFlash();
                     }
                     TirtosUtils::SleepMilli(kAntennaBurnCheckIntervalMs);

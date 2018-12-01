@@ -22,8 +22,6 @@ class SatellitePower {
     static void RestorePowerToFlightSystems();
     static void CutPowerToTelecoms();
     static void RestorePowerToTelecoms();
-    static IArg Lock();
-    static void Unlock(IArg key);
     static Bms* GetBms(BmsId bms_id);
     static void IncrementBmsICharge(BmsId bms_id);
     static void DecrementBmsICharge(BmsId bms_id);
@@ -31,6 +29,7 @@ class SatellitePower {
     static uint8_t GetIChargeIndex(BmsId bms_id);
     static bool ConfigureBms(BmsId bms_id);
     static bool ConfigureBmsICharge(BmsId bms_id);
+    static GateMutexPri_Handle& GetMutex();
 
     static constexpr IoExpander::IoPin kIoExpanderPinBms1En =
         IoExpander::kIoPin0;
