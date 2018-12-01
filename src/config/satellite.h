@@ -105,34 +105,29 @@ constexpr double kOrientationControlPowerLevel = 0.2;
 // Mapping from magnetometer frames to satellite body frame
 // TODO (rskew) verify these for the final build
 // Mappings for the Helmholtz rig FS board
-constexpr double kImuAToBodyFrameTransform_const_data[3][3] = {
+const double kImuAToBodyFrameTransform_data[3][3] = {
     {1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
-extern double kImuAToBodyFrameTransform_dummy_data[3][3];
-
-const Matrix kImuAToBodyFrameTransform(kImuAToBodyFrameTransform_const_data,
-                                       kImuAToBodyFrameTransform_dummy_data);
-constexpr double kImuBToBodyFrameTransform_const_data[3][3] = {
+NewConstStackMatrixMacro(kImuAToBodyFrameTransform, 3, 3,
+                         kImuAToBodyFrameTransform_data);
+const double kImuBToBodyFrameTransform_data[3][3] = {
     {1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
-extern double kImuBToBodyFrameTransform_dummy_data[3][3];
-const Matrix kImuBToBodyFrameTransform(kImuBToBodyFrameTransform_const_data,
-                                       kImuBToBodyFrameTransform_dummy_data);
+NewConstStackMatrixMacro(kImuBToBodyFrameTransform, 3, 3,
+                         kImuBToBodyFrameTransform_data);
 
 // Mapping from body frame to magnetorquer 'frame'
 // TODO (rskew) update for final build
 // Mapping for the Helmholtz rig
-constexpr double kBodyToMagnetorquerFrameTransform_const_data[3][3] = {
+const double kBodyToMagnetorquerFrameTransform_data[3][3] = {
     {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-extern double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
-const Matrix kBodyToMagnetorquerFrameTransform(
-    kBodyToMagnetorquerFrameTransform_const_data,
-    kBodyToMagnetorquerFrameTransform_dummy_data);
+NewConstStackMatrixMacro(kBodyToMagnetorquerFrameTransform, 3, 3,
+                         kBodyToMagnetorquerFrameTransform_data);
 
 // Won't override the hard-coded initial scale factors that are set with
 // pre-flight calibration values if true.
 //
 // Because the on-orbit calibration data is taken orbiting the Earth, the
 // readings will have different magnitudes for different locations,
-// and the location of the spacecraft is not known during the comissioning
+// and the location of the spacecraft is not known during the commissioning
 // period. This will corrupt the generated scale factors, therefore the
 // pre-flight calibration scale factors are to be used.
 constexpr bool kUsePreFlightMagnetometerCalibrationScaleFactors = true;

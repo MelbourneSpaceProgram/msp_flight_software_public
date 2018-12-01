@@ -6,10 +6,6 @@
 #include <src/util/msp_exception.h>
 #include <ti/sysbios/knl/Task.h>
 
-double kImuAToBodyFrameTransform_dummy_data[3][3];
-double kImuBToBodyFrameTransform_dummy_data[3][3];
-double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
-
 const uint16_t MPU9250MotionTracker::kGyroscopeFullScaleRanges[4] = {
     250, 500, 1000, 2000};
 
