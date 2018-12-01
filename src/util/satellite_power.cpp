@@ -38,7 +38,8 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
 
     try {
         io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
-        io_expander_bms->SetPin(kIoExpanderPinBms2En, true);
+        // Turning off power path 2 to stress test power path 1
+        io_expander_bms->SetPin(kIoExpanderPinBms2En, false);
         io_expander_bms->SetPin(kIoExpanderPinFSEn, false);
 
         io_expander_bms->SetDirection(kIoExpanderPinBms1En,
