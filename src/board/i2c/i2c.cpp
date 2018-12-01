@@ -103,7 +103,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     i2c_transaction.readCount = read_buffer_length;
     i2c_transaction.arg = i2c_mailbox;
 
-    IArg key = GateMutexPri_enter(i2c_mutex);
+    MutexLocker locker(i2c_mutex);
     I2C_transfer(handle, &i2c_transaction);
 
     // Wait for callback to post the status of the I2C or timeout
@@ -132,11 +132,9 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
     if (timed_out) {
         I2C_cancel(handle);
-        GateMutexPri_leave(i2c_mutex, key);
         return false;
     }
 
-    GateMutexPri_leave(i2c_mutex, key);
     return transfer_outcome;
 }
 

@@ -62,10 +62,9 @@ void RunnableConsoleLogger::WriteToDataLogger(uint8_t measurable_id,
     packet[3] = measurable_id;
     packet[4] = 0x00;  // TODO(dingbenjamin): Implement checksum
 
-    IArg key = GateMutexPri_enter(console_uart_mutex);
+    MutexLocker locker(console_uart_mutex);
     debug_uart->PerformWriteTransaction(packet, 5);
     debug_uart->PerformWriteTransaction(encoded_message, message_size);
-    GateMutexPri_leave(console_uart_mutex, key);
 }
 
 void UartPutch(char ch) {
