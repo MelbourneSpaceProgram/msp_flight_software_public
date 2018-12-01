@@ -153,6 +153,11 @@ void RunnableOrientationControl::ControlOrientation() {
             MagnetorquerControl::SetMagnetorquersPowerFraction(
                 signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
                 signed_pwm_output.Get(2, 0));
+
+            Log_info3("PWM: %d %d %d",
+                      (int)signed_pwm_output.Get(0, 0),
+                      (int)signed_pwm_output.Get(1, 0),
+                      (int)signed_pwm_output.Get(2, 0));
         } catch (MspException& e) {
             MspException::LogTopLevelException(
                 e, kRunnableOrientationControlCatch);

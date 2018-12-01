@@ -65,7 +65,7 @@ constexpr bool kRebootOnTopLevelException = true;
 //////////////////// TASK CONSTANTS ////////////////////
 
 constexpr uint32_t kNominalBeaconPeriodMs = 10000;
-constexpr uint32_t kOrientationControlLoopPeriodMicros = 200000;
+constexpr uint32_t kOrientationControlLoopPeriodMicros = 1000000;
 constexpr uint32_t kHealthCheckPeriodMs = 1100;
 constexpr uint64_t kAntennaBurnCheckIntervalMs = 60 * 1000;
 constexpr uint32_t kTimeUpdatePeriodMs = 1000;

@@ -25,7 +25,7 @@ void BDotController::ComputeControl(const Matrix &b_dot,
     }
 
     double largest_pwm_abs = Maximum(control_pwm_abs, 3);
-    // Bang-bang-ify for Helmholtz test
+    // Always saturate control vector for Helmholtz test
     // if (largest_pwm > 1) {
     // Control vector needs to be clipped to preserve dipole direction.
     // Scale the control vector by the largest PWM value to bring it back
