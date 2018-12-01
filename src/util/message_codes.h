@@ -199,9 +199,9 @@ enum ErrorId {
     kI2cOpenFail,
     kI2cMailboxFail,
     kLithiumMutexFail,
-    kNumExceptionTypes,
     kFecBufferTooSmall,
     kPayloadExceedsFecBuffer,
+    kNumExceptionTypes, // Put all exception codes before this
 };
 
 enum CatchId {
