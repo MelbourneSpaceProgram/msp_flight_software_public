@@ -19,9 +19,9 @@ const float MagnetorquerControl::kDegaussingDecayMultiplier =
     exp(-(2 * static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6) /
         (static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3));
 
-// 3 time constants worth of exp decay:
+// 5 time constants worth of exp decay:
 const uint16_t MagnetorquerControl::kNDegaussPulses =
-    round((3 * static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3) /
+    round((5 * static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3) /
           (static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6));
 
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
@@ -53,15 +53,6 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
     float a = magnetorquer_power_magnetorquer_frame.Get(0, 0);
     float b = magnetorquer_power_magnetorquer_frame.Get(1, 0);
     float c = magnetorquer_power_magnetorquer_frame.Get(2, 0);
-
-    Log_info3("Converting %d %d %d",
-              (int)(x*100),
-              (int)(y*100),
-              (int)(z*100));
-    Log_info3("To %d %d %d",
-              (int)(a*100),
-              (int)(b*100),
-              (int)(c*100));
 
     // Set A axis
     SetPolarity(kMagnetorquerAxisA, a >= 0);

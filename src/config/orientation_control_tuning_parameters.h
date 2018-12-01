@@ -1,7 +1,7 @@
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
 
-const uint16_t kBDotEstimatorTimeConstantMillis = 1;
+const uint16_t kBDotEstimatorTimeConstantMillis = 300;
 
 const double kBDotControllerGains[3] = {30000.0, 30000.0, 30000.0};
 
@@ -41,9 +41,9 @@ const Matrix kImuBToBodyFrameTransform(kImuBToBodyFrameTransform_const_data,
 // Mapping for the Helmholtz rig
 constexpr double kBodyToMagnetorquerFrameTransform_const_data[3][3] = {
     //{1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
-    {1, 0, 0},
-    {0, -1, 0},
-    {0, 0, -1}};
+    {-1, 0, 0},
+    {0, 1, 0},
+    {0, 0, 1}};
 extern double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
 const Matrix kBodyToMagnetorquerFrameTransform(
     kBodyToMagnetorquerFrameTransform_const_data,
@@ -62,9 +62,9 @@ constexpr bool kUsePreFlightMagnetometerCalibrationScaleFactors = true;
 // TODO (rskew) populate these values with calibration parameters
 // from pre-flight calibration of the flight model
 constexpr double kPreFlightMagnetometerCalibrationBiasesImuBusA[3][1] = {
-    {16298.290525}, {-27343.861702}, {17907.423506}};
+    {16.298290525}, {-27.343861702}, {17.907423506}};
 constexpr double kPreFlightMagnetometerCalibrationBiasesImuBusB[3][1] = {
-    {5035.408134}, {-32052.124763}, {44668.596412}};
+    {5.035408134}, {-32.052124763}, {44.668596412}};
 constexpr double kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[3][3] = {
     {1.384082, -0.129752, 0.064525},
     {-0.129752, 1.264288, 0.206924},

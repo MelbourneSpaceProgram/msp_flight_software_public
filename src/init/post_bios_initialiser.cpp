@@ -325,16 +325,9 @@ void PostBiosInitialiser::PostBiosInit() {
         InitMemoryLogger();
         MspException::Init();
         InitHardware();
-<<<<<<< HEAD
-        InitRadioListener();
-        InitPayloadProcessor();
-        InitContinuousTransmitShutoff();
-=======
-        InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
         //InitRadioListener();
         //InitPayloadProcessor();
         //InitContinuousTransmitShutoff();
->>>>>>> 3ab2174b... fast
 
 #if defined TEST_CONFIGURATION
         RunUnitTests();

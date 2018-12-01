@@ -75,7 +75,7 @@ void RunnableOrientationControl::ControlOrientation() {
         try {
             Semaphore_pend(control_loop_timer_semaphore, BIOS_WAIT_FOREVER);
 
-            //Log_info0("Entering orientation control loop");
+            // Log_info0("Entering orientation control loop");
 
             // TODO(dingbenjamin): Check if we should turn orientation control
             // off
@@ -92,7 +92,10 @@ void RunnableOrientationControl::ControlOrientation() {
                 measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
                     kFsImuMagnoB, 0);
 
-            //if (kHilAvailable) {
+            //Log_info3("Magnetometer reading: %d %d %d", magnetometer_reading.x,
+            //          magnetometer_reading.y, magnetometer_reading.z);
+
+            // if (kHilAvailable) {
             //    // Echo magnetometer reading to DebugClient
             //    PostNanopbToSimMacro(MagnetometerReading,
             //                         kMagnetometerReadingCode,
@@ -116,6 +119,11 @@ void RunnableOrientationControl::ControlOrientation() {
                     ->GetFailureReading()
                     .x) {
                 b_dot_estimator.Estimate(geomag, b_dot_estimate);
+
+                Log_info3("B dot estimate: %d %d %d",
+                          (int)b_dot_estimate.Get(0, 0),
+                          (int)b_dot_estimate.Get(1, 0),
+                          (int)b_dot_estimate.Get(2, 0));
                 // b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
                 // b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
                 // b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
