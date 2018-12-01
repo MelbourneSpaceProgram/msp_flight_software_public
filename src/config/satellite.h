@@ -32,7 +32,7 @@ constexpr bool kEepromAvailable = false;
 
 constexpr bool kEnterDeepSleepOnStartup = false;
 constexpr bool kEnterLimpModeOnStartup = false;
-constexpr bool kDeployAntenna = false;  // DO NOT TURN ON UNTIL AFTER LAUNCH
+constexpr bool kDeployAntenna = true;  // DO NOT TURN ON UNTIL AFTER LAUNCH
 
 //////////////////// WAITS ////////////////////
 
