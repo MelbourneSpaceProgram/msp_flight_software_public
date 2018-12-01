@@ -325,9 +325,16 @@ void PostBiosInitialiser::PostBiosInit() {
         InitMemoryLogger();
         MspException::Init();
         InitHardware();
+<<<<<<< HEAD
         InitRadioListener();
         InitPayloadProcessor();
         InitContinuousTransmitShutoff();
+=======
+        InitTimeSource();  // Relies on I2C so needs to be post InitHardware()
+        //InitRadioListener();
+        //InitPayloadProcessor();
+        //InitContinuousTransmitShutoff();
+>>>>>>> 3ab2174b... fast
 
 #if defined TEST_CONFIGURATION
         RunUnitTests();
@@ -336,11 +343,11 @@ void PostBiosInitialiser::PostBiosInit() {
 #if defined ORBIT_CONFIGURATION
         //SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         //InitSystemHealthCheck();
-        InitPowerManager();
-        EjectionWait();
+        //InitPowerManager();
+        //EjectionWait();
         InitOrientationControl();
-        BeaconWait();
-        InitAntennaBurner();
+        //BeaconWait();
+        //InitAntennaBurner();
         //InitBeacon();
         Log_info0("System start up complete");
 #endif

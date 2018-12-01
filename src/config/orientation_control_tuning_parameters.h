@@ -1,17 +1,17 @@
 #include <src/util/data_types.h>
 #include <src/util/matrix.h>
 
-const uint16_t kBDotEstimatorTimeConstantMillis = 10;
+const uint16_t kBDotEstimatorTimeConstantMillis = 1;
 
 const double kBDotControllerGains[3] = {30000.0, 30000.0, 30000.0};
 
 //////////////////// MAGNETORQUERS ////////////////////
 
 // Will disable orientation control if true, must be FALSE until launch
-constexpr bool kRunMagnetorquersAtConstantPower = true;
+constexpr bool kRunMagnetorquersAtConstantPower = false;
 
 // float value in range [-1, 1]
-constexpr float kMagnetorquerPowerFractionX = 1.0;
+constexpr float kMagnetorquerPowerFractionX = 0.0;
 constexpr float kMagnetorquerPowerFractionY = 0.0;
 constexpr float kMagnetorquerPowerFractionZ = 0.0;
 
@@ -41,7 +41,9 @@ const Matrix kImuBToBodyFrameTransform(kImuBToBodyFrameTransform_const_data,
 // Mapping for the Helmholtz rig
 constexpr double kBodyToMagnetorquerFrameTransform_const_data[3][3] = {
     //{1, 0, 0}, {0, -1, 0}, {0, 0, -1}};
-    {-1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    {1, 0, 0},
+    {0, -1, 0},
+    {0, 0, -1}};
 extern double kBodyToMagnetorquerFrameTransform_dummy_data[3][3];
 const Matrix kBodyToMagnetorquerFrameTransform(
     kBodyToMagnetorquerFrameTransform_const_data,
@@ -60,11 +62,14 @@ constexpr bool kUsePreFlightMagnetometerCalibrationScaleFactors = true;
 // TODO (rskew) populate these values with calibration parameters
 // from pre-flight calibration of the flight model
 constexpr double kPreFlightMagnetometerCalibrationBiasesImuBusA[3][1] = {
-    {0}, {0}, {0}};
+    {16298.290525}, {-27343.861702}, {17907.423506}};
 constexpr double kPreFlightMagnetometerCalibrationBiasesImuBusB[3][1] = {
-    {0}, {0}, {0}};
+    {5035.408134}, {-32052.124763}, {44668.596412}};
 constexpr double kPreFlightMagnetometerCalibrationScaleFactorsImuBusA[3][3] = {
-    {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    {1.384082, -0.129752, 0.064525},
+    {-0.129752, 1.264288, 0.206924},
+    {0.064525, 0.206924, 1.038411}};
 constexpr double kPreFlightMagnetometerCalibrationScaleFactorsImuBusB[3][3] = {
-    {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-
+    {1.210644, 0.073275, 0.063186},
+    {0.073275, 1.223178, -0.017730},
+    {0.063186, -0.017730, 1.094803}};
