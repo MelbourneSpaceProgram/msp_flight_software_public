@@ -31,14 +31,9 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
                            kSatellitePowerMutexFail, __FILE__, __LINE__);
     }
 
-<<<<<<< HEAD
-	MutexLocker locker(power_mutex);
-    CutPowerToTelecoms();
-=======
-    IArg key = Lock();
+    MutexLocker locker(power_mutex);
     if (kVerboseLogging) Log_info0("Cutting power to Telecoms");
     GPIO_write(nCOMMS_RST, 0);
->>>>>>> Lots, break up
 
     const IoExpander* io_expander_bms = IoExpander::GetIoExpander(0);
 
@@ -68,9 +63,7 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
     initialised = true;
 }
 
-GateMutexPri_Handle& SatellitePower::GetMutex() {
-    return power_mutex;
-}
+GateMutexPri_Handle& SatellitePower::GetMutex() { return power_mutex; }
 
 void SatellitePower::CutPowerFromPanels() {
     if (!initialised) return;
@@ -109,13 +102,13 @@ void SatellitePower::RestorePowerToFlightSystems() {
     TirtosUtils::SleepMilli(10);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
-    //    dynamic_cast<ImuMagnetometerMeasurable*>(
-    //        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno1))
-    //        ->InitialiseImu();
-    //
-    //    dynamic_cast<ImuMagnetometerMeasurable*>(
-    //        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2))
-    //        ->InitialiseImu();
+    dynamic_cast<ImuMagnetometerMeasurable*>(
+        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno1))
+        ->InitialiseImu();
+
+    dynamic_cast<ImuMagnetometerMeasurable*>(
+        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2))
+        ->InitialiseImu();
 }
 
 void SatellitePower::CutPowerToTelecoms() {

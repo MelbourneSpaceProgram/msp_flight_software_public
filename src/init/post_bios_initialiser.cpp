@@ -281,7 +281,7 @@ void PostBiosInitialiser::EjectionWait() {
                 if (time_since_ejection_ms < kEjectionWaitMs) {
                     Log_info0("Post-deployment wait starting");
                     TirtosUtils::SleepMilli(kEjectionWaitMs -
-                                          time_since_ejection_ms);
+                                            time_since_ejection_ms);
                     Log_info0("Post-deployment wait finished");
                 }
             } else {
@@ -302,7 +302,9 @@ void PostBiosInitialiser::EjectionWait() {
     }
 }
 
-void PostBiosInitialiser::BeaconWait() { TirtosUtils::SleepMilli(kBeaconWaitMs); }
+void PostBiosInitialiser::BeaconWait() {
+    TirtosUtils::SleepMilli(kBeaconWaitMs);
+}
 
 void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
     // TODO (rskew) review priority
@@ -314,29 +316,28 @@ void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
-    TaskUtils::SleepMilli(5000);
+    TirtosUtils::SleepMilli(5000);
 
     if (kDitlMode) {
         InitMemoryLogger();
     }
 
     try {
+#if defined ORBIT_CONFIGURATION
         // TODO(dingbenjamin): Init var length array pool
+        SystemWatchdog((uint32_t)SYS_WATCHDOG0);
+#endif
         InitConsoleUart();
         InitMemoryLogger();
         MspException::Init();
         InitHardware();
         InitRadioListener();
-
         InitPayloadProcessor();
         InitContinuousTransmitShutoff();
-
 #if defined TEST_CONFIGURATION
         RunUnitTests();
 #endif
-
 #if defined ORBIT_CONFIGURATION
-        SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitSystemHealthCheck();
         InitPowerManager();
         EjectionWait();
