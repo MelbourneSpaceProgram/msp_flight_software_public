@@ -47,7 +47,7 @@ constexpr uint64_t kTimeSourceDeployMs = 0;
 constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 constexpr uint8_t kNominalLithiumPowerLevel = 140;  // Scaled between 0-255
 
-constexpr bool kUplinkFecEnabled = true;
+constexpr bool kUplinkFecEnabled = false;
 constexpr bool kDownlinkFecEnabled = false;
 constexpr bool kCheckHmacDefault = true;
 constexpr bool kCheckSequenceDefault = false;
