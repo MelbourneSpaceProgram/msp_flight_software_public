@@ -21,8 +21,9 @@ Adc::Adc(const I2c* bus, int address, const I2cMultiplexer* multiplexer,
     try {
         SetAdcGainAmplifierFullScaleRange();
         SetConfiguration();
-    } catch (MspException& e) {
-		MspException::LogException(e, kAdcCatch);
+    } catch (...) {
+        // MspException::LogException(e, kAdcCatch);
+        Log_info0("freak out now");
         // TODO(dingbenjamin): Not sure what we can really do about this
     }
 }

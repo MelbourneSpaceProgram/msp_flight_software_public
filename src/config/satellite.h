@@ -10,17 +10,17 @@ constexpr bool kEpsBoardAvailable = true;
 constexpr bool kCdhBoardAvailable = true;
 constexpr bool kFsBoardAvailable = true;
 constexpr bool kTcomBoardAvailable = true;
-constexpr bool kUtilitiesBoardAvailable = true;
+constexpr bool kUtilitiesBoardAvailable = false;
 
-constexpr bool kXPosAvailable = true;
-constexpr bool kXNegAvailable = true;
-constexpr bool kYPosAvailable = true;
-constexpr bool kYNegAvailable = true;
-constexpr bool kZPosAvailable = true;
-constexpr bool kZNegAvailable = true;
+constexpr bool kXPosAvailable = false;
+constexpr bool kXNegAvailable = false;
+constexpr bool kYPosAvailable = false;
+constexpr bool kYNegAvailable = false;
+constexpr bool kZPosAvailable = false;
+constexpr bool kZNegAvailable = false;
 
 constexpr bool kI2cAvailable = true;
-constexpr bool kSdCardAvailable = true;
+constexpr bool kSdCardAvailable = false;
 constexpr bool kBmsAvailable = true;
 constexpr bool kAntennaAvailable = false;
 

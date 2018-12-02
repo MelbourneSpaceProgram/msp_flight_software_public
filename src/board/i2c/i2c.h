@@ -11,7 +11,7 @@ class I2c {
    public:
     static constexpr I2C_BitRate kBitRate100K = I2C_100kHz;
     static constexpr I2C_BitRate kBitRate400K = I2C_400kHz;
-    static constexpr uint16_t kTimeoutMilliSeconds = 500;
+    static constexpr uint16_t kTimeoutMilliSeconds = 10;
     /**
       I2c constructor.
       Opens I2C bus with timeout at 100kHz

@@ -131,7 +131,7 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     }
 
     if (timed_out) {
-        I2C_cancel(handle);
+        // I2C_cancel(handle);
         return false;
     }
 

@@ -55,55 +55,58 @@ void PreBiosInit() {
 
     InitSdCs();
 
-    try {
-        ResetInfoContainer* reset_info_container =
-            ResetInfoContainer::GetInstance();
-        // TODO(hugorilla): Develop this logic further to handle different reset
-        // states
-        if (reset_info_container->GetNumResets() == kNumResetsForLimpMode ||
-            kEnterLimpModeOnStartup) {
-            EnterLimpMode();
-        } else {
-            switch (reset_info_container->GetMostRecentResetMessage()) {
-                case kFirstWakeupMessage:
-                    if (kVerboseLogging)
-                        Log_info0("Reset Message: First Wakeup");
-                    break;
-                case kResetUnitTestMessage1:
-                    if (kVerboseLogging)
-                        Log_info0("Reset Message: Unit Test 1");
-                    break;
-                case kResetUnitTestMessage2:
-                    if (kVerboseLogging)
-                        Log_info0("Reset Message: Unit Test 2");
-                    break;
-                case kForceResetCommandExecuted:
-                    if (kVerboseLogging)
-                        Log_info0("Reset Message: Force Reset");
-                    break;
-                case kUnexpectedReset:
-                    if (kVerboseLogging)
-                        Log_info0("Reset Message: Unexpected Reset");
-                    break;
-                default:
-                    throw MspException("Invalid reset flag",
-                                       kInvalidResetFlagFail, __FILE__,
-                                       __LINE__);
-            }
-            I2C_init();
-            SPI_init();
-            PWM_init();
+    //    try {
+    //        ResetInfoContainer* reset_info_container =
+    //            ResetInfoContainer::GetInstance();
+    //        // TODO(hugorilla): Develop this logic further to handle different
+    //        reset
+    //        // states
+    //        if (reset_info_container->GetNumResets() == kNumResetsForLimpMode
+    //        ||
+    //            kEnterLimpModeOnStartup) {
+    //            EnterLimpMode();
+    //        } else {
+    //            switch (reset_info_container->GetMostRecentResetMessage()) {
+    //                case kFirstWakeupMessage:
+    //                    if (kVerboseLogging)
+    //                        Log_info0("Reset Message: First Wakeup");
+    //                    break;
+    //                case kResetUnitTestMessage1:
+    //                    if (kVerboseLogging)
+    //                        Log_info0("Reset Message: Unit Test 1");
+    //                    break;
+    //                case kResetUnitTestMessage2:
+    //                    if (kVerboseLogging)
+    //                        Log_info0("Reset Message: Unit Test 2");
+    //                    break;
+    //                case kForceResetCommandExecuted:
+    //                    if (kVerboseLogging)
+    //                        Log_info0("Reset Message: Force Reset");
+    //                    break;
+    //                case kUnexpectedReset:
+    //                    if (kVerboseLogging)
+    //                        Log_info0("Reset Message: Unexpected Reset");
+    //                    break;
+    //                default:
+    //                    throw MspException("Invalid reset flag",
+    //                                       kInvalidResetFlagFail, __FILE__,
+    //                                       __LINE__);
+    //            }
+    I2C_init();
+    SPI_init();
+    PWM_init();
 
-            TaskHolder* post_bios_initialiser_task = new TaskHolder(
-                3000, "Initialiser", 10, new PostBiosInitialiser());
-            post_bios_initialiser_task->Start();
-        }
-    } catch (MspException& e) {
-        // TODO(dingbenjamin): Save this somehow when MspException is not yet
-        // initialised
-        MspException::LogException(e, kBootResetInfoCatch);
-        EnterLimpMode();
-    }
+    TaskHolder* post_bios_initialiser_task =
+        new TaskHolder(3000, "Initialiser", 10, new PostBiosInitialiser());
+    post_bios_initialiser_task->Start();
+    //        }
+    //    } catch (MspException& e) {
+    //        // TODO(dingbenjamin): Save this somehow when MspException is not
+    //        yet
+    //        // initialised
+    //        MspException::LogException(e, kBootResetInfoCatch);
+    //        EnterLimpMode();
+    //    }
 
     // TODO(dingbenjamin): Log the reset counts for each type to console
 }

@@ -31,8 +31,14 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
                            kSatellitePowerMutexFail, __FILE__, __LINE__);
     }
 
+<<<<<<< HEAD
 	MutexLocker locker(power_mutex);
     CutPowerToTelecoms();
+=======
+    IArg key = Lock();
+    if (kVerboseLogging) Log_info0("Cutting power to Telecoms");
+    GPIO_write(nCOMMS_RST, 0);
+>>>>>>> Lots, break up
 
     const IoExpander* io_expander_bms = IoExpander::GetIoExpander(0);
 
@@ -103,13 +109,13 @@ void SatellitePower::RestorePowerToFlightSystems() {
     TirtosUtils::SleepMilli(10);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
-    dynamic_cast<ImuMagnetometerMeasurable*>(
-        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno1))
-        ->InitialiseImu();
-
-    dynamic_cast<ImuMagnetometerMeasurable*>(
-        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2))
-        ->InitialiseImu();
+    //    dynamic_cast<ImuMagnetometerMeasurable*>(
+    //        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno1))
+    //        ->InitialiseImu();
+    //
+    //    dynamic_cast<ImuMagnetometerMeasurable*>(
+    //        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2))
+    //        ->InitialiseImu();
 }
 
 void SatellitePower::CutPowerToTelecoms() {
@@ -168,8 +174,9 @@ bool SatellitePower::BatteryIsCharging(BmsId bms_id) {
     // Check value is in a valid range
     if (bms_currents.battery_current < Bms::kBmsMinimumValidCurrentReadingA ||
         bms_currents.battery_current > Bms::kBmsMaximumValidCurrentReadingA) {
-        Log_info2("Invalid battery current reading from BMS %d of: %f", bms_id,
-                  bms_currents.battery_current);
+        //        Log_info2("Invalid battery current reading from BMS %d of:
+        //        %f", bms_id,
+        //                  bms_currents.battery_current);
         return false;
     }
     if (bms_currents.battery_current ==

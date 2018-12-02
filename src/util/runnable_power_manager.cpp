@@ -60,6 +60,7 @@ void RunnablePowerManager::ManagePower() {
                     if (movement_counter > kMaxSequentialMovements) {
                         ToggleBms();
                         movement_counter = 0;
+                        state = ICHARGE_INCREASING;
                     } else if (SatellitePower::BatteryIsCharging(
                                    current_bms_id)) {
                         movement_counter = 0;

@@ -163,15 +163,15 @@ void PostBiosInitialiser::InitHardware() {
         MspException::LogException(e, kMagnetorquerControlInitCatch);
     }
 
-    try {
-        SdCard* sd = SdCard::GetInstance();
-        sd->SdOpen();
-        if (kFormatSdOnStartup) {
-            sd->Format();
-        }
-    } catch (MspException& e) {
-        MspException::LogException(e, kSdInitCatch);
-    }
+    //    try {
+    //        SdCard* sd = SdCard::GetInstance();
+    //        sd->SdOpen();
+    //        if (kFormatSdOnStartup) {
+    //            sd->Format();
+    //        }
+    //    } catch (MspException& e) {
+    //        MspException::LogException(e, kSdInitCatch);
+    //    }
 
     try {
         Antenna::GetAntenna()->InitAntenna(bus_d);
@@ -314,6 +314,8 @@ void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
+    TaskUtils::SleepMilli(5000);
+
     if (kDitlMode) {
         InitMemoryLogger();
     }
@@ -325,6 +327,7 @@ void PostBiosInitialiser::PostBiosInit() {
         MspException::Init();
         InitHardware();
         InitRadioListener();
+
         InitPayloadProcessor();
         InitContinuousTransmitShutoff();
 

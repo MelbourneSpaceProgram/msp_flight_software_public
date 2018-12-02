@@ -4,7 +4,7 @@
 #include <cstdio>
 
 GateMutexPri_Params mutex_params;
-GateMutexPri_Handle i2c_mutex = NULL;
+GateMutexPri_Handle I2cDevice::i2c_mutex = NULL;
 
 I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
                      const I2cMultiplexer* multiplexer,

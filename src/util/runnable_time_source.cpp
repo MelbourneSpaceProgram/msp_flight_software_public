@@ -35,6 +35,8 @@ void RunnableTimeSource::UpdateSatelliteTime() {
 
             TirtosUtils::SleepMilli(kTimeUpdatePeriodMs);
         } catch (MspException& e) {
+            // TODO(crozone): Temp ugly hack
+            continue;
             MspException::LogTopLevelException(e, kRunnableTimeSourceCatch);
         }
     }
