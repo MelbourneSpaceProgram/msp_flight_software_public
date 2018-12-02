@@ -35,7 +35,16 @@ void RunnableTimeSource::UpdateSatelliteTime() {
 
             TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
         } catch (MspException& e) {
-            MspException::LogTopLevelException(e, kRunnableTimeSourceCatch);
+            // TODO(crozone): Hack for dealing with strange (aka fucked, maybe
+            // compiler bug) try catch behaviour. The below code should really
+            // have already run in the above try catch.
+            MspException::LogException(e, kUpdateSatelliteTimeCatch);
+            Log_error0("Unable to retrieve time from RTC");
+            TaskUtils::SleepMilli(kTimeUpdatePeriodMs);
+            continue;
+
+            // TODO(crozone): Correct code which shouldn't be needed:
+            // MspException::LogTopLevelException(e, kRunnableTimeSourceCatch);
         }
     }
 }
