@@ -39,6 +39,7 @@ class I2cDevice {
     void MuxDeselect() const;
     std::string info_string;
     constexpr static uint8_t kInfoStringLength = 40;
+    static GateMutexPri_Handle i2c_mutex;
 };
 
 #endif  //  SRC_SENSORS_I2C_SENSORS_I2C_DEVICE_H_
