@@ -216,13 +216,9 @@ void PostBiosInitialiser::InitHardware() {
     InitTimeSource();
 
     try {
-        try {
-            SatellitePower::RestorePowerToTelecoms();
-            TirtosUtils::SleepMilli(1000);
-            SatellitePower::RestorePowerToFlightSystems();
-        } catch (etl::exception& e) {
-            throw;
-        }
+        SatellitePower::RestorePowerToTelecoms();
+        TirtosUtils::SleepMilli(1000);
+        SatellitePower::RestorePowerToFlightSystems();
     } catch (MspException& e) {
         MspException::LogException(e, kSatellitePowerPoweronCatch);
     }
@@ -315,12 +311,6 @@ void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
 
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
-
-    TirtosUtils::SleepMilli(5000);
-
-    if (kDitlMode) {
-        InitMemoryLogger();
-    }
 
     try {
 #if defined ORBIT_CONFIGURATION

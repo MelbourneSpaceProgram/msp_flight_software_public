@@ -38,9 +38,9 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
     const IoExpander* io_expander_bms = IoExpander::GetIoExpander(0);
 
     try {
-        io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
-        // Turning off power path 2 to stress test power path 1
-        io_expander_bms->SetPin(kIoExpanderPinBms2En, false);
+        // Turning off power path 1 to stress test power path 2
+        io_expander_bms->SetPin(kIoExpanderPinBms1En, false);
+        io_expander_bms->SetPin(kIoExpanderPinBms2En, true);
         io_expander_bms->SetPin(kIoExpanderPinFSEn, false);
 
         io_expander_bms->SetDirection(kIoExpanderPinBms1En,
@@ -167,9 +167,13 @@ bool SatellitePower::BatteryIsCharging(BmsId bms_id) {
     // Check value is in a valid range
     if (bms_currents.battery_current < Bms::kBmsMinimumValidCurrentReadingA ||
         bms_currents.battery_current > Bms::kBmsMaximumValidCurrentReadingA) {
-        //        Log_info2("Invalid battery current reading from BMS %d of:
-        //        %f", bms_id,
-        //                  bms_currents.battery_current);
+        if (bms_id == kBmsBusC) {
+            Log_info1("Invalid battery current reading from BMS bus C of: %d mA", bms_currents.battery_current * 1000.0);
+        } else if (bms_id == kBmsBusD) {
+            // Log_info1(
+            //    "Invalid battery current reading from BMS bus D of: %d mA",
+            //    bms_currents.battery_current * 1000.0);
+        }
         return false;
     }
     if (bms_currents.battery_current ==
