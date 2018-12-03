@@ -180,12 +180,6 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        Lithium::GetInstance();
-    } catch (MspException& e) {
-        MspException::LogException(e, kLithiumInitCatch);
-    }
-
-    try {
         DebugStream::GetInstance();
     } catch (MspException& e) {
         MspException::LogException(e, kDebugStreamInitCatch);
@@ -221,6 +215,12 @@ void PostBiosInitialiser::InitHardware() {
         SatellitePower::RestorePowerToFlightSystems();
     } catch (MspException& e) {
         MspException::LogException(e, kSatellitePowerPoweronCatch);
+    }
+
+    try {
+      Lithium::GetInstance();
+    } catch (MspException& e) {
+      MspException::LogException(e, kLithiumInitCatch);
     }
 }
 
