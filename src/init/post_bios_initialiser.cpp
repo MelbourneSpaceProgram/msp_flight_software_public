@@ -164,10 +164,12 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        SdCard* sd = SdCard::GetInstance();
-        sd->SdOpen();
-        if (kFormatSdOnStartup) {
-            sd->Format();
+        if (kSdCardAvailable) {
+            SdCard* sd = SdCard::GetInstance();
+            sd->SdOpen();
+            if (kFormatSdOnStartup) {
+                sd->Format();
+            }
         }
     } catch (MspException& e) {
         MspException::LogException(e, kSdInitCatch);
@@ -222,9 +224,9 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-      Lithium::GetInstance();
+        Lithium::GetInstance();
     } catch (MspException& e) {
-      MspException::LogException(e, kLithiumInitCatch);
+        MspException::LogException(e, kLithiumInitCatch);
     }
 }
 
@@ -281,7 +283,7 @@ void PostBiosInitialiser::EjectionWait() {
                 if (time_since_ejection_ms < kEjectionWaitMs) {
                     Log_info0("Post-deployment wait starting");
                     TirtosUtils::SleepMilli(kEjectionWaitMs -
-                                          time_since_ejection_ms);
+                                            time_since_ejection_ms);
                     Log_info0("Post-deployment wait finished");
                 }
             } else {
@@ -302,7 +304,9 @@ void PostBiosInitialiser::EjectionWait() {
     }
 }
 
-void PostBiosInitialiser::BeaconWait() { TirtosUtils::SleepMilli(kBeaconWaitMs); }
+void PostBiosInitialiser::BeaconWait() {
+    TirtosUtils::SleepMilli(kBeaconWaitMs);
+}
 
 void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
     // TODO (rskew) review priority

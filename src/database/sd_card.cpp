@@ -43,6 +43,7 @@ SdCard::SdCard()
 SdHandle SdCard::SdOpen() {
     if (!kSdCardAvailable) {
         Log_info0("SdCard not available");
+		return nullptr;
     }
 
     handle = SDFatFS_open(0, kDriveNum);
