@@ -111,7 +111,6 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
     bool timed_out =
         !Mailbox_pend(i2c_mailbox, &transfer_outcome,
                       TirtosUtils::MilliToCycles(kTimeoutMilliSeconds));
-    Mailbox_delete(&i2c_mailbox);
 
     if (kLogI2c) {
         if (write_buffer_length) {
@@ -132,9 +131,11 @@ bool I2c::PerformTransaction(byte address, byte* read_buffer,
 
     if (timed_out) {
         I2C_cancel(handle);
+        Mailbox_delete(&i2c_mailbox);
         return false;
     }
 
+    Mailbox_delete(&i2c_mailbox);
     return transfer_outcome;
 }
 
@@ -183,7 +184,7 @@ void I2c::ManageI2cTimeout(I2C_Handle handle, I2C_Transaction* i2c_transaction,
             static_cast<Mailbox_Handle>(i2c_transaction->arg);
         bool transfer_outcome = success;
         if (mailbox_handle != NULL) {
-            Mailbox_post(mailbox_handle, &transfer_outcome, 0);
+            Mailbox_post(mailbox_handle, &transfer_outcome, BIOS_NO_WAIT);
         } else {
             Log_warning0("Mailbox handle couldn't be casted");
         }
