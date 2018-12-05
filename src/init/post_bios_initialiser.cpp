@@ -1,4 +1,5 @@
 #include <src/adcs/magnetorquer_control.h>
+#include <src/database/file_offsets.h>
 #include <src/adcs/runnable_orientation_control.h>
 #include <src/adcs/state_estimators/location_estimator.h>
 #include <src/board/board.h>
@@ -342,6 +343,9 @@ void PostBiosInitialiser::PostBiosInit() {
         InitAntennaBurner();
         InitBeacon();
         Log_info0("System start up complete");
+        for (uint16_t i=0; i < kMeasurableIdEnd; i++) {
+          Log_info2("kFileOffsets[%d] : %d", i, kFileOffsets[i]);
+        }
 #endif
     } catch (MspException& e) {
         MspException::LogException(e, kPostBiosInitCatch);

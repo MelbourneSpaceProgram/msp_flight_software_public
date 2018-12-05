@@ -20,13 +20,13 @@ constexpr bool kZPosAvailable = true;
 constexpr bool kZNegAvailable = true;
 
 constexpr bool kI2cAvailable = true;
-constexpr bool kSdCardAvailable = true;
+constexpr bool kEepromAvailable = true;
 constexpr bool kBmsAvailable = true;
 constexpr bool kAntennaAvailable = false;
 
-// Eeprom is actually available, but resource conflicts with SD card as they
+// SD Card is actually available, but resource conflicts with EEPROM as they
 // share the same bus
-constexpr bool kEepromAvailable = false;
+constexpr bool kSdCardAvailable = false;
 
 //////////////////// BOOT ////////////////////
 
@@ -56,7 +56,7 @@ constexpr bool kCheckSequenceDefault = false;
 
 constexpr bool kLogI2c = false;
 constexpr bool kLogToUart = true;
-constexpr bool kLogToSd = true;
+constexpr bool kLogToEeprom = true;
 constexpr bool kHilAvailable = false;
 constexpr bool kDitlMode = false;
 constexpr bool kVerboseLogging = false;
@@ -71,6 +71,10 @@ constexpr uint64_t kAntennaBurnCheckIntervalMs = 60 * 1000;
 constexpr uint32_t kTimeUpdatePeriodMs = 1000;
 constexpr uint16_t kIChargeHoldTimeMs = 5000;
 constexpr uint16_t kIChargeHoldPollMs = 200;
+
+//////////////////// DATABASE ////////////////////
+
+constexpr uint32_t kCircularBufferMessageLength = 10;
 
 //////////////////// SATELLITE POWER ////////////////////
 

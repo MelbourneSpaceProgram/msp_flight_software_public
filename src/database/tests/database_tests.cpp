@@ -44,15 +44,13 @@ TEST(Database, Hamming) {
     byte encoded_byte_array[4], decoded_byte_array[2];
     bool invalid_bytes[2];
 
-    CHECK_THROWS(MspException, HammingCoder::EncodeByteArray(
-                                   byte_array, 2, encoded_byte_array, 4));
+    CHECK_THROWS(MspException, HammingCoder::EncodeByteArray(encoded_byte_array,
+                                                             byte_array, 2));
     CHECK_THROWS(MspException, HammingCoder::DecodeByteArray(
-                                   encoded_byte_array, 4, invalid_bytes,
-                                   decoded_byte_array, 2));
+                                   decoded_byte_array, encoded_byte_array, 2));
 
-    HammingCoder::EncodeByteArray(encoded_byte_array, 4, byte_array, 2);
-    HammingCoder::DecodeByteArray(decoded_byte_array, 2, invalid_bytes,
-                                  encoded_byte_array, 4);
+    HammingCoder::EncodeByteArray(encoded_byte_array, byte_array, 2);
+    HammingCoder::DecodeByteArray(decoded_byte_array, encoded_byte_array, 4);
     CHECK_EQUAL(byte_array[0], decoded_byte_array[0]);
     CHECK_EQUAL(byte_array[1], decoded_byte_array[1]);
 }
@@ -67,35 +65,32 @@ IGNORE_TEST(Database, ReadWriteStatus) {
 }
 
 // TODO(akremor): Test crashes
-IGNORE_TEST(Database, ReadWriteData) {
+IGNORE_TEST(Database, ReadWrite) {
     byte write_buffer[345];
     uint16_t address = 1 << 10;
     for (uint32_t i = 0; i < 345; i++) {
         write_buffer[i] = (i * 41) % 71;
     }
 
-    Eeprom::WriteData((1 << 15), write_buffer, 345);
-    Eeprom::WriteData(address, write_buffer, (1 << 15));
-    Eeprom::WriteData((1 << 14), write_buffer, (1 << 14));
+    Eeprom::Write((1 << 15), write_buffer, 345);
+    Eeprom::Write(address, write_buffer, (1 << 15));
+    Eeprom::Write((1 << 14), write_buffer, (1 << 14));
 
-    Eeprom::WriteData(address, write_buffer, 345);
+    Eeprom::Write(address, write_buffer, 345);
 
     byte read_buffer[345] = {0};
-    bool valid_buffer[345];
     uint16_t offset = 17;
     address += offset;
 
-    Eeprom::ReadData((1 << 15), read_buffer, 345 - offset, valid_buffer,
-                     345 - offset);
-    Eeprom::ReadData(address, read_buffer, (1 << 15), valid_buffer, (1 << 15));
-    Eeprom::ReadData((1 << 14), read_buffer, (1 << 14), valid_buffer,
-                     (1 << 14));
-    Eeprom::ReadData(1, read_buffer, 2, valid_buffer, 1);
+    bool success = true;
+    success = success & Eeprom::Read((1 << 15), read_buffer, 345 - offset);
+    success = success & Eeprom::Read(address, read_buffer, (1 << 15));
+    success = success & Eeprom::Read((1 << 14), read_buffer, (1 << 14));
+    success = success & Eeprom::Read(1, read_buffer, 2);
 
-    Eeprom::ReadData(address, read_buffer, 345 - offset, valid_buffer,
-                     345 - offset);
+    success = success & Eeprom::Read(address, read_buffer, 345 - offset);
     for (uint32_t i = 0; i < 345u - offset; i++) {
+        CHECK(success);
         CHECK_EQUAL(write_buffer[i + offset], read_buffer[i]);
-        CHECK(valid_buffer[i]);
     }
 }

@@ -63,26 +63,24 @@ bool Eeprom::WriteStatusRegister(byte status_register) {
     return status;
 }
 
-bool Eeprom::ReadData(uint16_t address, byte *read_buffer,
-                      uint16_t read_buffer_length, bool *valid_buffer,
-                      uint16_t valid_buffer_length) {
+bool Eeprom::Read(uint16_t address, byte *read_buffer,
+                  uint16_t read_buffer_length) {
     Semaphore_pend(eeprom_in_use, BIOS_WAIT_FOREVER);
 
     uint16_t real_address = address * 2,
              real_read_buffer_length = read_buffer_length * 2;
     if (((uint16_t)(real_address + real_read_buffer_length) < real_address) ||
         (real_address < address) ||
-        (real_read_buffer_length < read_buffer_length) ||
-        (read_buffer_length != valid_buffer_length)) {
+        (real_read_buffer_length < read_buffer_length)) {
         Semaphore_post(eeprom_in_use);
         throw MspException("Buffer overflow. Bad address",
                            kEepromBufferOverflowFail, __FILE__, __LINE__);
     }
 
     bool status = true;
-    byte write_buffer[256] = {0}, read_buffer_2[256] = {0};
+    byte write_buffer[256] = {0};
+    byte read_buffer_spi[256] = {0};
     uint32_t transaction_length;
-    write_buffer[0] = (byte)kEepromReadData;
 
     for (uint32_t i = 0; i < real_read_buffer_length; i += 128) {
         write_buffer[1] = (byte)((real_address + i) >> 8);
@@ -95,21 +93,20 @@ bool Eeprom::ReadData(uint16_t address, byte *read_buffer,
         }
 
         status = status && Spi::GetInstance().PerformTransaction(
-                               slave_select_index, read_buffer_2, write_buffer,
-                               transaction_length + 3);
+                               slave_select_index, read_buffer_spi,
+                               write_buffer, transaction_length + 3);
         Task_sleep(5);
 
-        HammingCoder::DecodeByteArray(
-            &read_buffer[i / 2], transaction_length / 2, &valid_buffer[i / 2],
-            &read_buffer_2[3], transaction_length);
+        HammingCoder::DecodeByteArray(&read_buffer[i / 2], &read_buffer_spi[3],
+                                      transaction_length);
     }
     Semaphore_post(eeprom_in_use);
 
     return status;
 }
 
-bool Eeprom::WriteData(uint16_t address, byte *write_buffer,
-                       uint16_t write_buffer_length) {
+bool Eeprom::Write(uint16_t address, byte *write_buffer,
+                   uint16_t write_buffer_length) {
     Semaphore_pend(eeprom_in_use, BIOS_WAIT_FOREVER);
 
     uint16_t real_address = address * 2,
@@ -123,13 +120,13 @@ bool Eeprom::WriteData(uint16_t address, byte *write_buffer,
     }
 
     bool status = true;
-    byte write_buffer_2[256] = {0};
-    write_buffer_2[0] = (byte)kEepromWriteData;
+    byte write_buffer_spi[256] = {0};
+    write_buffer_spi[0] = (byte)kEepromWriteData;
     uint32_t transaction_length;
 
     for (uint32_t i = 0; i < real_write_buffer_length; i += 128) {
-        write_buffer_2[1] = (byte)((real_address + i) >> 8);
-        write_buffer_2[2] = (byte)(real_address + i);
+        write_buffer_spi[1] = (byte)((real_address + i) >> 8);
+        write_buffer_spi[2] = (byte)(real_address + i);
 
         if (real_write_buffer_length - i > 128) {
             transaction_length = 128;
@@ -137,14 +134,13 @@ bool Eeprom::WriteData(uint16_t address, byte *write_buffer,
             transaction_length = real_write_buffer_length - i;
         }
 
-        HammingCoder::EncodeByteArray(&write_buffer_2[3], transaction_length,
-                                      &write_buffer[i / 2],
-                                      transaction_length / 2);
+        HammingCoder::EncodeByteArray(&write_buffer_spi[3], &write_buffer[i / 2],
+                                      transaction_length);
 
         status = status && WriteEnable();
 
         status = status && Spi::GetInstance().PerformWriteTransaction(
-                               slave_select_index, write_buffer_2,
+                               slave_select_index, write_buffer_spi,
                                transaction_length + 3);
         Task_sleep(5);
     }

@@ -19,11 +19,10 @@ class Eeprom {
     static void Init();
     static bool ReadStatusRegister(byte *status_register);
     static bool WriteStatusRegister(byte status_register);
-    static bool ReadData(uint16_t address, byte *read_buffer,
-                         uint16_t read_buffer_length, bool *valid_buffer,
-                         uint16_t valid_buffer_length);
-    static bool WriteData(uint16_t address, byte *write_buffer,
-                          uint16_t write_buffer_length);
+    static bool Read(uint16_t address, byte *read_buffer,
+                     uint16_t read_buffer_length);
+    static bool Write(uint16_t address, byte *write_buffer,
+                      uint16_t write_buffer_length);
 
    private:
     static constexpr uint32_t slave_select_index = SYS_nCS4;

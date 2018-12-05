@@ -17,11 +17,12 @@ HammingEncodedByte HammingCoder::Encode(byte data) {
     return hamming_encoded_byte;
 }
 
-void HammingCoder::EncodeByteArray(byte *output, uint32_t output_length,
-                                   byte *input, uint32_t input_length) {
+void HammingCoder::EncodeByteArray(byte *output, byte *input,
+                                   uint32_t input_length) {
+    uint32_t output_length = input_length * 2;
     if (output_length != input_length * 2) {
         throw MspException("HammingCoder::EncodeByteArray invalid arguments",
-                             kHammingEncodeInvalidArgFail, __FILE__, __LINE__);
+                           kHammingEncodeInvalidArgFail, __FILE__, __LINE__);
     }
     for (uint32_t i = 0; i < input_length; i++) {
         HammingEncodedByte output_byte = Encode(input[i]);
@@ -72,13 +73,14 @@ HammingDecodedByte HammingCoder::Decode(
     return hamming_decoded_byte;
 }
 
-void HammingCoder::DecodeByteArray(byte *output, uint32_t output_length,
-                                   bool *valid_output, byte *input,
+bool HammingCoder::DecodeByteArray(byte *output, byte *input,
                                    uint32_t input_length) {
+    uint32_t output_length = input_length / 2;
     if ((output_length * 2 != input_length)) {
         throw MspException("HammingCoder::DecodeByteArray invalid arguments",
                            kHammingDecodeInvalidArgFail, __FILE__, __LINE__);
     }
+    bool valid_output[output_length];
     for (uint32_t i = 0; i < output_length; i++) {
         HammingEncodedByte input_byte;
         input_byte.codewords[0] = input[i * 2];
@@ -87,6 +89,11 @@ void HammingCoder::DecodeByteArray(byte *output, uint32_t output_length,
         output[i] = output_byte.data;
         valid_output[i] = output_byte.valid;
     }
+    bool valid = true;
+    for (uint32_t i = 0; i < output_length; i++) {
+        valid = valid & valid_output[i];
+    }
+    return valid;
 }
 
 byte HammingCoder::ExtractAndJoinData(byte c0, byte c1) {

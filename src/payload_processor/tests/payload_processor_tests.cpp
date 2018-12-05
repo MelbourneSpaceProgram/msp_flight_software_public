@@ -2,13 +2,13 @@
 #include <external/nanopb/pb_encode.h>
 #include <external/sgp4/sgp4.h>
 #include <src/adcs/state_estimators/location_estimator.h>
+#include <src/board/i2c/bms/bms.h>
 #include <src/board/i2c/io_expander/io_expander.h>
 #include <src/config/satellite.h>
 #include <src/config/unit_tests.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/database/flash_memory/flash_memory_management.h>
 #include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
-#include <src/database/sd_card.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/EraseFlashUplinkPayload.pb.h>
 #include <src/messages/IoExpanderToggleUplinkPayload.pb.h>
@@ -27,6 +27,7 @@
 #include <src/payload_processor/uplinks/query_num_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/set_boot_state_uplink.h>
+#include <src/payload_processor/uplinks/set_icharge_uplink.h>
 #include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
 #include <src/payload_processor/uplinks/test_uplink.h>
 #include <src/payload_processor/uplinks/tle_update_uplink.h>
@@ -43,13 +44,9 @@
 #include <src/util/nanopb_utils.h>
 #include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
+#include <src/util/tirtos_utils.h>
 #include <stdio.h>
 #include <ti/sysbios/BIOS.h>
-#include <src/telecomms/runnable_antenna_burner.h>
-#include <src/database/flash_memory/flash_storables/antenna_burner_info.h>
-#include <src/payload_processor/uplinks/set_icharge_uplink.h>
-#include <src/board/i2c/bms/bms.h>
-#include <src/util/tirtos_utils.h>
 
 TEST_GROUP(PayloadProcessor) {
     void setup() { MspException::ClearAll(); };
@@ -190,7 +187,7 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodUplink) {
 
 TEST(PayloadProcessor, TestScienceDataUplink) {
     try {
-        if (!kSdCardAvailable) {
+        if (!kEepromAvailable) {
             TEST_EXIT
         }
 
@@ -206,19 +203,15 @@ TEST(PayloadProcessor, TestScienceDataUplink) {
             .AddNanopbMacro(Time)(requested_time);
 
         // Create a CircularBuffer and put a value in it
-        char filename[4];
-        sprintf(filename, "%3d", kTestCurrent);
-        CircularBufferNanopb(CurrentReading)::Create(filename, 10);
+        CircularBufferNanopb(CurrentReading)::ForceCreate(kFileOffsets[kMeasurableIdEnd], 10);
 
         CurrentReading test_current =
             MeasurableManager::GetInstance()
                 ->ReadNanopbMeasurable<CurrentReading>(kComInI2, 0);
-        CircularBufferNanopb(CurrentReading)::WriteMessage(filename,
+        CircularBufferNanopb(CurrentReading)::WriteMessage(kFileOffsets[kMeasurableIdEnd],
                                                            test_current);
 
         CHECK(payload_processor.ParseAndExecuteUplinks(builder.Build()));
-
-        SdCard::GetInstance()->FileDelete(filename);
     } catch (MspException& e) {
         MspException::LogException(e);
         FAIL("Uncaught exception in test");
@@ -471,8 +464,7 @@ TEST(PayloadProcessor, TestSetBootStateUplink) {
         MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
 
         SetBootStatePayload nanopb_payload;
-        nanopb_payload.boot_state =
-            ResetMessage::kUnexpectedReset;
+        nanopb_payload.boot_state = ResetMessage::kUnexpectedReset;
 
         builder.AddUplinkCode(kSetBootStateUplink);
         builder.AddNanopbMacro(SetBootStatePayload)(nanopb_payload);

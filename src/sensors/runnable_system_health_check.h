@@ -4,13 +4,13 @@
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/database/circular_buffer_nanopb.h>
+#include <src/database/file_offsets.h>
 #include <src/messages/Time.pb.h>
 #include <src/sensors/measurable_manager.h>
 #include <src/tasks/runnable.h>
 #include <src/util/msp_exception.h>
 #include <src/util/nanopb_utils.h>
 #include <src/util/runnable_console_logger.h>
-#include <stdio.h>
 #include <xdc/runtime/Log.h>
 
 #define LogMeasurableMacro(NanopbMessageType)                          \
@@ -33,7 +33,6 @@ class RunnableSystemHealthCheck : public Runnable {
     static bool datalogger_enabled;
     static Uart* debug_uart;
     static void SystemHealthCheck();
-    static constexpr uint32_t kCircularBufferMessageLength = 10000;
 
     template <typename NanopbMessageType, uint16_t NanopbMessageType_size,
               const pb_field_t* NanopbMessageType_fields>
@@ -44,19 +43,18 @@ class RunnableSystemHealthCheck : public Runnable {
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
 
-        if (kLogToSd && kSdCardAvailable) {
-            char file_name[4];
-            snprintf(file_name, sizeof(file_name), "%03d", id);
+        if (kLogToEeprom && kEepromAvailable) {
             try {
                 CircularBufferNanopb<NanopbMessageType, NanopbMessageType_size,
                                      NanopbMessageType_fields>::
-                    Create(file_name, kCircularBufferMessageLength);
+                    CreateIfNecessary(kFileOffsets[id],
+                                      kCircularBufferMessageLength);
                 CircularBufferNanopb<
                     NanopbMessageType, NanopbMessageType_size,
-                    NanopbMessageType_fields>::WriteMessage(file_name,
+                    NanopbMessageType_fields>::WriteMessage(kFileOffsets[id],
                                                             pb_reading);
             } catch (MspException& e) {
-                MspException::LogException(e, kLogMeasurableSdCatch);
+                MspException::LogException(e, kLogMeasurableEepromCatch);
                 Log_error1("CircularBuffer failure for measurable id %d", id);
             }
         };

@@ -17,11 +17,10 @@ class HammingCoder {
     // appropriate)
    public:
     static HammingEncodedByte Encode(byte data);
-    static void EncodeByteArray(byte *output, uint32_t output_length,
-                                byte *input, uint32_t input_length);
+    static void EncodeByteArray(byte *output, byte *input,
+                                uint32_t input_length);
     static HammingDecodedByte Decode(HammingEncodedByte hamming_encoded_byte);
-    static void DecodeByteArray(byte *output, uint32_t output_length,
-                                bool *valid_output, byte *input,
+    static bool DecodeByteArray(byte *output, byte *input,
                                 uint32_t input_length);
 
    private:

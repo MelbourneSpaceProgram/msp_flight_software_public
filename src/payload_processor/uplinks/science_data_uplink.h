@@ -2,6 +2,7 @@
 #define SRC_PAYLOAD_PROCESSOR_COMMANDS_SCIENCE_DATA_UPLINK_H_
 
 #include <src/database/circular_buffer_nanopb.h>
+#include <src/database/file_offsets.h>
 #include <src/messages/Time.pb.h>
 #include <src/payload_processor/uplinks/uplink.h>
 #include <src/sensors/measurable_manager.h>
@@ -46,7 +47,7 @@ class ScienceDataUplink : public Uplink {
             } else {
                 // Retrieve a historical reading in the sd card
                 result = CircularBufferNanopb(NanopbMessageType)::Search(
-                    filename, requested_time.timestamp_ms);
+                    kFileOffsets[measurable_id], requested_time.timestamp_ms);
             }
             payload =
                 new SciencePayload<NanopbMessageType, NanopbMessageType_size,
@@ -55,7 +56,7 @@ class ScienceDataUplink : public Uplink {
             // TODO(dingbejamin): Be able to differentiate different exceptions
             // to determine cause of failure
             delete payload;
-			payload = nullptr;
+            payload = nullptr;
             return false;
         }
 
@@ -64,7 +65,7 @@ class ScienceDataUplink : public Uplink {
             return false;
         }
         delete payload;
-		payload = nullptr;
+        payload = nullptr;
         return true;
     }
 
