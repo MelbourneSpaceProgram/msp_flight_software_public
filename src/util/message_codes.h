@@ -81,6 +81,7 @@ enum Uplinks {
     kSetBootStateUplink = 25,
     kSetIChargeUplink = 26,
     kEchoUplink = 27,
+	kSystemConfigurationUplink = 28,
     kUplinksLength
 };
 

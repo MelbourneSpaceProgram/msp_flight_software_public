@@ -1,8 +1,8 @@
 #include <src/payload_processor/payload_processor.h>
-#include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
 #include <src/payload_processor/uplinks/clear_exceptions_uplink.h>
 #include <src/payload_processor/uplinks/clear_sections_uplink.h>
 #include <src/payload_processor/uplinks/deploy_antenna_uplink.h>
+#include <src/payload_processor/uplinks/echo_uplink.h>
 #include <src/payload_processor/uplinks/enable_datalogger_uplink.h>
 #include <src/payload_processor/uplinks/erase_flash_uplink.h>
 #include <src/payload_processor/uplinks/execute_sections_uplink.h>
@@ -21,11 +21,12 @@
 #include <src/payload_processor/uplinks/query_sections_uplink.h>
 #include <src/payload_processor/uplinks/science_data_uplink.h>
 #include <src/payload_processor/uplinks/section_uplink.h>
-#include <src/payload_processor/uplinks/test_uplink.h>
-#include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/payload_processor/uplinks/set_boot_state_uplink.h>
 #include <src/payload_processor/uplinks/set_icharge_uplink.h>
-#include <src/payload_processor/uplinks/echo_uplink.h>
+#include <src/payload_processor/uplinks/system_configuration_uplink.h>
+#include <src/payload_processor/uplinks/terminate_antenna_burn_uplink.h>
+#include <src/payload_processor/uplinks/test_uplink.h>
+#include <src/payload_processor/uplinks/tle_update_uplink.h>
 #include <src/payload_processor/uplinks/uplink.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/msp_exception.h>
@@ -115,6 +116,8 @@ Uplink* PayloadProcessor::CreateUplink(uint16_t command_code, byte* payload) {
             return new SetIChargeUplink(payload);
         case kEchoUplink:
             return new EchoUplink(payload);
+        case kSystemConfigurationUplink:
+            return new SystemConfigurationUplink(payload);
         default:
             throw MspException("Could not parse command code",
                                kPayloadProcessorCommandCodeFail, __FILE__,
@@ -136,7 +139,7 @@ bool PayloadProcessor::ParseNextUplinkAndExecute(uint16_t& index,
         index += command->GetUplinkArgumentLength() + kUplinkCodeLength;
     } catch (MspException& e) {
         Log_error0("Exception in payload processor:");
-		MspException::LogException(e, kPayloadProcessorCatch);
+        MspException::LogException(e, kPayloadProcessorCatch);
     }
     return command_execution_successful;
 }

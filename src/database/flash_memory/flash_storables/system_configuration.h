@@ -3,9 +3,11 @@
 
 #include <src/database/flash_memory/flash_storables/flash_storable.h>
 #include <src/database/flash_memory/flash_storables/flash_storable_data_types.h>
+#include <src/messages/SystemConfigurationUplinkPayload.pb.h>
 
 class SystemConfiguration : public FlashStorable<SystemConfiguration> {
 	friend class FlashStorable<SystemConfiguration>;
+	friend class SystemConfigurationUplink;
 
    public:
     static SystemConfiguration *GetInstance();
@@ -73,6 +75,7 @@ class SystemConfiguration : public FlashStorable<SystemConfiguration> {
    private:
 	SystemConfiguration();
     SystemConfiguration(bool, bool use_defaults = false);
+	explicit SystemConfiguration(SystemConfigurationUplinkPayload& payload);
     void ConvertToFlashStorableStruct(
         SystemConfiguration *system_configuration_struct);
     void UpdateFromFlashStorableStruct(

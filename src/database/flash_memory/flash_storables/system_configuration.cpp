@@ -1,4 +1,5 @@
 #include <src/database/flash_memory/flash_storables/system_configuration.h>
+#include <src/messages/SystemConfigurationUplinkPayload.pb.h>
 #include <xdc/runtime/Log.h>
 
 SystemConfiguration *SystemConfiguration::GetInstance() {
@@ -9,8 +10,7 @@ SystemConfiguration *SystemConfiguration::GetInstance() {
     return instance;
 }
 
-SystemConfiguration::SystemConfiguration()
-    : SystemConfiguration(true, false) {}
+SystemConfiguration::SystemConfiguration() : SystemConfiguration(true, false) {}
 
 SystemConfiguration::SystemConfiguration(bool, bool use_defaults)
     : FlashStorable<SystemConfiguration>(
@@ -29,6 +29,75 @@ SystemConfiguration::SystemConfiguration(bool, bool use_defaults)
         StoreInFlash();
     }
 }
+
+SystemConfiguration::SystemConfiguration(
+    SystemConfigurationUplinkPayload &payload)
+    : FlashStorable<SystemConfiguration>(
+          kSystemConfigurationFlashStorageAddress),
+      eps_board_available(payload.eps_board_available),
+      cdh_board_available(payload.cdh_board_available),
+      fs_board_available(payload.fs_board_available),
+      tcom_board_available(payload.tcom_board_available),
+      utilities_board_available(payload.utilities_board_available),
+      x_pos_available(payload.x_pos_available),
+      x_neg_available(payload.x_neg_available),
+      y_pos_available(payload.y_pos_available),
+      y_neg_available(payload.y_neg_available),
+      z_pos_available(payload.z_pos_available),
+      z_neg_available(payload.z_neg_available),
+      i2c_available(payload.i2c_available),
+      sd_card_available(payload.sd_card_available),
+      bms_available(payload.bms_available),
+      antenna_available(payload.antenna_available),
+      eeprom_available(payload.eeprom_available),
+      enter_deep_sleep_on_startup(payload.enter_deep_sleep_on_startup),
+      enter_limp_mode_on_startup(payload.enter_limp_mode_on_startup),
+      deploy_antenna(payload.deploy_antenna),
+      instant_deployment_waits(payload.instant_deployment_waits),
+      format_sd_on_startup(payload.format_sd_on_startup),
+      beacon_wait_ms(payload.beacon_wait_ms),
+      ejection_wait_ms(payload.ejection_wait_ms),
+      time_source_deploy_ms(payload.time_source_deploy_ms),
+      lithium_transmit_only_when_ground_commanded(
+          payload.lithium_transmit_only_when_ground_commanded),
+      nominal_lithium_power_level(payload.nominal_lithium_power_level),
+      uplink_fec_enabled(payload.uplink_fec_enabled),
+      downlink_fec_enabled(payload.downlink_fec_enabled),
+      check_hmac_default(payload.check_hmac_default),
+      check_sequence_default(payload.check_sequence_default),
+      log_i2c(payload.log_i2c),
+      log_to_uart(payload.log_to_uart),
+      log_to_sd(payload.log_to_sd),
+      hil_available(payload.hil_available),
+      ditl_mode(payload.ditl_mode),
+      verbose_logging(payload.verbose_logging),
+      reboot_on_top_level_exception(payload.reboot_on_top_level_exception),
+      nominal_beacon_period_ms(payload.nominal_beacon_period_ms),
+      orientation_control_loop_period_micros(
+          payload.orientation_control_loop_period_micros),
+      health_check_period_ms(payload.health_check_period_ms),
+      antenna_burn_check_interval_ms(payload.antenna_burn_check_interval_ms),
+      time_update_period_ms(payload.time_update_period_ms),
+      i_charge_hold_time_ms(payload.i_charge_hold_time_ms),
+      i_charge_hold_poll_ms(payload.i_charge_hold_poll_ms),
+      solar_power_recovery_time_ms(payload.solar_power_recovery_time_ms),
+      initial_i_charge_index(payload.initial_i_charge_index),
+      half_orbit_period_ms(payload.half_orbit_period_ms),
+      initial_antenna_burn_interval_ms(
+          payload.initial_antenna_burn_interval_ms),
+      backup_antenna_burn_interval_ms(payload.backup_antenna_burn_interval_ms),
+      antenna_burn_interval_multiplier(
+          payload.antenna_burn_interval_multiplier),
+      run_magnetorquers_at_constant_power(
+          payload.run_magnetorquers_at_constant_power),
+      magnetorquer_power_fraction_x(payload.magnetorquer_power_fraction_x),
+      magnetorquer_power_fraction_y(payload.magnetorquer_power_fraction_y),
+      magnetorquer_power_fraction_z(payload.magnetorquer_power_fraction_z),
+      max_magnetorquer_dipole({payload.max_magnetorquer_dipole_1,
+                               payload.max_magnetorquer_dipole_2,
+                               payload.max_magnetorquer_dipole_3}),
+      orientation_control_power_level(payload.orientation_control_power_level),
+      checksum(payload.checksum) {}
 
 uint32_t SystemConfiguration::ComputeChecksum() {
     // TODO(dingbenjamin): Make a better checksum
