@@ -100,13 +100,36 @@ void SatellitePower::RestorePowerToFlightSystems() {
     TirtosUtils::SleepMilli(10);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
-    dynamic_cast<ImuMagnetometerMeasurable*>(
-        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno1))
-        ->InitialiseImu();
 
-    dynamic_cast<ImuMagnetometerMeasurable*>(
-        measurable_manager->GetMeasurable<MagnetometerReading>(kFsImuMagno2))
-        ->InitialiseImu();
+    try {
+        ImuMagnetometerMeasurable* imu =
+            dynamic_cast<ImuMagnetometerMeasurable*>(
+                measurable_manager->GetMeasurable<MagnetometerReading>(
+                    kFsImuMagno1));
+        if (imu != nullptr) {
+            imu->InitialiseImu();
+        } else {
+            throw MspException("Imu 1 was not properly initialised", kImuNull1,
+                               __FILE__, __LINE__);
+        }
+    } catch (MspException& e) {
+        MspException::LogException(e, kImuInitialise1Catch);
+    }
+
+    try {
+        ImuMagnetometerMeasurable* imu =
+            dynamic_cast<ImuMagnetometerMeasurable*>(
+                measurable_manager->GetMeasurable<MagnetometerReading>(
+                    kFsImuMagno2));
+        if (imu != nullptr) {
+            imu->InitialiseImu();
+        } else {
+            throw MspException("Imu 2 was not properly initialised", kImuNull2,
+                               __FILE__, __LINE__);
+        }
+    } catch (MspException& e) {
+        MspException::LogException(e, kImuInitialise2Catch);
+    }
 }
 
 void SatellitePower::CutPowerToTelecoms() {
