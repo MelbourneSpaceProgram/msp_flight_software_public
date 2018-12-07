@@ -20,8 +20,8 @@ const float MagnetorquerControl::kDegaussingDecayMultiplier =
         (static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3));
 
 const uint16_t MagnetorquerControl::kNDegaussPulses =
-    round((static_cast<double>(kDegaussingPeriodMillis) * 1e-3) /
-          (static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6));
+    round((static_cast<double>(kDegaussingPeriodMillis) * 1e3) /
+          (static_cast<double>(kDegaussingSwitchPeriodMicros)));
 
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
@@ -168,7 +168,7 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
 
 void MagnetorquerControl::Degauss() {
     float power = kOrientationControlPowerLevel;
-    for (uint16_t i = 0; i < kNDegaussPulses; i++) {
+    for (uint16_t i = 0; i < 22; i++) {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
         // Wait for timer

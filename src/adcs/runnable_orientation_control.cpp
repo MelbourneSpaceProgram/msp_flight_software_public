@@ -83,18 +83,17 @@ void RunnableOrientationControl::ControlOrientation() {
             // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
             MagnetorquerControl::Degauss();
+            MagnetorquerControl::SetMagnetorquersPowerFraction(1, 1, 1);
+            TirtosUtils::SleepMilli(30);
+            MagnetorquerControl::SetMagnetorquersPowerFraction(0, 0, 0);
 
             // Read Magnetometer
             // TODO (rskew) fuse readings from both magnetometers giving
             // redundancy
             // TODO(rskew) handle exception from magnetometer overflow
             MagnetometerReading magnetometer_reading =
-                MagnetometerReading_init_zero;
-            magnetometer_reading.x = 10;
-            magnetometer_reading.y = 10;
-            magnetometer_reading.z = 10;
-            //                measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-            //                    kFsImuMagnoB, 0);
+                measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+                    kFsImuMagnoB, 0);
 
             // Log_info3("Magnetometer reading: %d %d %d",
             // magnetometer_reading.x,
@@ -155,9 +154,11 @@ void RunnableOrientationControl::ControlOrientation() {
             // Use magnetorquer driver to set magnetorquer power.
             // Driver input power range should be [-1, 1]
 
-            MagnetorquerControl::SetMagnetorquersPowerFraction(
-                signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
-                signed_pwm_output.Get(2, 0));
+            //            MagnetorquerControl::SetMagnetorquersPowerFraction(
+            //                signed_pwm_output.Get(0, 0),
+            //                signed_pwm_output.Get(1, 0),
+            //                signed_pwm_output.Get(2, 0));
+            MagnetorquerControl::SetMagnetorquersPowerFraction(0.5, -0.5, -0.5);
 
             Log_info3("PWM: %d %d %d", (int)signed_pwm_output.Get(0, 0),
                       (int)signed_pwm_output.Get(1, 0),
