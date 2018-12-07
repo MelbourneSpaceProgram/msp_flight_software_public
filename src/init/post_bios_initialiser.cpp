@@ -320,7 +320,7 @@ void PostBiosInitialiser::PostBiosInit() {
 
     try {
         // TODO(dingbenjamin): Init var length array pool
-        InitConsoleUart();
+        //InitConsoleUart();
         InitMemoryLogger();
         MspException::Init();
         InitHardware();

@@ -195,7 +195,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 }
             }
             SystemWatchdog::ResetTimer();
-            GPIO_toggle(SYS_LED);
+            GPIO_write(SYS_LED, 0);
             TirtosUtils::SleepMilli(kHealthCheckPeriodMs);
         } catch (MspException& e) {
             MspException::LogTopLevelException(e,
