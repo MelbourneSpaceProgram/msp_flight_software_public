@@ -105,7 +105,7 @@ void SatellitePower::RestorePowerToFlightSystems() {
         ImuMagnetometerMeasurable* imu =
             dynamic_cast<ImuMagnetometerMeasurable*>(
                 measurable_manager->GetMeasurable<MagnetometerReading>(
-                    kFsImuMagno1));
+                    kFsImuMagnoA));
         if (imu != nullptr) {
             imu->InitialiseImu();
         } else {
@@ -120,7 +120,7 @@ void SatellitePower::RestorePowerToFlightSystems() {
         ImuMagnetometerMeasurable* imu =
             dynamic_cast<ImuMagnetometerMeasurable*>(
                 measurable_manager->GetMeasurable<MagnetometerReading>(
-                    kFsImuMagno2));
+                    kFsImuMagnoB));
         if (imu != nullptr) {
             imu->InitialiseImu();
         } else {

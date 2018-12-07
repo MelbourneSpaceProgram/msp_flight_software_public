@@ -183,11 +183,11 @@ void MagnetorquerControl::Degauss() {
             // Negative power
             SetMagnetorquersPowerFraction(-power, -power, -power);
             // Update power and wait for timer
-            power = power * kDegaussingDecayMultiplier;
+            power = power * kDegaussingDecayMultiplier * 0.8;
             Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
         } else {
             SetMagnetorquersPowerFraction(-power, -power, -power);
-            power = power * kDegaussingDecayMultiplier;
+            power = power * kDegaussingDecayMultiplier * 0.8;
         }
     }
 }

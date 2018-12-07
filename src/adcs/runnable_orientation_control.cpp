@@ -89,10 +89,15 @@ void RunnableOrientationControl::ControlOrientation() {
             // redundancy
             // TODO(rskew) handle exception from magnetometer overflow
             MagnetometerReading magnetometer_reading =
-                measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-                    kFsImuMagnoB, 0);
+                MagnetometerReading_init_zero;
+            magnetometer_reading.x = 10;
+            magnetometer_reading.y = 10;
+            magnetometer_reading.z = 10;
+            //                measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
+            //                    kFsImuMagnoB, 0);
 
-            //Log_info3("Magnetometer reading: %d %d %d", magnetometer_reading.x,
+            // Log_info3("Magnetometer reading: %d %d %d",
+            // magnetometer_reading.x,
             //          magnetometer_reading.y, magnetometer_reading.z);
 
             // if (kHilAvailable) {
@@ -154,8 +159,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
                 signed_pwm_output.Get(2, 0));
 
-            Log_info3("PWM: %d %d %d",
-                      (int)signed_pwm_output.Get(0, 0),
+            Log_info3("PWM: %d %d %d", (int)signed_pwm_output.Get(0, 0),
                       (int)signed_pwm_output.Get(1, 0),
                       (int)signed_pwm_output.Get(2, 0));
         } catch (MspException& e) {

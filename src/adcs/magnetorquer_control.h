@@ -27,7 +27,7 @@ class MagnetorquerControl {
     static void SetupDegaussingPolaritySwitchTimer();
     static void DegaussingTimerISR(UArg degaussing_timer_semaphore);
 
-    static constexpr uint32_t kDegaussingSwitchPeriodMicros = 1000;
+    static constexpr uint32_t kDegaussingSwitchPeriodMicros = 100;
 
    private:
     typedef enum MagnetorquerAxis {
@@ -53,7 +53,7 @@ class MagnetorquerControl {
     // This gives a resulution of 1/12 uS = 0.083uS.
     //
     // With a period of 100uS, we have a duty resolution of 1/1200 of a period.
-    static constexpr uint16_t kMagnetorquerPWMPeriod = 100;
+    static constexpr uint16_t kMagnetorquerPWMPeriod = 5;
 
     static constexpr uint8_t kMagnetorquerPWMAxisA = Mag_STR_CDH_FS_Out1;
     static constexpr uint8_t kMagnetorquerPWMAxisB = Mag_STR_CDH_FS_Out2;
@@ -67,7 +67,7 @@ class MagnetorquerControl {
     static const float kDegaussingDecayMultiplier;
     static const uint16_t kNDegaussPulses;
     static const uint16_t kDegaussingTimeConstantMillis = 1;
-    static const uint16_t kDegaussingPeriodMillis = 500;
+    static const uint16_t kDegaussingPeriodMillis = 15;
 };
 
 #endif  // SRC_ADCS_MAGNETORQUER_CONTROL_H_
