@@ -57,7 +57,9 @@ TEST(Database, Hamming) {
 
 // TODO(akremor): Test crashes
 IGNORE_TEST(Database, ReadWriteStatus) {
-    byte status_register = 1 << 3;
+    byte status_register;
+    Eeprom::ReadStatusRegister(&status_register);
+    status_register = 1 << 3;
     Eeprom::WriteStatusRegister(status_register);
     Eeprom::ReadStatusRegister(&status_register);
 

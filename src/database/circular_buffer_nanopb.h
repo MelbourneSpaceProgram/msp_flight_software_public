@@ -208,8 +208,7 @@ class CircularBufferNanopb {
         WriteUInt16_t(file_offset + 3 * sizeof(uint16_t), read_index_bytes);
     }
 
-    static uint16_t ReadUInt16_t(uint16_t file_offset) {
-        uint16_t read_index = GetReadIndex(file_offset);
+    static uint16_t ReadUInt16_t(uint16_t read_index) {
         byte read_buffer[sizeof(uint16_t)];
         if (!Eeprom::Read(read_index, read_buffer, sizeof(uint16_t))) {
             throw MspException("Failed to read from EEPROM or decode reading",
@@ -218,8 +217,7 @@ class CircularBufferNanopb {
         return read_buffer[0] << 8 + read_buffer[1];
     }
 
-    static void WriteUInt16_t(uint16_t file_offset, uint16_t value_to_write) {
-        uint16_t write_index = GetWriteIndex(file_offset);
+    static void WriteUInt16_t(uint16_t write_index, uint16_t value_to_write) {
         byte write_buffer[sizeof(uint16_t)];
         write_buffer[0] = (byte)(value_to_write);
         write_buffer[1] = (byte)(value_to_write >> 8);
