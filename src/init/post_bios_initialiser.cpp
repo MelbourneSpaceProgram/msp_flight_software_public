@@ -337,11 +337,11 @@ void PostBiosInitialiser::PostBiosInit() {
         SystemWatchdog((uint32_t)SYS_WATCHDOG0);
         InitSystemHealthCheck();
         InitPowerManager();
+        BeaconWait();
+        InitBeacon();
         EjectionWait();
         InitOrientationControl();
-        BeaconWait();
         InitAntennaBurner();
-        InitBeacon();
         Log_info0("System start up complete");
 #endif
     } catch (MspException& e) {
