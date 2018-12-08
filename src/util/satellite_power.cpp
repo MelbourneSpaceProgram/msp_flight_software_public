@@ -174,14 +174,20 @@ void SatellitePower::IncrementBmsICharge(BmsId bms_id) {
     } else {
         i_charge_index[bms_id] = Bms::kIChargeIndexMax - 1;
     }
-    ConfigureBmsICharge(bms_id);
+    {
+        MutexLocker locker(SatellitePower::GetMutex());
+        ConfigureBmsICharge(bms_id);
+    }
     TirtosUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
 }
 
 void SatellitePower::DecrementBmsICharge(BmsId bms_id) {
     if (!initialised) return;
     i_charge_index[bms_id] = std::max(i_charge_index[bms_id] - 1, 0);
-    ConfigureBmsICharge(bms_id);
+    {
+        MutexLocker locker(SatellitePower::GetMutex());
+        ConfigureBmsICharge(bms_id);
+    }
     TirtosUtils::SleepMilli(Bms::kBmsTryChargeDecreaseWaitMs);
 }
 

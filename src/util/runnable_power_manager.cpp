@@ -32,10 +32,7 @@ void RunnablePowerManager::ManagePower() {
                     // simultaneously writing power setting, as well as stopping
                     // this task from optimising charging during transmission of
                     // antenna burn.
-                    {
-                        MutexLocker locker(SatellitePower::GetMutex());
-                        SatellitePower::IncrementBmsICharge(current_bms_id);
-                    }
+                    SatellitePower::IncrementBmsICharge(current_bms_id);
                     // Too many increments in a row suggests some kind of error.
                     // Try the other BMS.
                     if (movement_counter > kMaxSequentialMovements) {
@@ -49,10 +46,7 @@ void RunnablePowerManager::ManagePower() {
                     break;
                 }
                 case ICHARGE_DECREASING: {
-                    {
-                        MutexLocker locker(SatellitePower::GetMutex());
-                        SatellitePower::DecrementBmsICharge(current_bms_id);
-                    }
+                    SatellitePower::DecrementBmsICharge(current_bms_id);
                     movement_counter += 1;
                     // Too many decrements in a row indicates continuous
                     // failure to charge or read the battery current.
