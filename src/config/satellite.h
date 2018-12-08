@@ -20,9 +20,9 @@ constexpr bool kZPosAvailable = true;
 constexpr bool kZNegAvailable = true;
 
 constexpr bool kI2cAvailable = true;
-constexpr bool kSdCardAvailable = true;
+constexpr bool kSdCardAvailable = false;
 constexpr bool kBmsAvailable = true;
-constexpr bool kAntennaAvailable = false;
+constexpr bool kAntennaAvailable = true;
 
 // Eeprom is actually available, but resource conflicts with SD card as they
 // share the same bus
@@ -32,11 +32,11 @@ constexpr bool kEepromAvailable = false;
 
 constexpr bool kEnterDeepSleepOnStartup = false;
 constexpr bool kEnterLimpModeOnStartup = false;
-constexpr bool kDeployAntenna = false;  // DO NOT TURN ON UNTIL AFTER LAUNCH
+constexpr bool kDeployAntenna = true;  // DO NOT TURN ON UNTIL AFTER LAUNCH
 
 //////////////////// WAITS ////////////////////
 
-constexpr bool kInstantDeploymentWaits = true;
+constexpr bool kInstantDeploymentWaits = false;
 constexpr bool kFormatSdOnStartup = false;
 constexpr uint32_t kBeaconWaitMs = 5 * 60 * 1000;
 constexpr uint32_t kEjectionWaitMs = 30 * 60 * 1000;
@@ -48,7 +48,7 @@ constexpr bool kLithiumTransmitOnlyWhenGroundCommanded = false;
 constexpr uint8_t kNominalLithiumPowerLevel = 140;  // Scaled between 0-255
 
 constexpr bool kUplinkFecEnabled = true;
-constexpr bool kDownlinkFecEnabled = false;
+constexpr bool kDownlinkFecEnabled = true;
 constexpr bool kCheckHmacDefault = true;
 constexpr bool kCheckSequenceDefault = false;
 
@@ -56,7 +56,7 @@ constexpr bool kCheckSequenceDefault = false;
 
 constexpr bool kLogI2c = false;
 constexpr bool kLogToUart = true;
-constexpr bool kLogToSd = true;
+constexpr bool kLogToSd = false;
 constexpr bool kHilAvailable = false;
 constexpr bool kDitlMode = false;
 constexpr bool kVerboseLogging = false;
@@ -90,7 +90,7 @@ constexpr float kAntennaBurnIntervalMultiplier = 2.5;
 //////////////////// MAGNETORQUERS ////////////////////
 
 // Will disable orientation control if true, must be FALSE until launch
-constexpr bool kRunMagnetorquersAtConstantPower = true;
+constexpr bool kRunMagnetorquersAtConstantPower = false;
 
 // float value in range [-1, 1]
 constexpr float kMagnetorquerPowerFractionX = 0.2;
