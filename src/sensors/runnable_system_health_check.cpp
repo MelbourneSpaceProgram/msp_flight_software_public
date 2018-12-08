@@ -15,6 +15,7 @@
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/runnable_system_health_check.h>
+#include <src/telecomms/antenna.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/msp_exception.h>
 #include <src/util/satellite_power.h>
@@ -162,29 +163,30 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 }
 
                 if (kFsBoardAvailable) {
-                    MutexLocker mutex(SatellitePower::GetMutex());
-                    LogMeasurableMacro(CurrentReading)(kFsTorquerXI);
-                    LogMeasurableMacro(CurrentReading)(kFsTorquerTotalI);
-                    LogMeasurableMacro(CurrentReading)(kFsTorquerYI);
-                    LogMeasurableMacro(CurrentReading)(kFsTorquerZI);
-                    LogMeasurableMacro(VoltageReading)(kFsTorquerXAV);
-                    LogMeasurableMacro(VoltageReading)(kFsTorquerXBV);
-                    LogMeasurableMacro(VoltageReading)(kFsTorquerYAV);
-                    LogMeasurableMacro(VoltageReading)(kFsTorquerYBV);
-                    LogMeasurableMacro(VoltageReading)(kFsTorquerZAV);
-                    LogMeasurableMacro(VoltageReading)(kFsTorquerZBV);
+                    if (Antenna::GetAntenna()->IsBurning()) {
+                        LogMeasurableMacro(CurrentReading)(kFsTorquerXI);
+                        LogMeasurableMacro(CurrentReading)(kFsTorquerTotalI);
+                        LogMeasurableMacro(CurrentReading)(kFsTorquerYI);
+                        LogMeasurableMacro(CurrentReading)(kFsTorquerZI);
+                        LogMeasurableMacro(VoltageReading)(kFsTorquerXAV);
+                        LogMeasurableMacro(VoltageReading)(kFsTorquerXBV);
+                        LogMeasurableMacro(VoltageReading)(kFsTorquerYAV);
+                        LogMeasurableMacro(VoltageReading)(kFsTorquerYBV);
+                        LogMeasurableMacro(VoltageReading)(kFsTorquerZAV);
+                        LogMeasurableMacro(VoltageReading)(kFsTorquerZBV);
 
-                    LogMeasurableMacro(TemperatureReading)(kFsHbXT);
-                    LogMeasurableMacro(TemperatureReading)(kFsHbYT);
-                    LogMeasurableMacro(TemperatureReading)(kFsHbZT);
-                    LogMeasurableMacro(GyroscopeReading)(kFsImuGyro1);
-                    LogMeasurableMacro(AccelerometerReading)(kFsImuAccel1);
-                    LogMeasurableMacro(TemperatureReading)(kFsImuT1);
-                    LogMeasurableMacro(MagnetometerReading)(kFsImuMagno1);
-                    LogMeasurableMacro(GyroscopeReading)(kFsImuGyro2);
-                    LogMeasurableMacro(AccelerometerReading)(kFsImuAccel2);
-                    LogMeasurableMacro(TemperatureReading)(kFsImuT2);
-                    LogMeasurableMacro(MagnetometerReading)(kFsImuMagno2);
+                        LogMeasurableMacro(TemperatureReading)(kFsHbXT);
+                        LogMeasurableMacro(TemperatureReading)(kFsHbYT);
+                        LogMeasurableMacro(TemperatureReading)(kFsHbZT);
+                        LogMeasurableMacro(GyroscopeReading)(kFsImuGyro1);
+                        LogMeasurableMacro(AccelerometerReading)(kFsImuAccel1);
+                        LogMeasurableMacro(TemperatureReading)(kFsImuT1);
+                        LogMeasurableMacro(MagnetometerReading)(kFsImuMagno1);
+                        LogMeasurableMacro(GyroscopeReading)(kFsImuGyro2);
+                        LogMeasurableMacro(AccelerometerReading)(kFsImuAccel2);
+                        LogMeasurableMacro(TemperatureReading)(kFsImuT2);
+                        LogMeasurableMacro(MagnetometerReading)(kFsImuMagno2);
+                    }
                 }
 
                 if (kCdhBoardAvailable) {
