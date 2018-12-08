@@ -20,6 +20,7 @@
 #include <src/util/matrix.h>
 #include <src/util/message_codes.h>
 #include <src/util/msp_exception.h>
+#include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/tirtos_utils.h>
 #include <ti/sysbios/BIOS.h>
@@ -86,9 +87,16 @@ void RunnableOrientationControl::ControlOrientation() {
             // TODO (rskew) fuse readings from both magnetometers giving
             // redundancy
             // TODO(rskew) handle exception from magnetometer overflow
+
             MagnetometerReading magnetometer_reading =
-                measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-                    kFsImuMagno2, 0);
+                MagnetometerReading_init_default;
+            {
+                MutexLocker locker(SatellitePower::GetMutex());
+                magnetometer_reading =
+                    measurable_manager
+                        ->ReadNanopbMeasurable<MagnetometerReading>(
+                            kFsImuMagno2, 0);
+            }
 
             if (kHilAvailable) {
                 // Echo magnetometer reading to DebugClient
