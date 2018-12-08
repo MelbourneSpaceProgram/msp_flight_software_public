@@ -42,7 +42,7 @@ class ScienceDataUplink : public Uplink {
                 // Retrieve the latest reading
                 result = MeasurableManager::GetInstance()
                              ->ReadNanopbMeasurable<NanopbMessageType>(
-                                 measurable_id, 0, true);
+                                 measurable_id, 0);
             } else {
                 // Retrieve a historical reading in the sd card
                 result = CircularBufferNanopb(NanopbMessageType)::Search(
