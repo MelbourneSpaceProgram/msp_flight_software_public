@@ -2,6 +2,7 @@
 #include <src/board/i2c/i2c.h>
 #include <src/config/satellite.h>
 #include <src/util/msp_exception.h>
+#include <src/util/satellite_power.h>
 #include <src/util/tirtos_utils.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
@@ -35,11 +36,8 @@ void I2c::InitBusses() {
     // conditions We could also do this by sending a reset command however a
     // power cycle is easier. 1ms exceeds the minimum cycle time of 500ns per
     // datasheet
-    Log_info0("I2c mux a power-down");
-    GPIO_write(I2C_MUX_nRST, 0);
-    TirtosUtils::SleepMilli(1);
-    Log_info0("I2c mux a power-up");
-    GPIO_write(I2C_MUX_nRST, 1);
+    SatellitePower::ResetMuxA();
+    //    SatellitePower::ResetMuxC();
 
     for (uint8_t i = 0; i < Board_I2CCOUNT; i++) {
         if (I2c_busses[i] == NULL) {
@@ -56,6 +54,14 @@ void I2c::InitBusses() {
                     kI2cOpenFail, __FILE__, __LINE__);
             }
         }
+    }
+}
+
+void I2c::ResetBus(uint8_t bus_index) {
+    if (bus_index < Board_I2CCOUNT) {
+        if (kVerboseLogging) Log_info1("Resetting bus %d", bus_index);
+        I2C_close(I2c_busses[bus_index]);
+        I2c_busses[bus_index] = I2C_open(bus_index, &I2c_params[bus_index]);
     }
 }
 

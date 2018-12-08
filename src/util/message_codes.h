@@ -203,9 +203,9 @@ enum ErrorId {
     kLithiumMutexFail,
     kFecBufferTooSmall,
     kPayloadExceedsFecBuffer,
-	kImuNull1,
-	kImuNull2,
-    kNumExceptionTypes, // Put all exception codes before this
+    kImuNull1,
+    kImuNull2,
+    kNumExceptionTypes,  // Put all exception codes before this
 };
 
 enum CatchId {
@@ -255,8 +255,10 @@ enum CatchId {
     kRunnableBeaconCatch,
     kTopLevelCatch,
     kTransmitPacketBuild,
-	kImuInitialise1Catch,
-	kImuInitialise2Catch,
+    kImuInitialise1Catch,
+    kImuInitialise2Catch,
+    kIoExpanderMuxCResetInitCatch,
+    kIoExpanderMuxCResetCatch,
 };
 
 #endif  // SRC_UTIL_MESSAGE_CODES_H_

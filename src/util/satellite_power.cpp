@@ -54,6 +54,12 @@ void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
                                       IoExpander::kIoOutput);
         io_expander_bms->SetPolarity(kIoExpanderPinFSEn,
                                      IoExpander::kIoActiveHigh);
+
+        io_expander_bms->SetPin(kIoExpanderPinMuxCReset, false);
+        io_expander_bms->SetPolarity(kIoExpanderPinMuxCReset,
+                                     IoExpander::kIoActiveLow);
+        io_expander_bms->SetDirection(kIoExpanderPinMuxCReset,
+                                      IoExpander::kIoOutput);
     } catch (MspException& e) {
         MspException::LogException(e, kSatellitePowerInitCatch);
         Log_error0("BMS IO expander failed to initialise properly");
@@ -206,4 +212,27 @@ bool SatellitePower::BatteryIsCharging(BmsId bms_id) {
 uint8_t SatellitePower::GetIChargeIndex(BmsId bms_id) {
     if (!initialised) return kInitialIChargeIndex;
     return i_charge_index[bms_id];
+}
+
+bool SatellitePower::ResetMuxC() {
+    if (kVerboseLogging) Log_info0("Reset Mux C");
+    const IoExpander* io_expander_bms =
+        IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
+    try {
+        io_expander_bms->SetPin(kIoExpanderPinMuxCReset, true);
+        TirtosUtils::SleepMilli(kMuxResetWaitMs);
+        io_expander_bms->SetPin(kIoExpanderPinMuxCReset, false);
+    } catch (MspException& e) {
+        MspException::LogException(e, kIoExpanderMuxCResetCatch);
+        Log_error0("Failed to reset MUX C via the EPS IO expander");
+        return false;
+    }
+    return true;
+}
+
+void SatellitePower::ResetMuxA() {
+    if (kVerboseLogging) Log_info0("Reset Mux A");
+    GPIO_write(I2C_MUX_nRST, 0);
+    TirtosUtils::SleepMilli(kMuxResetWaitMs);
+    GPIO_write(I2C_MUX_nRST, 1);
 }

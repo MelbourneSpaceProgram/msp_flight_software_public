@@ -30,11 +30,15 @@ class SatellitePower {
     static bool ConfigureBms(BmsId bms_id);
     static bool ConfigureBmsICharge(BmsId bms_id);
     static GateMutexPri_Handle& GetMutex();
+    static bool ResetMuxC();
+    static void ResetMuxA();
 
     static constexpr IoExpander::IoPin kIoExpanderPinBms1En =
         IoExpander::kIoPin0;
     static constexpr IoExpander::IoPin kIoExpanderPinBms2En =
         IoExpander::kIoPin2;
+    static constexpr IoExpander::IoPin kIoExpanderPinMuxCReset =
+        IoExpander::kIoPin4;
     static constexpr IoExpander::IoPin kIoExpanderPinFSEn =
         IoExpander::kIoPin15;
     static constexpr IoExpander::IoPin kIoExpanderPinTelecomsEn1 =
@@ -45,7 +49,7 @@ class SatellitePower {
    private:
     static GateMutexPri_Params mutex_params;
     static GateMutexPri_Handle power_mutex;
-	static bool initialised;
+    static bool initialised;
     static Bms* bms[2];
     static uint8_t i_charge_index[2];
 

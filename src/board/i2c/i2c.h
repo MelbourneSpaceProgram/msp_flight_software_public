@@ -89,6 +89,7 @@ class I2c {
 
     char GetBusLabel() const;
     static void InitBusses();
+    static void ResetBus(uint8_t bus_index);
 
     static GateMutexPri_Handle i2c_mutex;
     static GateMutexPri_Params mutex_params;

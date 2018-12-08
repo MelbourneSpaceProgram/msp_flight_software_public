@@ -1,6 +1,7 @@
 #include <src/config/satellite.h>
 #include <src/sensors/i2c_sensors/i2c_device.h>
 #include <src/util/msp_exception.h>
+#include <src/util/satellite_power.h>
 #include <cstdio>
 
 GateMutexPri_Params mutex_params;
@@ -35,11 +36,23 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
 bool I2cDevice::MuxSelect() const {
     if (multiplexer != NULL && kI2cAvailable) {
         if (!multiplexer->CloseAllChannels()) {
+            // A failure here indicates very likely that there is a hardware
+            // error with the bus or multiplexer
             Log_error2("Unable to contact mux on bus %d for sensor address %d",
                        multiplexer->GetBus()->index, address);
+            // Bus A and C are susceptible to requiring an I2c peripheral reset
+            if (bus->index == 0) {
+                SatellitePower::ResetMuxA();
+                I2c::ResetBus(bus->index);
+            } else if (bus->index == 2) {
+                SatellitePower::ResetMuxC();
+                I2c::ResetBus(bus->index);
+            }
             return false;
         }
-        if (!multiplexer->OpenChannel(channel)) return false;
+        if (!multiplexer->OpenChannel(channel)) {
+            return false;
+        }
     }
     return true;
 }
