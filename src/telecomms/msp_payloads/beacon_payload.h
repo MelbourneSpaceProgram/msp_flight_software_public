@@ -55,7 +55,7 @@ class BeaconPayload : public TransmitPayload {
     static constexpr uint8_t kFsHealthFlagByteCount = 20;
     static constexpr uint8_t kFsFsAttitudeFlagByteCount = 2;
     static constexpr uint8_t kSwFsLocationFloatCount = 2;
-    static constexpr uint8_t kOutreachMessageSize = 46;
+    static constexpr uint8_t kOutreachMessageSize = 48;
 
     static constexpr uint8_t kVoltageUpperBound =
         20;  // assumed [-20, 20] value range

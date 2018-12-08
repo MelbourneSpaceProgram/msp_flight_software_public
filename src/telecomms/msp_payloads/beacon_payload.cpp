@@ -45,7 +45,7 @@ BeaconPayload::BeaconPayload()
       cdh_time(SatelliteTimeSource::GetTime()),
       sw_cdh_last_reboot(SatelliteTimeSource::GetInitialTime()),
       sw_sequence(RunnablePayloadProcessor::GetSequence()),
-      comms_outreach("Brought to you by the Melbourne Space Program   ") {
+	  comms_outreach("TODO: Please tell MSP that their satellite works") {
     // TODO(dingbenjamin): Replace the invalid initializers
 }
 

@@ -3,7 +3,7 @@
 #include <src/util/data_types.h>
 #include <src/util/message_codes.h>
 
-std::string LimpModeBeaconPayload::kLimpModeMessage = "Satellite is fucked";
+std::string LimpModeBeaconPayload::kLimpModeMessage = "Satellite is gosh darned";
 
 LimpModeBeaconPayload::LimpModeBeaconPayload() {}
 
