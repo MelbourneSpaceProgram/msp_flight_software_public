@@ -2,6 +2,7 @@
 #include <src/board/uart/uart.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
+#include <src/database/flash_memory/flash_memory_management.h>
 #include <src/database/flash_memory/flash_storables/reset_info_container.h>
 #include <src/init/init.h>
 #include <src/init/limp_mode_initialiser.h>
@@ -44,6 +45,13 @@ void PreBiosInit() {
     }
 
     SysCtlDelay(20E6);  // Externally activated hibernation window
+
+    if (kEraseFlashOnStartup) {
+        FlashMemoryManagement::EraseFlashMemory();
+        while (1) {
+            // Spin to avoid putting anything in flash
+        }
+    }
 
     initGeneral();
     GPIO_init();
