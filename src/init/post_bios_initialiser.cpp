@@ -266,7 +266,7 @@ void PostBiosInitialiser::InitConsoleUart(uint16_t logger_stack_size,
 void PostBiosInitialiser::InitAntennaBurner(uint16_t stack_size) {
     // TODO (rskew) review priority
     TaskHolder* antenna_burner_task = new TaskHolder(
-        stack_size, "AntennaBurner", 6, new RunnableAntennaBurner());
+        stack_size, "AntennaBurner", 9, new RunnableAntennaBurner());
     antenna_burner_task->Start();
 }
 
