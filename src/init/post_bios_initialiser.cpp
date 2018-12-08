@@ -5,6 +5,7 @@
 #include <src/board/debug_interface/debug_stream.h>
 #include <src/board/i2c/io_expander/io_expander.h>
 #include <src/board/uart/uart.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/config/stacks.h>
 #include <src/database/eeprom.h>

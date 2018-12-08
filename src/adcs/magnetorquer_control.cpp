@@ -2,6 +2,7 @@
 #include <src/adcs/magnetorquer_control.h>
 #include <src/board/board.h>
 #include <src/board/debug_interface/debug_stream.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/messages/PwmOutputReading.pb.h>
 #include <src/util/message_codes.h>
@@ -15,13 +16,15 @@
 // Compute the exponential decay multiplier from the time constant
 // and sample period:
 const float MagnetorquerControl::kDegaussingDecayMultiplier =
-    exp(-(2 * static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6) /
-        (static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3));
+    exp(-(2 * static_cast<double>(kDegaussingSwitchPeriodMicros)) /
+        (static_cast<double>(kDegaussingTimeConstantMillis) * 1e3));
 
-// 3 time constants worth of exp decay:
 const uint16_t MagnetorquerControl::kNDegaussPulses =
-    round((3 * static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3) /
-          (static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6));
+    round((static_cast<double>(kDegaussingPeriodMillis) * 1e3) /
+          (static_cast<double>(kDegaussingSwitchPeriodMicros)));
+
+// Or just use trial and error ;)
+const uint16_t MagnetorquerControl::kNPulsesFudge = 15;
 
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
@@ -37,18 +40,16 @@ void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
         PushDebugMessage(x, y, z);
     }
 
-    // Map from the body frame to the magnetorquer 'frame'.
-    // Note: the magnetorquers may be orientated arbitrarily, and so the
-    //   'a', 'b' and 'c' components may not make a right-handed coordinate
-    //   system. Therefore, the transformation from the body frame to the
-    //   magnetorquer 'frame' may not be a pure rotation.
+    // Map from body frame x,y,z to the magnetorquers they are connected to,
+    // compensating for arbitrary wiring.
     NewStackMatrixMacro(magnetorquer_power_body_frame, 3, 1);
     magnetorquer_power_body_frame.Set(0, 0, x);
     magnetorquer_power_body_frame.Set(1, 0, y);
     magnetorquer_power_body_frame.Set(2, 0, z);
-    double magnetorquer_power_magnetorquer_frame_data[3][1];
-    Matrix magnetorquer_power_magnetorquer_frame(
-        magnetorquer_power_magnetorquer_frame_data);
+    // double magnetorquer_power_magnetorquer_frame_data[3][1];
+    // Matrix magnetorquer_power_magnetorquer_frame(
+    //    magnetorquer_power_magnetorquer_frame_data);
+    NewStackMatrixMacro(magnetorquer_power_magnetorquer_frame, 3, 1);
     magnetorquer_power_magnetorquer_frame.Multiply(
         kBodyToMagnetorquerFrameTransform, magnetorquer_power_body_frame);
     float a = magnetorquer_power_magnetorquer_frame.Get(0, 0);
@@ -170,7 +171,7 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
 
 void MagnetorquerControl::Degauss() {
     float power = kOrientationControlPowerLevel;
-    for (uint8_t i = 0; i < kNDegaussPulses; i++) {
+    for (uint16_t i = 0; i < kNPulsesFudge; i++) {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
         // Wait for timer
@@ -185,11 +186,11 @@ void MagnetorquerControl::Degauss() {
             // Negative power
             SetMagnetorquersPowerFraction(-power, -power, -power);
             // Update power and wait for timer
-            power = power * kDegaussingDecayMultiplier;
+            power = power * kDegaussingDecayMultiplier * 0.8;
             Semaphore_pend(degaussing_timer_semaphore, BIOS_WAIT_FOREVER);
         } else {
             SetMagnetorquersPowerFraction(-power, -power, -power);
-            power = power * kDegaussingDecayMultiplier;
+            power = power * kDegaussingDecayMultiplier * 0.8;
         }
     }
 }

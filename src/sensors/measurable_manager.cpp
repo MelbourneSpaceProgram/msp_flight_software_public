@@ -1,4 +1,5 @@
 #include <src/board/i2c/bms/bms.h>
+#include <src/config/orientation_control_tuning_parameters.h>
 #include <src/config/satellite.h>
 #include <src/sensors/i2c_sensors/mcp9808.h>
 #include <src/sensors/i2c_sensors/measurables/bms_battery_temperature_measurable.h>
@@ -16,12 +17,12 @@
 #include <src/sensors/i2c_sensors/measurables/imu_temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/temperature_measurable.h>
 #include <src/sensors/i2c_sensors/measurables/voltage_measurable.h>
-#include <src/sensors/software_measurables/lithium_telemetry_measurable.h>
-#include <src/sensors/software_measurables/antenna_burner_info_measurable.h>
 #include <src/sensors/i2c_sensors/mpu9250_motion_tracker.h>
 #include <src/sensors/magnetometer_calibration.h>
 #include <src/sensors/measurable_id.h>
 #include <src/sensors/measurable_manager.h>
+#include <src/sensors/software_measurables/antenna_burner_info_measurable.h>
+#include <src/sensors/software_measurables/lithium_telemetry_measurable.h>
 #include <src/sensors/software_measurables/reset_info_container_measurable.h>
 #include <src/util/satellite_power.h>
 
@@ -90,8 +91,7 @@ void MeasurableManager::InitTelecomms(const I2cMultiplexer *mux_a) {
     AddTemperature(kComT1, comms_temp_1);
     AddTemperature(kComT2, comms_temp_2);
 
-    LithiumTelemetryMeasurable *telemetry =
-        new LithiumTelemetryMeasurable();
+    LithiumTelemetryMeasurable *telemetry = new LithiumTelemetryMeasurable();
     measurables[kLithiumTelemetry] = telemetry;
 }
 
