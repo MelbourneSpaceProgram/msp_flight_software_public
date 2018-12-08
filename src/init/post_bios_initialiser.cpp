@@ -104,7 +104,7 @@ void PostBiosInitialiser::InitOrientationControl(uint16_t stack_size) {
 
         // TODO(rskew) review priority
         TaskHolder* orientation_control_task =
-            new TaskHolder(stack_size, "OrientationControl", 7,
+            new TaskHolder(stack_size, "OrientationControl", 10,
                            new RunnableOrientationControl());
         Mailbox_Params_init(
             &LocationEstimator::tle_update_uplink_mailbox_params);

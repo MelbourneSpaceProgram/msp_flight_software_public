@@ -66,6 +66,7 @@ class MagnetorquerControl {
     static Semaphore_Handle degaussing_timer_semaphore;
     static const float kDegaussingDecayMultiplier;
     static const uint16_t kNDegaussPulses;
+    static const uint16_t kNPulsesFudge;
     static const uint16_t kDegaussingTimeConstantMillis = 1;
     static const uint16_t kDegaussingPeriodMillis = 15;
 };

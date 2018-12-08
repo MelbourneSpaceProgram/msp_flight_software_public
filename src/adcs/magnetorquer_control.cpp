@@ -23,6 +23,9 @@ const uint16_t MagnetorquerControl::kNDegaussPulses =
     round((static_cast<double>(kDegaussingPeriodMillis) * 1e3) /
           (static_cast<double>(kDegaussingSwitchPeriodMicros)));
 
+// Or just use trial and error ;)
+const uint16_t MagnetorquerControl::kNPulsesFudge = 13;
+
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
 PWM_Handle MagnetorquerControl::pwm_handle_axis_a = NULL;
@@ -168,7 +171,7 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
 
 void MagnetorquerControl::Degauss() {
     float power = kOrientationControlPowerLevel;
-    for (uint16_t i = 0; i < 22; i++) {
+    for (uint16_t i = 0; i < kNPulsesFudge; i++) {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);
         // Wait for timer

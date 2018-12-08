@@ -83,9 +83,10 @@ void RunnableOrientationControl::ControlOrientation() {
             // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
             MagnetorquerControl::Degauss();
-            MagnetorquerControl::SetMagnetorquersPowerFraction(1, 1, 1);
-            TirtosUtils::SleepMilli(30);
-            MagnetorquerControl::SetMagnetorquersPowerFraction(0, 0, 0);
+            // Indicator pulse to signal end of degaussing (for tuning)
+            //MagnetorquerControl::SetMagnetorquersPowerFraction(1, 1, 1);
+            //TirtosUtils::SleepMilli(1);
+            //MagnetorquerControl::SetMagnetorquersPowerFraction(0, 0, 0);
 
             // Read Magnetometer
             // TODO (rskew) fuse readings from both magnetometers giving
@@ -125,9 +126,10 @@ void RunnableOrientationControl::ControlOrientation() {
                 b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
                 Log_info3("B dot estimate: %d %d %d",
-                          (int)b_dot_estimate.Get(0, 0),
-                          (int)b_dot_estimate.Get(1, 0),
-                          (int)b_dot_estimate.Get(2, 0));
+                (int)b_dot_estimate.Get(0, 0),
+                (int)b_dot_estimate.Get(1, 0),
+                (int)b_dot_estimate.Get(2, 0));
+
                 // b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
                 // b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
                 // b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
