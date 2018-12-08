@@ -1,6 +1,7 @@
 #include <external/nanopb/pb_decode.h>
 #include <src/database/circular_buffer_nanopb.h>
 #include <src/messages/AccelerometerReading.pb.h>
+#include <src/messages/AntennaBurnerInfoReading.pb.h>
 #include <src/messages/BmsChargingInfoReading.pb.h>
 #include <src/messages/BmsCurrentsReading.pb.h>
 #include <src/messages/BmsOperationValuesReading.pb.h>
@@ -9,7 +10,9 @@
 #include <src/messages/BmsVoltagesReading.pb.h>
 #include <src/messages/CurrentReading.pb.h>
 #include <src/messages/GyroscopeReading.pb.h>
+#include <src/messages/LithiumTelemetryReading.pb.h>
 #include <src/messages/MagnetometerReading.pb.h>
+#include <src/messages/ResetInfoContainerReading.pb.h>
 #include <src/messages/TemperatureReading.pb.h>
 #include <src/messages/TorqueOutputReading.pb.h>
 #include <src/messages/VoltageReading.pb.h>
@@ -51,9 +54,14 @@ bool ScienceDataUplink::ExecuteUplink() {
     if (RetrieveAndSendDataMacro(BmsSettingsReading)(requested_id)) return true;
     if (RetrieveAndSendDataMacro(BmsTemperatureReading)(requested_id))
         return true;
-    if (RetrieveAndSendDataMacro(BmsVoltagesReading)(requested_id)) return true;
-	
+    if (RetrieveAndSendDataMacro(ResetInfoContainerReading)(requested_id))
         return true;
+    if (RetrieveAndSendDataMacro(LithiumTelemetryReading)(requested_id))
+        return true;
+    if (RetrieveAndSendDataMacro(AntennaBurnerInfoReading)(requested_id))
+        return true;
+
+    return true;
 
     Log_error1(
         "Could not find the correct nanopb message type/retrieve the nanopb "
