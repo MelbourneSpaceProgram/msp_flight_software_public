@@ -11,7 +11,7 @@ class RunnableConsoleLogger : public Runnable {
     explicit RunnableConsoleLogger(Uart* debug_uart);
     fnptr GetRunnablePointer();
     static void WriteToDataLogger(uint8_t measurable_id, byte encoded_message[],
-                                  uint8_t message_size);
+                                  uint8_t message_size, bool use_mutex = true);
     static bool IsInitialised();
     static constexpr uint8_t kMeasurableLoggerSyncChar1 = 0xCA;
     static constexpr uint8_t kMeasurableLoggerSyncChar2 = 0xFE;
@@ -29,6 +29,7 @@ class RunnableConsoleLogger : public Runnable {
 extern "C" {
 void UartPutch(char);
 void UartFlush();
+void FullUartFlush();
 }
 
 #endif  // RUNNABLE_CONSOLE_LOGGER_H_

@@ -61,6 +61,7 @@ constexpr bool kHilAvailable = false;
 constexpr bool kDitlMode = false;
 constexpr bool kVerboseLogging = false;
 constexpr bool kRebootOnTopLevelException = true;
+constexpr bool kFlushUartOnHardFault = false;
 
 //////////////////// TASK CONSTANTS ////////////////////
 
