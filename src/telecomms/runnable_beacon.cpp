@@ -10,7 +10,7 @@
 #include <src/util/tirtos_utils.h>
 #include <xdc/runtime/Log.h>
 
-uint32_t RunnableBeacon::beacon_period_ms = kNominalBeaconPeriodMs;
+uint32_t RunnableBeacon::beacon_period_ms = SystemConfiguration::GetInstance()->GetNominalBeaconPeriodMs();
 bool RunnableBeacon::limp_mode_beacon = false;
 bool RunnableBeacon::initialised = false;
 
@@ -29,7 +29,7 @@ void RunnableBeacon::Beacon() {
         try {
             // TODO(dingbenjamin): Implement remaining beacon fields
 
-            TirtosUtils::SleepMilli(beacon_period_ms - kSolarPowerRecoveryTimeMs);
+            TirtosUtils::SleepMilli(beacon_period_ms - SystemConfiguration::GetInstance()->GetSolarPowerRecoveryTimeMs());
 
             // Avoid building the packet if transmit is disabled
             if (lithium->IsTransmitEnabled()) {

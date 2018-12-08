@@ -7,7 +7,7 @@
 
 TEST_GROUP(TcomCheckout) {
     void setup() {
-        if (!kTcomBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsTcomBoardAvailable()) {
             TEST_EXIT
         }
     };

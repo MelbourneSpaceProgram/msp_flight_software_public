@@ -23,7 +23,7 @@ SerialisedMessage TransmitPacket::SerialiseTo(byte *serial_buffer) const {
         .AddData<uint8_t>(transmit_payload->GetPayloadCode())
         .AddMessage(transmit_payload);
 
-    if (kDownlinkFecEnabled) {
+    if (SystemConfiguration::GetInstance()->IsDownlinkFecEnabled()) {
         try {
             EncodeWithFec(serial_buffer, &builder);
         } catch (MspException& e) {

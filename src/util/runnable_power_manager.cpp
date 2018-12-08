@@ -75,11 +75,11 @@ void RunnablePowerManager::ManagePower() {
                     if (!SatellitePower::BatteryIsCharging(current_bms_id)) {
                         // Immediately drop ICharge if battery isn't charging
                         state = ICHARGE_DECREASING;
-                    } else if (millis_since_hold_start < kIChargeHoldTimeMs) {
+                    } else if (millis_since_hold_start < SystemConfiguration::GetInstance()->GetIChargeHoldTimeMs()) {
                         // ICharge is in the optimal state (as of the start of
                         // the hold), keep holding.
-                        TirtosUtils::SleepMilli(kIChargeHoldPollMs);
-                        millis_since_hold_start += kIChargeHoldPollMs;
+                        TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetIChargeHoldPollMs());
+                        millis_since_hold_start += SystemConfiguration::GetInstance()->GetIChargeHoldPollMs();
                     } else {
                         state = ICHARGE_INCREASING;
                     }

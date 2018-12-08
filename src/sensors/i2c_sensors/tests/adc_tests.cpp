@@ -12,7 +12,7 @@ static constexpr byte kMultiplexerAddress = 0x76;
 
 TEST_GROUP(Adc) {
     void setup() {
-        if (!kI2cAvailable || !kFsBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable() || !SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
             TEST_EXIT;
         }
     };

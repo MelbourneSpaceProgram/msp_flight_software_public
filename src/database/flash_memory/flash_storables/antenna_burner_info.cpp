@@ -5,7 +5,7 @@ AntennaBurnerInfo::AntennaBurnerInfo()
     : FlashStorable<AntennaBurnerInfoStruct>(
           kAntennaBurnerInfoFlashStorageAddress),
       last_burn_attempt_timestamp_ms(0),
-      burn_interval_ms(kInitialAntennaBurnIntervalMs),
+      burn_interval_ms(SystemConfiguration::GetInstance()->GetInitialAntennaBurnIntervalMs()),
       attempt_antenna_burn(true) {
     UpdateFromFlash();
 }

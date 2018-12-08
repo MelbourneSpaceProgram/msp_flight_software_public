@@ -147,7 +147,7 @@ TEST(PayloadProcessor, TestTleUpdateUplink) {
 }
 
 TEST(PayloadProcessor, TestLithiumTestUplink) {
-    if (!kTcomBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsTcomBoardAvailable()) {
         TEST_EXIT
     }
 
@@ -175,7 +175,7 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodUplink) {
 
     // Reset to nominal
 
-    injected_beacon_period = {kNominalBeaconPeriodMs};
+    injected_beacon_period = {SystemConfiguration::GetInstance()->GetNominalBeaconPeriodMs()};
 
     byte reset_payload[Lithium::kMaxReceivedUplinkSize] = {0};
     MockUplinkBuilder reset_builder(reset_payload,
@@ -185,12 +185,12 @@ TEST(PayloadProcessor, TestLithiumBeaconPeriodUplink) {
             injected_beacon_period);
 
     CHECK(payload_processor.ParseAndExecuteUplinks(reset_builder.Build()));
-    CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), kNominalBeaconPeriodMs);
+    CHECK_EQUAL(RunnableBeacon::GetBeaconPeriodMs(), SystemConfiguration::GetInstance()->GetNominalBeaconPeriodMs());
 }
 
 TEST(PayloadProcessor, TestScienceDataUplink) {
     try {
-        if (!kSdCardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
             TEST_EXIT
         }
 
@@ -439,9 +439,9 @@ TEST(PayloadProcessor, TestSequence) {
         builder.GetMockUplinkBuffer()));
 
     // TODO(dingbenjamin): Move this to teardown
-    RunnablePayloadProcessor::check_sequence = kCheckSequenceDefault;
-    RunnablePayloadProcessor::check_hmac = kCheckHmacDefault;
-    RunnablePayloadProcessor::use_fec = kDownlinkFecEnabled;
+    RunnablePayloadProcessor::check_sequence = SystemConfiguration::GetInstance()->IsCheckSequenceDefault();
+    RunnablePayloadProcessor::check_hmac = SystemConfiguration::GetInstance()->IsCheckHmacDefault();
+    RunnablePayloadProcessor::use_fec = SystemConfiguration::GetInstance()->IsDownlinkFecEnabled();
     RunnablePayloadProcessor::sequence = 0;
 }
 
@@ -486,7 +486,7 @@ TEST(PayloadProcessor, TestSetBootStateUplink) {
 }
 
 TEST(PayloadProcessor, TestSetIChargeUplink) {
-    if (kBmsAvailable) {
+    if (SystemConfiguration::GetInstance()->IsBmsAvailable()) {
         byte payload[Lithium::kMaxReceivedUplinkSize] = {0};
         MockUplinkBuilder builder(payload, Lithium::kMaxReceivedUplinkSize);
 

@@ -15,8 +15,8 @@ GateMutexPri_Params SatellitePower::mutex_params;
 GateMutexPri_Handle SatellitePower::power_mutex = NULL;
 bool SatellitePower::initialised = false;
 Bms* SatellitePower::bms[2];
-uint8_t SatellitePower::i_charge_index[2] = {kInitialIChargeIndex,
-                                             kInitialIChargeIndex};
+uint8_t SatellitePower::i_charge_index[2] = {SystemConfiguration::GetInstance()->GetInitialIChargeIndex(), // TODO(dingbenjamin): Fucked
+                                             SystemConfiguration::GetInstance()->GetInitialIChargeIndex()};
 constexpr int SatellitePower::kBmsCurrentsMeasurableId[2];
 
 void SatellitePower::Initialize(Bms* bms_bus_d, Bms* bms_bus_c) {
@@ -65,7 +65,7 @@ GateMutexPri_Handle& SatellitePower::GetMutex() { return power_mutex; }
 
 void SatellitePower::CutPowerFromPanels() {
     if (!initialised) return;
-    if (kVerboseLogging) Log_info0("Cutting power from solar panels");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) Log_info0("Cutting power from solar panels");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinBms1En, false);
@@ -74,7 +74,7 @@ void SatellitePower::CutPowerFromPanels() {
 
 void SatellitePower::RestorePowerFromPanels() {
     if (!initialised) return;
-    if (kVerboseLogging) Log_info0("Restoring power from solar panels");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) Log_info0("Restoring power from solar panels");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinBms1En, true);
@@ -83,7 +83,7 @@ void SatellitePower::RestorePowerFromPanels() {
 
 void SatellitePower::CutPowerToFlightSystems() {
     if (!initialised) return;
-    if (kVerboseLogging) Log_info0("Cutting power to Flight Systems");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) Log_info0("Cutting power to Flight Systems");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinFSEn, false);
@@ -91,7 +91,7 @@ void SatellitePower::CutPowerToFlightSystems() {
 
 void SatellitePower::RestorePowerToFlightSystems() {
     if (!initialised) return;
-    if (kVerboseLogging) Log_info0("Restoring power to Flight Systems");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) Log_info0("Restoring power to Flight Systems");
     const IoExpander* io_expander_bms =
         IoExpander::GetIoExpander(IoExpander::kEpsIoExpander);
     io_expander_bms->SetPin(kIoExpanderPinFSEn, true);
@@ -134,13 +134,13 @@ void SatellitePower::RestorePowerToFlightSystems() {
 
 void SatellitePower::CutPowerToTelecoms() {
     if (!initialised) return;
-    if (kVerboseLogging) Log_info0("Cutting power to Telecoms");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) Log_info0("Cutting power to Telecoms");
     GPIO_write(nCOMMS_RST, 0);
 }
 
 void SatellitePower::RestorePowerToTelecoms() {
     if (!initialised) return;
-    if (kVerboseLogging) Log_info0("Restoring power to Telecoms");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) Log_info0("Restoring power to Telecoms");
     GPIO_write(nCOMMS_RST, 1);
 }
 
@@ -151,7 +151,7 @@ bool SatellitePower::ConfigureBms(BmsId bms_id) {
 
 bool SatellitePower::ConfigureBmsICharge(BmsId bms_id) {
     if (!initialised) return false;
-    if (kVerboseLogging)
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
         Log_info2("Re-configuring BMS bus %d with I-charge index: %d", bms_id,
                   i_charge_index[bms_id]);
     bool success = bms[bms_id]->SetICharge(i_charge_index[bms_id]);
@@ -204,6 +204,6 @@ bool SatellitePower::BatteryIsCharging(BmsId bms_id) {
 }
 
 uint8_t SatellitePower::GetIChargeIndex(BmsId bms_id) {
-    if (!initialised) return kInitialIChargeIndex;
+    if (!initialised) return SystemConfiguration::GetInstance()->GetInitialIChargeIndex();
     return i_charge_index[bms_id];
 }

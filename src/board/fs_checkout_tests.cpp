@@ -8,7 +8,7 @@
 
 TEST_GROUP(FsCheckout) {
     void setup() {
-        if (!kFsBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
             TEST_EXIT
         }
     };

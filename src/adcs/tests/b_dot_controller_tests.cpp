@@ -29,13 +29,13 @@ TEST(BDotController, SignedPwmInExpectedDirection) {
     BDotController::ComputeControl(b_dot, signed_pwm);
 
     DOUBLES_EQUAL(
-        -bdot_est * kBDotControllerGains[0] / kMaxMagnetorquerDipole[0],
+        -bdot_est * kBDotControllerGains[0] / SystemConfiguration::GetInstance()->GetMaxMagnetorquerDipole()[0],
         signed_pwm.Get(0, 0), 0.0001);
     DOUBLES_EQUAL(
-        -bdot_est * kBDotControllerGains[1] / kMaxMagnetorquerDipole[1],
+        -bdot_est * kBDotControllerGains[1] / SystemConfiguration::GetInstance()->GetMaxMagnetorquerDipole()[1],
         signed_pwm.Get(1, 0), 0.0001);
     DOUBLES_EQUAL(
-        bdot_est * kBDotControllerGains[2] / kMaxMagnetorquerDipole[2],
+        bdot_est * kBDotControllerGains[2] / SystemConfiguration::GetInstance()->GetMaxMagnetorquerDipole()[2],
         signed_pwm.Get(2, 0), 0.0001);
 
     b_dot.Set(0, 0, 10 * bdot_est);
@@ -50,10 +50,10 @@ TEST(BDotController, SignedPwmInExpectedDirection) {
     // the output.
 
     DOUBLES_EQUAL(
-        -bdot_est * kBDotControllerGains[1] / kMaxMagnetorquerDipole[1] / 1.5,
+        -bdot_est * kBDotControllerGains[1] / SystemConfiguration::GetInstance()->GetMaxMagnetorquerDipole()[1] / 1.5,
         signed_pwm.Get(1, 0), 0.0001);
     DOUBLES_EQUAL(
-        bdot_est * kBDotControllerGains[2] / kMaxMagnetorquerDipole[2] / 1.5,
+        bdot_est * kBDotControllerGains[2] / SystemConfiguration::GetInstance()->GetMaxMagnetorquerDipole()[2] / 1.5,
         signed_pwm.Get(2, 0), 0.0001);
 }
 

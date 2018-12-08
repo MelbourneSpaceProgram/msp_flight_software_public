@@ -44,7 +44,7 @@ class RunnableSystemHealthCheck : public Runnable {
         size_t size;
         pb_get_encoded_size(&size, NanopbMessageType_fields, &pb_reading);
 
-        if (kLogToSd && kSdCardAvailable) {
+        if (SystemConfiguration::GetInstance()->IsLogToSd() && SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
             char file_name[4];
             snprintf(file_name, sizeof(file_name), "%03d", id);
             try {
@@ -61,7 +61,7 @@ class RunnableSystemHealthCheck : public Runnable {
             }
         };
 
-        if (kLogToUart) {
+        if (SystemConfiguration::GetInstance()->IsLogToUart()) {
             assert(NanopbMessageType_size <= 255);
             byte buffer[255];
             try {

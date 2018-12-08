@@ -11,7 +11,7 @@ static constexpr byte kTestRtcAddr = 0x69;
 
 TEST_GROUP(Rtc) {
     void setup() {
-        if (!kI2cAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable()) {
             TEST_EXIT;
         }
     };

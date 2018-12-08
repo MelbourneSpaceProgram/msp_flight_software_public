@@ -20,7 +20,7 @@ bool FormatSdUplink::ExecuteUplink() {
         RunnableSystemHealthCheck::EnableDatalogger(false);
         // Wait for the datalogger to finish an iteration
         TirtosUtils::SleepMilli(
-            kHealthCheckPeriodMs * 10);
+            SystemConfiguration::GetInstance()->GetHealthCheckPeriodMs() * 10);
         SdCard::GetInstance()->Format();
     } catch (MspException& e) {
         Log_info0("Re-enabling data logger");

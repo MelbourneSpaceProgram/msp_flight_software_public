@@ -8,7 +8,7 @@
 
 TEST_GROUP(EpsCheckout) {
     void setup() {
-        if (!kEpsBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsEpsBoardAvailable()) {
             TEST_EXIT
         }
     };

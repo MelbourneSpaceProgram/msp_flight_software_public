@@ -19,7 +19,7 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
     if (antenna_burner_info->last_burn_attempt_timestamp_ms ==
         0xffffffffffffffff) {
         antenna_burner_info->last_burn_attempt_timestamp_ms = 0;
-        antenna_burner_info->burn_interval_ms = kInitialAntennaBurnIntervalMs;
+        antenna_burner_info->burn_interval_ms = SystemConfiguration::GetInstance()->GetInitialAntennaBurnIntervalMs();
     }
 
     while (1) {
@@ -45,12 +45,12 @@ void RunnableAntennaBurner::PeriodicAntennaBurner() {
                         //  even if IsDoorsOpen() returns false (which could be
                         // possible if the I2c bus is down)
                         antenna_burner_info->burn_interval_ms *=
-                            kAntennaBurnIntervalMultiplier;
+                            SystemConfiguration::GetInstance()->GetAntennaBurnIntervalMultiplier();
                         antenna_burner_info->StoreInFlash();
                     }
-                    TirtosUtils::SleepMilli(kAntennaBurnCheckIntervalMs);
+                    TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetAntennaBurnCheckIntervalMs());
                 } else {
-                    TirtosUtils::SleepMilli(kBackupAntennaBurnIntervalMs);
+                    TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetBackupAntennaBurnIntervalMs());
                     Antenna::GetAntenna()->DeployAntenna();
                 }
             } else {

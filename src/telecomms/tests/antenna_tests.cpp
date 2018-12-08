@@ -12,7 +12,7 @@ static constexpr byte kTestHardwareAddr = 0x33;
 
 TEST_GROUP(Antenna) {
     void setup() {
-        if (!kAntennaAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsAntennaAvailable()) {
             TEST_EXIT;
         }
     };

@@ -65,6 +65,10 @@ bool Bms::SetConfiguration(uint8_t i_charge_index) {
     return success;
 }
 
+bool Bms::SetConfiguration() {
+	return Bms::SetConfiguration(SystemConfiguration::GetInstance()->GetInitialIChargeIndex());
+}
+
 bool Bms::SetICharge(uint8_t i_charge_index) {
     bool success = true;
     success = success && WriteToRegister(kIchargeJeita5to6RegisterLocation,

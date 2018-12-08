@@ -66,7 +66,7 @@ void MspException::LogException(const MspException& e, bool store_only) {
 void MspException::LogTopLevelException(MspException& e, CatchId catch_id,
                                         bool store_only) {
     MspException::LogException(e, catch_id, store_only);
-    if (kRebootOnTopLevelException) throw;
+    if (SystemConfiguration::GetInstance()->IsRebootOnTopLevelException()) throw;
     TirtosUtils::SleepMilli(
         10000);  // Allow a backoff period before trying the task again
 }

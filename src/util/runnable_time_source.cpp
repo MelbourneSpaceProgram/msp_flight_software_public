@@ -25,7 +25,7 @@ void RunnableTimeSource::UpdateSatelliteTime() {
             } catch (MspException& e) {
                 MspException::LogException(e, kUpdateSatelliteTimeCatch);
                 Log_error0("Unable to retrieve time from RTC");
-                TirtosUtils::SleepMilli(kTimeUpdatePeriodMs);
+                TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetTimeUpdatePeriodMs());
                 continue;
             }
 
@@ -33,14 +33,14 @@ void RunnableTimeSource::UpdateSatelliteTime() {
                 SatelliteTimeSource::SetTime(time);
             }
 
-            TirtosUtils::SleepMilli(kTimeUpdatePeriodMs);
+            TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetTimeUpdatePeriodMs());
         } catch (MspException& e) {
             // TODO(crozone): Temp ugly hack, should be logging top level
             // exception here but for some reason the previous catch block is
             // not catching the exception properly so instead it is caught here
             MspException::LogException(e, kUpdateSatelliteTimeCatch);
             Log_error0("Unable to retrieve time from RTC");
-            TirtosUtils::SleepMilli(kTimeUpdatePeriodMs);
+            TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetTimeUpdatePeriodMs());
             continue;
         }
     }

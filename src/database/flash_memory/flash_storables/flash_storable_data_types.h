@@ -18,9 +18,9 @@ enum ResetCauses {
     kWatchdog1Reset = SYSCTL_CAUSE_WDOG1,
     kHibernateReset = SYSCTL_CAUSE_HIB,
     kHardwareSystemServiceRequest = SYSCTL_CAUSE_HSRVREQ,
-    kFirstWakeupCause = 0x0000AAAA, // arbitrary value
-    kNoResetCause = 0x0000BBBB, // arbitrary value
-    kUnknownResetCause = 0x0000CCCC // arbitrary value
+    kFirstWakeupCause = 0x0000AAAA,  // arbitrary value
+    kNoResetCause = 0x0000BBBB,      // arbitrary value
+    kUnknownResetCause = 0x0000CCCC  // arbitrary value
 };
 static constexpr uint32_t kNumResetCauses = 11;
 // Must update ResetInfoContainerReading.options if changing the above parameter

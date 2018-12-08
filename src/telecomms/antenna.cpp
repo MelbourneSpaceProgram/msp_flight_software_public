@@ -24,7 +24,7 @@ Antenna::Antenna() {
 }
 
 bool Antenna::SafeDeploy() const {
-    if (!kDeployAntenna) return false;
+    if (!SystemConfiguration::GetInstance()->IsDeployAntenna()) return false;
     if (TryAlgorithm(Antenna::kCommandAllDoorsAlgorithm1)) {
         return true;
     }
@@ -51,7 +51,7 @@ bool Antenna::TryAlgorithm(Antenna::AntennaCommand command) const {
 }
 
 bool Antenna::ForceDeploy() const {
-    if (!kDeployAntenna) return false;
+    if (!SystemConfiguration::GetInstance()->IsDeployAntenna()) return false;
 
     Log_info0("Trying override pin 1");
     GPIO_write(ANT_OVERRIDE_1, 1);

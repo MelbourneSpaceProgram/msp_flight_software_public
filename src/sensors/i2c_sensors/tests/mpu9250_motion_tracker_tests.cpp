@@ -16,7 +16,7 @@ static constexpr double temp_tolerance = 15.00;
 
 TEST_GROUP(MotionTracker) {
     void setup() {
-        if (!kI2cAvailable || !kFsBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable() || !SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
             TEST_EXIT;
         }
     };
@@ -43,7 +43,7 @@ TEST(MotionTracker, TestGyroRead) {
         CHECK_COMPARE(gyroscope_reading.y, >, -full_scale);
         CHECK_COMPARE(gyroscope_reading.z, >, -full_scale);
 
-        if (kVerboseLogging)
+        if (SystemConfiguration::GetInstance()->IsVerboseLogging())
             Log_info3("Gyro: x: %f | y: %f | z: %f", gyroscope_reading.x,
                       gyroscope_reading.y, gyroscope_reading.z);
     } catch (MspException& e) {
@@ -74,7 +74,7 @@ TEST(MotionTracker, TestMagnoRead) {
         CHECK_COMPARE(magnetometer_reading.y, >, -full_scale);
         CHECK_COMPARE(magnetometer_reading.z, >, -full_scale);
 
-        if (kVerboseLogging)
+        if (SystemConfiguration::GetInstance()->IsVerboseLogging())
             Log_info3("Magno: x: %f | y: %f | z: %f", magnetometer_reading.x,
                       magnetometer_reading.y, magnetometer_reading.z);
     } catch (MspException& e) {
@@ -125,7 +125,7 @@ TEST(MotionTracker, TestAccelRead) {
         CHECK_COMPARE(accelerometer_reading.y, >, -full_scale);
         CHECK_COMPARE(accelerometer_reading.z, >, -full_scale);
 
-        if (kVerboseLogging)
+        if (SystemConfiguration::GetInstance()->IsVerboseLogging())
             Log_info3("Magno: x: %f | y: %f | z: %f", accelerometer_reading.x,
                       accelerometer_reading.y, accelerometer_reading.z);
     } catch (MspException& e) {

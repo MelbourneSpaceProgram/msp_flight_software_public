@@ -26,7 +26,7 @@ MPU9250MotionTracker::MPU9250MotionTracker(const I2c* bus, uint8_t address,
                                            const I2cMultiplexer* multiplexer,
                                            I2cMultiplexer::MuxChannel channel)
     : I2cDevice(bus, address, multiplexer, channel) {
-    if (!kFsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
         return;
     }
 

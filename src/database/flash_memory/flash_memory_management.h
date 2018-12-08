@@ -14,6 +14,9 @@ enum FlashStorageAddress {
     kAntennaBurnerInfoFlashStorageAddress =
         kResetInfoContainerFlashStorageAddress +
         sizeof(ResetInfoContainerStruct),
+    kSystemConfigurationFlashStorageAddress =
+        kAntennaBurnerInfoFlashStorageAddress +
+        sizeof(kAntennaBurnerInfoFlashStorageAddress),
 };
 
 class FlashMemoryManagement {
@@ -51,10 +54,13 @@ class FlashMemoryManagement {
                      // defined in linker.cmd
 
     static constexpr uint32_t kTotalAcrux1DataStorageSizeBytes =
-        sizeof(ResetInfoContainerStruct) +
-        sizeof(AntennaBurnerInfoStruct);  // sum of the sizes (in bytes) of all
-                                          // flash storable object structs to
-                                          // be stored in the flash memory
+        sizeof(ResetInfoContainerStruct) + sizeof(AntennaBurnerInfoStruct) +
+        sizeof(
+            kSystemConfigurationFlashStorageAddress);  // sum of the sizes (in
+                                                       // bytes) of all flash
+                                                       // storable object
+                                                       // structs to be stored
+                                                       // in the flash memory
     static constexpr uint32_t kTotalAcrux1DataStorageSizeWords =
         kTotalAcrux1DataStorageSizeBytes / 4;
 };

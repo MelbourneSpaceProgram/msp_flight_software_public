@@ -5,7 +5,7 @@
 
 TEST_GROUP(CircularBuffer) {
     void setup() {
-        if (!kSdCardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
             TEST_EXIT
         }
     };

@@ -12,7 +12,7 @@
 
 TEST_GROUP(IoExpander) {
     void setup() {
-        if (!kI2cAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable()) {
             TEST_EXIT;
         }
     };

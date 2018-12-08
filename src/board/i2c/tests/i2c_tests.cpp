@@ -9,7 +9,7 @@ static constexpr byte kTestHardwareAddr = 0x76;
 // powered on in the I2c::InitBusses call.
 TEST_GROUP(I2c) {
     void setup() {
-        if (!kI2cAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable()) {
             TEST_EXIT;
         }
     };

@@ -9,7 +9,7 @@
 
 TEST_GROUP(Bms) {
     void setup() {
-        if (!kBmsAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsBmsAvailable()) {
             TEST_EXIT;
         }
     };

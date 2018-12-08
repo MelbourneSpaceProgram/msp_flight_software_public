@@ -23,7 +23,7 @@ void BDotController::ComputeControl(const Matrix &b_dot,
     double result_abs[3];
     for (uint8_t i = 0; i < 3; i++) {
         result[i] = -1 * kBDotControllerGains[i] * b_dot.Get(i, 0) /
-                    kMaxMagnetorquerDipole[i];
+                    SystemConfiguration::GetInstance()->GetMaxMagnetorquerDipole()[i];
         result_abs[i] = fabs(result[i]);
     }
     if (result_abs[0] > 1 || result_abs[1] > 1 || result_abs[2] > 1) {

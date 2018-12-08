@@ -10,7 +10,7 @@
 
 TEST_GROUP(Lithium) {
     void setup() {
-        if (!kTcomBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsTcomBoardAvailable()) {
             TEST_EXIT
         }
     };

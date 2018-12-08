@@ -13,7 +13,7 @@ static constexpr byte kTempSensorAddress = 0x1A;
 
 TEST_GROUP(Multiplexer) {
     void setup() {
-        if (!kI2cAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable()) {
             TEST_EXIT;
         }
     };

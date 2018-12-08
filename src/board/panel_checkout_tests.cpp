@@ -12,7 +12,7 @@ static MeasurableManager* measurable_manager =
     MeasurableManager::GetInstance();
 
 TEST(PanelCheckout, XPosTemp1) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -22,7 +22,7 @@ TEST(PanelCheckout, XPosTemp1) {
 }
 
 TEST(PanelCheckout, XPosTemp2) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -32,7 +32,7 @@ TEST(PanelCheckout, XPosTemp2) {
 }
 
 TEST(PanelCheckout, YPosTemp1) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -42,7 +42,7 @@ TEST(PanelCheckout, YPosTemp1) {
 }
 
 TEST(PanelCheckout, YPosTemp2) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -52,7 +52,7 @@ TEST(PanelCheckout, YPosTemp2) {
 }
 
 TEST(PanelCheckout, XNegTemp1) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -62,7 +62,7 @@ TEST(PanelCheckout, XNegTemp1) {
 }
 
 TEST(PanelCheckout, XNegTemp2) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -72,7 +72,7 @@ TEST(PanelCheckout, XNegTemp2) {
 }
 
 TEST(PanelCheckout, YNegTemp1) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -82,7 +82,7 @@ TEST(PanelCheckout, YNegTemp1) {
 }
 
 TEST(PanelCheckout, YNegTemp2) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -92,7 +92,7 @@ TEST(PanelCheckout, YNegTemp2) {
 }
 
 TEST(PanelCheckout, ZNegTemp1) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -102,7 +102,7 @@ TEST(PanelCheckout, ZNegTemp1) {
 }
 
 TEST(PanelCheckout, ZNegTemp2) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT
     }
     double temp = measurable_manager
@@ -112,7 +112,7 @@ TEST(PanelCheckout, ZNegTemp2) {
 }
 
 TEST(PanelCheckout, ZPosTemp1) {
-    if (!kZPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZPosAvailable()) {
         TEST_EXIT
     }
     double temp =
@@ -122,7 +122,7 @@ TEST(PanelCheckout, ZPosTemp1) {
 }
 
 TEST(PanelCheckout, XPosVoltage) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT
     }
     double voltage =
@@ -132,7 +132,7 @@ TEST(PanelCheckout, XPosVoltage) {
 }
 
 TEST(PanelCheckout, XPosSolarVoltage) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -142,7 +142,7 @@ TEST(PanelCheckout, XPosSolarVoltage) {
 }
 
 TEST(PanelCheckout, YPosVoltage) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT
     }
     double voltage =
@@ -152,7 +152,7 @@ TEST(PanelCheckout, YPosVoltage) {
 }
 
 TEST(PanelCheckout, YPosSolarVoltage) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -162,7 +162,7 @@ TEST(PanelCheckout, YPosSolarVoltage) {
 }
 
 TEST(PanelCheckout, XNegVoltage) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT
     }
     double voltage =
@@ -172,7 +172,7 @@ TEST(PanelCheckout, XNegVoltage) {
 }
 
 TEST(PanelCheckout, XNegSolarVoltage) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -182,7 +182,7 @@ TEST(PanelCheckout, XNegSolarVoltage) {
 }
 
 TEST(PanelCheckout, YNegVoltage) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT
     }
     double voltage =
@@ -192,7 +192,7 @@ TEST(PanelCheckout, YNegVoltage) {
 }
 
 TEST(PanelCheckout, YNegSolarVoltage) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -202,7 +202,7 @@ TEST(PanelCheckout, YNegSolarVoltage) {
 }
 
 TEST(PanelCheckout, ZNegVoltage) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT
     }
     double voltage =
@@ -212,7 +212,7 @@ TEST(PanelCheckout, ZNegVoltage) {
 }
 
 TEST(PanelCheckout, ZNegSolarVoltage) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -222,7 +222,7 @@ TEST(PanelCheckout, ZNegSolarVoltage) {
 }
 
 TEST(PanelCheckout, ZPosVoltage) {
-    if (!kZPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZPosAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -232,7 +232,7 @@ TEST(PanelCheckout, ZPosVoltage) {
 }
 
 TEST(PanelCheckout, ZPosSolarVoltage) {
-    if (!kZPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZPosAvailable()) {
         TEST_EXIT
     }
     double voltage = measurable_manager
@@ -242,7 +242,7 @@ TEST(PanelCheckout, ZPosSolarVoltage) {
 }
 
 TEST(PanelCheckout, ZPosSolarCurrent) {
-    if (!kZPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZPosAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -252,7 +252,7 @@ TEST(PanelCheckout, ZPosSolarCurrent) {
 }
 
 TEST(PanelCheckout, ZPosCurrent) {
-    if (!kZPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZPosAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -262,7 +262,7 @@ TEST(PanelCheckout, ZPosCurrent) {
 }
 
 TEST(PanelCheckout, XPosSolarCurrent) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -272,7 +272,7 @@ TEST(PanelCheckout, XPosSolarCurrent) {
 }
 
 TEST(PanelCheckout, XPosCurrent) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT
     }
     double current =
@@ -282,7 +282,7 @@ TEST(PanelCheckout, XPosCurrent) {
 }
 
 TEST(PanelCheckout, YPosSolarCurrent) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -292,7 +292,7 @@ TEST(PanelCheckout, YPosSolarCurrent) {
 }
 
 TEST(PanelCheckout, YPosCurrent) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT
     }
     double current =
@@ -302,7 +302,7 @@ TEST(PanelCheckout, YPosCurrent) {
 }
 
 TEST(PanelCheckout, XNegSolarCurrent) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -312,7 +312,7 @@ TEST(PanelCheckout, XNegSolarCurrent) {
 }
 
 TEST(PanelCheckout, XNegCurrent) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT
     }
     double current =
@@ -322,7 +322,7 @@ TEST(PanelCheckout, XNegCurrent) {
 }
 
 TEST(PanelCheckout, YNegSolarCurrent) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -332,7 +332,7 @@ TEST(PanelCheckout, YNegSolarCurrent) {
 }
 
 TEST(PanelCheckout, YNegCurrent) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT
     }
     double current =
@@ -342,7 +342,7 @@ TEST(PanelCheckout, YNegCurrent) {
 }
 
 TEST(PanelCheckout, ZNegSolarCurrent) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT
     }
     double current = measurable_manager
@@ -352,7 +352,7 @@ TEST(PanelCheckout, ZNegSolarCurrent) {
 }
 
 TEST(PanelCheckout, ZNegCurrent) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT
     }
     double current =

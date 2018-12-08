@@ -36,13 +36,13 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
     last_reading.y = reading_body_frame.Get(1, 0);
     last_reading.z = reading_body_frame.Get(2, 0);
 
-    if (kHilAvailable) {
+    if (SystemConfiguration::GetInstance()->IsHilAvailable()) {
         // Echo reading to DebugClient
         PostNanopbToSimMacro(MagnetometerReading, kMagnetometerReadingCode,
                              last_reading);
     }
 
-    if (kHilAvailable) {
+    if (SystemConfiguration::GetInstance()->IsHilAvailable()) {
         MagnetometerReading simulation_reading = TakeSimulationReading();
         // Combine readings.
         // The static hardware reading will be calibrated out, and the
@@ -54,7 +54,7 @@ MagnetometerReading ImuMagnetometerMeasurable::TakeDirectI2cReading() {
 
     magnetometer_calibration.Apply(last_reading);
 
-    if (kHilAvailable) {
+    if (SystemConfiguration::GetInstance()->IsHilAvailable()) {
         PostNanopbToSimMacro(MagnetometerReading,
                              kCalibratedMagnetometerReadingCode, last_reading);
     }

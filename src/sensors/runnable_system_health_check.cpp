@@ -52,7 +52,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
             uint32_t cpu_load = Load_getCPULoad();
 
             if (datalogger_enabled) {
-                if (kTcomBoardAvailable) {
+                if (SystemConfiguration::GetInstance()->IsTcomBoardAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kComInV1);
                     LogMeasurableMacro(VoltageReading)(kComOutV1);
                     LogMeasurableMacro(VoltageReading)(kComInV2);
@@ -65,7 +65,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kComT2);
                 }
 
-                if (kEpsBoardAvailable) {
+                if (SystemConfiguration::GetInstance()->IsEpsBoardAvailable()) {
                     LogMeasurableMacro(CurrentReading)(kEpsBoostInI1);
                     LogMeasurableMacro(CurrentReading)(kEpsLoadI1);
                     LogMeasurableMacro(CurrentReading)(kEpsBoostInI2);
@@ -108,7 +108,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                         kEpsBmsVoltagesReading2);
                 }
 
-                if (kXPosAvailable) {
+                if (SystemConfiguration::GetInstance()->IsXPosAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kXPosV);
                     LogMeasurableMacro(VoltageReading)(kXPosSolarV);
                     LogMeasurableMacro(CurrentReading)(kXPosI);
@@ -117,7 +117,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kXPosT2);
                 }
 
-                if (kYPosAvailable) {
+                if (SystemConfiguration::GetInstance()->IsYPosAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kYPosV);
                     LogMeasurableMacro(VoltageReading)(kYPosSolarV);
                     LogMeasurableMacro(CurrentReading)(kYPosI);
@@ -126,7 +126,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kYPosT2);
                 }
 
-                if (kZPosAvailable) {
+                if (SystemConfiguration::GetInstance()->IsZPosAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kEpsTopPanelV);
                     LogMeasurableMacro(VoltageReading)(kEpsTopSolarV);
                     LogMeasurableMacro(CurrentReading)(kEpsTopPanelI);
@@ -134,7 +134,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kZPosT);
                 }
 
-                if (kXNegAvailable) {
+                if (SystemConfiguration::GetInstance()->IsXNegAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kXNegV);
                     LogMeasurableMacro(VoltageReading)(kXNegSolarV);
                     LogMeasurableMacro(CurrentReading)(kXNegI);
@@ -143,7 +143,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kXNegT2);
                 }
 
-                if (kYNegAvailable) {
+                if (SystemConfiguration::GetInstance()->IsYNegAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kYNegV);
                     LogMeasurableMacro(VoltageReading)(kYNegSolarV);
                     LogMeasurableMacro(CurrentReading)(kYNegI);
@@ -152,7 +152,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kYNegT2);
                 }
 
-                if (kZNegAvailable) {
+                if (SystemConfiguration::GetInstance()->IsZNegAvailable()) {
                     LogMeasurableMacro(VoltageReading)(kZNegV);
                     LogMeasurableMacro(VoltageReading)(kZNegSolarV);
                     LogMeasurableMacro(CurrentReading)(kZNegI);
@@ -161,7 +161,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(TemperatureReading)(kZNegT2);
                 }
 
-                if (kFsBoardAvailable) {
+                if (SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
                     MutexLocker mutex(SatellitePower::GetMutex());
                     LogMeasurableMacro(CurrentReading)(kFsTorquerXI);
                     LogMeasurableMacro(CurrentReading)(kFsTorquerTotalI);
@@ -187,18 +187,18 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                     LogMeasurableMacro(MagnetometerReading)(kFsImuMagno2);
                 }
 
-                if (kCdhBoardAvailable) {
+                if (SystemConfiguration::GetInstance()->IsCdhBoardAvailable()) {
                     LogMeasurableMacro(TemperatureReading)(kCdhT);
                 }
 
-                if (kUtilitiesBoardAvailable) {
+                if (SystemConfiguration::GetInstance()->IsUtilitiesBoardAvailable()) {
                     LogMeasurableMacro(TemperatureReading)(kUtilT);
                     LogMeasurableMacro(VoltageReading)(kUtilHeatV);
                 }
             }
             SystemWatchdog::ResetTimer();
             GPIO_toggle(SYS_LED);
-            TirtosUtils::SleepMilli(kHealthCheckPeriodMs);
+            TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetHealthCheckPeriodMs());
         } catch (MspException& e) {
             MspException::LogTopLevelException(e,
                                                kRunnableSystemHealthCheckCatch);

@@ -32,7 +32,9 @@ uint8_t Lithium::command_success_count = 0;
 
 Lithium::Lithium()
     : uart(TELECOMS),
-      lithium_transmit_enabled(!kLithiumTransmitOnlyWhenGroundCommanded),
+      lithium_transmit_enabled(
+          !SystemConfiguration::GetInstance()
+               ->IsLithiumTransmitOnlyWhenGroundCommanded()),
       lock(kLithiumOnCondition),
       state(kLithiumTempNominal),
       consecutive_serial_failures(0),
@@ -106,7 +108,7 @@ void Lithium::PostTransmit() {
     // and use the unsupportable charging current from its hardware settings
     // until re-configured.
     try {
-        TirtosUtils::SleepMilli(kSolarPowerRecoveryTimeMs);
+        TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetSolarPowerRecoveryTimeMs());
         if (!SatellitePower::ConfigureBms(SatellitePower::kBmsBusD)) {
             Log_error0("Failure to configure BMS on bus D");
         }

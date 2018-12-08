@@ -68,7 +68,7 @@ void PostBiosInitialiser::RunUnitTests(uint16_t stack_size) {
 }
 
 void PostBiosInitialiser::InitBeacon(uint16_t stack_size, bool limp_mode) {
-    if (!Lithium::GetInstance()->DoFastPa(kNominalLithiumPowerLevel)) {
+    if (!Lithium::GetInstance()->DoFastPa(SystemConfiguration::GetInstance()->GetNominalLithiumPowerLevel())) {
         Log_error0("Failed to initialise Lithium power amplifier setting");
     }
 
@@ -87,12 +87,12 @@ void PostBiosInitialiser::InitPayloadProcessor(uint16_t stack_size) {
 }
 
 void PostBiosInitialiser::InitOrientationControl(uint16_t stack_size) {
-    if (kRunMagnetorquersAtConstantPower) {
+    if (SystemConfiguration::GetInstance()->IsRunMagnetorquersAtConstantPower()) {
         // Rather than start orientation control, just blast the
         // magnetorquers
         MagnetorquerControl::SetMagnetorquersPowerFraction(
-            kMagnetorquerPowerFractionX, kMagnetorquerPowerFractionY,
-            kMagnetorquerPowerFractionZ);
+            SystemConfiguration::GetInstance()->GetMagnetorquerPowerFractionX(), SystemConfiguration::GetInstance()->GetMagnetorquerPowerFractionY(),
+            SystemConfiguration::GetInstance()->GetMagnetorquerPowerFractionZ());
         Log_info0("Magnetorquers set to constant power");
     } else {
         // Set up timer for orientation control loop
@@ -164,10 +164,10 @@ void PostBiosInitialiser::InitHardware() {
     }
 
     try {
-        if (kSdCardAvailable) {
+        if (SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
             SdCard* sd = SdCard::GetInstance();
             sd->SdOpen();
-            if (kFormatSdOnStartup) {
+            if (SystemConfiguration::GetInstance()->IsFormatSdOnStartup()) {
                 sd->Format();
             }
         }
@@ -227,7 +227,7 @@ void PostBiosInitialiser::InitHardware() {
 }
 
 void PostBiosInitialiser::InitMemoryLogger(uint16_t stack_size) {
-    if (kDitlMode) {
+    if (SystemConfiguration::GetInstance()->IsDitlMode()) {
         TaskHolder* memory_logger_task = new TaskHolder(
             stack_size, "MemoryLogger", 11, new RunnableMemoryLogger());
         memory_logger_task->Start();
@@ -270,29 +270,29 @@ void PostBiosInitialiser::InitAntennaBurner(uint16_t stack_size) {
 }
 
 void PostBiosInitialiser::EjectionWait() {
-    if (!kInstantDeploymentWaits) {
+    if (!SystemConfiguration::GetInstance()->IsInstantDeploymentWaits()) {
         try {
             Time current_time = SatelliteTimeSource::GetTime();
             if (current_time.is_valid) {
                 uint32_t time_since_ejection_ms =
-                    current_time.timestamp_ms - kTimeSourceDeployMs;
-                if (time_since_ejection_ms < kEjectionWaitMs) {
+                    current_time.timestamp_ms - SystemConfiguration::GetInstance()->GetTimeSourceDeployMs();
+                if (time_since_ejection_ms < SystemConfiguration::GetInstance()->GetEjectionWaitMs()) {
                     Log_info0("Post-deployment wait starting");
-                    TirtosUtils::SleepMilli(kEjectionWaitMs -
-                                            time_since_ejection_ms);
+                    TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetEjectionWaitMs() -
+                                          time_since_ejection_ms);
                     Log_info0("Post-deployment wait finished");
                 }
             } else {
                 Log_warning0("Invalid reading from RTC");
                 Log_info0("Post-deployment wait starting");
-                TirtosUtils::SleepMilli(kEjectionWaitMs);
+                TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetEjectionWaitMs());
                 Log_info0("Post-deployment wait finished");
             }
         } catch (MspException& e) {
             MspException::LogException(e, kEjectionWaitCatch);
             Log_error0("Unable to retrieve time from RTC");
             Log_info0("Post-deployment wait starting");
-            TirtosUtils::SleepMilli(kEjectionWaitMs);
+            TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetEjectionWaitMs());
             Log_info0("Post-deployment wait finished");
         }
     } else {
@@ -300,9 +300,7 @@ void PostBiosInitialiser::EjectionWait() {
     }
 }
 
-void PostBiosInitialiser::BeaconWait() {
-    TirtosUtils::SleepMilli(kBeaconWaitMs);
-}
+void PostBiosInitialiser::BeaconWait() { TirtosUtils::SleepMilli(SystemConfiguration::GetInstance()->GetEjectionWaitMs()); }
 
 void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
     // TODO (rskew) review priority
@@ -314,7 +312,7 @@ void PostBiosInitialiser::InitPowerManager(uint16_t stack_size) {
 void PostBiosInitialiser::PostBiosInit() {
     Log_info0("System has started");
 
-    if (kDitlMode) {
+    if (SystemConfiguration::GetInstance()->IsDitlMode()) {
         InitMemoryLogger();
     }
 

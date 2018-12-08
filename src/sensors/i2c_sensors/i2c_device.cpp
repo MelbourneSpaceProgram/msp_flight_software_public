@@ -33,7 +33,7 @@ I2cDevice::I2cDevice(const I2c* bus, uint8_t address,
 }
 
 bool I2cDevice::MuxSelect() const {
-    if (multiplexer != NULL && kI2cAvailable) {
+    if (multiplexer != NULL && SystemConfiguration::GetInstance()->IsI2cAvailable()) {
         if (!multiplexer->CloseAllChannels()) {
             Log_error2("Unable to contact mux on bus %d for sensor address %d",
                        multiplexer->GetBus()->index, address);
@@ -45,7 +45,7 @@ bool I2cDevice::MuxSelect() const {
 }
 
 bool I2cDevice::MuxDeselect() const {
-    if (multiplexer != NULL && kI2cAvailable) {
+    if (multiplexer != NULL && SystemConfiguration::GetInstance()->IsI2cAvailable()) {
         if (!multiplexer->CloseAllChannels()) return false;
     }
     return true;

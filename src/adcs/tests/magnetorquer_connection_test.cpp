@@ -10,7 +10,7 @@
 TEST_GROUP(Magnetorquer){};
 
 TEST(Magnetorquer, MagnetorquerConnectivity) {
-    if (!kI2cAvailable || !kFsBoardAvailable || !kUtilitiesBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsI2cAvailable() || !SystemConfiguration::GetInstance()->IsFsBoardAvailable() || !SystemConfiguration::GetInstance()->IsUtilitiesBoardAvailable()) {
         TEST_EXIT;
     }
 

@@ -23,14 +23,14 @@ static void CheckForDevices(I2c& bus, I2cMultiplexer* multiplexer,
 
 TEST_GROUP(I2cDeviceEnumeration) {
     void setup() {
-        if (!kI2cAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable()) {
             TEST_EXIT;
         }
     };
 };
 
 TEST(I2cDeviceEnumeration, CheckBusACdh) {
-    if (!kCdhBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsCdhBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -43,7 +43,7 @@ TEST(I2cDeviceEnumeration, CheckBusACdh) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusAFs) {
-    if (!kFsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -56,7 +56,7 @@ TEST(I2cDeviceEnumeration, CheckBusAFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusAEps) {
-    if (!kEpsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsEpsBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -69,7 +69,7 @@ TEST(I2cDeviceEnumeration, CheckBusAEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusACom) {
-    if (!kTcomBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsTcomBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -82,7 +82,7 @@ TEST(I2cDeviceEnumeration, CheckBusACom) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusBFs) {
-    if (!kFsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -94,7 +94,7 @@ TEST(I2cDeviceEnumeration, CheckBusBFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCFs) {
-    if (!kFsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsFsBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -107,7 +107,7 @@ TEST(I2cDeviceEnumeration, CheckBusCFs) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCEps) {
-    if (!kEpsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsEpsBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -119,7 +119,7 @@ TEST(I2cDeviceEnumeration, CheckBusCEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusDEps) {
-    if (!kEpsBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsEpsBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -131,7 +131,7 @@ TEST(I2cDeviceEnumeration, CheckBusDEps) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
-    if (!kUtilitiesBoardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsUtilitiesBoardAvailable()) {
         TEST_EXIT;
     }
 
@@ -144,7 +144,7 @@ TEST(I2cDeviceEnumeration, CheckBusCUtilities) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCXPos) {
-    if (!kXPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXPosAvailable()) {
         TEST_EXIT;
     }
 
@@ -157,7 +157,7 @@ TEST(I2cDeviceEnumeration, CheckBusCXPos) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCYPos) {
-    if (!kYPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYPosAvailable()) {
         TEST_EXIT;
     }
 
@@ -170,7 +170,7 @@ TEST(I2cDeviceEnumeration, CheckBusCYPos) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCXNeg) {
-    if (!kXNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsXNegAvailable()) {
         TEST_EXIT;
     }
 
@@ -183,7 +183,7 @@ TEST(I2cDeviceEnumeration, CheckBusCXNeg) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCYNeg) {
-    if (!kYNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsYNegAvailable()) {
         TEST_EXIT;
     }
 
@@ -196,7 +196,7 @@ TEST(I2cDeviceEnumeration, CheckBusCYNeg) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCZNeg) {
-    if (!kZNegAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZNegAvailable()) {
         TEST_EXIT;
     }
 
@@ -209,7 +209,7 @@ TEST(I2cDeviceEnumeration, CheckBusCZNeg) {
 };
 
 TEST(I2cDeviceEnumeration, CheckBusCZPos) {
-    if (!kZPosAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsZPosAvailable()) {
         TEST_EXIT;
     }
 

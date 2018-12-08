@@ -36,7 +36,7 @@ File *test_2 = NULL;
 
 TEST_GROUP(SdCard) {
     void setup() {
-        if (!kSdCardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
             TEST_EXIT;
         }
         src = NULL;

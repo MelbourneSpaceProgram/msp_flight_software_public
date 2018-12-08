@@ -13,7 +13,7 @@ static constexpr I2cMultiplexer::MuxChannel x_pos_mux_channel =
 
 TEST_GROUP(IrSensor) {
     void setup() {
-        if (!kI2cAvailable || !kXPosAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsI2cAvailable() || !SystemConfiguration::GetInstance()->IsXPosAvailable()) {
             TEST_EXIT;
         }
     };

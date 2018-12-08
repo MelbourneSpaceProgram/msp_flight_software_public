@@ -110,7 +110,7 @@ bool I2cMultiplexer::CloseChannel(uint8_t channel_index) const {
 bool I2cMultiplexer::CloseAllChannels() const {
     byte write_buffer = 0;
     if (!GetBus()->PerformWriteTransaction(GetAddress(), &write_buffer, 1)) {
-        if (kVerboseLogging)
+        if (SystemConfiguration::GetInstance()->IsVerboseLogging())
             Log_error1("Failed to close channels for mux on bus %d",
                        GetBus()->index);
         return false;

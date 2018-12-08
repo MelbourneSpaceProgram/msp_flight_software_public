@@ -41,7 +41,7 @@ SdCard::SdCard()
 
 // TODO(dingbenjamin): Parameterize
 SdHandle SdCard::SdOpen() {
-    if (!kSdCardAvailable) {
+    if (!SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
         Log_info0("SdCard not available");
 		return nullptr;
     }
@@ -207,7 +207,7 @@ void SdCard::Dump() {
         const char *file_path = fpath;
 
         File *src;
-        if (kVerboseLogging)
+        if (SystemConfiguration::GetInstance()->IsVerboseLogging())
             Log_info1("Dump: Opening file %s", (IArg)file_path);
         try {
             src = SdCard::GetInstance()->FileOpen(file_path,

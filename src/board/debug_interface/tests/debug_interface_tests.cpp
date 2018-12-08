@@ -9,7 +9,7 @@
 
 TEST_GROUP(DebugInterface) {
     void setup() {
-        if (!kHilAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsHilAvailable()) {
             TEST_EXIT;
         }
     };

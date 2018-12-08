@@ -10,7 +10,7 @@
 #include <xdc/runtime/System.h>
 
 void DoTest(int32_t error_chance);
-void PrintArray(uint8_t *array, int32_t length);
+void PrintArray(uint8_t *array, uint32_t length);
 int32_t CompareArrays(uint8_t *array1, uint8_t *array2, int32_t length);
 void CorruptArray(uint8_t *array, int32_t length, int32_t chance);
 
@@ -26,7 +26,7 @@ TEST(Fec, ReedSolomon) {
     int32_t i;
 
     for (i = 0; i <= 100; i++) {
-        if (kVerboseLogging)
+        if (SystemConfiguration::GetInstance()->IsVerboseLogging())
             Log_info2(
                 "Testing packet with %d%% chance of corruption %d times ... ",
                 i, kFecIterations);
@@ -51,7 +51,7 @@ void DoTest(int32_t error_chance) {
     // Populate the payload with random data
     CorruptArray(test_payload, Rs8::kDataLength, 100);
 
-    if (kVerboseLogging) {
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) {
         PrintArray(test_payload, Rs8::kBlockLength);
         Log_info0("Calculating parity ...\n");
     }
@@ -59,27 +59,29 @@ void DoTest(int32_t error_chance) {
     // Populate the polarity region with RS parity
     Rs8::Encode(test_payload, test_payload + Rs8::kDataLength);
 
-    if (kVerboseLogging) {
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) {
         PrintArray(test_payload, Rs8::kBlockLength);
         Log_info0("Copy array ...\n");
     }
 
     memcpy(corrupt_payload, test_payload, Rs8::kBlockLength * sizeof(uint8_t));
 
-    if (kVerboseLogging) Log_info0("Corrupting copy ...");
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
+        Log_info0("Corrupting copy ...");
 
     // Create some random errors in the copy
     CorruptArray(corrupt_payload, Rs8::kBlockLength, error_chance);
 
     // Print the corrupted array
-    if (kVerboseLogging) PrintArray(corrupt_payload, Rs8::kBlockLength);
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
+        PrintArray(corrupt_payload, Rs8::kBlockLength);
 
     // Count the number of errors that were created
     int32_t corrupt_count =
         CompareArrays(test_payload, corrupt_payload, Rs8::kBlockLength);
 
     // Print the corrupted copy
-    if (kVerboseLogging) {
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) {
         Log_info1("Bytes corrupted: %d", corrupt_count);
         Log_info0("Decoding corrupted payload ...");
     }
@@ -88,13 +90,14 @@ void DoTest(int32_t error_chance) {
     int32_t corrected_count = Rs8::Decode(corrupt_payload, NULL, 0);
 
     // Print the fixed array
-    if (kVerboseLogging) PrintArray(corrupt_payload, Rs8::kBlockLength);
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
+        PrintArray(corrupt_payload, Rs8::kBlockLength);
 
     // Compare the fixed array and compare it to the original array
     int32_t corrupt_count_after_decode =
         CompareArrays(test_payload, corrupt_payload, Rs8::kBlockLength);
 
-    if (kVerboseLogging) {
+    if (SystemConfiguration::GetInstance()->IsVerboseLogging()) {
         Log_info1("Diff from original after decode: %d",
                   corrupt_count_after_decode);
         Log_info1("Errors corrected: %d", corrected_count);

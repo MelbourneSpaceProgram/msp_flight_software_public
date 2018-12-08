@@ -5,7 +5,7 @@
 
 TEST_GROUP(CdhCheckout) {
     void setup() {
-        if (!kCdhBoardAvailable) {
+        if (!SystemConfiguration::GetInstance()->IsCdhBoardAvailable()) {
             TEST_EXIT
         }
     };

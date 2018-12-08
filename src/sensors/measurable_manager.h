@@ -56,7 +56,7 @@ class MeasurableManager {
             if (time.is_valid) {
                 earliest_acceptable_ms = time.timestamp_ms - max_cache_ms;
             } else {
-                if (kI2cAvailable) {
+                if (SystemConfiguration::GetInstance()->IsI2cAvailable()) {
                     Log_error0(
                         "Failed to acquire time for cache, taking new sensor "
                         "reading");

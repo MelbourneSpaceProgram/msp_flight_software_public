@@ -33,7 +33,7 @@ void MagnetorquerControl::Initialize() { InitializePwm(); }
 
 void MagnetorquerControl::SetMagnetorquersPowerFraction(float x, float y,
                                                         float z) {
-    if (kHilAvailable) {
+    if (SystemConfiguration::GetInstance()->IsHilAvailable()) {
         PushDebugMessage(x, y, z);
     }
 
@@ -169,7 +169,7 @@ void MagnetorquerControl::SetMagnitude(MagnetorquerAxis axis, float magnitude) {
 }
 
 void MagnetorquerControl::Degauss() {
-    float power = kOrientationControlPowerLevel;
+    float power = SystemConfiguration::GetInstance()->GetOrientationControlPowerLevel();
     for (uint8_t i = 0; i < kNDegaussPulses; i++) {
         // Positive power
         SetMagnetorquersPowerFraction(power, power, power);

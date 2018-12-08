@@ -30,7 +30,7 @@
 // init tasks. Should be called once at system startup, and prior to the BIOS
 // starting.
 void PreBiosInit() {
-    if (kEnterDeepSleepOnStartup) {
+    if (SystemConfiguration::GetInstance()->IsEnterDeepSleepOnStartup()) {
         // Spin for a bit in case we need to stop this happening with the
         // debugger etc (conservative approach, this likely isn't needed).
         // Will take around 1-30 seconds to finish this loop; depends on things
@@ -49,7 +49,7 @@ void PreBiosInit() {
     GPIO_init();
     UART_init();
 
-    if (kSdCardAvailable) {
+    if (SystemConfiguration::GetInstance()->IsSdCardAvailable()) {
         SDFatFS_init();
     }
 
@@ -61,28 +61,28 @@ void PreBiosInit() {
         // TODO(hugorilla): Develop this logic further to handle different reset
         // states
         if (reset_info_container->GetNumResets() == kNumResetsForLimpMode ||
-            kEnterLimpModeOnStartup) {
+            SystemConfiguration::GetInstance()->IsEnterLimpModeOnStartup()) {
             EnterLimpMode();
         } else {
             switch (reset_info_container->GetMostRecentResetMessage()) {
                 case kFirstWakeupMessage:
-                    if (kVerboseLogging)
+                    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
                         Log_info0("Reset Message: First Wakeup");
                     break;
                 case kResetUnitTestMessage1:
-                    if (kVerboseLogging)
+                    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
                         Log_info0("Reset Message: Unit Test 1");
                     break;
                 case kResetUnitTestMessage2:
-                    if (kVerboseLogging)
+                    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
                         Log_info0("Reset Message: Unit Test 2");
                     break;
                 case kForceResetCommandExecuted:
-                    if (kVerboseLogging)
+                    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
                         Log_info0("Reset Message: Force Reset");
                     break;
                 case kUnexpectedReset:
-                    if (kVerboseLogging)
+                    if (SystemConfiguration::GetInstance()->IsVerboseLogging())
                         Log_info0("Reset Message: Unexpected Reset");
                     break;
                 default:

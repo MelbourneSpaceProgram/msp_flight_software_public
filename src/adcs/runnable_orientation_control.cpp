@@ -47,7 +47,7 @@ void RunnableOrientationControl::SetupControlLoopTimer() {
         Semaphore_create(0, &orientation_control_timer_semaphore_params, NULL);
     Timer_Params_init(&orientation_control_timer_params);
     orientation_control_timer_params.period =
-        kOrientationControlLoopPeriodMicros;
+        SystemConfiguration::GetInstance()->GetOrientationControlLoopPeriodMicros();
     orientation_control_timer_params.arg =
         (UArg)RunnableOrientationControl::control_loop_timer_semaphore;
     orientation_control_timer = Timer_create(
@@ -66,7 +66,7 @@ void RunnableOrientationControl::OrientationControlTimerISR(
 }
 
 void RunnableOrientationControl::ControlOrientation() {
-    BDotEstimator b_dot_estimator(kOrientationControlLoopPeriodMicros * 1e-3,
+    BDotEstimator b_dot_estimator(SystemConfiguration::GetInstance()->GetOrientationControlLoopPeriodMicros() * 1e-3,
                                   kBDotEstimatorTimeConstantMillis);
 
     MeasurableManager* measurable_manager = MeasurableManager::GetInstance();
@@ -90,7 +90,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
                     kFsImuMagno2, 0);
 
-            if (kHilAvailable) {
+            if (SystemConfiguration::GetInstance()->IsHilAvailable()) {
                 // Echo magnetometer reading to DebugClient
                 PostNanopbToSimMacro(MagnetometerReading,
                                      kMagnetometerReadingCode,
@@ -119,7 +119,7 @@ void RunnableOrientationControl::ControlOrientation() {
                 b_dot_estimate_pb.z = b_dot_estimate.Get(2, 0);
             }
 
-            if (kHilAvailable) {
+            if (SystemConfiguration::GetInstance()->IsHilAvailable()) {
                 PostNanopbToSimMacro(BDotEstimate, kBDotEstimateCode,
                                      b_dot_estimate_pb);
             }
@@ -134,7 +134,7 @@ void RunnableOrientationControl::ControlOrientation() {
             for (uint8_t i = 0; i < 3; i++) {
                 signed_pwm_output.Set(i, 0,
                                       signed_pwm_output.Get(i, 0) *
-                                          kOrientationControlPowerLevel);
+                                          SystemConfiguration::GetInstance()->GetOrientationControlPowerLevel());
             }
 
             // Use magnetorquer driver to set magnetorquer power.
