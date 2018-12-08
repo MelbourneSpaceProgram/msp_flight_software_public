@@ -34,7 +34,6 @@ class BeaconPayload : public TransmitPayload {
     float x_pos_v;
     float x_pos_i;
     float x_pos_t1;
-    uint16_t x_pos_rad;
     float y_pos_v;
     float y_pos_i;
     float y_pos_t1;
@@ -48,55 +47,15 @@ class BeaconPayload : public TransmitPayload {
     float z_neg_i;
     float z_neg_t1;
     float z_pos_t;
-    int16_t util_ntc_v1;  // TODO(naverill) clarify data type
-    int16_t util_ntc_v2;  // TODO(naverill) clarify data type
-    int16_t util_heat_v;  // TODO(naverill) clarify data type
-    float util_t;
-    float fs_torquer_xi;
-    float fs_torquer_yi;
-    float fs_torquer_zi;
-    float fs_hb_xt;
-    float fs_hb_yt;
-    float fs_hb_zt;
-    uint16_t fs_rad1;  // TODO(naverill) clarify data type
     Time cdh_time;
-    int16_t cdh_t;
-    uint32_t com_rx_bytes;
-    uint32_t com_tx_bytes;
-    uint8_t com_antenna_flags;
-    uint16_t com_lithium_ops;
-    uint8_t com_lithium_rssi;
-    int16_t com_lithium_t;
-    Time com_lithium_time;
-    int16_t sw_fs_angular_velocity1;  // TODO(naverill) clarify data type
-    int16_t sw_fs_angular_velocity2;  // TODO(naverill) clarify data type
-    int16_t sw_fs_angular_velocity3;  // TODO(naverill) clarify data type
-    int16_t sw_fs_attitude_cov;
-    int16_t sw_fs_attitude_distance;
-    int16_t sw_fs_attitude_quaternion1;  // TODO(naverill) clarify data type
-    int16_t sw_fs_attitude_quaternion2;  // TODO(naverill) clarify data type
-    int16_t sw_fs_attitude_quaternion3;  // TODO(naverill) clarify data type
-    int16_t sw_fs_attitude_quaternion4;  // TODO(naverill) clarify data type
-    int16_t sw_fs_control1;
-    int16_t sw_fs_control2;
-    int16_t sw_fs_control3;
-    uint16_t sw_fs_health_flags;
-    uint16_t sw_fs_attitude_flags;
-    uint16_t sw_fs_flags;
-    uint16_t sw_fs_location;
-    uint16_t sw_fs_ir;
     Time sw_cdh_last_reboot;
-    uint16_t sw_cdh_memory;
-    uint16_t sw_cdh_memory_available;
-    uint16_t sw_cdh_mcu1;
-    uint16_t sw_mcu_reset_count1;
     uint16_t sw_sequence;
     const char* comms_outreach;  // TODO(dingbenjamin): Convert to etl::string
 
     static constexpr uint8_t kFsHealthFlagByteCount = 20;
     static constexpr uint8_t kFsFsAttitudeFlagByteCount = 2;
     static constexpr uint8_t kSwFsLocationFloatCount = 2;
-    static constexpr uint8_t kOutreachMessageSize = 25;
+    static constexpr uint8_t kOutreachMessageSize = 46;
 
     static constexpr uint8_t kVoltageUpperBound =
         20;  // assumed [-20, 20] value range
