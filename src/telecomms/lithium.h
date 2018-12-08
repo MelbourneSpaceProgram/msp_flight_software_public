@@ -86,8 +86,6 @@ class Lithium {
     bool DoFastPa(uint8_t pa_level);
     bool Transmit(TransmitPayload* transmit_payload);
 
-    static bool IsTransmitting();
-
    private:
     static void PreTransmit();
     static void PostTransmit();
@@ -120,8 +118,6 @@ class Lithium {
     Mailbox_Handle header_mailbox_handle;
     Mailbox_Params command_response_mailbox_params;
     Mailbox_Handle command_response_mailbox_handle;
-
-    static bool currently_transmitting;
 
     // TODO(wschuetz): Review the number of the payloads that can be stored in
     // the mailbox at any one time.

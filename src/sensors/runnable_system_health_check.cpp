@@ -17,6 +17,7 @@
 #include <src/sensors/runnable_system_health_check.h>
 #include <src/telecomms/lithium.h>
 #include <src/util/msp_exception.h>
+#include <src/util/satellite_power.h>
 #include <src/util/satellite_time_source.h>
 #include <src/util/system_watchdog.h>
 #include <src/util/tirtos_utils.h>
@@ -161,6 +162,7 @@ void RunnableSystemHealthCheck::SystemHealthCheck() {
                 }
 
                 if (kFsBoardAvailable) {
+                    MutexLocker mutex(SatellitePower::GetMutex());
                     LogMeasurableMacro(CurrentReading)(kFsTorquerXI);
                     LogMeasurableMacro(CurrentReading)(kFsTorquerTotalI);
                     LogMeasurableMacro(CurrentReading)(kFsTorquerYI);

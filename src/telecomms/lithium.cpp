@@ -29,7 +29,6 @@ Lithium* Lithium::instance = NULL;
 uint8_t Lithium::tx_count = 0;
 uint8_t Lithium::rx_count = 0;
 uint8_t Lithium::command_success_count = 0;
-bool Lithium::currently_transmitting = false;
 
 Lithium::Lithium()
     : uart(TELECOMS),
@@ -126,7 +125,6 @@ bool Lithium::Transmit(TransmitPayload* transmit_payload) {
         return false;
     }
 
-    currently_transmitting = true;
     bool transmit_successful = false;
 
     {
@@ -139,8 +137,6 @@ bool Lithium::Transmit(TransmitPayload* transmit_payload) {
 
         PostTransmit();
     }
-
-    currently_transmitting = false;
 
     if (transmit_successful) {
         tx_count = tx_count == 255 ? 0 : tx_count + 1;
@@ -393,8 +389,6 @@ void Lithium::SetTransmitEnabled(bool lithium_enabled) {
 }
 
 bool Lithium::IsTransmitEnabled() { return lithium_transmit_enabled; }
-
-bool Lithium::IsTransmitting() { return currently_transmitting; }
 
 void Lithium::FailSerial() {
     if (consecutive_serial_failures >= kFailsBeforeReset) {
