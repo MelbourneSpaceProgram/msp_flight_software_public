@@ -83,10 +83,11 @@ void RunnableOrientationControl::ControlOrientation() {
             // TODO(rskew) switch algorithms based on AdcsStateMachine state
 
             MagnetorquerControl::Degauss();
+
             // Indicator pulse to signal end of degaussing (for tuning)
-            //MagnetorquerControl::SetMagnetorquersPowerFraction(1, 1, 1);
-            //TirtosUtils::SleepMilli(1);
-            //MagnetorquerControl::SetMagnetorquersPowerFraction(0, 0, 0);
+            // MagnetorquerControl::SetMagnetorquersPowerFraction(1, 1, 1);
+            // TirtosUtils::SleepMilli(1);
+            // MagnetorquerControl::SetMagnetorquersPowerFraction(0, 0, 0);
 
             // Read Magnetometer
             // TODO (rskew) fuse readings from both magnetometers giving
@@ -94,11 +95,11 @@ void RunnableOrientationControl::ControlOrientation() {
             // TODO(rskew) handle exception from magnetometer overflow
             MagnetometerReading magnetometer_reading =
                 measurable_manager->ReadNanopbMeasurable<MagnetometerReading>(
-                    kFsImuMagnoB, 0);
+                    kFsImuMagnoA, 0);
 
             // Log_info3("Magnetometer reading: %d %d %d",
             // magnetometer_reading.x,
-            //          magnetometer_reading.y, magnetometer_reading.z);
+            //         magnetometer_reading.y, magnetometer_reading.z);
 
             // if (kHilAvailable) {
             //    // Echo magnetometer reading to DebugClient
@@ -126,9 +127,9 @@ void RunnableOrientationControl::ControlOrientation() {
                 b_dot_estimator.Estimate(geomag, b_dot_estimate);
 
                 Log_info3("B dot estimate: %d %d %d",
-                (int)b_dot_estimate.Get(0, 0),
-                (int)b_dot_estimate.Get(1, 0),
-                (int)b_dot_estimate.Get(2, 0));
+                          (int)b_dot_estimate.Get(0, 0),
+                          (int)b_dot_estimate.Get(1, 0),
+                          (int)b_dot_estimate.Get(2, 0));
 
                 // b_dot_estimate_pb.x = b_dot_estimate.Get(0, 0);
                 // b_dot_estimate_pb.y = b_dot_estimate.Get(1, 0);
@@ -156,15 +157,18 @@ void RunnableOrientationControl::ControlOrientation() {
             // Use magnetorquer driver to set magnetorquer power.
             // Driver input power range should be [-1, 1]
 
-            //            MagnetorquerControl::SetMagnetorquersPowerFraction(
-            //                signed_pwm_output.Get(0, 0),
-            //                signed_pwm_output.Get(1, 0),
-            //                signed_pwm_output.Get(2, 0));
-            MagnetorquerControl::SetMagnetorquersPowerFraction(0.5, -0.5, -0.5);
+            // MagnetorquerControl::SetMagnetorquersPowerFraction(
+            //    signed_pwm_output.Get(0, 0), signed_pwm_output.Get(1, 0),
+            //    signed_pwm_output.Get(2, 0));
+            MagnetorquerControl::SetMagnetorquersPowerFraction(
+                signed_pwm_output.Get(0, 0), 0, 0);
 
-            Log_info3("PWM: %d %d %d", (int)signed_pwm_output.Get(0, 0),
-                      (int)signed_pwm_output.Get(1, 0),
-                      (int)signed_pwm_output.Get(2, 0));
+            // MagnetorquerControl::SetMagnetorquersPowerFraction(0.5, -0.5,
+            // -0.5);
+
+            // Log_info3("PWM: %d %d %d", (int)signed_pwm_output.Get(0, 0),
+            //(int)signed_pwm_output.Get(1, 0),
+            //(int)signed_pwm_output.Get(2, 0));
         } catch (MspException& e) {
             MspException::LogTopLevelException(
                 e, kRunnableOrientationControlCatch);

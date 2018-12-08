@@ -16,15 +16,15 @@
 // Compute the exponential decay multiplier from the time constant
 // and sample period:
 const float MagnetorquerControl::kDegaussingDecayMultiplier =
-    exp(-(2 * static_cast<double>(kDegaussingSwitchPeriodMicros) * 1e-6) /
-        (static_cast<double>(kDegaussingTimeConstantMillis) * 1e-3));
+  exp(-(2 * static_cast<double>(kDegaussingSwitchPeriodMicros)) /
+  (static_cast<double>(kDegaussingTimeConstantMillis) * 1e3));
 
 const uint16_t MagnetorquerControl::kNDegaussPulses =
     round((static_cast<double>(kDegaussingPeriodMillis) * 1e3) /
           (static_cast<double>(kDegaussingSwitchPeriodMicros)));
 
 // Or just use trial and error ;)
-const uint16_t MagnetorquerControl::kNPulsesFudge = 13;
+const uint16_t MagnetorquerControl::kNPulsesFudge = 8;
 
 Semaphore_Handle MagnetorquerControl::degaussing_timer_semaphore;
 
