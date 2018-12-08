@@ -35,8 +35,8 @@ class I2cDevice {
     const I2c* bus;
     const I2cMultiplexer* multiplexer;
     I2cMultiplexer::MuxChannel channel;
-    void MuxSelect() const;
-    void MuxDeselect() const;
+    bool MuxSelect() const;
+    bool MuxDeselect() const;
     std::string info_string;
     constexpr static uint8_t kInfoStringLength = 40;
     static GateMutexPri_Handle i2c_mutex;

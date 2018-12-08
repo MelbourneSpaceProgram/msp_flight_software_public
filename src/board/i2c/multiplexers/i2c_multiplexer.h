@@ -21,13 +21,13 @@ class I2cMultiplexer {
     I2cMultiplexer(const I2c* bus, byte address);
     const I2c* GetBus() const;
     byte GetAddress() const;
-    void OpenChannel(MuxChannel channel) const;
-    void OpenChannel(uint8_t channel) const;
-    void CloseChannel(MuxChannel channel) const;
-    void CloseChannel(uint8_t channel) const;
+    bool OpenChannel(MuxChannel channel) const;
+    bool OpenChannel(uint8_t channel) const;
+    bool CloseChannel(MuxChannel channel) const;
+    bool CloseChannel(uint8_t channel) const;
     static MuxChannel ChannelIndexToMuxChannel(uint8_t channel_index);
-    void CloseAllChannels() const;
-    byte GetChannelStates() const;
+    bool CloseAllChannels() const;
+    bool GetChannelStates(byte& states) const;
 
    private:
     const I2c* bus;
