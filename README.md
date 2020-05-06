@@ -1,3 +1,13 @@
+# Mission Success
+
+As of 29.06.2019 the Melbourne Space Program successfully put ACRUX-1 into orbit, where it will remain for around 18 months until it de-orbits. Communications were shortly after established with the satellite, marking mission success. The software onboard the satellite is identical to what is in this repository.
+
+It took years of hard work from many people but we could not have made it without the help of many friends all around the globe. Thank you to everyone who helped us.
+
+If you're interested in learning more about who we are and what's in store next, or if you just want to chat, visit us at https://www.melbournespace.com.au/
+
+*Please don't actually use this code on your spacecraft (or anywhere really, but definitely not your spacecraft). Despite our best efforts many things were added under the pressure of a launch deadline and you never now what nasty surprises you might uncover. Sometimes we still lie awake at night thinking about the things we did to make it all work.*
+
 # MSP CS-1 Software
 All code that will run on-board the satellite. The project is written in C++ and C, using the Code Composer Studio (CCS) compiler, provided by Texas Instruments for the MSP432.
 
